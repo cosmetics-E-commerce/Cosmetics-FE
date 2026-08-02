@@ -4,7 +4,7 @@ import type {
   UpdateAddressInput,
   UpdateMyProfileInput,
   UserProfileResponse,
-} from '@contracts/users/user.schema';
+} from '@cosmetics/contracts';
 
 import { request } from '@/lib/http/client';
 

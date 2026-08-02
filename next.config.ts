@@ -26,9 +26,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  experimental: {
-    externalDir: true,
-  },
+  transpilePackages: ['@cosmetics/contracts'],
 };
 
 export default nextConfig;

@@ -2,7 +2,7 @@
 
 import { create } from 'zustand';
 
-import type { AuthSession, AuthUser } from '@contracts/auth/auth.schema';
+import type { AuthSession, AuthUser } from '@cosmetics/contracts';
 import { authTokenStorage } from '@/lib/auth/token-storage';
 
 type AuthState = {
@@ -18,7 +18,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   hydrated: false,
   setSession: (session) => {
-    authTokenStorage.setTokens(session.tokens);
+    authTokenStorage.setSession(session);
     set({ user: session.user, hydrated: true });
   },
   setUser: (user) => set({ user, hydrated: true }),

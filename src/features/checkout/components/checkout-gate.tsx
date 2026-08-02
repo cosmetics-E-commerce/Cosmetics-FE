@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { LuxuryCard } from '@/components/ui/luxury-card';
+import { AddressBook } from '@/features/account/components/address-book';
 import { useAuthStore } from '@/stores/auth-store';
 
 export function CheckoutGate() {
@@ -49,16 +50,18 @@ export function CheckoutGate() {
             </div>
           </LuxuryCard>
         ) : (
-          <LuxuryCard className="mt-12 p-8 sm:p-12">
-            <ShoppingBag className="text-gold" size={38} />
-            <p className="mt-8 text-sm uppercase tracking-[.3em] text-gold">Ready for order flow</p>
-            <h1 className="mt-4 font-serif text-4xl text-cream">You are signed in.</h1>
-            <p className="mt-5 max-w-2xl leading-8 text-muted">
-              The order API is not mounted in the backend yet. When `POST /orders`
-              is available, this authenticated checkout page is where the order form
-              should submit with an idempotency key.
-            </p>
-          </LuxuryCard>
+          <div className="mt-12 space-y-6">
+            <LuxuryCard className="p-8 sm:p-12">
+              <ShoppingBag className="text-gold" size={38} />
+              <p className="mt-8 text-sm uppercase tracking-[.3em] text-gold">Delivery details</p>
+              <h1 className="mt-4 font-serif text-4xl text-cream">Choose or add your address.</h1>
+              <p className="mt-5 max-w-2xl leading-8 text-muted">
+                Your default saved address will be ready for the order flow. You can add,
+                edit, remove, or change the default delivery address here.
+              </p>
+            </LuxuryCard>
+            <AddressBook />
+          </div>
         )}
       </div>
     </main>

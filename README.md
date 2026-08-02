@@ -1,107 +1,70 @@
-# Cosmetics-FE
+# Cosmetics Storefront
 
-Frontend workspace for the cosmetics e-commerce platform. This repository is
-currently a **structure-only foundation**: no Vite package, dependencies, or
-application code have been generated yet.
+Independent Next.js storefront for the cosmetics platform. The existing visual
+design is intentionally kept separate from the Admin dashboard and consumes the
+Nest API at `http://localhost:3000/api/v1` during local development.
 
-Read [`../PROJECT_CONTEXT.md`](../PROJECT_CONTEXT.md) before implementation and
-use [`../Cosmetics-Docs/PLAN.md`](../Cosmetics-Docs/PLAN.md) for the full product
-and architecture proposal.
+## Run locally
 
-## Intended stack
+Start the backend first, then:
 
-- React + TypeScript + Vite
-- React Router with lazy storefront/admin route groups
-- TanStack Query for server state and TanStack Table for admin tables
-- Zustand only for small client-owned state such as session, locale, and cart UI
-- React Hook Form consuming the backend-owned Zod contracts
-- Tailwind CSS + editable shadcn/ui primitives
-- i18next/react-i18next, Arabic first, English fallback, RTL at the document root
-- Axios with refresh coordination and per-attempt idempotency keys
-- Vitest + React Testing Library + MSW; Playwright for end-to-end coverage
-
-Versions must be chosen when the app is scaffolded. Do not assume versions in
-the 2026 plan still match the current ecosystem without checking compatibility.
-
-## Structure
-
-```text
-Cosmetics-FE/
-├── public/
-│   ├── images/                  static public images only
-│   └── locales/{ar,en}/         translation resources
-├── src/
-│   ├── app/
-│   │   ├── layouts/             Storefront, Auth, Account, Dashboard shells
-│   │   ├── providers/           Query, auth, ability, i18n, theme, errors
-│   │   └── router/              lazy routes and auth/permission guards
-│   ├── assets/{fonts,icons,images}/
-│   ├── components/
-│   │   ├── ui/                  low-level shadcn-style primitives
-│   │   ├── common/              reusable domain-neutral composites
-│   │   ├── feedback/            error, loading, empty, toast states
-│   │   ├── forms/               shared form controls
-│   │   └── seo/                 metadata and JSON-LD helpers
-│   ├── config/                  environment, route, and nav configuration
-│   ├── features/
-│   │   ├── auth/                login, registration, refresh, recovery
-│   │   ├── catalog/             search, product list/detail, filters
-│   │   ├── cart/                guest/user cart and merge-on-login
-│   │   ├── checkout/            address, payment method, review, proof upload
-│   │   ├── orders/              client history and tracking
-│   │   ├── account/             profile and addresses
-│   │   ├── reviews/             customer review creation/editing
-│   │   └── admin/               one shared, capability-gated dashboard
-│   │       ├── dashboard/
-│   │       ├── products/        includes variant and image management
-│   │       ├── categories/
-│   │       ├── brands/
-│   │       ├── inventory/       batches, expiry, receive/adjust/write-off
-│   │       ├── orders/
-│   │       ├── payments/        manual verification queue
-│   │       ├── coupons/
-│   │       ├── reviews/
-│   │       ├── customers/
-│   │       ├── admins/          Super Admin account/permission matrix
-│   │       ├── reports/
-│   │       ├── settings/
-│   │       └── audit/
-│   ├── hooks/                   truly cross-feature React hooks
-│   ├── lib/
-│   │   ├── auth/                token/session primitives
-│   │   ├── http/                API client, refresh queue, idempotency
-│   │   ├── i18n/                locale and direction setup
-│   │   ├── permissions/         CASL ability and gates
-│   │   ├── query/               QueryClient and query-key helpers
-│   │   ├── seo/                 canonical/hreflang/structured data
-│   │   └── utils/               money, dates, exhaustive checks
-│   ├── stores/                  minimal global Zustand stores
-│   ├── styles/                  Tailwind entry and global direction-safe CSS
-│   ├── test/{fixtures,mocks}/    shared unit/integration test support
-│   └── types/                   app types and contract re-exports only
-└── tests/{e2e,fixtures}/         Playwright suites and stable E2E data
+```bash
+corepack pnpm install --frozen-lockfile
+corepack pnpm contracts:check
+corepack pnpm dev
 ```
 
-## Dependency rules
+Open `http://localhost:5173`.
 
-1. `app` composes the application; it may import features and shared code.
-2. A feature owns its API hooks, UI, pages, and feature-specific state.
-3. Features should not reach into another feature's internals. Export a small
-   public surface from that feature when cross-feature reuse is unavoidable.
-4. `components`, `hooks`, and `lib` must remain domain-neutral. Domain code
-   belongs under `features`.
-5. Server data lives in TanStack Query. Zustand must not mirror API caches.
-6. Contracts are authored once in `Cosmetics-BE/src/contracts`; the frontend
-   consumes built/published output. Never copy and edit those schemas here.
-7. Use logical CSS (`ms`, `me`, `ps`, `pe`, `start`, `end`) and test every
-   directional icon under both RTL and LTR.
-8. Admin visibility is capability-driven at navigation, route, and element
-   levels. Frontend checks improve UX; the API remains the security boundary.
+The backend development CORS configuration already permits that origin. Next's
+default port `3000` must not be used locally because Nest owns it.
 
-## Before scaffolding
+## Commands
 
-Confirm the shared-contract distribution strategy (private package versus CI
-sync), the API's final versioned base URL, and auth token storage/refresh-cookie
-contract. Those backend details are not implemented yet and should not be
-invented independently in this repository.
+```bash
+pnpm dev
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm build
+pnpm contracts:sync
+pnpm contracts:check
+```
 
+## Authentication boundary
+
+- Client login and registration use `/auth/*`; Admin sessions are rejected.
+- The access token is memory-only.
+- The rotating refresh token is a backend-managed HttpOnly cookie and is never
+  placed in local storage or request bodies.
+- The returned CSRF value is persisted per storefront origin and echoed as
+  `X-CSRF-Token` for refresh/logout.
+- Axios sends credentials, and concurrent `401` responses share one refresh.
+- Session bootstrap rotates the existing refresh cookie after a page reload.
+
+## Shared contracts
+
+`@cosmetics/contracts` is generated from `../Cosmetics-BE/src/contracts` into
+`vendor/cosmetics-contracts`. Schemas are authored only in the backend.
+
+Run `pnpm contracts:sync` after backend contract changes. CI should use
+`pnpm contracts:check` to reject stale artifacts.
+
+## Current implemented screens
+
+- Storefront home and catalogue placeholders.
+- Client login and registration with email OTP verification.
+- Forgot-password flow with email/SMS selection, OTP verification, confirmed
+  new password, and return to login.
+- Session bootstrap and logout.
+- Client profile display and authenticated password change with current-password
+  proof, email/SMS OTP, forced session revocation, and return to login.
+- Address list, create, edit, delete, and set-default flows in both profile and
+  checkout. Governorate and city/district selections use `egydata`; area,
+  building, landmark, and delivery instructions are persisted by the API.
+- Arabic/RTL document setup with optional English/LTR selection through
+  `NEXT_PUBLIC_DEFAULT_LOCALE=en`.
+
+Catalog, category, cart, order, and payment API implementations are still
+backend roadmap work. Checkout currently manages its saved delivery address;
+order submission is not yet mounted in the backend.

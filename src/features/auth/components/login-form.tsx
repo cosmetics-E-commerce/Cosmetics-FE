@@ -3,11 +3,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import { Eye, Loader2, LogIn } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { loginSchema, type LoginInput } from '@contracts/auth/auth.schema';
+import { loginSchema, type LoginInput } from '@cosmetics/contracts';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,6 +20,7 @@ export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('next') ?? '/account';
+  const passwordUpdated = searchParams.has('passwordReset') || searchParams.has('passwordChanged');
   const setSession = useAuthStore((state) => state.setSession);
   const [showPassword, setShowPassword] = useState(false);
   const form = useForm<LoginInput>({
@@ -71,8 +73,18 @@ export function LoginForm() {
         {form.formState.errors.password ? (
           <p className="text-sm text-red-300">{form.formState.errors.password.message}</p>
         ) : null}
+        <div className="text-end">
+          <Link href="/auth/forgot-password" className="text-sm font-medium text-gold transition hover:text-cream">
+            Forgot password?
+          </Link>
+        </div>
       </div>
 
+      {passwordUpdated ? (
+        <p className="rounded-2xl border border-gold/20 bg-gold/10 p-3 text-sm text-gold">
+          Your password was updated. Sign in with the new password.
+        </p>
+      ) : null}
       {apiError ? <p className="rounded-2xl border border-red-300/20 bg-red-500/10 p-3 text-sm text-red-200">{apiError.message}</p> : null}
 
       <Button type="submit" className="w-full" disabled={mutation.isPending}>

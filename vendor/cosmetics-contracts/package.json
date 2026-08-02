@@ -1,0 +1,27 @@
+{
+  "name": "@cosmetics/contracts",
+  "version": "0.1.0",
+  "description": "Shared Zod contracts for the Cosmetics platform",
+  "main": "./index.js",
+  "types": "./index.d.ts",
+  "files": [
+    "**/*.js",
+    "**/*.js.map",
+    "**/*.d.ts",
+    "**/*.d.ts.map"
+  ],
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./index.js",
+      "types": "./index.d.ts",
+      "default": "./index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "peerDependencies": {
+    "zod": "^3.24.1"
+  }
+}

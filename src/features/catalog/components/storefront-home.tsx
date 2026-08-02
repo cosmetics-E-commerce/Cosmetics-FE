@@ -22,7 +22,7 @@ import type { MouseEvent } from 'react';
 import type {
   PublicCategoryResponse,
   PublicProductResponse,
-} from '@contracts/catalog/product.schema';
+} from '@cosmetics/contracts';
 import { Button } from '@/components/ui/button';
 import { LuxuryCard } from '@/components/ui/luxury-card';
 import { listPublicCategories, listPublicProducts } from '@/features/catalog/api/catalog.api';

@@ -6,19 +6,32 @@ import { Loader2, MailCheck, RotateCcw, Sparkles } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import { registerSchema, type RegisterInput } from '@contracts/auth/auth.schema';
+import {
+  registerSchema,
+  type AuthSession,
+} from '@cosmetics/contracts';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
-  login,
   register as registerClient,
   resendOtp,
   verifyOtp,
 } from '@/features/auth/api/auth.api';
+import { updateMyProfile } from '@/features/account/api/account.api';
 import type { ApiErrorBody } from '@/lib/http/client';
 import { useAuthStore } from '@/stores/auth-store';
+
+const registerFormSchema = registerSchema.and(z.object({
+  rePassword: z.string().min(8, 'Repeat your password'),
+  gender: z.enum(['FEMALE', 'MALE', 'OTHER']),
+})).refine((input) => input.password === input.rePassword, {
+  message: 'Passwords do not match',
+  path: ['rePassword'],
+});
+type RegisterFormInput = z.infer<typeof registerFormSchema>;
 
 export function RegisterForm() {
   const router = useRouter();
@@ -26,10 +39,10 @@ export function RegisterForm() {
   const redirectTo = searchParams.get('next') ?? '/account';
   const setSession = useAuthStore((state) => state.setSession);
   const [verificationEmail, setVerificationEmail] = useState<string | null>(null);
-  const [pendingCredentials, setPendingCredentials] = useState<Pick<RegisterInput, 'email' | 'password'> | null>(null);
+  const [pendingSession, setPendingSession] = useState<AuthSession | null>(null);
   const [otp, setOtp] = useState('');
-  const form = useForm<RegisterInput>({
-    resolver: zodResolver(registerSchema),
+  const form = useForm<RegisterFormInput>({
+    resolver: zodResolver(registerFormSchema),
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -43,17 +56,19 @@ export function RegisterForm() {
   });
 
   const registerMutation = useMutation({
-    mutationFn: registerClient,
-    onSuccess: (challenge, input) => {
-      setPendingCredentials({ email: input.email, password: input.password });
-      setVerificationEmail(challenge.email);
+    mutationFn: (input: RegisterFormInput) => registerClient(registerSchema.parse(input)),
+    onSuccess: (session, input) => {
+      setSession(session);
+      void updateMyProfile({ gender: input.gender }).catch(() => undefined);
+      setPendingSession(session);
+      setVerificationEmail(input.email ?? null);
       setOtp('');
     },
   });
 
   const verifyMutation = useMutation({
     mutationFn: async (code: string) => {
-      if (!pendingCredentials || !verificationEmail) {
+      if (!pendingSession || !verificationEmail) {
         throw {
           statusCode: 400,
           code: 'OTP_SESSION_MISSING',
@@ -68,10 +83,7 @@ export function RegisterForm() {
         otp: code,
       });
 
-      return login({
-        identifier: pendingCredentials.email,
-        password: pendingCredentials.password,
-      });
+      return pendingSession;
     },
     onSuccess: (session) => {
       setSession(session);

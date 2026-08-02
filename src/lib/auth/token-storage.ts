@@ -1,33 +1,38 @@
-import type { AuthTokens } from '@contracts/auth/auth.schema';
+import type { AuthSession, AuthTokens } from '@cosmetics/contracts';
 
-const ACCESS_TOKEN_KEY = 'cosmetics.accessToken';
-const REFRESH_TOKEN_KEY = 'cosmetics.refreshToken';
-const EXPIRES_AT_KEY = 'cosmetics.expiresAt';
+const CSRF_TOKEN_KEY = 'cosmetics.csrfToken';
+let accessToken: string | null = null;
 
+/**
+ * The access token is intentionally memory-only. The rotating refresh token is
+ * never exposed to JavaScript; it is transported by the backend's HttpOnly
+ * cookie. Only the double-submit CSRF value survives a page reload.
+ */
 export const authTokenStorage = {
   getAccessToken() {
-    if (typeof window === 'undefined') return null;
-    return window.localStorage.getItem(ACCESS_TOKEN_KEY);
+    return accessToken;
   },
 
-  getRefreshToken() {
+  getCsrfToken() {
     if (typeof window === 'undefined') return null;
-    return window.localStorage.getItem(REFRESH_TOKEN_KEY);
+    return window.localStorage.getItem(CSRF_TOKEN_KEY);
+  },
+
+  setSession(session: AuthSession) {
+    accessToken = session.tokens.accessToken;
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(CSRF_TOKEN_KEY, session.csrfToken);
+    }
   },
 
   setTokens(tokens: AuthTokens) {
-    if (typeof window === 'undefined') return;
-
-    window.localStorage.setItem(ACCESS_TOKEN_KEY, tokens.accessToken);
-    window.localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refreshToken);
-    window.localStorage.setItem(EXPIRES_AT_KEY, String(Date.now() + tokens.expiresIn * 1000));
+    accessToken = tokens.accessToken;
   },
 
   clear() {
-    if (typeof window === 'undefined') return;
-
-    window.localStorage.removeItem(ACCESS_TOKEN_KEY);
-    window.localStorage.removeItem(REFRESH_TOKEN_KEY);
-    window.localStorage.removeItem(EXPIRES_AT_KEY);
+    accessToken = null;
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem(CSRF_TOKEN_KEY);
+    }
   },
 };
