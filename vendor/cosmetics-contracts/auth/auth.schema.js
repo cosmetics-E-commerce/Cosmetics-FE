@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authSessionSchema = exports.authTokensSchema = exports.authUserSchema = exports.verifyEmailSchema = exports.sendEmailVerificationSchema = exports.completePasswordChangeSchema = exports.verifyPasswordChangeOtpSchema = exports.requestPasswordChangeSchema = exports.resetPasswordSchema = exports.verifyPasswordResetOtpSchema = exports.forgotPasswordSchema = exports.verifyOtpSchema = exports.sendOtpSchema = exports.otpPurposeEnum = exports.logoutSchema = exports.refreshSchema = exports.loginSchema = exports.createAdminUserSchema = exports.registerSchema = exports.createUserSchema = exports.otpDeliveryChannelEnum = void 0;
+exports.authSessionSchema = exports.authTokensSchema = exports.authUserSchema = exports.verifyEmailSchema = exports.sendEmailVerificationSchema = exports.completePasswordChangeSchema = exports.verifyPasswordChangeOtpSchema = exports.requestPasswordChangeSchema = exports.resetPasswordSchema = exports.verifyPasswordResetOtpSchema = exports.forgotPasswordSchema = exports.verifyOtpSchema = exports.sendOtpSchema = exports.otpPurposeEnum = exports.logoutSchema = exports.refreshSchema = exports.loginSchema = exports.createAdminUserSchema = exports.registrationOtpChallengeSchema = exports.registerSchema = exports.createUserSchema = exports.otpDeliveryChannelEnum = void 0;
 const zod_1 = require("zod");
 const primitives_1 = require("../common/primitives");
 const enums_1 = require("../enums");
@@ -18,6 +18,7 @@ const createUserBaseSchema = zod_1.z.object({
     phone: primitives_1.egyptPhoneSchema,
     email: primitives_1.emailSchema.optional(),
     password: passwordSchema,
+    gender: enums_1.GenderEnum.optional(),
     otpChannel: exports.otpDeliveryChannelEnum.default('SMS'),
 });
 exports.createUserSchema = createUserBaseSchema.superRefine((input, ctx) => {
@@ -29,7 +30,28 @@ exports.createUserSchema = createUserBaseSchema.superRefine((input, ctx) => {
         });
     }
 });
-exports.registerSchema = exports.createUserSchema;
+exports.registerSchema = createUserBaseSchema
+    .extend({
+    email: primitives_1.emailSchema,
+    gender: enums_1.GenderEnum,
+    rePassword: zod_1.z.string().min(1, 'Repeat password is required'),
+    otpChannel: exports.otpDeliveryChannelEnum.default('EMAIL'),
+})
+    .strict()
+    .superRefine((input, ctx) => {
+    if (input.password !== input.rePassword) {
+        ctx.addIssue({
+            code: zod_1.z.ZodIssueCode.custom,
+            path: ['rePassword'],
+            message: 'Repeated password must match password.',
+        });
+    }
+});
+exports.registrationOtpChallengeSchema = zod_1.z.object({
+    email: primitives_1.emailSchema,
+    ttlSeconds: zod_1.z.number().int().positive(),
+    verificationRequired: zod_1.z.literal(true),
+});
 exports.createAdminUserSchema = createUserBaseSchema.extend({
     email: primitives_1.emailSchema,
     otpChannel: exports.otpDeliveryChannelEnum.default('EMAIL'),

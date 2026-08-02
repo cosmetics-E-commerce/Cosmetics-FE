@@ -2,9 +2,10 @@
 
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowRight, Loader2, PackageSearch, ShoppingBag, Star, Tags, type LucideIcon } from 'lucide-react';
+import { Loader2, PackageSearch, ShoppingBag, Star, Tags, type LucideIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useMemo } from 'react';
 
 import type {
   PublicCategoryResponse,
@@ -12,7 +13,12 @@ import type {
 } from '@cosmetics/contracts';
 import { Button } from '@/components/ui/button';
 import { LuxuryCard } from '@/components/ui/luxury-card';
-import { listPublicCategories, listPublicProducts } from '@/features/catalog/api/catalog.api';
+import {
+  listPublicCategories,
+  listPublicProducts,
+  type PublicProductQueryParams,
+} from '@/features/catalog/api/catalog.api';
+import { AddToCartButton } from '@/features/cart/components/add-to-cart-button';
 import { ProductFallbackIcon, SiteFooter, SiteHeader } from '@/features/catalog/components/site-chrome';
 import type { ApiErrorBody } from '@/lib/http/client';
 
@@ -21,17 +27,26 @@ const fadeUp = {
   show: { opacity: 1, y: 0 },
 };
 
-export function CatalogBrowser({ mode }: { mode: 'products' | 'categories' }) {
+export type CatalogSearchParams = Record<string, string | string[] | undefined>;
+
+export function CatalogBrowser({
+  mode,
+  searchParams = {},
+}: {
+  mode: 'products' | 'categories';
+  searchParams?: CatalogSearchParams;
+}) {
+  const productParams = useMemo(() => getProductParams(searchParams), [searchParams]);
+
   const productsQuery = useQuery({
-    queryKey: ['catalog', 'products'],
-    queryFn: listPublicProducts,
+    queryKey: ['catalog', 'products', productParams],
+    queryFn: () => listPublicProducts(productParams),
     enabled: mode === 'products',
   });
 
   const categoriesQuery = useQuery({
-    queryKey: ['catalog', 'categories'],
-    queryFn: listPublicCategories,
-    enabled: mode === 'categories',
+    queryKey: ['catalog', 'categories', 'public'],
+    queryFn: () => listPublicCategories({ limit: 50, sortOrder: 'asc' }),
   });
 
   const isProducts = mode === 'products';
@@ -87,15 +102,79 @@ export function CatalogBrowser({ mode }: { mode: 'products' | 'categories' }) {
           <CatalogState
             icon={PackageSearch}
             title="Catalogue is unavailable"
-            text="The page is public. The backend API returned an error while loading the catalogue."
+            text={error.message || 'The page is public. The backend API returned an error while loading the catalogue.'}
           />
         ) : null}
 
-        {!isLoading && !error && isProducts ? <ProductGrid products={products} /> : null}
+        {!isLoading && !error && isProducts ? (
+          <>
+            <CatalogFilters categories={categories} activeCategorySlug={productParams.categorySlug} search={productParams.search} />
+            <ProductGrid products={products} />
+          </>
+        ) : null}
         {!isLoading && !error && !isProducts ? <CategoryGrid categories={categories} /> : null}
       </section>
       <SiteFooter />
     </main>
+  );
+}
+
+function CatalogFilters({
+  categories,
+  activeCategorySlug,
+  search,
+}: {
+  categories: PublicCategoryResponse[];
+  activeCategorySlug?: string;
+  search?: string;
+}) {
+  return (
+    <div className="mb-8 flex flex-col gap-4 border-b border-sage/15 pb-6">
+      <form action="/products" className="flex flex-col gap-3 sm:flex-row">
+        {activeCategorySlug ? <input type="hidden" name="categorySlug" value={activeCategorySlug} /> : null}
+        <input
+          name="search"
+          defaultValue={search}
+          placeholder="Search backend products..."
+          className="h-12 flex-1 rounded-md border border-sage/20 bg-white px-4 text-sm text-ink outline-none transition placeholder:text-muted focus:border-sage/45"
+        />
+        <Button type="submit">Search</Button>
+        {(search || activeCategorySlug) ? (
+          <Button asChild variant="secondary">
+            <Link href="/products">Clear</Link>
+          </Button>
+        ) : null}
+      </form>
+
+      {categories.length > 0 ? (
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          <CategoryPill href="/products" label="All" active={!activeCategorySlug} />
+          {categories.map((category) => (
+            <CategoryPill
+              key={category.id}
+              href={`/products?categorySlug=${category.slug}${search ? `&search=${encodeURIComponent(search)}` : ''}`}
+              label={category.nameEn}
+              active={activeCategorySlug === category.slug}
+            />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function CategoryPill({ href, label, active }: { href: string; label: string; active: boolean }) {
+  return (
+    <Link
+      href={href}
+      className={`whitespace-nowrap rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[.08em] transition ${
+        active
+          ? 'border-sage bg-sage text-white'
+          : 'border-sage/20 bg-white text-sage-dark hover:border-sage/45 hover:bg-cream'
+      }`}
+    >
+      {label}
+    </Link>
   );
 }
 
@@ -140,14 +219,9 @@ function ProductGrid({ products }: { products: PublicProductResponse[] }) {
               ))}
               <span className="text-muted">(4.8)</span>
             </div>
-            <div className="mt-4 flex items-center justify-between">
+            <div className="mt-4 flex items-center justify-between gap-3">
               <p className="text-base font-semibold">{formatPrice(product.basePrice)}</p>
-              <Button asChild size="sm">
-                <Link href="/checkout">
-                  Make order
-                  <ArrowRight size={15} />
-                </Link>
-              </Button>
+              <AddToCartButton size="sm" variantId={product.variants[0]?.id} />
             </div>
           </div>
           </LuxuryCard>
@@ -223,4 +297,25 @@ function formatPrice(value: number) {
     style: 'currency',
     currency: 'USD',
   }).format(value / 100 / 50);
+}
+
+function getProductParams(searchParams: CatalogSearchParams): PublicProductQueryParams {
+  const categorySlug = getSearchParam(searchParams, 'categorySlug') ?? getSearchParam(searchParams, 'category');
+  const search = getSearchParam(searchParams, 'search');
+  const sortBy = getSearchParam(searchParams, 'sortBy');
+  const sortOrder = getSearchParam(searchParams, 'sortOrder');
+
+  return {
+    limit: 24,
+    categorySlug,
+    search,
+    sortBy: sortBy === 'basePrice' || sortBy === 'nameEn' || sortBy === 'createdAt' ? sortBy : 'createdAt',
+    sortOrder: sortOrder === 'asc' || sortOrder === 'desc' ? sortOrder : 'desc',
+  };
+}
+
+function getSearchParam(searchParams: CatalogSearchParams, key: string) {
+  const value = searchParams[key];
+  if (Array.isArray(value)) return value[0];
+  return value;
 }

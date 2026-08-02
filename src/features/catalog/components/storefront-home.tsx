@@ -12,7 +12,6 @@ import {
   Recycle,
   RotateCcw,
   ShieldCheck,
-  ShoppingCart,
   Star,
 } from 'lucide-react';
 import Image from 'next/image';
@@ -25,6 +24,7 @@ import type {
 } from '@cosmetics/contracts';
 import { Button } from '@/components/ui/button';
 import { LuxuryCard } from '@/components/ui/luxury-card';
+import { AddToCartButton } from '@/features/cart/components/add-to-cart-button';
 import { listPublicCategories, listPublicProducts } from '@/features/catalog/api/catalog.api';
 import { ProductFallbackIcon, SiteFooter, SiteHeader } from '@/features/catalog/components/site-chrome';
 
@@ -80,8 +80,14 @@ const fadeUp = {
 };
 
 export function StorefrontHome() {
-  const productsQuery = useQuery({ queryKey: ['catalog', 'products'], queryFn: listPublicProducts });
-  const categoriesQuery = useQuery({ queryKey: ['catalog', 'categories'], queryFn: listPublicCategories });
+  const productsQuery = useQuery({
+    queryKey: ['catalog', 'products', 'home'],
+    queryFn: () => listPublicProducts({ limit: 5, sortBy: 'createdAt', sortOrder: 'desc' }),
+  });
+  const categoriesQuery = useQuery({
+    queryKey: ['catalog', 'categories', 'home'],
+    queryFn: () => listPublicCategories({ limit: 7, sortOrder: 'asc' }),
+  });
   const products = productsQuery.data ?? [];
   const categories = categoriesQuery.data ?? [];
   const featuredProducts = products.slice(0, 5);
@@ -279,7 +285,7 @@ function CategoryRail({ categories }: { categories: PublicCategoryResponse[] }) 
       <div className="grid grid-cols-2 gap-7 sm:grid-cols-4 lg:grid-cols-7">
         {display.map((category, index) => (
           <motion.div key={category.id} variants={fadeUp} transition={{ duration: 0.5 }}>
-            <Link href={`/products?category=${category.slug}`} className="group text-center">
+            <Link href={`/products?categorySlug=${category.slug}`} className="group text-center">
               <motion.div
                 whileHover={{ y: -7, scale: 1.03 }}
                 transition={{ type: 'spring', stiffness: 260, damping: 20 }}
@@ -379,9 +385,12 @@ function ProductCard({ product, compact = false }: { product: PublicProductRespo
         </div>
         <div className="mt-3 flex items-center justify-between">
           <p className="text-base font-semibold text-sage-dark">{formatPiastres(product.basePrice)}</p>
-          <Link href="/checkout" aria-label={`Make order for ${product.nameEn}`} className="grid h-8 w-8 place-items-center rounded-md bg-sage text-white transition group-hover:translate-x-0.5 group-hover:bg-sage-dark">
-            <ShoppingCart size={16} />
-          </Link>
+          <AddToCartButton
+            compact
+            variantId={product.variants[0]?.id}
+            label={`Add ${product.nameEn} to cart`}
+            className="h-8 w-8 group-hover:translate-x-0.5"
+          />
         </div>
       </div>
       </LuxuryCard>

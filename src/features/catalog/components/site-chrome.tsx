@@ -1,6 +1,7 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
 import {
   ChevronDown,
   Heart,
@@ -16,6 +17,7 @@ import {
 import Link from 'next/link';
 import { type ReactNode, useState } from 'react';
 
+import { cartQueryKey, getCart } from '@/features/cart/api/cart.api';
 import { useAuthStore } from '@/stores/auth-store';
 
 const shopMenu = [
@@ -90,9 +92,7 @@ export function SiteHeader() {
           <IconLink href="/products" label="Wishlist" className="hidden sm:grid" badge="2">
             <Heart size={22} />
           </IconLink>
-          <IconLink href="/checkout" label="Cart" badge="3">
-            <ShoppingBag size={22} />
-          </IconLink>
+          <CartIconLink />
           {user ? (
             <IconLink href="/account" label="Account">
               <UserRound size={23} />
@@ -110,6 +110,21 @@ export function SiteHeader() {
         </div>
       </div>
     </motion.header>
+  );
+}
+
+function CartIconLink() {
+  const cartQuery = useQuery({
+    queryKey: cartQueryKey,
+    queryFn: getCart,
+    staleTime: 15_000,
+  });
+  const totalQuantity = cartQuery.data?.totalQuantity ?? 0;
+
+  return (
+    <IconLink href="/cart" label="Cart" badge={totalQuantity > 0 ? String(totalQuantity) : undefined}>
+            <ShoppingBag size={22} />
+    </IconLink>
   );
 }
 

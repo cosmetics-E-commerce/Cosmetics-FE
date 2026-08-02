@@ -7,6 +7,7 @@ export declare const createUserSchema: z.ZodEffects<z.ZodObject<{
     phone: z.ZodString;
     email: z.ZodOptional<z.ZodString>;
     password: z.ZodString;
+    gender: z.ZodOptional<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>;
     otpChannel: z.ZodDefault<z.ZodEnum<["SMS", "EMAIL"]>>;
 }, "strip", z.ZodTypeAny, {
     firstName: string;
@@ -15,12 +16,14 @@ export declare const createUserSchema: z.ZodEffects<z.ZodObject<{
     password: string;
     otpChannel: "SMS" | "EMAIL";
     email?: string | undefined;
+    gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
 }, {
     firstName: string;
     lastName: string;
     phone: string;
     password: string;
     email?: string | undefined;
+    gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
     otpChannel?: "SMS" | "EMAIL" | undefined;
 }>, {
     firstName: string;
@@ -29,12 +32,14 @@ export declare const createUserSchema: z.ZodEffects<z.ZodObject<{
     password: string;
     otpChannel: "SMS" | "EMAIL";
     email?: string | undefined;
+    gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
 }, {
     firstName: string;
     lastName: string;
     phone: string;
     password: string;
     email?: string | undefined;
+    gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
     otpChannel?: "SMS" | "EMAIL" | undefined;
 }>;
 export type CreateUserInput = z.infer<typeof createUserSchema>;
@@ -42,44 +47,70 @@ export declare const registerSchema: z.ZodEffects<z.ZodObject<{
     firstName: z.ZodString;
     lastName: z.ZodString;
     phone: z.ZodString;
-    email: z.ZodOptional<z.ZodString>;
     password: z.ZodString;
+} & {
+    email: z.ZodString;
+    gender: z.ZodEnum<["MALE", "FEMALE", "OTHER"]>;
+    rePassword: z.ZodString;
     otpChannel: z.ZodDefault<z.ZodEnum<["SMS", "EMAIL"]>>;
-}, "strip", z.ZodTypeAny, {
+}, "strict", z.ZodTypeAny, {
     firstName: string;
     lastName: string;
     phone: string;
+    email: string;
     password: string;
+    gender: "MALE" | "FEMALE" | "OTHER";
     otpChannel: "SMS" | "EMAIL";
-    email?: string | undefined;
+    rePassword: string;
 }, {
     firstName: string;
     lastName: string;
     phone: string;
+    email: string;
     password: string;
-    email?: string | undefined;
+    gender: "MALE" | "FEMALE" | "OTHER";
+    rePassword: string;
     otpChannel?: "SMS" | "EMAIL" | undefined;
 }>, {
     firstName: string;
     lastName: string;
     phone: string;
+    email: string;
     password: string;
+    gender: "MALE" | "FEMALE" | "OTHER";
     otpChannel: "SMS" | "EMAIL";
-    email?: string | undefined;
+    rePassword: string;
 }, {
     firstName: string;
     lastName: string;
     phone: string;
+    email: string;
     password: string;
-    email?: string | undefined;
+    gender: "MALE" | "FEMALE" | "OTHER";
+    rePassword: string;
     otpChannel?: "SMS" | "EMAIL" | undefined;
 }>;
 export type RegisterInput = z.infer<typeof registerSchema>;
+export declare const registrationOtpChallengeSchema: z.ZodObject<{
+    email: z.ZodString;
+    ttlSeconds: z.ZodNumber;
+    verificationRequired: z.ZodLiteral<true>;
+}, "strip", z.ZodTypeAny, {
+    email: string;
+    ttlSeconds: number;
+    verificationRequired: true;
+}, {
+    email: string;
+    ttlSeconds: number;
+    verificationRequired: true;
+}>;
+export type RegistrationOtpChallenge = z.infer<typeof registrationOtpChallengeSchema>;
 export declare const createAdminUserSchema: z.ZodObject<{
     firstName: z.ZodString;
     lastName: z.ZodString;
     phone: z.ZodString;
     password: z.ZodString;
+    gender: z.ZodOptional<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>;
 } & {
     email: z.ZodString;
     otpChannel: z.ZodDefault<z.ZodEnum<["SMS", "EMAIL"]>>;
@@ -90,12 +121,14 @@ export declare const createAdminUserSchema: z.ZodObject<{
     email: string;
     password: string;
     otpChannel: "SMS" | "EMAIL";
+    gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
 }, {
     firstName: string;
     lastName: string;
     phone: string;
     email: string;
     password: string;
+    gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
     otpChannel?: "SMS" | "EMAIL" | undefined;
 }>;
 export type CreateAdminUserInput = z.infer<typeof createAdminUserSchema>;
