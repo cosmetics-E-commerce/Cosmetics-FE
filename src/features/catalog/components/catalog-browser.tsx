@@ -20,6 +20,7 @@ import {
 } from '@/features/catalog/api/catalog.api';
 import { AddToCartButton } from '@/features/cart/components/add-to-cart-button';
 import { ProductFallbackIcon, SiteFooter, SiteHeader } from '@/features/catalog/components/site-chrome';
+import { WishlistButton } from '@/features/wishlist/components/wishlist-button';
 import type { ApiErrorBody } from '@/lib/http/client';
 
 const fadeUp = {
@@ -202,6 +203,7 @@ function ProductGrid({ products }: { products: PublicProductResponse[] }) {
           <LuxuryCard className="overflow-hidden border-black/[.08] bg-[#fffdf8] transition duration-300 group-hover:shadow-[0_24px_60px_rgba(31,31,31,.12)]">
           <div className="relative aspect-[4/4.4] overflow-hidden bg-[#f6efe4]">
             <span className="absolute left-3 top-3 z-10 rounded-sm bg-sage px-2 py-1 text-[10px] font-bold uppercase text-white">New</span>
+            <WishlistButton productId={product.id} compact className="absolute right-3 top-3 z-10 bg-white/80 shadow-sm backdrop-blur" />
             {product.imageUrl ? (
               <Image src={product.imageUrl} alt={product.nameEn} fill className="object-contain p-7 mix-blend-multiply transition duration-700 group-hover:scale-110" sizes="25vw" />
             ) : (

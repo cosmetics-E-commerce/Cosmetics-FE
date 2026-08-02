@@ -42,8 +42,8 @@ export declare const addressSchema: z.ZodObject<{
     createdAt: z.ZodString;
     updatedAt: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    phone: string;
     id: string;
+    phone: string;
     createdAt: string;
     updatedAt: string;
     label: "OTHER" | "HOME" | "WORK" | null;
@@ -61,8 +61,8 @@ export declare const addressSchema: z.ZodObject<{
     landmark: string | null;
     isDefault: boolean;
 }, {
-    phone: string;
     id: string;
+    phone: string;
     createdAt: string;
     updatedAt: string;
     label: "OTHER" | "HOME" | "WORK" | null;
@@ -189,6 +189,7 @@ export declare const userProfileSchema: z.ZodObject<{
     email: z.ZodNullable<z.ZodString>;
     role: z.ZodEnum<["SUPER_ADMIN", "ADMIN", "CLIENT"]>;
     status: z.ZodEnum<["ACTIVE", "INACTIVE", "DELETED"]>;
+    isVip: z.ZodBoolean;
     profileImage: z.ZodNullable<z.ZodString>;
     gender: z.ZodNullable<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>;
     dateOfBirth: z.ZodNullable<z.ZodString>;
@@ -199,38 +200,196 @@ export declare const userProfileSchema: z.ZodObject<{
     deletedAt: z.ZodNullable<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     status: "ACTIVE" | "INACTIVE" | "DELETED";
+    id: string;
     firstName: string;
     lastName: string;
     phone: string;
     email: string | null;
     gender: "MALE" | "FEMALE" | "OTHER" | null;
-    id: string;
     role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
     createdAt: string;
     updatedAt: string;
     deletedAt: string | null;
     profileImage: string | null;
     dateOfBirth: string | null;
+    isVip: boolean;
     phoneVerified: boolean;
     emailVerified: boolean;
 }, {
     status: "ACTIVE" | "INACTIVE" | "DELETED";
+    id: string;
     firstName: string;
     lastName: string;
     phone: string;
     email: string | null;
     gender: "MALE" | "FEMALE" | "OTHER" | null;
-    id: string;
     role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
     createdAt: string;
     updatedAt: string;
     deletedAt: string | null;
     profileImage: string | null;
     dateOfBirth: string | null;
+    isVip: boolean;
     phoneVerified: boolean;
     emailVerified: boolean;
 }>;
 export type UserProfileResponse = z.infer<typeof userProfileSchema>;
+export declare const adminCustomerOrderSchema: z.ZodObject<{
+    id: z.ZodString;
+    orderNumber: z.ZodString;
+    status: z.ZodString;
+    paymentStatus: z.ZodString;
+    paymentMethod: z.ZodString;
+    grandTotal: z.ZodNumber;
+    currency: z.ZodString;
+    placedAt: z.ZodString;
+    updatedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    status: string;
+    id: string;
+    updatedAt: string;
+    orderNumber: string;
+    paymentStatus: string;
+    paymentMethod: string;
+    grandTotal: number;
+    currency: string;
+    placedAt: string;
+}, {
+    status: string;
+    id: string;
+    updatedAt: string;
+    orderNumber: string;
+    paymentStatus: string;
+    paymentMethod: string;
+    grandTotal: number;
+    currency: string;
+    placedAt: string;
+}>;
+export type AdminCustomerOrderResponse = z.infer<typeof adminCustomerOrderSchema>;
+export declare const adminCustomerListItemSchema: z.ZodObject<{
+    id: z.ZodString;
+    firstName: z.ZodString;
+    lastName: z.ZodString;
+    phone: z.ZodString;
+    email: z.ZodNullable<z.ZodString>;
+    role: z.ZodEnum<["SUPER_ADMIN", "ADMIN", "CLIENT"]>;
+    status: z.ZodEnum<["ACTIVE", "INACTIVE", "DELETED"]>;
+    isVip: z.ZodBoolean;
+    profileImage: z.ZodNullable<z.ZodString>;
+    gender: z.ZodNullable<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>;
+    dateOfBirth: z.ZodNullable<z.ZodString>;
+    phoneVerified: z.ZodBoolean;
+    emailVerified: z.ZodBoolean;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+    deletedAt: z.ZodNullable<z.ZodString>;
+} & {
+    ordersCount: z.ZodNumber;
+    totalSpent: z.ZodNumber;
+    lastOrderAt: z.ZodNullable<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    status: "ACTIVE" | "INACTIVE" | "DELETED";
+    id: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    email: string | null;
+    gender: "MALE" | "FEMALE" | "OTHER" | null;
+    role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+    profileImage: string | null;
+    dateOfBirth: string | null;
+    isVip: boolean;
+    phoneVerified: boolean;
+    emailVerified: boolean;
+    ordersCount: number;
+    totalSpent: number;
+    lastOrderAt: string | null;
+}, {
+    status: "ACTIVE" | "INACTIVE" | "DELETED";
+    id: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    email: string | null;
+    gender: "MALE" | "FEMALE" | "OTHER" | null;
+    role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string | null;
+    profileImage: string | null;
+    dateOfBirth: string | null;
+    isVip: boolean;
+    phoneVerified: boolean;
+    emailVerified: boolean;
+    ordersCount: number;
+    totalSpent: number;
+    lastOrderAt: string | null;
+}>;
+export type AdminCustomerListItemResponse = z.infer<typeof adminCustomerListItemSchema>;
+export declare const adminCustomerStatisticsSchema: z.ZodObject<{
+    totalCustomers: z.ZodNumber;
+    activeCustomers: z.ZodNumber;
+    blockedCustomers: z.ZodNumber;
+    vipCustomers: z.ZodNumber;
+    newThisMonth: z.ZodNumber;
+    ordersCount: z.ZodNumber;
+    totalRevenue: z.ZodNumber;
+    averageOrderValue: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    ordersCount: number;
+    totalCustomers: number;
+    activeCustomers: number;
+    blockedCustomers: number;
+    vipCustomers: number;
+    newThisMonth: number;
+    totalRevenue: number;
+    averageOrderValue: number;
+}, {
+    ordersCount: number;
+    totalCustomers: number;
+    activeCustomers: number;
+    blockedCustomers: number;
+    vipCustomers: number;
+    newThisMonth: number;
+    totalRevenue: number;
+    averageOrderValue: number;
+}>;
+export type AdminCustomerStatisticsResponse = z.infer<typeof adminCustomerStatisticsSchema>;
+export declare const adminCustomerSummarySchema: z.ZodObject<{
+    ordersCount: z.ZodNumber;
+    totalSpent: z.ZodNumber;
+    averageOrderValue: z.ZodNumber;
+    lastOrderAt: z.ZodNullable<z.ZodString>;
+    addressesCount: z.ZodNumber;
+    cartItemsCount: z.ZodNumber;
+    cartQuantity: z.ZodNumber;
+    wishlistCount: z.ZodNumber;
+    lastLoginAt: z.ZodNullable<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    ordersCount: number;
+    totalSpent: number;
+    lastOrderAt: string | null;
+    averageOrderValue: number;
+    addressesCount: number;
+    cartItemsCount: number;
+    cartQuantity: number;
+    wishlistCount: number;
+    lastLoginAt: string | null;
+}, {
+    ordersCount: number;
+    totalSpent: number;
+    lastOrderAt: string | null;
+    averageOrderValue: number;
+    addressesCount: number;
+    cartItemsCount: number;
+    cartQuantity: number;
+    wishlistCount: number;
+    lastLoginAt: string | null;
+}>;
+export type AdminCustomerSummaryResponse = z.infer<typeof adminCustomerSummarySchema>;
 export declare const adminUserDetailSchema: z.ZodObject<{
     id: z.ZodString;
     firstName: z.ZodString;
@@ -239,6 +398,7 @@ export declare const adminUserDetailSchema: z.ZodObject<{
     email: z.ZodNullable<z.ZodString>;
     role: z.ZodEnum<["SUPER_ADMIN", "ADMIN", "CLIENT"]>;
     status: z.ZodEnum<["ACTIVE", "INACTIVE", "DELETED"]>;
+    isVip: z.ZodBoolean;
     profileImage: z.ZodNullable<z.ZodString>;
     gender: z.ZodNullable<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>;
     dateOfBirth: z.ZodNullable<z.ZodString>;
@@ -268,8 +428,8 @@ export declare const adminUserDetailSchema: z.ZodObject<{
         createdAt: z.ZodString;
         updatedAt: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        phone: string;
         id: string;
+        phone: string;
         createdAt: string;
         updatedAt: string;
         label: "OTHER" | "HOME" | "WORK" | null;
@@ -287,8 +447,8 @@ export declare const adminUserDetailSchema: z.ZodObject<{
         landmark: string | null;
         isDefault: boolean;
     }, {
-        phone: string;
         id: string;
+        phone: string;
         createdAt: string;
         updatedAt: string;
         label: "OTHER" | "HOME" | "WORK" | null;
@@ -306,25 +466,88 @@ export declare const adminUserDetailSchema: z.ZodObject<{
         landmark: string | null;
         isDefault: boolean;
     }>, "many">;
+    recentOrders: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        orderNumber: z.ZodString;
+        status: z.ZodString;
+        paymentStatus: z.ZodString;
+        paymentMethod: z.ZodString;
+        grandTotal: z.ZodNumber;
+        currency: z.ZodString;
+        placedAt: z.ZodString;
+        updatedAt: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        status: string;
+        id: string;
+        updatedAt: string;
+        orderNumber: string;
+        paymentStatus: string;
+        paymentMethod: string;
+        grandTotal: number;
+        currency: string;
+        placedAt: string;
+    }, {
+        status: string;
+        id: string;
+        updatedAt: string;
+        orderNumber: string;
+        paymentStatus: string;
+        paymentMethod: string;
+        grandTotal: number;
+        currency: string;
+        placedAt: string;
+    }>, "many">;
+    summary: z.ZodObject<{
+        ordersCount: z.ZodNumber;
+        totalSpent: z.ZodNumber;
+        averageOrderValue: z.ZodNumber;
+        lastOrderAt: z.ZodNullable<z.ZodString>;
+        addressesCount: z.ZodNumber;
+        cartItemsCount: z.ZodNumber;
+        cartQuantity: z.ZodNumber;
+        wishlistCount: z.ZodNumber;
+        lastLoginAt: z.ZodNullable<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        ordersCount: number;
+        totalSpent: number;
+        lastOrderAt: string | null;
+        averageOrderValue: number;
+        addressesCount: number;
+        cartItemsCount: number;
+        cartQuantity: number;
+        wishlistCount: number;
+        lastLoginAt: string | null;
+    }, {
+        ordersCount: number;
+        totalSpent: number;
+        lastOrderAt: string | null;
+        averageOrderValue: number;
+        addressesCount: number;
+        cartItemsCount: number;
+        cartQuantity: number;
+        wishlistCount: number;
+        lastLoginAt: string | null;
+    }>;
 }, "strip", z.ZodTypeAny, {
     status: "ACTIVE" | "INACTIVE" | "DELETED";
+    id: string;
     firstName: string;
     lastName: string;
     phone: string;
     email: string | null;
     gender: "MALE" | "FEMALE" | "OTHER" | null;
-    id: string;
     role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
     createdAt: string;
     updatedAt: string;
     deletedAt: string | null;
     profileImage: string | null;
     dateOfBirth: string | null;
+    isVip: boolean;
     phoneVerified: boolean;
     emailVerified: boolean;
     addresses: {
-        phone: string;
         id: string;
+        phone: string;
         createdAt: string;
         updatedAt: string;
         label: "OTHER" | "HOME" | "WORK" | null;
@@ -342,25 +565,48 @@ export declare const adminUserDetailSchema: z.ZodObject<{
         landmark: string | null;
         isDefault: boolean;
     }[];
+    recentOrders: {
+        status: string;
+        id: string;
+        updatedAt: string;
+        orderNumber: string;
+        paymentStatus: string;
+        paymentMethod: string;
+        grandTotal: number;
+        currency: string;
+        placedAt: string;
+    }[];
+    summary: {
+        ordersCount: number;
+        totalSpent: number;
+        lastOrderAt: string | null;
+        averageOrderValue: number;
+        addressesCount: number;
+        cartItemsCount: number;
+        cartQuantity: number;
+        wishlistCount: number;
+        lastLoginAt: string | null;
+    };
 }, {
     status: "ACTIVE" | "INACTIVE" | "DELETED";
+    id: string;
     firstName: string;
     lastName: string;
     phone: string;
     email: string | null;
     gender: "MALE" | "FEMALE" | "OTHER" | null;
-    id: string;
     role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
     createdAt: string;
     updatedAt: string;
     deletedAt: string | null;
     profileImage: string | null;
     dateOfBirth: string | null;
+    isVip: boolean;
     phoneVerified: boolean;
     emailVerified: boolean;
     addresses: {
-        phone: string;
         id: string;
+        phone: string;
         createdAt: string;
         updatedAt: string;
         label: "OTHER" | "HOME" | "WORK" | null;
@@ -378,6 +624,28 @@ export declare const adminUserDetailSchema: z.ZodObject<{
         landmark: string | null;
         isDefault: boolean;
     }[];
+    recentOrders: {
+        status: string;
+        id: string;
+        updatedAt: string;
+        orderNumber: string;
+        paymentStatus: string;
+        paymentMethod: string;
+        grandTotal: number;
+        currency: string;
+        placedAt: string;
+    }[];
+    summary: {
+        ordersCount: number;
+        totalSpent: number;
+        lastOrderAt: string | null;
+        averageOrderValue: number;
+        addressesCount: number;
+        cartItemsCount: number;
+        cartQuantity: number;
+        wishlistCount: number;
+        lastLoginAt: string | null;
+    };
 }>;
 export type AdminUserDetailResponse = z.infer<typeof adminUserDetailSchema>;
 export declare const adminUsersQuerySchema: z.ZodObject<{
@@ -387,51 +655,86 @@ export declare const adminUsersQuerySchema: z.ZodObject<{
     status: z.ZodOptional<z.ZodEnum<["ACTIVE", "INACTIVE", "DELETED"]>>;
     gender: z.ZodOptional<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>;
     emailVerified: z.ZodOptional<z.ZodEffects<z.ZodEnum<["true", "false"]>, boolean, "true" | "false">>;
+    isVip: z.ZodOptional<z.ZodEffects<z.ZodEnum<["true", "false"]>, boolean, "true" | "false">>;
     createdFrom: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
     createdTo: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
-    sortBy: z.ZodDefault<z.ZodEnum<["createdAt", "updatedAt", "firstName"]>>;
+    totalOrdersMin: z.ZodOptional<z.ZodNumber>;
+    totalOrdersMax: z.ZodOptional<z.ZodNumber>;
+    totalSpentMin: z.ZodOptional<z.ZodNumber>;
+    totalSpentMax: z.ZodOptional<z.ZodNumber>;
+    sortBy: z.ZodDefault<z.ZodEnum<["createdAt", "updatedAt", "firstName", "newest", "oldest", "name", "orders", "spending"]>>;
     sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
 }, "strip", z.ZodTypeAny, {
     page: number;
     limit: number;
-    sortBy: "firstName" | "createdAt" | "updatedAt";
+    sortBy: "firstName" | "createdAt" | "updatedAt" | "newest" | "oldest" | "name" | "orders" | "spending";
     sortOrder: "asc" | "desc";
     status?: "ACTIVE" | "INACTIVE" | "DELETED" | undefined;
     gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
     search?: string | undefined;
+    isVip?: boolean | undefined;
     emailVerified?: boolean | undefined;
     createdFrom?: string | undefined;
     createdTo?: string | undefined;
+    totalOrdersMin?: number | undefined;
+    totalOrdersMax?: number | undefined;
+    totalSpentMin?: number | undefined;
+    totalSpentMax?: number | undefined;
 }, {
     status?: "ACTIVE" | "INACTIVE" | "DELETED" | undefined;
     page?: number | undefined;
     limit?: number | undefined;
-    sortBy?: "firstName" | "createdAt" | "updatedAt" | undefined;
+    sortBy?: "firstName" | "createdAt" | "updatedAt" | "newest" | "oldest" | "name" | "orders" | "spending" | undefined;
     sortOrder?: "asc" | "desc" | undefined;
     gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
     search?: string | undefined;
+    isVip?: "true" | "false" | undefined;
     emailVerified?: "true" | "false" | undefined;
     createdFrom?: string | undefined;
     createdTo?: string | undefined;
+    totalOrdersMin?: number | undefined;
+    totalOrdersMax?: number | undefined;
+    totalSpentMin?: number | undefined;
+    totalSpentMax?: number | undefined;
 }>;
 export type AdminUsersQuery = z.infer<typeof adminUsersQuerySchema>;
+export declare const adminCustomerOrdersQuerySchema: z.ZodObject<{
+    page: z.ZodDefault<z.ZodNumber>;
+    limit: z.ZodDefault<z.ZodNumber>;
+}, "strip", z.ZodTypeAny, {
+    page: number;
+    limit: number;
+}, {
+    page?: number | undefined;
+    limit?: number | undefined;
+}>;
+export type AdminCustomerOrdersQuery = z.infer<typeof adminCustomerOrdersQuerySchema>;
 export declare const updateAdminUserSchema: z.ZodObject<{
     firstName: z.ZodOptional<z.ZodString>;
     lastName: z.ZodOptional<z.ZodString>;
     phone: z.ZodOptional<z.ZodString>;
     status: z.ZodOptional<z.ZodEnum<["ACTIVE", "INACTIVE"]>>;
     emailVerified: z.ZodOptional<z.ZodBoolean>;
+    gender: z.ZodOptional<z.ZodNullable<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>>;
+    dateOfBirth: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>>;
+    isVip: z.ZodOptional<z.ZodBoolean>;
 }, "strict", z.ZodTypeAny, {
     status?: "ACTIVE" | "INACTIVE" | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
     phone?: string | undefined;
+    gender?: "MALE" | "FEMALE" | "OTHER" | null | undefined;
+    dateOfBirth?: string | null | undefined;
+    isVip?: boolean | undefined;
     emailVerified?: boolean | undefined;
 }, {
     status?: "ACTIVE" | "INACTIVE" | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
     phone?: string | undefined;
+    gender?: "MALE" | "FEMALE" | "OTHER" | null | undefined;
+    dateOfBirth?: string | null | undefined;
+    isVip?: boolean | undefined;
     emailVerified?: boolean | undefined;
 }>;
 export type UpdateAdminUserInput = z.infer<typeof updateAdminUserSchema>;

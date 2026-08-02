@@ -14,25 +14,25 @@ export declare const adminAccountSchema: z.ZodObject<{
     deletedAt: z.ZodNullable<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     status: "ACTIVE" | "INACTIVE" | "DELETED";
+    id: string;
+    permissions: string[];
     firstName: string;
     lastName: string;
     phone: string;
     email: string | null;
-    id: string;
     role: "SUPER_ADMIN" | "ADMIN";
-    permissions: string[];
     createdAt: string;
     updatedAt: string;
     deletedAt: string | null;
 }, {
     status: "ACTIVE" | "INACTIVE" | "DELETED";
+    id: string;
+    permissions: string[];
     firstName: string;
     lastName: string;
     phone: string;
     email: string | null;
-    id: string;
     role: "SUPER_ADMIN" | "ADMIN";
-    permissions: string[];
     createdAt: string;
     updatedAt: string;
     deletedAt: string | null;

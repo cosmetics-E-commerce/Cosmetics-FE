@@ -57,6 +57,7 @@ exports.inventoryStockItemSchema = zod_1.z.object({
     onHand: zod_1.z.number().int(),
     reserved: zod_1.z.number().int(),
     available: zod_1.z.number().int(),
+    unavailable: zod_1.z.number().int(),
     batchCount: zod_1.z.number().int(),
     nextExpiryAt: zod_1.z.string().nullable(),
     status: exports.stockStatusEnum,

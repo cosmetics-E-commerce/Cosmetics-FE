@@ -27,6 +27,7 @@ import { LuxuryCard } from '@/components/ui/luxury-card';
 import { AddToCartButton } from '@/features/cart/components/add-to-cart-button';
 import { listPublicCategories, listPublicProducts } from '@/features/catalog/api/catalog.api';
 import { ProductFallbackIcon, SiteFooter, SiteHeader } from '@/features/catalog/components/site-chrome';
+import { WishlistButton } from '@/features/wishlist/components/wishlist-button';
 
 const heroProducts = [
   {
@@ -357,9 +358,7 @@ function ProductCard({ product, compact = false }: { product: PublicProductRespo
       <LuxuryCard className="overflow-hidden border-black/[.08] bg-[#fffdf8] transition duration-300 group-hover:shadow-[0_24px_60px_rgba(31,31,31,.12)]">
       <div className="relative aspect-[4/4.4] overflow-hidden bg-[#f6efe4]">
         <span className="absolute left-3 top-3 z-10 rounded-sm bg-sage px-2 py-1 text-[10px] font-bold uppercase text-white">New</span>
-        <span className="absolute right-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-white/70 text-sage opacity-0 shadow-sm backdrop-blur transition duration-300 group-hover:opacity-100">
-          <Leaf size={17} />
-        </span>
+        <WishlistButton productId={product.id} compact className="absolute right-3 top-3 z-10 bg-white/80 opacity-0 shadow-sm backdrop-blur transition duration-300 group-hover:opacity-100" />
         {product.imageUrl ? (
           <Image src={product.imageUrl} alt={product.nameEn} fill className="object-contain p-6 mix-blend-multiply transition duration-700 group-hover:scale-110" sizes={compact ? '16vw' : '25vw'} />
         ) : (

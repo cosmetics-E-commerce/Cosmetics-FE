@@ -134,12 +134,12 @@ export declare const inventoryBrandSummarySchema: z.ZodObject<{
     name: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    slug: string;
     name: string;
+    slug: string;
 }, {
     id: string;
-    slug: string;
     name: string;
+    slug: string;
 }>;
 export declare const inventoryStockItemSchema: z.ZodObject<{
     variantId: z.ZodString;
@@ -190,16 +190,17 @@ export declare const inventoryStockItemSchema: z.ZodObject<{
         name: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         id: string;
-        slug: string;
         name: string;
+        slug: string;
     }, {
         id: string;
-        slug: string;
         name: string;
+        slug: string;
     }>>;
     onHand: z.ZodNumber;
     reserved: z.ZodNumber;
     available: z.ZodNumber;
+    unavailable: z.ZodNumber;
     batchCount: z.ZodNumber;
     nextExpiryAt: z.ZodNullable<z.ZodString>;
     status: z.ZodEnum<["IN_STOCK", "LOW_STOCK", "OUT_OF_STOCK"]>;
@@ -215,13 +216,12 @@ export declare const inventoryStockItemSchema: z.ZodObject<{
     };
     brand: {
         id: string;
-        slug: string;
         name: string;
+        slug: string;
     } | null;
     variantNameEn: string;
     variantNameAr: string;
     available: number;
-    nextExpiryAt: string | null;
     product: {
         id: string;
         nameEn: string;
@@ -230,8 +230,10 @@ export declare const inventoryStockItemSchema: z.ZodObject<{
         isActive: boolean;
         publishedAt: string | null;
     };
+    nextExpiryAt: string | null;
     onHand: number;
     reserved: number;
+    unavailable: number;
     batchCount: number;
 }, {
     status: "OUT_OF_STOCK" | "IN_STOCK" | "LOW_STOCK";
@@ -245,13 +247,12 @@ export declare const inventoryStockItemSchema: z.ZodObject<{
     };
     brand: {
         id: string;
-        slug: string;
         name: string;
+        slug: string;
     } | null;
     variantNameEn: string;
     variantNameAr: string;
     available: number;
-    nextExpiryAt: string | null;
     product: {
         id: string;
         nameEn: string;
@@ -260,8 +261,10 @@ export declare const inventoryStockItemSchema: z.ZodObject<{
         isActive: boolean;
         publishedAt: string | null;
     };
+    nextExpiryAt: string | null;
     onHand: number;
     reserved: number;
+    unavailable: number;
     batchCount: number;
 }>;
 export type InventoryStockItemResponse = z.infer<typeof inventoryStockItemSchema>;
@@ -569,16 +572,17 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
             name: z.ZodString;
         }, "strip", z.ZodTypeAny, {
             id: string;
-            slug: string;
             name: string;
+            slug: string;
         }, {
             id: string;
-            slug: string;
             name: string;
+            slug: string;
         }>>;
         onHand: z.ZodNumber;
         reserved: z.ZodNumber;
         available: z.ZodNumber;
+        unavailable: z.ZodNumber;
         batchCount: z.ZodNumber;
         nextExpiryAt: z.ZodNullable<z.ZodString>;
         status: z.ZodEnum<["IN_STOCK", "LOW_STOCK", "OUT_OF_STOCK"]>;
@@ -594,13 +598,12 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
         };
         brand: {
             id: string;
-            slug: string;
             name: string;
+            slug: string;
         } | null;
         variantNameEn: string;
         variantNameAr: string;
         available: number;
-        nextExpiryAt: string | null;
         product: {
             id: string;
             nameEn: string;
@@ -609,8 +612,10 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
             isActive: boolean;
             publishedAt: string | null;
         };
+        nextExpiryAt: string | null;
         onHand: number;
         reserved: number;
+        unavailable: number;
         batchCount: number;
     }, {
         status: "OUT_OF_STOCK" | "IN_STOCK" | "LOW_STOCK";
@@ -624,13 +629,12 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
         };
         brand: {
             id: string;
-            slug: string;
             name: string;
+            slug: string;
         } | null;
         variantNameEn: string;
         variantNameAr: string;
         available: number;
-        nextExpiryAt: string | null;
         product: {
             id: string;
             nameEn: string;
@@ -639,8 +643,10 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
             isActive: boolean;
             publishedAt: string | null;
         };
+        nextExpiryAt: string | null;
         onHand: number;
         reserved: number;
+        unavailable: number;
         batchCount: number;
     }>, "many">;
     meta: z.ZodObject<{
@@ -678,13 +684,12 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
         };
         brand: {
             id: string;
-            slug: string;
             name: string;
+            slug: string;
         } | null;
         variantNameEn: string;
         variantNameAr: string;
         available: number;
-        nextExpiryAt: string | null;
         product: {
             id: string;
             nameEn: string;
@@ -693,8 +698,10 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
             isActive: boolean;
             publishedAt: string | null;
         };
+        nextExpiryAt: string | null;
         onHand: number;
         reserved: number;
+        unavailable: number;
         batchCount: number;
     }[];
     meta: {
@@ -718,13 +725,12 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
         };
         brand: {
             id: string;
-            slug: string;
             name: string;
+            slug: string;
         } | null;
         variantNameEn: string;
         variantNameAr: string;
         available: number;
-        nextExpiryAt: string | null;
         product: {
             id: string;
             nameEn: string;
@@ -733,8 +739,10 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
             isActive: boolean;
             publishedAt: string | null;
         };
+        nextExpiryAt: string | null;
         onHand: number;
         reserved: number;
+        unavailable: number;
         batchCount: number;
     }[];
     meta: {

@@ -4,6 +4,7 @@ exports.authSessionSchema = exports.authTokensSchema = exports.authUserSchema = 
 const zod_1 = require("zod");
 const primitives_1 = require("../common/primitives");
 const enums_1 = require("../enums");
+const permission_schema_1 = require("../permissions/permission.schema");
 const passwordSchema = zod_1.z
     .string()
     .min(8, 'Password must be at least 8 characters')
@@ -55,6 +56,11 @@ exports.registrationOtpChallengeSchema = zod_1.z.object({
 exports.createAdminUserSchema = createUserBaseSchema.extend({
     email: primitives_1.emailSchema,
     otpChannel: exports.otpDeliveryChannelEnum.default('EMAIL'),
+    /**
+     * Omit to apply the Admin baseline permissions. Send [] to create a locked
+     * admin account with no permissions yet.
+     */
+    permissions: zod_1.z.array(permission_schema_1.permissionKeySchema).max(64).optional(),
 }).strict();
 /** Phone is the primary identifier in this market; email is optional. */
 exports.loginSchema = zod_1.z.object({

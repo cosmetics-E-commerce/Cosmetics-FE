@@ -30,21 +30,21 @@ export declare const createOrderSchema: z.ZodObject<{
     couponCode: z.ZodOptional<z.ZodString>;
     notes: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
+    paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "COD";
     items: {
         variantId: string;
         quantity: number;
     }[];
     shippingAddressId: string;
-    paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "COD";
     couponCode?: string | undefined;
     notes?: string | undefined;
 }, {
+    paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "COD";
     items: {
         variantId: string;
         quantity: number;
     }[];
     shippingAddressId: string;
-    paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "COD";
     couponCode?: string | undefined;
     notes?: string | undefined;
 }>;

@@ -114,6 +114,7 @@ export declare const createAdminUserSchema: z.ZodObject<{
 } & {
     email: z.ZodString;
     otpChannel: z.ZodDefault<z.ZodEnum<["SMS", "EMAIL"]>>;
+    permissions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
 }, "strict", z.ZodTypeAny, {
     firstName: string;
     lastName: string;
@@ -121,6 +122,7 @@ export declare const createAdminUserSchema: z.ZodObject<{
     email: string;
     password: string;
     otpChannel: "SMS" | "EMAIL";
+    permissions?: string[] | undefined;
     gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
 }, {
     firstName: string;
@@ -128,6 +130,7 @@ export declare const createAdminUserSchema: z.ZodObject<{
     phone: string;
     email: string;
     password: string;
+    permissions?: string[] | undefined;
     gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
     otpChannel?: "SMS" | "EMAIL" | undefined;
 }>;
@@ -341,21 +344,21 @@ export declare const authUserSchema: z.ZodObject<{
      *  for SUPER_ADMIN (who bypasses checks via a wildcard ability). */
     permissions: z.ZodArray<z.ZodString, "many">;
 }, "strip", z.ZodTypeAny, {
+    id: string;
+    permissions: string[];
     firstName: string;
     lastName: string;
     phone: string;
     email: string | null;
-    id: string;
     role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
-    permissions: string[];
 }, {
+    id: string;
+    permissions: string[];
     firstName: string;
     lastName: string;
     phone: string;
     email: string | null;
-    id: string;
     role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
-    permissions: string[];
 }>;
 export type AuthUser = z.infer<typeof authUserSchema>;
 export declare const authTokensSchema: z.ZodObject<{
@@ -381,21 +384,21 @@ export declare const authSessionSchema: z.ZodObject<{
          *  for SUPER_ADMIN (who bypasses checks via a wildcard ability). */
         permissions: z.ZodArray<z.ZodString, "many">;
     }, "strip", z.ZodTypeAny, {
+        id: string;
+        permissions: string[];
         firstName: string;
         lastName: string;
         phone: string;
         email: string | null;
-        id: string;
         role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
-        permissions: string[];
     }, {
+        id: string;
+        permissions: string[];
         firstName: string;
         lastName: string;
         phone: string;
         email: string | null;
-        id: string;
         role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
-        permissions: string[];
     }>;
     tokens: z.ZodObject<{
         accessToken: z.ZodString;
@@ -411,13 +414,13 @@ export declare const authSessionSchema: z.ZodObject<{
     csrfToken: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     user: {
+        id: string;
+        permissions: string[];
         firstName: string;
         lastName: string;
         phone: string;
         email: string | null;
-        id: string;
         role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
-        permissions: string[];
     };
     tokens: {
         accessToken: string;
@@ -426,13 +429,13 @@ export declare const authSessionSchema: z.ZodObject<{
     csrfToken: string;
 }, {
     user: {
+        id: string;
+        permissions: string[];
         firstName: string;
         lastName: string;
         phone: string;
         email: string | null;
-        id: string;
         role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
-        permissions: string[];
     };
     tokens: {
         accessToken: string;

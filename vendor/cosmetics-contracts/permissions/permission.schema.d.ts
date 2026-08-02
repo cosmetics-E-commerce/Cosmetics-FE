@@ -56,11 +56,11 @@ export declare const adminPermissionsSchema: z.ZodObject<{
     adminId: z.ZodString;
     permissions: z.ZodArray<z.ZodString, "many">;
 }, "strip", z.ZodTypeAny, {
-    permissions: string[];
     adminId: string;
+    permissions: string[];
 }, {
-    permissions: string[];
     adminId: string;
+    permissions: string[];
 }>;
 export type AdminPermissionsResponse = z.infer<typeof adminPermissionsSchema>;
 export declare const createAdminSchema: z.ZodObject<{

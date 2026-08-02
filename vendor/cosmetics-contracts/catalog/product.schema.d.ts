@@ -710,13 +710,13 @@ export declare const publicBrandSchema: z.ZodObject<{
     logoUrl: z.ZodNullable<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    slug: string;
     name: string;
+    slug: string;
     logoUrl: string | null;
 }, {
     id: string;
-    slug: string;
     name: string;
+    slug: string;
     logoUrl: string | null;
 }>;
 export type PublicBrandResponse = z.infer<typeof publicBrandSchema>;
@@ -729,14 +729,14 @@ export declare const publicBrandListItemSchema: z.ZodObject<{
     productCount: z.ZodNumber;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    slug: string;
     name: string;
+    slug: string;
     productCount: number;
     logoUrl: string | null;
 }, {
     id: string;
-    slug: string;
     name: string;
+    slug: string;
     productCount: number;
     logoUrl: string | null;
 }>;
@@ -747,8 +747,8 @@ export declare const createBrandSchema: z.ZodObject<{
     logoKey: z.ZodOptional<z.ZodString>;
     isActive: z.ZodDefault<z.ZodBoolean>;
 }, "strict", z.ZodTypeAny, {
-    isActive: boolean;
     name: string;
+    isActive: boolean;
     slug?: string | undefined;
     logoKey?: string | undefined;
 }, {
@@ -847,13 +847,13 @@ export declare const publicProductSchema: z.ZodObject<{
         logoUrl: z.ZodNullable<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         id: string;
-        slug: string;
         name: string;
+        slug: string;
         logoUrl: string | null;
     }, {
         id: string;
-        slug: string;
         name: string;
+        slug: string;
         logoUrl: string | null;
     }>>;
     variants: z.ZodArray<z.ZodObject<{
@@ -936,8 +936,8 @@ export declare const publicProductSchema: z.ZodObject<{
     };
     brand: {
         id: string;
-        slug: string;
         name: string;
+        slug: string;
         logoUrl: string | null;
     } | null;
 }, {
@@ -979,8 +979,8 @@ export declare const publicProductSchema: z.ZodObject<{
     };
     brand: {
         id: string;
-        slug: string;
         name: string;
+        slug: string;
         logoUrl: string | null;
     } | null;
 }>;
@@ -1091,13 +1091,13 @@ export declare const adminProductSchema: z.ZodObject<{
         logoUrl: z.ZodNullable<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         id: string;
-        slug: string;
         name: string;
+        slug: string;
         logoUrl: string | null;
     }, {
         id: string;
-        slug: string;
         name: string;
+        slug: string;
         logoUrl: string | null;
     }>>;
 } & {
@@ -1213,8 +1213,8 @@ export declare const adminProductSchema: z.ZodObject<{
     };
     brand: {
         id: string;
-        slug: string;
         name: string;
+        slug: string;
         logoUrl: string | null;
     } | null;
 }, {
@@ -1266,8 +1266,8 @@ export declare const adminProductSchema: z.ZodObject<{
     };
     brand: {
         id: string;
-        slug: string;
         name: string;
+        slug: string;
         logoUrl: string | null;
     } | null;
 }>;

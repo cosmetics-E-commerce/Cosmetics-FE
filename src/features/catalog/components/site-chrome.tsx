@@ -18,6 +18,7 @@ import Link from 'next/link';
 import { type ReactNode, useState } from 'react';
 
 import { cartQueryKey, getCart } from '@/features/cart/api/cart.api';
+import { getWishlist, wishlistQueryKey } from '@/features/wishlist/api/wishlist.api';
 import { useAuthStore } from '@/stores/auth-store';
 
 const shopMenu = [
@@ -89,9 +90,7 @@ export function SiteHeader() {
         </motion.div>
 
         <div className="flex items-center gap-4 text-ink">
-          <IconLink href="/products" label="Wishlist" className="hidden sm:grid" badge="2">
-            <Heart size={22} />
-          </IconLink>
+          <WishlistIconLink />
           <CartIconLink />
           {user ? (
             <IconLink href="/account" label="Account">
@@ -110,6 +109,28 @@ export function SiteHeader() {
         </div>
       </div>
     </motion.header>
+  );
+}
+
+function WishlistIconLink() {
+  const user = useAuthStore((state) => state.user);
+  const wishlistQuery = useQuery({
+    queryKey: wishlistQueryKey,
+    queryFn: getWishlist,
+    enabled: Boolean(user),
+    staleTime: 30_000,
+  });
+  const totalItems = wishlistQuery.data?.totalItems ?? 0;
+
+  return (
+    <IconLink
+      href="/wishlist"
+      label="Wishlist"
+      className="hidden sm:grid"
+      badge={totalItems > 0 ? String(totalItems) : undefined}
+    >
+      <Heart size={22} />
+    </IconLink>
   );
 }
 

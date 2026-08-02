@@ -25,8 +25,8 @@ exports.permissionSchema = zod_1.z.object({
  * self-elevate. PLAN.md §2.3.
  */
 exports.updateAdminPermissionsSchema = zod_1.z.object({
-    grant: zod_1.z.array(exports.permissionKeySchema).max(34).default([]),
-    revoke: zod_1.z.array(exports.permissionKeySchema).max(34).default([]),
+    grant: zod_1.z.array(exports.permissionKeySchema).max(64).default([]),
+    revoke: zod_1.z.array(exports.permissionKeySchema).max(64).default([]),
 }).strict().superRefine((input, ctx) => {
     if (input.grant.length === 0 && input.revoke.length === 0) {
         ctx.addIssue({

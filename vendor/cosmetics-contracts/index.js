@@ -27,6 +27,8 @@ __exportStar(require("./orders/create-order.schema"), exports);
 __exportStar(require("./payments/payment-proof.schema"), exports);
 __exportStar(require("./catalog/product.schema"), exports);
 __exportStar(require("./cart/cart.schema"), exports);
+__exportStar(require("./wishlist/wishlist.schema"), exports);
 __exportStar(require("./inventory/inventory.schema"), exports);
 __exportStar(require("./permissions/permission.schema"), exports);
+__exportStar(require("./audit/audit.schema"), exports);
 //# sourceMappingURL=index.js.map
