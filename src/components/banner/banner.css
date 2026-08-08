@@ -1,0 +1,293 @@
+.global-banner-slot {
+  width: 100%;
+}
+.global-banner-slot--bottom {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 50;
+}
+.announcement-banner {
+  --announcement-duration: 300ms;
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition:
+    min-height var(--announcement-duration) cubic-bezier(0.22, 1, 0.36, 1),
+    opacity var(--announcement-duration) ease,
+    transform var(--announcement-duration) cubic-bezier(0.22, 1, 0.36, 1);
+}
+.announcement-enter--fade {
+  animation: announcement-fade var(--announcement-duration) ease both;
+}
+.announcement-enter--slide_down {
+  animation: announcement-down var(--announcement-duration) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.announcement-enter--slide_up {
+  animation: announcement-up var(--announcement-duration) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.announcement-enter--scale {
+  animation: announcement-scale var(--announcement-duration) cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes announcement-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes announcement-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+@keyframes announcement-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+@keyframes announcement-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+.announcement-content,
+.announcement-content > a,
+.announcement-message,
+.announcement-countdown,
+.announcement-shipping {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+.announcement-message > span:not([aria-hidden]) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.announcement-message svg {
+  width: 1.25em;
+  height: 1.25em;
+  flex: none;
+  stroke-width: 1.5;
+}
+.announcement-message small {
+  font: inherit;
+  opacity: 0.76;
+}
+.announcement-coupon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 7px;
+  border: 1px dashed currentColor;
+  background: transparent;
+  color: inherit;
+  letter-spacing: 0.1em;
+}
+.announcement-coupon code {
+  font: inherit;
+  font-weight: 600;
+}
+.announcement-coupon svg {
+  width: 1em;
+}
+.announcement-cta {
+  flex: none;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 150ms ease;
+}
+.announcement-cta:active {
+  transform: scale(0.97);
+}
+.announcement-cta.underline {
+  border-bottom: 1px solid;
+}
+.announcement-cta.outline,
+.announcement-cta.filled {
+  padding: 5px 10px;
+  border: 1px solid;
+  border-radius: 2px;
+}
+.announcement-cta.filled {
+  border-color: var(--cta-bg);
+  background: var(--cta-bg);
+  color: var(--cta-color);
+}
+.announcement-close {
+  position: absolute;
+  inset-inline-end: 7px;
+  top: 50%;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: 0.72;
+}
+.announcement-close svg {
+  width: 14px;
+}
+.announcement-ticker {
+  width: calc(100% + 40px);
+  overflow: hidden;
+}
+.announcement-ticker-track {
+  display: flex;
+  width: max-content;
+  animation: announcement-marquee var(--ticker-duration, 20s) linear infinite;
+  animation-direction: var(--ticker-direction, normal);
+  will-change: transform;
+}
+.announcement-pause-hover:hover .announcement-ticker-track {
+  animation-play-state: paused;
+}
+.announcement-ticker-group,
+.announcement-ticker-item {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+.announcement-ticker-item > i {
+  flex: none;
+  font-style: normal;
+}
+@keyframes announcement-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.announcement-content[class*="announcement-transition"] {
+  animation: announcement-message-in var(--announcement-duration) cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+@keyframes announcement-message-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+    filter: blur(2px);
+  }
+}
+.announcement-countdown time {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+}
+.announcement-arrow {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+.announcement-arrow.previous {
+  inset-inline-start: 4px;
+}
+.announcement-arrow.next {
+  inset-inline-end: 34px;
+}
+.announcement-arrow svg {
+  width: 14px;
+}
+.announcement-pagination {
+  position: absolute;
+  bottom: 2px;
+  display: flex;
+  gap: 4px;
+}
+.announcement-pagination button {
+  width: 12px;
+  height: 2px;
+  padding: 0;
+  border: 0;
+  background: currentColor;
+  opacity: 0.35;
+}
+.announcement-pagination button.active {
+  opacity: 1;
+}
+.announcement-shipping {
+  width: min(680px, 90%);
+  flex-direction: column;
+  gap: 4px;
+}
+.announcement-progress {
+  width: min(360px, 70%);
+  height: 2px;
+  overflow: hidden;
+  background: color-mix(in srgb, currentColor 25%, transparent);
+}
+.announcement-progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: left;
+  background: currentColor;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (max-width: 639px) {
+  .announcement-content,
+  .announcement-content > a,
+  .announcement-message,
+  .announcement-countdown {
+    gap: 7px;
+  }
+  .announcement-message small {
+    display: none;
+  }
+  .announcement-countdown {
+    flex-wrap: wrap;
+    row-gap: 2px;
+  }
+  .announcement-countdown time {
+    font-size: 0.9em;
+  }
+  .announcement-banner {
+    padding-inline-end: 34px !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .announcement-banner,
+  .announcement-content {
+    animation: none !important;
+    transition: none !important;
+  }
+  .announcement-ticker-track {
+    animation: none !important;
+    transform: none !important;
+  }
+  .announcement-ticker-group[aria-hidden="true"] {
+    display: none;
+  }
+  .announcement-ticker {
+    overflow: auto;
+    scrollbar-width: none;
+  }
+  .announcement-progress i {
+    transition: none;
+  }
+}
