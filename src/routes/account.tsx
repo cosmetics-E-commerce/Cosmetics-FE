@@ -1,7 +1,15 @@
-import { type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { LoaderCircle, MapPin, Package, Trash2 } from "lucide-react";
+import {
+  ExternalLink,
+  LoaderCircle,
+  MapPin,
+  Package,
+  RefreshCw,
+  Trash2,
+  Truck,
+} from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { AddressForm } from "@/components/forms/AddressForm";
@@ -10,12 +18,16 @@ import {
   apiErrorMessage,
   createAddress,
   deleteAddress,
+  getOrderTracking,
   getProfile,
   getWishlist,
   listAddresses,
   listOrders,
+  refreshOrderTracking,
   setDefaultAddress,
   updateProfile,
+  type AddressResponse,
+  type OrderTracking,
 } from "@/lib/api";
 import { formatPrice } from "@/lib/products";
 import { mapProduct } from "@/lib/catalog";
@@ -48,6 +60,7 @@ function Account() {
   const client = useQueryClient();
   const search = Route.useSearch();
   const tab = search.section ?? "overview";
+  const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const profile = useQuery({
     queryKey: ["account", "profile"],
     queryFn: getProfile,
@@ -208,10 +221,28 @@ function Account() {
                         <div>
                           <span className="label-xs text-gold">{status.label}</span>
                           <p className="mt-1 text-xs text-muted-foreground">{status.description}</p>
+                          {expandedOrderId === order.id && (
+                            <OrderTrackingPanel orderId={order.id} locale={locale} />
+                          )}
                         </div>
-                        <span className="font-serif text-xl">
-                          {formatPrice(order.grandTotal / 100)}
-                        </span>
+                        <div className="flex flex-wrap items-center justify-start gap-3 sm:justify-end">
+                          <span className="font-serif text-xl">
+                            {formatPrice(order.grandTotal / 100)}
+                          </span>
+                          <Button
+                            type="button"
+                            variant="line"
+                            size="pill"
+                            onClick={() =>
+                              setExpandedOrderId((current) =>
+                                current === order.id ? null : order.id,
+                              )
+                            }
+                          >
+                            <Truck className="size-4" />
+                            Tracking
+                          </Button>
+                        </div>
                       </li>
                     );
                   })}
@@ -270,49 +301,57 @@ function Account() {
           {tab === "addresses" && (
             <div>
               <div className="grid gap-5 sm:grid-cols-2">
-                {addresses.data?.map((address) => (
-                  <article key={address.id} className="border border-border p-6">
-                    <div className="flex justify-between">
-                      <MapPin className="text-gold" />
-                      <span className="label-xs text-taupe">
-                        {address.isDefault ? "Default" : address.label}
-                      </span>
-                    </div>
-                    <p className="mt-5 font-serif text-xl">{address.receiverName}</p>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      {address.building} {address.street}, {address.area}, {address.city},{" "}
-                      {address.governorate}
-                    </p>
-                    <div className="mt-5 flex gap-4">
-                      {!address.isDefault && (
-                        <button
-                          onClick={() =>
-                            void setDefaultAddress(address.id).then(() =>
-                              client.invalidateQueries({ queryKey: ["account", "addresses"] }),
-                            )
-                          }
-                          className="label-xs text-gold"
-                        >
-                          Make default
-                        </button>
+                {addresses.data?.map((address) => {
+                  const ready = isAddressDeliveryReady(address);
+                  return (
+                    <article key={address.id} className="border border-border p-6">
+                      <div className="flex justify-between">
+                        <MapPin className="text-gold" />
+                        <span className="label-xs text-taupe">
+                          {address.isDefault ? "Default" : address.label}
+                        </span>
+                      </div>
+                      <p className="mt-5 font-serif text-xl">{address.receiverName}</p>
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        {address.building} {address.street}, {address.area}, {address.city},{" "}
+                        {address.governorate}
+                      </p>
+                      {!ready && (
+                        <p className="mt-4 border-s-2 border-destructive/50 bg-destructive/5 px-4 py-3 text-xs text-destructive">
+                          This address needs to be updated before checkout.
+                        </p>
                       )}
-                      <button
-                        onClick={() => {
-                          if (!window.confirm("Delete this address? This cannot be undone."))
-                            return;
-                          void deleteAddress(address.id)
-                            .then(() =>
-                              client.invalidateQueries({ queryKey: ["account", "addresses"] }),
-                            )
-                            .catch((error) => toast.error(apiErrorMessage(error)));
-                        }}
-                        aria-label="Delete address"
-                      >
-                        <Trash2 className="size-4" />
-                      </button>
-                    </div>
-                  </article>
-                ))}
+                      <div className="mt-5 flex gap-4">
+                        {!address.isDefault && (
+                          <button
+                            onClick={() =>
+                              void setDefaultAddress(address.id).then(() =>
+                                client.invalidateQueries({ queryKey: ["account", "addresses"] }),
+                              )
+                            }
+                            className="label-xs text-gold"
+                          >
+                            Make default
+                          </button>
+                        )}
+                        <button
+                          onClick={() => {
+                            if (!window.confirm("Delete this address? This cannot be undone."))
+                              return;
+                            void deleteAddress(address.id)
+                              .then(() =>
+                                client.invalidateQueries({ queryKey: ["account", "addresses"] }),
+                              )
+                              .catch((error) => toast.error(apiErrorMessage(error)));
+                          }}
+                          aria-label="Delete address"
+                        >
+                          <Trash2 className="size-4" />
+                        </button>
+                      </div>
+                    </article>
+                  );
+                })}
               </div>
               <div className="mt-10 border-t border-border pt-8">
                 <h2 className="font-serif text-2xl sm:col-span-2">Add a delivery address</h2>
@@ -374,6 +413,114 @@ function Account() {
     </div>
   );
 }
+
+function OrderTrackingPanel({ orderId, locale }: { orderId: string; locale: "ar" | "en" }) {
+  const queryClient = useQueryClient();
+  const tracking = useQuery({
+    queryKey: ["account", "orders", orderId, "tracking"],
+    queryFn: () => getOrderTracking(orderId),
+  });
+  const refresh = useMutation({
+    mutationFn: () => refreshOrderTracking(orderId),
+    onSuccess: (data) => {
+      queryClient.setQueryData(["account", "orders", orderId, "tracking"], data);
+    },
+  });
+
+  if (tracking.isLoading) {
+    return (
+      <div className="mt-4 border border-border bg-ivory p-4 text-xs text-muted-foreground">
+        Loading tracking...
+      </div>
+    );
+  }
+
+  if (tracking.isError) {
+    return (
+      <div className="mt-4 border border-border bg-ivory p-4 text-xs text-destructive">
+        {apiErrorMessage(tracking.error, locale)}
+      </div>
+    );
+  }
+
+  const data = refresh.data ?? tracking.data;
+  if (!data) return null;
+
+  return (
+    <div className="mt-4 border border-border bg-ivory p-4 text-xs">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="label-xs text-taupe">Delivery</p>
+          <p className="mt-1 font-medium">
+            {data.shipment ? data.shipment.status.replace(/_/g, " ") : "Preparing after payment"}
+          </p>
+          <p className="mt-1 text-muted-foreground">{trackingAddress(data)}</p>
+        </div>
+        <Button
+          type="button"
+          variant="quiet"
+          size="pill"
+          loading={refresh.isPending}
+          onClick={() => refresh.mutate()}
+        >
+          <RefreshCw className="size-4" />
+          Refresh
+        </Button>
+      </div>
+      {data.shipment ? (
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div>
+            <p className="label-xs text-taupe">Carrier</p>
+            <p className="mt-1">{data.shipment.provider}</p>
+          </div>
+          <div>
+            <p className="label-xs text-taupe">Tracking number</p>
+            <p className="mt-1">{data.shipment.trackingNumber}</p>
+          </div>
+          <a
+            href={data.shipment.trackingUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 text-gold sm:col-span-2"
+          >
+            Open carrier tracking <ExternalLink className="size-4" />
+          </a>
+        </div>
+      ) : (
+        <p className="mt-4 text-muted-foreground">
+          Tracking appears here after payment approval and shipment booking.
+        </p>
+      )}
+      {data.history.length > 0 && (
+        <ol className="mt-4 space-y-2 border-t border-border pt-4">
+          {data.history.slice(0, 4).map((entry) => (
+            <li key={`${entry.action}-${entry.createdAt}`}>
+              <p>{entry.description}</p>
+              <p className="text-muted-foreground">
+                {new Intl.DateTimeFormat(locale === "ar" ? "ar-EG" : "en-EG", {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                  timeZone: "Africa/Cairo",
+                }).format(new Date(entry.createdAt))}
+              </p>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
+  );
+}
+
+function trackingAddress(data: OrderTracking) {
+  return [data.shippingAddress.area, data.shippingAddress.city, data.shippingAddress.governorate]
+    .filter(Boolean)
+    .join(", ");
+}
+
+function isAddressDeliveryReady(address: AddressResponse) {
+  return Boolean(address.bostaGovernorateId && address.bostaCityId && address.bostaZoneId);
+}
+
 function Empty({ icon, text }: { icon?: ReactNode; text: string }) {
   return (
     <div className="border border-border px-8 py-20 text-center">

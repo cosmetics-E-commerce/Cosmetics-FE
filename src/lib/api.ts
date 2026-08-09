@@ -1,9 +1,9 @@
 import type {
-  AddressResponse,
   AuthSession,
   AuthUser,
   CartResponse,
-  CreateAddressInput,
+  AddressResponse as ContractAddressResponse,
+  CreateAddressInput as ContractCreateAddressInput,
   PublicCategoryResponse,
   PublicProductResponse,
   RegistrationOtpChallenge,
@@ -14,11 +14,9 @@ import type {
 } from "../../vendor/cosmetics-contracts/index.js";
 
 export type {
-  AddressResponse,
   AuthSession,
   AuthUser,
   CartResponse,
-  CreateAddressInput,
   PublicCategoryResponse,
   PublicProductResponse,
   RegistrationOtpChallenge,
@@ -26,6 +24,16 @@ export type {
   ResendRegistrationOtpResult,
   UserProfileResponse,
   WishlistResponse,
+};
+
+export type AddressResponse = ContractAddressResponse & {
+  bostaGovernorateId: string | null;
+};
+
+export type CreateAddressInput = ContractCreateAddressInput & {
+  bostaGovernorateId?: string | null;
+  bostaCityId?: string | null;
+  bostaZoneId?: string | null;
 };
 
 export type AppliedPromotion = {
@@ -126,6 +134,37 @@ export type PaymentInstruction = {
   isActive: boolean;
 };
 
+export type ShippingCity = {
+  id: string;
+  name: string;
+  nameAr?: string | null;
+  code?: string | null;
+  governorateId?: string | null;
+};
+
+export type ShippingGovernorate = {
+  id: string;
+  name: string;
+  nameAr?: string | null;
+  code?: string | null;
+};
+
+export type ShippingArea = {
+  id: string;
+  name: string;
+  nameAr?: string | null;
+};
+
+export type ShippingRate = {
+  provider: "MOCK" | "BOSTA";
+  shippingCost: number;
+  currency: string;
+  estimatedDays: number;
+  estimatedDeliveryDate: string;
+  weight: number;
+  dimensions: { length: number; width: number; height: number };
+};
+
 export type OrderSummary = {
   id: string;
   orderNumber: string;
@@ -135,6 +174,29 @@ export type OrderSummary = {
   grandTotal: number;
   currency: string;
   placedAt: string;
+};
+
+export type OrderTracking = {
+  orderId: string;
+  orderNumber: string;
+  orderStatus: string;
+  shipment: {
+    provider: "MOCK" | "BOSTA";
+    trackingNumber: string;
+    trackingUrl: string;
+    status: string;
+    estimatedDelivery: string | null;
+    createdAt: string;
+    updatedAt: string;
+  } | null;
+  estimatedDeliveryDate: string | null;
+  shippingAddress: {
+    receiverName: string | null;
+    governorate: string | null;
+    city: string | null;
+    area: string | null;
+  };
+  history: Array<{ action: string; description: string; createdAt: string }>;
 };
 
 export type ProductReview = {
@@ -179,13 +241,23 @@ let refreshPromise: Promise<AuthSession> | null = null;
 
 function browserValue(key: string) {
   if (typeof window === "undefined") return null;
-  return window.localStorage.getItem(key);
+  const storage = window.localStorage;
+  if (!storage || typeof storage.getItem !== "function") return null;
+  return storage.getItem(key);
 }
 
 function setBrowserValue(key: string, value: string | null) {
   if (typeof window === "undefined") return;
-  if (value) window.localStorage.setItem(key, value);
-  else window.localStorage.removeItem(key);
+  const storage = window.localStorage;
+  if (
+    !storage ||
+    typeof storage.setItem !== "function" ||
+    typeof storage.removeItem !== "function"
+  ) {
+    return;
+  }
+  if (value) storage.setItem(key, value);
+  else storage.removeItem(key);
 }
 
 export function rememberSession(session: AuthSession) {
@@ -299,6 +371,70 @@ export function apiErrorMessage(error: unknown, locale: "en" | "ar" = "en") {
     SHIPPING_ZONE_UNAVAILABLE: [
       "Delivery is not available to this area yet. Choose another address or contact support.",
       "التوصيل غير متاح لهذه المنطقة حالياً. اختاري عنواناً آخر أو تواصلي مع الدعم.",
+    ],
+    INVALID_SHIPPING_ZONE: [
+      "Delivery is not available for this governorate. Choose a supported delivery governorate.",
+      "التوصيل غير متاح لهذه المحافظة. اختاري محافظة مدعومة للتوصيل.",
+    ],
+    INVALID_SHIPPING_LOCATION: [
+      "Choose governorate, city and area from the delivery lists.",
+      "اختاري المحافظة والمدينة والمنطقة من قوائم التوصيل.",
+    ],
+    INVALID_CITY: [
+      "Choose a delivery city that belongs to the selected governorate.",
+      "اختاري مدينة توصيل تابعة للمحافظة المحددة.",
+    ],
+    SHIPPING_ADDRESS_MISSING_CARRIER_CITY: [
+      "Choose the delivery city from the supported cities list, then try again.",
+      "اختاري مدينة التوصيل من قائمة المدن المتاحة ثم حاولي مرة أخرى.",
+    ],
+    SHIPPING_ADDRESS_MISSING_CARRIER_ZONE: [
+      "Choose the delivery area from the supported areas list, then try again.",
+      "اختاري منطقة التوصيل من قائمة المناطق المتاحة ثم حاولي مرة أخرى.",
+    ],
+    SHIPPING_ADDRESS_REQUIRES_VERIFICATION: [
+      "This address needs to be updated before checkout.",
+      "هذا العنوان يحتاج إلى تحديث قبل إتمام الطلب.",
+    ],
+    SHIPPING_ADDRESS_NOT_OWNED: [
+      "Choose one of your saved delivery addresses.",
+      "اختاري أحد عناوين التوصيل المحفوظة لديك.",
+    ],
+    BOSTA_CITY_UNKNOWN: [
+      "Delivery is currently unavailable for this city.",
+      "التوصيل غير متاح لهذه المدينة حالياً.",
+    ],
+    BOSTA_PICKUP_CITY_UNKNOWN: [
+      "The store pickup city is not configured correctly. Please contact support.",
+      "مدينة استلام المتجر غير مضبوطة بشكل صحيح. تواصلي مع الدعم.",
+    ],
+    BOSTA_TIMEOUT: [
+      "Shipping rates took too long to respond. Please try again.",
+      "استغرق حساب الشحن وقتاً أطول من المتوقع. حاولي مرة أخرى.",
+    ],
+    BOSTA_UNAUTHORIZED: [
+      "Shipping is temporarily unavailable. Please contact support.",
+      "الشحن غير متاح مؤقتاً. تواصلي مع الدعم.",
+    ],
+    BOSTA_UNAVAILABLE: [
+      "Shipping is temporarily unavailable. Please try again shortly.",
+      "الشحن غير متاح مؤقتاً. حاولي مرة أخرى بعد قليل.",
+    ],
+    BOSTA_API_KEY_MISSING: [
+      "Shipping is not configured yet. Please contact support.",
+      "إعدادات الشحن لم تكتمل بعد. تواصلي مع الدعم.",
+    ],
+    SHIPPING_CART_EMPTY: [
+      "Add at least one item to your bag before requesting delivery.",
+      "أضيفي منتجاً واحداً على الأقل قبل حساب التوصيل.",
+    ],
+    SHIPPING_PROVIDER_UNAVAILABLE: [
+      "Shipping rates are temporarily unavailable. Please try again shortly.",
+      "أسعار الشحن غير متاحة مؤقتاً. حاولي مرة أخرى بعد قليل.",
+    ],
+    SHIPPING_PROVIDER_INVALID_RESPONSE: [
+      "Shipping rates are temporarily unavailable for this address.",
+      "أسعار الشحن غير متاحة مؤقتاً لهذا العنوان.",
     ],
     PAYMENT_METHOD_NOT_AVAILABLE: [
       "That payment method is temporarily unavailable. Choose another method.",
@@ -622,6 +758,22 @@ export async function listOrders() {
     placedAt: order.placedAt ?? order.createdAt ?? new Date(0).toISOString(),
   }));
 }
+
+export const listShippingCities = () => rawRequest<ShippingCity[]>("/shipping/cities");
+export const listShippingGovernorates = () =>
+  rawRequest<ShippingGovernorate[]>("/shipping/locations/governorates");
+export const listShippingCitiesByGovernorate = (governorateId: string) =>
+  rawRequest<ShippingCity[]>(
+    `/shipping/locations/cities?governorate=${encodeURIComponent(governorateId)}`,
+  );
+export const listShippingAreas = (cityId: string) =>
+  rawRequest<ShippingArea[]>(`/shipping/locations/areas?city=${encodeURIComponent(cityId)}`);
+export const getShippingRate = (addressId: string) =>
+  rawRequest<ShippingRate>(`/shipping/rates?addressId=${encodeURIComponent(addressId)}`);
+export const getOrderTracking = (orderId: string) =>
+  rawRequest<OrderTracking>(`/orders/${orderId}/tracking`);
+export const refreshOrderTracking = (orderId: string) =>
+  rawRequest<OrderTracking>(`/orders/${orderId}/tracking/refresh`, { method: "POST" });
 
 export const listPaymentInstructions = () =>
   rawRequest<PaymentInstruction[]>("/payments/instructions");

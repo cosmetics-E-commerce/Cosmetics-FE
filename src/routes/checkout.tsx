@@ -12,8 +12,10 @@ import {
   checkout,
   createAddress,
   createPayment,
+  getShippingRate,
   listAddresses,
   listPaymentInstructions,
+  type AddressResponse,
   uploadPaymentProof,
   type CheckoutResult,
   type Payment,
@@ -132,11 +134,18 @@ function Checkout() {
       JSON.stringify({ addressId, method, notes }),
     );
   }, [addressId, draftLoaded, method, notes, result]);
-  const selectedAddress =
-    addressId ||
-    addresses.data?.find((item) => item.isDefault)?.id ||
-    addresses.data?.[0]?.id ||
-    "";
+  const selectedAddressRecord = selectedUsableAddress(addresses.data, addressId);
+  const selectedAddress = selectedAddressRecord?.id ?? "";
+  const cartSignature = lines.map((line) => `${line.variantId}:${line.qty}`).join("|");
+  const shippingRate = useQuery({
+    queryKey: ["shipping", "rate", selectedAddress, cartSignature],
+    queryFn: () => getShippingRate(selectedAddress),
+    enabled: Boolean(user && selectedAddress && lines.length && !result),
+    retry: 1,
+    staleTime: 2 * 60 * 1000,
+  });
+  const shippingFee = shippingRate.data ? shippingRate.data.shippingCost / 100 : 0;
+  const checkoutPreviewTotal = estimatedTotal + shippingFee;
   const selectableGifts = giftOptions.filter((gift) => gift.customerChooses);
   const requiredGiftPromotions = new Set(selectableGifts.map((gift) => gift.promotionId));
   const selectedGiftPromotions = new Set(
@@ -146,7 +155,7 @@ function Checkout() {
   );
   const requiresGift = requiredGiftPromotions.size > 0;
   const giftReady = [...requiredGiftPromotions].every((id) => selectedGiftPromotions.has(id));
-  const canPlaceOrder = Boolean(selectedAddress) && giftReady;
+  const canPlaceOrder = Boolean(selectedAddress) && giftReady && shippingRate.isSuccess;
   const place = useMutation({
     mutationFn: () =>
       checkout(
@@ -175,6 +184,7 @@ function Checkout() {
       }
     },
     onError: (error) => {
+      checkoutIdempotencyKey.current = null;
       const code = apiErrorCode(error);
       if (code === "CHECKOUT_CART_HAS_ISSUES" || code === "CHECKOUT_CART_EMPTY") {
         void client.invalidateQueries({ queryKey: ["cart"] });
@@ -260,30 +270,41 @@ function Checkout() {
                 <div>
                   {Boolean(addresses.data?.length) && (
                     <div className="grid gap-3" role="radiogroup" aria-label="Delivery address">
-                      {addresses.data?.map((address) => (
-                        <label
-                          key={address.id}
-                          className={`choice-card flex cursor-pointer gap-4 border p-5 ${selectedAddress === address.id ? "border-gold bg-ivory" : "border-border"}`}
-                        >
-                          <input
-                            type="radio"
-                            name="delivery-address"
-                            checked={selectedAddress === address.id}
-                            onChange={() => {
-                              setAddressId(address.id);
-                              setAddressStatus(`${address.receiverName} selected for delivery.`);
-                            }}
-                          />
-                          <span>
-                            <strong className="font-serif text-xl">{address.receiverName}</strong>
-                            <span className="mt-1 block text-sm text-muted-foreground">
-                              {address.building} {address.street}, {address.area}, {address.city},{" "}
-                              {address.governorate}
+                      {addresses.data?.map((address) => {
+                        const ready = isAddressDeliveryReady(address);
+                        return (
+                          <label
+                            key={address.id}
+                            className={`choice-card flex gap-4 border p-5 ${ready ? "cursor-pointer" : "cursor-not-allowed opacity-70"} ${selectedAddress === address.id ? "border-gold bg-ivory" : "border-border"}`}
+                          >
+                            <input
+                              type="radio"
+                              name="delivery-address"
+                              checked={selectedAddress === address.id}
+                              disabled={!ready}
+                              onChange={() => {
+                                if (!ready) return;
+                                setAddressId(address.id);
+                                setAddressStatus(`${address.receiverName} selected for delivery.`);
+                              }}
+                            />
+                            <span>
+                              <strong className="font-serif text-xl">{address.receiverName}</strong>
+                              <span className="mt-1 block text-sm text-muted-foreground">
+                                {address.building} {address.street}, {address.area}, {address.city},{" "}
+                                {address.governorate}
+                              </span>
+                              <span className="mt-1 block text-xs text-taupe">{address.phone}</span>
+                              {!ready && (
+                                <span className="mt-3 block text-xs text-destructive">
+                                  This address needs to be updated before it can be used for
+                                  delivery.
+                                </span>
+                              )}
                             </span>
-                            <span className="mt-1 block text-xs text-taupe">{address.phone}</span>
-                          </span>
-                        </label>
-                      ))}
+                          </label>
+                        );
+                      })}
                     </div>
                   )}
                   <p className="sr-only" role="status" aria-live="polite">
@@ -330,7 +351,7 @@ function Checkout() {
                       className="mt-5"
                       onClick={() => setShowAddressForm(true)}
                     >
-                      <Plus /> Add another address
+                      <Plus /> {selectedAddress ? "Add another address" : "Add updated address"}
                     </Button>
                   )}
                 </div>
@@ -456,8 +477,43 @@ function Checkout() {
                 <span className="font-serif text-2xl">{formatPrice(estimatedTotal)}</span>
               </div>
             )}
+            <div className="mt-5 border-t border-border pt-5">
+              <div className="flex items-baseline justify-between">
+                <span>Shipping</span>
+                <span className="font-serif text-2xl">
+                  {shippingRate.isLoading || shippingRate.isFetching
+                    ? "Calculating..."
+                    : shippingRate.data
+                      ? formatPrice(shippingFee)
+                      : "—"}
+                </span>
+              </div>
+              {shippingRate.data && (
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {shippingRate.data.provider} · estimated {shippingRate.data.estimatedDays} day
+                  {shippingRate.data.estimatedDays === 1 ? "" : "s"}
+                </p>
+              )}
+              {shippingRate.error && (
+                <div role="alert" className="mt-3 text-xs text-destructive">
+                  {apiErrorMessage(shippingRate.error, locale)}
+                  <button
+                    type="button"
+                    className="ms-2 text-gold underline underline-offset-4"
+                    onClick={() => void shippingRate.refetch()}
+                  >
+                    Try again
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="mt-5 flex items-baseline justify-between border-t border-border pt-5">
+              <span>Total</span>
+              <span className="font-serif text-3xl">{formatPrice(checkoutPreviewTotal)}</span>
+            </div>
             <p className="mt-3 text-xs text-muted-foreground">
-              The final total, including shipping and COD fees, is priced by the backend.
+              The backend recalculates products, stock, promotions and shipping before creating the
+              order.
             </p>
             {place.error && (
               <p role="alert" className="mt-5 text-sm text-destructive">
@@ -476,7 +532,12 @@ function Checkout() {
             </Button>
             {!selectedAddress && (
               <p className="mt-3 text-xs text-muted-foreground">
-                Add or select a delivery address to continue.
+                Add or select a verified delivery address to continue.
+              </p>
+            )}
+            {selectedAddress && !shippingRate.isSuccess && (
+              <p className="mt-3 text-xs text-muted-foreground">
+                Wait for the delivery price before placing the order.
               </p>
             )}
             {requiresGift && !giftReady && (
@@ -492,7 +553,7 @@ function Checkout() {
           <div className="mx-auto flex max-w-lg items-center gap-3">
             <div className="min-w-0 flex-1">
               <p className="label-xs text-taupe">{t("checkout.beforeDelivery")}</p>
-              <p className="font-serif text-xl">{formatPrice(estimatedTotal)}</p>
+              <p className="font-serif text-xl">{formatPrice(checkoutPreviewTotal)}</p>
             </div>
             <Button
               type="button"
@@ -511,6 +572,21 @@ function Checkout() {
     </div>
   );
 }
+
+function isAddressDeliveryReady(address: AddressResponse) {
+  return Boolean(address.bostaGovernorateId && address.bostaCityId && address.bostaZoneId);
+}
+
+function selectedUsableAddress(addresses: AddressResponse[] | undefined, selectedId: string) {
+  const usable = addresses?.filter(isAddressDeliveryReady) ?? [];
+  return (
+    usable.find((item) => item.id === selectedId) ??
+    usable.find((item) => item.isDefault) ??
+    usable[0] ??
+    null
+  );
+}
+
 function Proof({ payment, order }: { payment: Payment; order: CheckoutResult }) {
   const navigate = useNavigate();
   const submittingProof = useRef(false);

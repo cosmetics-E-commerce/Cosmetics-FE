@@ -1,19 +1,56 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import axe from "axe-core";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { AddressForm } from "@/components/forms/AddressForm";
+import {
+  listShippingAreas,
+  listShippingCitiesByGovernorate,
+  listShippingGovernorates,
+} from "@/lib/api";
+
+vi.mock("@/lib/api", async (importActual) => {
+  const actual = await importActual<typeof import("@/lib/api")>();
+  return {
+    ...actual,
+    listShippingGovernorates: vi.fn(),
+    listShippingCitiesByGovernorate: vi.fn(),
+    listShippingAreas: vi.fn(),
+  };
+});
+
+function renderAddressForm() {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return render(
+    <QueryClientProvider client={client}>
+      <AddressForm onSubmit={vi.fn()} />
+    </QueryClientProvider>,
+  );
+}
 
 describe("AddressForm accessibility", () => {
+  beforeEach(() => {
+    vi.mocked(listShippingGovernorates).mockResolvedValue([
+      { id: "CAI", name: "Cairo", nameAr: "القاهرة", code: "CAI" },
+    ]);
+    vi.mocked(listShippingCitiesByGovernorate).mockResolvedValue([
+      { id: "bosta-cairo", name: "Nasr City", nameAr: "مدينة نصر" },
+    ]);
+    vi.mocked(listShippingAreas).mockResolvedValue([
+      { id: "bosta-zone-1", name: "Abbas El Akkad", nameAr: "عباس العقاد" },
+    ]);
+  });
+
   it("labels every field and has no automatic accessibility violations", async () => {
-    const { container } = render(<AddressForm onSubmit={vi.fn()} />);
+    const { container } = renderAddressForm();
     expect(screen.getByLabelText("Receiver name")).toBeInTheDocument();
     expect(screen.getByLabelText("Egyptian mobile number")).toBeInTheDocument();
     expect((await axe.run(container)).violations).toEqual([]);
   });
 
   it("focuses the first invalid field and keeps the entered values", async () => {
-    render(<AddressForm onSubmit={vi.fn()} />);
+    renderAddressForm();
     const phone = screen.getByLabelText("Egyptian mobile number");
     fireEvent.change(phone, { target: { value: "0123" } });
     fireEvent.submit(phone.closest("form")!);
