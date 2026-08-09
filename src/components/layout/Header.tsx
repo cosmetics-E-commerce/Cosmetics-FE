@@ -5,20 +5,23 @@ import { Logo } from "@/components/brand/Logo";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { useStore } from "@/lib/store";
 import { GlobalBannerSlot } from "@/components/banner/GlobalBannerSlot";
+import { useI18n, type MessageKey } from "@/lib/i18n";
 
 const nav = [
-  { label: "Skincare", category: "Skincare" },
-  { label: "Makeup", category: "Makeup" },
-  { label: "Haircare", category: "Haircare" },
-  { label: "Fragrance", category: "Fragrance" },
-  { label: "Collections", category: undefined },
-  { label: "New Arrivals", category: undefined },
-  { label: "Offers", category: undefined, offers: true },
+  { label: "nav.skincare" as MessageKey, category: "skincare" },
+  { label: "nav.makeup" as MessageKey, category: "makeup" },
+  { label: "nav.haircare" as MessageKey, category: "haircare" },
+  { label: "nav.fragrance" as MessageKey, category: "fragrance" },
+  { label: "nav.collections" as MessageKey, category: undefined },
+  { label: "nav.new" as MessageKey, category: undefined },
+  { label: "nav.offers" as MessageKey, category: undefined, offers: true },
 ];
 
 export function Header() {
+  const { t } = useI18n();
   const headerRef = useRef<HTMLElement>(null);
-  const { count, setCartOpen, setSearchOpen, wishlist, user, locale, setLocale } = useStore();
+  const { count, cartFeedbackKey, setCartOpen, setSearchOpen, wishlist, user, locale, setLocale } =
+    useStore();
   const { pathname, search } = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -68,7 +71,7 @@ export function Header() {
   return (
     <header
       ref={headerRef}
-      className={`fixed inset-x-0 top-0 z-40 transition-transform duration-500 motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] ${
+      className={`store-header fixed inset-x-0 top-0 z-40 transition-transform duration-500 motion-safe:ease-[cubic-bezier(0.22,1,0.36,1)] ${
         hidden ? "-translate-y-full" : "translate-y-0"
       }`}
     >
@@ -86,8 +89,8 @@ export function Header() {
             <button
               type="button"
               onClick={() => setMenu(true)}
-              aria-label="Open menu"
-              className="grid h-11 w-11 place-items-center text-foreground transition-colors duration-500 hover:text-gold xl:hidden"
+              aria-label={t("nav.menu")}
+              className="header-action grid h-11 w-11 place-items-center text-foreground xl:hidden"
             >
               <Menu strokeWidth={1} className="size-5" aria-hidden="true" />
             </button>
@@ -103,20 +106,25 @@ export function Header() {
           <nav aria-label="Primary" className="hidden min-w-0 flex-1 xl:block">
             <ul className="grid grid-cols-8 items-center">
               {nav.map((n) => (
-                <li key={n.label}>
-                  <a
-                    href={
-                      n.offers
-                        ? "/offers"
-                        : n.category
-                          ? `/shop?category=${encodeURIComponent(n.category)}`
-                          : "/shop"
-                    }
-                    data-active={isShopActive(n.category)}
-                    className="nav-link label-xs inline-flex min-h-11 w-full items-center justify-center px-1 text-center text-foreground"
-                  >
-                    {n.label}
-                  </a>
+                <li key={n.label} className="header-nav-item">
+                  {n.offers ? (
+                    <Link
+                      to="/offers"
+                      data-active={pathname === "/offers"}
+                      className="nav-link label-xs inline-flex min-h-11 w-full items-center justify-center px-1 text-center text-foreground"
+                    >
+                      {t(n.label)}
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/shop"
+                      search={n.category ? { category: n.category } : {}}
+                      data-active={n.category ? isShopActive(n.category) : pathname === "/shop"}
+                      className="nav-link label-xs inline-flex min-h-11 w-full items-center justify-center px-1 text-center text-foreground"
+                    >
+                      {t(n.label)}
+                    </Link>
+                  )}
                 </li>
               ))}
               <li>
@@ -125,7 +133,7 @@ export function Header() {
                   data-active={pathname === "/journal"}
                   className="nav-link label-xs inline-flex min-h-11 w-full items-center justify-center px-1 text-center text-foreground"
                 >
-                  About
+                  {t("nav.about")}
                 </Link>
               </li>
             </ul>
@@ -135,8 +143,8 @@ export function Header() {
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              aria-label="Search"
-              className="grid h-11 w-11 place-items-center text-foreground transition-colors duration-500 hover:text-gold"
+              aria-label={t("nav.search")}
+              className="header-action grid h-11 w-11 place-items-center text-foreground"
             >
               <Search strokeWidth={1} className="size-[18px]" aria-hidden="true" />
             </button>
@@ -148,22 +156,27 @@ export function Header() {
               type="button"
               onClick={() => setLocale(locale === "ar" ? "en" : "ar")}
               aria-label={locale === "ar" ? "Switch to English" : "التبديل إلى العربية"}
-              className="label-xs hidden min-h-11 px-2 text-taupe transition-colors hover:text-gold xl:block"
+              lang={locale === "ar" ? "en" : "ar"}
+              dir={locale === "ar" ? "ltr" : "rtl"}
+              className={`label-xs hidden min-h-11 items-center justify-center px-2 text-taupe transition-colors hover:text-gold xl:flex ${
+                locale === "ar" ? "" : "font-arabic text-sm normal-case tracking-normal"
+              }`}
             >
               {locale === "ar" ? "EN" : "ع"}
             </button>
             <Link
               to={user ? "/account" : "/sign-in"}
+              search={user ? { section: undefined } : { returnTo: undefined }}
               aria-label="Account"
-              className="hidden h-11 w-11 place-items-center text-foreground transition-colors duration-500 hover:text-gold sm:grid"
+              className="header-action hidden h-11 w-11 place-items-center text-foreground sm:grid"
             >
               <User strokeWidth={1} className="size-[18px]" aria-hidden="true" />
             </Link>
             <Link
               to={user ? "/account" : "/sign-in"}
-              hash="wishlist"
+              search={user ? { section: "wishlist" } : { returnTo: undefined }}
               aria-label={`Wishlist, ${wishlist.length} items`}
-              className="relative hidden h-11 w-11 place-items-center text-foreground transition-colors duration-500 hover:text-gold sm:grid"
+              className="header-action relative hidden h-11 w-11 place-items-center text-foreground sm:grid"
             >
               <Heart strokeWidth={1} className="size-[18px]" aria-hidden="true" />
               {wishlist.length > 0 && (
@@ -173,10 +186,12 @@ export function Header() {
             <button
               type="button"
               onClick={() => setCartOpen(true)}
-              aria-label={`Shopping bag, ${count} items`}
-              className="relative grid h-11 w-11 place-items-center text-foreground transition-colors duration-500 hover:text-gold"
+              aria-label={`${t("nav.bag")}, ${count}`}
+              className="header-action relative grid h-11 w-11 place-items-center text-foreground"
             >
-              <ShoppingBag strokeWidth={1} className="size-[18px]" aria-hidden="true" />
+              <span key={cartFeedbackKey} className={cartFeedbackKey ? "bag-feedback" : undefined}>
+                <ShoppingBag strokeWidth={1} className="size-[18px]" aria-hidden="true" />
+              </span>
               {count > 0 && (
                 <span
                   key={count}
@@ -218,29 +233,34 @@ export function Header() {
                   className="rise-in"
                   style={{ animationDelay: `${80 + i * 60}ms` }}
                 >
-                  <a
-                    href={
-                      n.offers
-                        ? "/offers"
-                        : n.category
-                          ? `/shop?category=${encodeURIComponent(n.category)}`
-                          : "/shop"
-                    }
-                    onClick={() => setMenu(false)}
-                    className="block font-serif text-3xl leading-tight transition-colors duration-300 hover:text-gold"
-                  >
-                    {n.label}
-                  </a>
+                  {n.offers ? (
+                    <Link
+                      to="/offers"
+                      onClick={() => setMenu(false)}
+                      className="block font-serif text-3xl leading-tight transition-colors duration-300 hover:text-gold"
+                    >
+                      {t(n.label)}
+                    </Link>
+                  ) : (
+                    <Link
+                      to="/shop"
+                      search={n.category ? { category: n.category } : {}}
+                      onClick={() => setMenu(false)}
+                      className="block font-serif text-3xl leading-tight transition-colors duration-300 hover:text-gold"
+                    >
+                      {t(n.label)}
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
             <div className="rule-gold my-8" />
             <ul className="space-y-4">
               {[
-                { to: "/journal", label: "Journal" },
-                { to: "/offers", label: "Offers" },
-                { to: "/account", label: "Account" },
-                { to: "/cart", label: "Shopping Bag" },
+                { to: "/journal", label: t("nav.about") },
+                { to: "/offers", label: t("nav.offers") },
+                { to: "/account", label: t("nav.account") },
+                { to: "/cart", label: t("nav.bag") },
               ].map((l, i) => (
                 <li key={l.to} className="rise-in" style={{ animationDelay: `${420 + i * 60}ms` }}>
                   <Link
@@ -253,6 +273,20 @@ export function Header() {
                 </li>
               ))}
             </ul>
+            <div className="mt-8 flex items-center justify-between border-t border-border pt-6">
+              <span className="label-xs text-taupe">Language</span>
+              <button
+                type="button"
+                onClick={() => setLocale(locale === "ar" ? "en" : "ar")}
+                lang={locale === "ar" ? "en" : "ar"}
+                dir={locale === "ar" ? "ltr" : "rtl"}
+                className={`label-xs inline-flex min-h-11 min-w-20 items-center justify-center border border-border px-4 py-2 text-center text-gold ${
+                  locale === "ar" ? "" : "font-arabic text-sm normal-case tracking-normal"
+                }`}
+              >
+                {locale === "ar" ? "English" : "العربية"}
+              </button>
+            </div>
           </nav>
         </SheetContent>
       </Sheet>

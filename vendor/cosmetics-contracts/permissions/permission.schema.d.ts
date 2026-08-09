@@ -1,7 +1,10 @@
-import { z } from 'zod';
+import { z } from "zod";
 /**
- * Permission keys are `resource:action`. They are DATA, not code — adding a
- * capability is a seed row, not a new `if` branch. PLAN.md §2.2.
+ * New permission keys use `resource:action`. The database also contains
+ * established scoped keys such as `orders.payment.review`; accepting those
+ * keeps existing grants valid while the catalogue is migrated incrementally.
+ * Permission keys are DATA, not code — adding a capability is a seed row, not
+ * a new `if` branch. PLAN.md §2.2.
  */
 export declare const permissionKeySchema: z.ZodString;
 export declare const permissionSchema: z.ZodObject<{

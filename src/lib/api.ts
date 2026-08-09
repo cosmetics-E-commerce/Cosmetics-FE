@@ -6,6 +6,9 @@ import type {
   CreateAddressInput,
   PublicCategoryResponse,
   PublicProductResponse,
+  RegistrationOtpChallenge,
+  RegistrationVerificationResult,
+  ResendRegistrationOtpResult,
   UserProfileResponse,
   WishlistResponse,
 } from "../../vendor/cosmetics-contracts/index.js";
@@ -15,8 +18,12 @@ export type {
   AuthSession,
   AuthUser,
   CartResponse,
+  CreateAddressInput,
   PublicCategoryResponse,
   PublicProductResponse,
+  RegistrationOtpChallenge,
+  RegistrationVerificationResult,
+  ResendRegistrationOtpResult,
   UserProfileResponse,
   WishlistResponse,
 };
@@ -130,6 +137,21 @@ export type OrderSummary = {
   placedAt: string;
 };
 
+export type ProductReview = {
+  id: string;
+  productId: string;
+  rating: number;
+  title: string | null;
+  body: string | null;
+  createdAt: string;
+  author: { firstName: string; lastInitial: string; verifiedPurchase: boolean };
+};
+export type ProductReviews = {
+  items: ProductReview[];
+  summary: { average: number; count: number; distribution: Record<string, number> };
+  meta: { page: number; totalPages: number; total: number };
+};
+
 type OrderSummaryApiResponse = Omit<OrderSummary, "grandTotal" | "placedAt"> & {
   grandTotal?: number;
   placedAt?: string;
@@ -144,13 +166,9 @@ type RequestOptions = Omit<RequestInit, "body"> & {
   retry?: boolean;
 };
 
-const configuredApiBase = (
-  import.meta.env["VITE_API_BASE_URL"] as string | undefined
-)?.trim();
-const browserApiHost =
-  typeof window === "undefined" ? "localhost" : window.location.hostname;
-const browserApiProtocol =
-  typeof window === "undefined" ? "http:" : window.location.protocol;
+const configuredApiBase = (import.meta.env["VITE_API_BASE_URL"] as string | undefined)?.trim();
+const browserApiHost = typeof window === "undefined" ? "localhost" : window.location.hostname;
+const browserApiProtocol = typeof window === "undefined" ? "http:" : window.location.protocol;
 const API_BASE = configuredApiBase
   ? configuredApiBase.replace(/\/+$/, "")
   : `${browserApiProtocol}//${browserApiHost}:3000/api/v1`;
@@ -249,8 +267,86 @@ export async function rawRequest<T>(path: string, options: RequestOptions = {}):
   return (payload as Envelope<T>).data;
 }
 
-export function apiErrorMessage(error: unknown) {
-  return (error as ApiError | undefined)?.message ?? "The request could not be completed.";
+export function apiErrorMessage(error: unknown, locale: "en" | "ar" = "en") {
+  const problem = error as ApiError | undefined;
+  const arabic = locale === "ar";
+  const messages: Record<string, [string, string]> = {
+    NETWORK_ERROR: [
+      "We could not reach the store. Check your connection and try again.",
+      "تعذر الاتصال بالمتجر. تحققي من اتصال الإنترنت وحاولي مرة أخرى.",
+    ],
+    UNAUTHENTICATED: [
+      "Your session has expired. Sign in again to continue.",
+      "انتهت جلستك. سجّلي الدخول مرة أخرى للمتابعة.",
+    ],
+    CART_VARIANT_NOT_SELLABLE: [
+      "This product is currently unavailable.",
+      "هذا المنتج غير متاح حالياً.",
+    ],
+    CART_INSUFFICIENT_STOCK: [
+      "There is not enough stock for that quantity. Your bag has been refreshed.",
+      "الكمية المطلوبة غير متاحة. تم تحديث حقيبتك بأحدث كمية.",
+    ],
+    CHECKOUT_CART_EMPTY: ["Your bag is empty.", "حقيبتك فارغة."],
+    CHECKOUT_CART_HAS_ISSUES: [
+      "Some items changed while you were shopping. Review your bag before continuing.",
+      "تغيّرت بعض المنتجات أثناء التسوق. راجعي حقيبتك قبل المتابعة.",
+    ],
+    SHIPPING_ADDRESS_NOT_FOUND: [
+      "That delivery address is no longer available. Choose or add another address.",
+      "عنوان التوصيل هذا لم يعد متاحاً. اختاري عنواناً آخر أو أضيفي عنواناً جديداً.",
+    ],
+    SHIPPING_ZONE_UNAVAILABLE: [
+      "Delivery is not available to this area yet. Choose another address or contact support.",
+      "التوصيل غير متاح لهذه المنطقة حالياً. اختاري عنواناً آخر أو تواصلي مع الدعم.",
+    ],
+    PAYMENT_METHOD_NOT_AVAILABLE: [
+      "That payment method is temporarily unavailable. Choose another method.",
+      "طريقة الدفع هذه غير متاحة مؤقتاً. اختاري طريقة أخرى.",
+    ],
+    COUPON_NOT_APPLICABLE: [
+      "This code does not apply to the items in your bag.",
+      "هذا الرمز لا ينطبق على المنتجات في حقيبتك.",
+    ],
+    PROMOTION_COUPON_INVALID: [
+      "This promo code is invalid or has expired.",
+      "رمز الخصم غير صالح أو انتهت صلاحيته.",
+    ],
+    PROMOTION_GIFT_SELECTION_REQUIRED: [
+      "Choose your complimentary gift before placing the order.",
+      "اختاري هديتك المجانية قبل تأكيد الطلب.",
+    ],
+    REQUEST_IN_PROGRESS: [
+      "This request is already being processed. Please wait a moment.",
+      "طلبك قيد التنفيذ بالفعل. انتظري لحظة من فضلك.",
+    ],
+  };
+  const mapped = problem?.code ? messages[problem.code] : undefined;
+  if (mapped) return mapped[arabic ? 1 : 0];
+  if ((problem?.statusCode ?? 0) >= 500) {
+    return arabic
+      ? "حدث عطل مؤقت في المتجر. لم نفقد بياناتك—حاولي مرة أخرى."
+      : "The store hit a temporary problem. Your work is still here—try again.";
+  }
+  return (
+    problem?.message ??
+    (arabic
+      ? "تعذر إكمال الطلب. حاولي مرة أخرى."
+      : "The request could not be completed. Try again.")
+  );
+}
+
+export function apiErrorCode(error: unknown) {
+  return (error as ApiError | undefined)?.code ?? "REQUEST_FAILED";
+}
+
+export function apiRetryAfter(error: unknown) {
+  const details = (error as ApiError | undefined)?.details;
+  if (!details || typeof details !== "object") return 0;
+  const retryAfter = (details as Record<string, unknown>)["retryAfter"];
+  return typeof retryAfter === "number" && Number.isFinite(retryAfter)
+    ? Math.max(0, Math.ceil(retryAfter))
+    : 0;
 }
 
 export function refreshSession() {
@@ -288,13 +384,26 @@ export async function login(identifier: string, password: string) {
   return session;
 }
 
-export async function register(body: Record<string, unknown>) {
-  const result = await rawRequest<
-    AuthSession | { email: string; ttlSeconds: number; verificationRequired: true }
-  >("/auth/register", { method: "POST", auth: false, body });
-  if ("tokens" in result) rememberSession(result);
-  return result;
-}
+export const register = (body: Record<string, unknown>) =>
+  rawRequest<RegistrationOtpChallenge>("/auth/register", {
+    method: "POST",
+    auth: false,
+    body,
+  });
+
+export const verifyRegistrationEmail = (email: string, otp: string) =>
+  rawRequest<RegistrationVerificationResult>("/auth/verify-email", {
+    method: "POST",
+    auth: false,
+    body: { email, otp },
+  });
+
+export const resendRegistrationOtp = (email: string) =>
+  rawRequest<ResendRegistrationOtpResult>("/auth/resend-verification-otp", {
+    method: "POST",
+    auth: false,
+    body: { email },
+  });
 
 export async function logoutRequest() {
   const csrf = browserValue(CSRF_KEY);
@@ -362,7 +471,89 @@ export async function listCategories() {
   return normalizeList(result);
 }
 
+export const subscribeNewsletter = (email: string, locale: "en" | "ar") =>
+  rawRequest<{ subscribed: true }>("/store/newsletter/subscriptions", {
+    method: "POST",
+    auth: false,
+    body: { email, locale, consent: true },
+  });
+
+export const createSupportRequest = (body: {
+  name: string;
+  email: string;
+  orderNumber?: string;
+  subject: string;
+  message: string;
+  locale: "en" | "ar";
+}) =>
+  rawRequest<{ id: string; status: string; createdAt: string }>("/store/support/requests", {
+    method: "POST",
+    auth: false,
+    body,
+  });
+
+function summarizeReviews(items: ProductReview[]) {
+  const distribution: Record<string, number> = { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0 };
+  let totalRating = 0;
+  for (const review of items) {
+    totalRating += review.rating;
+    const key = String(review.rating);
+    distribution[key] = (distribution[key] ?? 0) + 1;
+  }
+  return {
+    average: items.length ? totalRating / items.length : 0,
+    count: items.length,
+    distribution,
+  };
+}
+
+export function normalizeProductReviews(
+  payload:
+    | ProductReview[]
+    | {
+        data?: ProductReview[];
+        items?: ProductReview[];
+        summary?: ProductReviews["summary"];
+        meta?: ProductReviews["meta"];
+      },
+): ProductReviews {
+  const items = Array.isArray(payload)
+    ? payload
+    : Array.isArray(payload.items)
+      ? payload.items
+      : Array.isArray(payload.data)
+        ? payload.data
+        : [];
+  const summary =
+    !Array.isArray(payload) && payload.summary ? payload.summary : summarizeReviews(items);
+  const meta =
+    !Array.isArray(payload) && payload.meta
+      ? payload.meta
+      : { page: 1, totalPages: items.length ? 1 : 0, total: items.length };
+  return { items, summary, meta };
+}
+
+export async function listProductReviews(productId: string) {
+  const payload = await rawRequest<
+    | ProductReview[]
+    | {
+        data?: ProductReview[];
+        items?: ProductReview[];
+        summary?: ProductReviews["summary"];
+        meta?: ProductReviews["meta"];
+      }
+  >(`/products/${productId}/reviews?limit=50`, { auth: false });
+  return normalizeProductReviews(payload);
+}
+
+export const createProductReview = (
+  productId: string,
+  body: { rating: number; title?: string; body?: string },
+) => rawRequest<ProductReview>(`/products/${productId}/reviews`, { method: "POST", body });
+
 export const getCart = () => rawRequest<CommerceCartResponse>("/cart");
+export const mergeGuestCart = () =>
+  rawRequest<CommerceCartResponse>("/cart/merge", { method: "POST", body: {} });
 export const addCartItem = (variantId: string, quantity: number) =>
   rawRequest<CommerceCartResponse>("/cart/items", {
     method: "POST",
@@ -419,10 +610,11 @@ export const setDefaultAddress = (id: string) =>
 
 export async function listOrders() {
   const result = await rawRequest<
-    OrderSummaryApiResponse[] | {
-      items?: OrderSummaryApiResponse[];
-      data?: OrderSummaryApiResponse[];
-    }
+    | OrderSummaryApiResponse[]
+    | {
+        items?: OrderSummaryApiResponse[];
+        data?: OrderSummaryApiResponse[];
+      }
   >("/orders");
   return normalizeList(result).map((order): OrderSummary => ({
     ...order,
@@ -438,16 +630,21 @@ export const checkout = (
   paymentMethod: string,
   notes?: string,
   giftVariantIds: string[] = [],
+  idempotencyKey: string = crypto.randomUUID(),
 ) =>
   rawRequest<CheckoutResult>("/orders/checkout", {
     method: "POST",
-    headers: { "Idempotency-Key": crypto.randomUUID() },
+    headers: { "Idempotency-Key": idempotencyKey },
     body: { shippingAddressId, paymentMethod, giftVariantIds, ...(notes ? { notes } : {}) },
   });
-export const createPayment = (orderId: string, method: string) =>
+export const createPayment = (
+  orderId: string,
+  method: string,
+  idempotencyKey: string = crypto.randomUUID(),
+) =>
   rawRequest<Payment>("/payments", {
     method: "POST",
-    headers: { "Idempotency-Key": crypto.randomUUID() },
+    headers: { "Idempotency-Key": idempotencyKey },
     body: { orderId, method },
   });
 export function uploadPaymentProof(

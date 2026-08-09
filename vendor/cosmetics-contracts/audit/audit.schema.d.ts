@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 export declare const auditActorSchema: z.ZodNullable<z.ZodObject<{
     id: z.ZodString;
     firstName: z.ZodString;
@@ -112,22 +112,22 @@ export declare const auditLogQuerySchema: z.ZodObject<{
     sortOrder: "asc" | "desc";
     action?: string | undefined;
     search?: string | undefined;
+    dateFrom?: string | undefined;
+    dateTo?: string | undefined;
     actorId?: string | undefined;
     resourceType?: string | undefined;
     resourceId?: string | undefined;
-    dateFrom?: string | undefined;
-    dateTo?: string | undefined;
 }, {
     page?: number | undefined;
     limit?: number | undefined;
     sortOrder?: "asc" | "desc" | undefined;
     action?: string | undefined;
     search?: string | undefined;
+    dateFrom?: string | undefined;
+    dateTo?: string | undefined;
     actorId?: string | undefined;
     resourceType?: string | undefined;
     resourceId?: string | undefined;
-    dateFrom?: string | undefined;
-    dateTo?: string | undefined;
 }>;
 export type AuditLogQuery = z.infer<typeof auditLogQuerySchema>;
 export declare const auditLogListSchema: z.ZodObject<{

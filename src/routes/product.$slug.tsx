@@ -10,28 +10,108 @@ import {
 import { Button } from "@/components/ui/button";
 import { PolishedImage } from "@/components/ui/polished-image";
 import { IngredientExplorer } from "@/components/shop/IngredientExplorer";
+import { ProductReviews } from "@/components/shop/ProductReviews";
 import { formatPrice } from "@/lib/products";
-import { useProduct } from "@/lib/catalog";
+import { loadProduct, useProduct } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
+import { Reveal, TextReveal } from "@/components/motion/Primitives";
 
 export const Route = createFileRoute("/product/$slug")({
-  head: () => ({ meta: [{ title: "Product — BIOREZA Cosmetics" }] }),
+  loader: ({ params, context }) => loadProduct(params.slug, context.locale === "ar" ? "ar" : "en"),
+  head: ({ loaderData, params }) => {
+    const product = loaderData;
+    const site = (
+      (import.meta.env["VITE_SITE_URL"] as string | undefined) ?? "https://bioreza.com"
+    ).replace(/\/$/, "");
+    const canonical = `${site}/product/${encodeURIComponent(params.slug)}`;
+    if (!product) return { meta: [{ title: "Product — BIOREZA Cosmetics" }] };
+    const description = product.description.slice(0, 160);
+    const structuredData = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.name,
+      description,
+      image: product.gallery,
+      sku: product.sizes[0]?.id,
+      brand: { "@type": "Brand", name: product.type },
+      offers: {
+        "@type": "AggregateOffer",
+        priceCurrency: "EGP",
+        lowPrice: Math.min(...product.sizes.map((variant) => variant.price)),
+        highPrice: Math.max(...product.sizes.map((variant) => variant.price)),
+        availability: product.inStock
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+        url: canonical,
+      },
+      ...(product.reviews > 0
+        ? {
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: product.rating,
+              reviewCount: product.reviews,
+            },
+          }
+        : {}),
+    };
+    const breadcrumbData = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: site },
+        { "@type": "ListItem", position: 2, name: "Shop", item: `${site}/shop` },
+        { "@type": "ListItem", position: 3, name: product.name, item: canonical },
+      ],
+    };
+    return {
+      meta: [
+        { title: `${product.name} — BIOREZA Cosmetics` },
+        { name: "description", content: description },
+        { property: "og:title", content: `${product.name} — BIOREZA Cosmetics` },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "product" },
+        { property: "og:image", content: product.image },
+      ],
+      links: [
+        { rel: "canonical", href: canonical },
+        { rel: "alternate", hrefLang: "en", href: `${canonical}?lang=en` },
+        { rel: "alternate", hrefLang: "ar", href: `${canonical}?lang=ar` },
+        { rel: "alternate", hrefLang: "x-default", href: canonical },
+      ],
+      scripts: [
+        { type: "application/ld+json", children: JSON.stringify(structuredData) },
+        { type: "application/ld+json", children: JSON.stringify(breadcrumbData) },
+      ],
+    };
+  },
   component: ProductPage,
 });
 
 function ProductPage() {
   const { slug } = Route.useParams();
   const { locale, add, wishlist, toggleWish, pendingVariants } = useStore();
-  const query = useProduct(slug, locale);
+  const initialProduct = Route.useLoaderData();
+  const query = useProduct(slug, locale, initialProduct);
   const product = query.data;
   const [variantIndex, setVariantIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [imageIndex, setImageIndex] = useState(0);
+  const [added, setAdded] = useState(false);
+  const firstAvailableVariant =
+    product?.sizes.findIndex((item) => item.stock === undefined || item.stock > 0) ?? -1;
 
   useEffect(() => {
-    setVariantIndex(0);
+    setVariantIndex(firstAvailableVariant >= 0 ? firstAvailableVariant : 0);
     setImageIndex(0);
-  }, [slug]);
+    setQuantity(1);
+    setAdded(false);
+  }, [firstAvailableVariant, slug]);
+
+  useEffect(() => {
+    if (!added) return;
+    const timer = window.setTimeout(() => setAdded(false), 1400);
+    return () => window.clearTimeout(timer);
+  }, [added]);
 
   if (query.isLoading) {
     return (
@@ -55,9 +135,16 @@ function ProductPage() {
         <p className="mt-4 text-muted-foreground">
           This product may be unpublished or the store API may be offline.
         </p>
-        <Button asChild variant="line" size="pill" className="mt-8">
-          <Link to="/shop">Return to shop</Link>
-        </Button>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          {query.error && (
+            <Button type="button" variant="solid" size="pill" onClick={() => void query.refetch()}>
+              Try again
+            </Button>
+          )}
+          <Button asChild variant="quiet" size="pill">
+            <Link to="/shop">Return to shop</Link>
+          </Button>
+        </div>
       </div>
     );
   }
@@ -70,11 +157,13 @@ function ProductPage() {
   const adding = Boolean(variant?.id && pendingVariants.includes(variant.id));
   const activeImage = product.gallery[imageIndex] ?? product.image;
 
-  const addToBag = () => {
+  const addToBag = async () => {
     if (!variant?.id || outOfStock) return;
-    void add({
+    const succeeded = await add({
       variantId: variant.id,
       productId: product.id,
+      categoryId: product.categoryId,
+      brandId: product.brandId,
       slug: product.slug,
       name: product.name,
       image: product.image,
@@ -82,17 +171,29 @@ function ProductPage() {
       price: variant.price,
       qty: quantity,
     });
+    if (succeeded) setAdded(true);
   };
 
   return (
-    <div>
+    <div className="pb-24 lg:pb-0">
       <div className="mx-auto max-w-[1560px] px-5 py-10 md:px-10">
-        <nav className="label-xs text-taupe" aria-label="Breadcrumb">
+        <Reveal
+          as="nav"
+          variant="fade"
+          distance={0}
+          className="label-xs text-taupe"
+          aria-label="Breadcrumb"
+        >
           <Link to="/">Home</Link> / <Link to="/shop">Shop</Link> / {product.name}
-        </nav>
+        </Reveal>
 
         <div className="mt-10 grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
-          <div className="grid gap-5 md:grid-cols-[84px_1fr]">
+          <Reveal
+            variant="scale"
+            duration={820}
+            distance={0}
+            className="grid gap-5 md:grid-cols-[84px_1fr]"
+          >
             <div className="no-scrollbar order-2 flex gap-3 overflow-x-auto md:order-1 md:flex-col">
               {product.gallery.map((image, index) => (
                 <button
@@ -115,7 +216,7 @@ function ProductPage() {
                 </button>
               ))}
             </div>
-            <div key={activeImage} className="order-1 bg-ivory md:order-2">
+            <div key={activeImage} className="product-gallery-active order-1 bg-ivory md:order-2">
               <PolishedImage
                 src={activeImage}
                 alt={product.name}
@@ -124,11 +225,22 @@ function ProductPage() {
                 className="size-full object-cover"
               />
             </div>
-          </div>
+          </Reveal>
 
-          <div className="lg:pt-6">
+          <Reveal
+            stagger
+            delay={140}
+            staggerMs={72}
+            distance={22}
+            className="product-purchase-panel lg:sticky lg:self-start lg:pt-6"
+          >
             <p className="label-xs text-gold">BIOREZA · {product.type}</p>
-            <h1 className="display mt-5 text-[clamp(2.2rem,4vw,3.4rem)]">{product.name}</h1>
+            <TextReveal
+              as="h1"
+              className="display mt-5 text-[clamp(2.2rem,4vw,3.4rem)]"
+              lines={[product.name]}
+              delay={100}
+            />
             <p className="mt-7 max-w-md leading-relaxed text-muted-foreground">
               {product.description}
             </p>
@@ -176,14 +288,16 @@ function ProductPage() {
                   <button
                     key={item.id ?? item.label}
                     type="button"
+                    disabled={item.stock === 0}
                     onClick={() => {
                       setVariantIndex(index);
                       setQuantity(1);
                     }}
                     aria-pressed={variantIndex === index}
-                    className={`label-xs min-h-11 border px-5 transition-[border-color,color,background-color] duration-200 ${
+                    aria-label={`${item.label}${item.stock === 0 ? ", out of stock" : ""}`}
+                    className={`product-variant label-xs min-h-11 border px-5 transition-[border-color,color,background-color,transform] duration-200 disabled:cursor-not-allowed disabled:opacity-40 ${
                       variantIndex === index
-                        ? "border-gold text-gold"
+                        ? "border-ink bg-ink text-warm-white"
                         : "border-border hover:border-taupe"
                     }`}
                   >
@@ -200,11 +314,11 @@ function ProductPage() {
               </div>
             </fieldset>
 
-            <div className="mt-8 flex flex-wrap items-center gap-4">
+            <div className="purchase-actions mt-8 flex flex-wrap items-center gap-4">
               <div className="flex items-center border border-border">
                 <button
                   type="button"
-                  disabled={outOfStock}
+                  disabled={outOfStock || quantity <= 1}
                   onClick={() => setQuantity((value) => Math.max(1, value - 1))}
                   aria-label="Decrease quantity"
                   className="grid size-12 place-items-center text-taupe hover:text-gold disabled:cursor-not-allowed disabled:opacity-35"
@@ -216,7 +330,7 @@ function ProductPage() {
                 </span>
                 <button
                   type="button"
-                  disabled={outOfStock}
+                  disabled={outOfStock || quantity >= (variantStock ?? 99)}
                   onClick={() => setQuantity((value) => Math.min(variantStock ?? 99, value + 1))}
                   aria-label="Increase quantity"
                   className="grid size-12 place-items-center text-taupe hover:text-gold disabled:cursor-not-allowed disabled:opacity-35"
@@ -230,9 +344,9 @@ function ProductPage() {
                 className="min-w-[220px] flex-1"
                 disabled={!variant?.id || outOfStock}
                 loading={adding}
-                onClick={addToBag}
+                onClick={() => void addToBag()}
               >
-                {outOfStock ? "Out of stock" : "Add to bag"}
+                {outOfStock ? "Out of stock" : added ? "Added to bag" : "Add to bag"}
               </Button>
               {product.id && (
                 <button
@@ -274,7 +388,7 @@ function ProductPage() {
                     {title === "Ingredients" ? (
                       <IngredientExplorer
                         ingredients={product.ingredientDetails}
-                        fallback={content}
+                        {...(content !== undefined ? { fallback: content } : {})}
                       />
                     ) : (
                       content
@@ -283,7 +397,7 @@ function ProductPage() {
                 </AccordionItem>
               ))}
             </Accordion>
-          </div>
+          </Reveal>
         </div>
       </div>
 
@@ -306,12 +420,13 @@ function ProductPage() {
             className="h-12 shrink-0 px-6"
             loading={adding}
             disabled={!variant?.id || outOfStock}
-            onClick={addToBag}
+            onClick={() => void addToBag()}
           >
-            {outOfStock ? "Out of stock" : "Add to bag"}
+            {outOfStock ? "Out of stock" : added ? "Added" : "Add to bag"}
           </Button>
         </div>
       </div>
+      {product.id ? <ProductReviews productId={product.id} /> : null}
     </div>
   );
 }

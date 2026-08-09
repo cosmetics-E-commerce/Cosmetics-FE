@@ -18,7 +18,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:translate-y-0 hover:underline",
         solid:
-          "label-sm bg-foreground text-background transition-all duration-500 hover:bg-gold hover:text-warm-white",
+          "premium-button label-sm bg-foreground text-background transition-all duration-500 hover:text-warm-white",
         line: "label-sm border border-gold/60 bg-transparent text-foreground transition-all duration-500 hover:border-gold hover:bg-gold hover:text-warm-white",
         quiet:
           "label-sm border border-border bg-transparent text-foreground transition-all duration-500 hover:border-foreground",

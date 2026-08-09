@@ -4,13 +4,20 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { trackCommerceEvent } from "@/lib/analytics";
-import type { AppliedPromotion, AuthSession, AuthUser, CommerceCartResponse, WishlistResponse } from "@/lib/api";
+import type {
+  AppliedPromotion,
+  AuthSession,
+  AuthUser,
+  CommerceCartResponse,
+  WishlistResponse,
+} from "@/lib/api";
 import {
   addCartItem,
   applyCartCoupon,
@@ -22,6 +29,7 @@ import {
   getWishlist,
   hasRefreshSession,
   logoutRequest,
+  mergeGuestCart,
   refreshSession,
   removeCartItem,
   removeCartCoupon,
@@ -50,6 +58,8 @@ type Locale = "ar" | "en";
 type AddLine = {
   variantId?: string | undefined;
   productId?: string | undefined;
+  categoryId?: string | undefined;
+  brandId?: string | null | undefined;
   slug?: string | undefined;
   name?: string | undefined;
   image?: string | undefined;
@@ -64,6 +74,7 @@ type StoreValue = {
   cartOpen: boolean;
   searchOpen: boolean;
   count: number;
+  cartFeedbackKey: number;
   subtotal: number;
   discountTotal: number;
   estimatedTotal: number;
@@ -71,7 +82,12 @@ type StoreValue = {
   couponCode: string | null;
   appliedPromotions: AppliedPromotion[];
   promotionMessages: string[];
-  giftOptions: Array<{ variantId: string; quantity: number; customerChooses: boolean; promotionId: string }>;
+  giftOptions: Array<{
+    variantId: string;
+    quantity: number;
+    customerChooses: boolean;
+    promotionId: string;
+  }>;
   cartLoading: boolean;
   pendingVariants: string[];
   authHydrated: boolean;
@@ -86,39 +102,53 @@ type StoreValue = {
   toggleWish: (productId: string, slug: string) => Promise<void>;
   setCartOpen: (value: boolean) => void;
   setSearchOpen: (value: boolean) => void;
-  setSession: (session: AuthSession) => void;
+  setSession: (session: AuthSession) => Promise<void>;
   signOut: () => Promise<void>;
   setLocale: (locale: Locale) => void;
 };
 
 const StoreContext = createContext<StoreValue | null>(null);
 
-export function StoreProvider({ children }: { children: ReactNode }) {
+export function StoreProvider({
+  children,
+  initialLocale = "en",
+}: {
+  children: ReactNode;
+  initialLocale?: Locale;
+}) {
   const queryClient = useQueryClient();
   const [ready, setReady] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [authHydrated, setAuthHydrated] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [cartFeedbackKey, setCartFeedbackKey] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [locale, setLocaleState] = useState<Locale>("en");
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
   const [pendingVariants, setPendingVariants] = useState<string[]>([]);
+  const pendingVariantIds = useRef(new Set<string>());
   const [wishOverrides, setWishOverrides] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     setReady(true);
-    const saved = window.localStorage.getItem("bioreza.locale") === "ar" ? "ar" : "en";
+    const saved = document.cookie.includes("bioreza.locale=ar") ? "ar" : initialLocale;
     setLocaleState(saved);
-    document.documentElement.lang = saved;
-    document.documentElement.dir = saved === "ar" ? "rtl" : "ltr";
+    window.localStorage.setItem("bioreza.locale", saved);
     if (!hasRefreshSession()) {
       setAuthHydrated(true);
       return;
     }
     void refreshSession()
-      .then((session) => setUser(session.user))
+      .then(async (session) => {
+        setUser(session.user);
+        try {
+          queryClient.setQueryData(["cart"], await mergeGuestCart());
+        } catch {
+          void queryClient.invalidateQueries({ queryKey: ["cart"] });
+        }
+      })
       .catch(() => setUser(null))
       .finally(() => setAuthHydrated(true));
-  }, []);
+  }, [initialLocale, queryClient]);
 
   const cartQuery = useQuery({ queryKey: ["cart"], queryFn: getCart, enabled: ready });
   const wishlistQuery = useQuery({
@@ -138,8 +168,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     (next: WishlistResponse) => queryClient.setQueryData(["wishlist"], next),
     [queryClient],
   );
-  const fail = useCallback((error: unknown) => toast.error(apiErrorMessage(error)), []);
+  const fail = useCallback(
+    (error: unknown) => toast.error(apiErrorMessage(error, locale)),
+    [locale],
+  );
   const markPending = useCallback((variantId: string, pending: boolean) => {
+    if (pending) pendingVariantIds.current.add(variantId);
+    else pendingVariantIds.current.delete(variantId);
     setPendingVariants((current) =>
       pending
         ? current.includes(variantId)
@@ -152,10 +187,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const add = useCallback(
     async (line: AddLine) => {
       if (!line.variantId) {
-        toast.error("This item is not available from the live catalog yet.");
+        toast.error(
+          locale === "ar"
+            ? "هذا المنتج غير متاح في المتجر حالياً."
+            : "This item is not available from the live catalog yet.",
+        );
         return false;
       }
       const variantId = line.variantId;
+      if (pendingVariantIds.current.has(variantId)) return false;
+      markPending(variantId, true);
       const previous = queryClient.getQueryData<CommerceCartResponse>(["cart"]);
       if (previous && line.productId && line.slug && line.name && line.price !== undefined) {
         const current = previous.items.find((item) => item.variantId === variantId);
@@ -166,6 +207,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           : {
               variantId,
               productId: line.productId,
+              categoryId: line.categoryId ?? "",
+              brandId: line.brandId ?? null,
               slug: line.slug,
               productNameEn: line.name,
               productNameAr: line.name,
@@ -188,10 +231,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           : [...previous.items, optimisticItem];
         commitCart(recalculateCart(previous, items));
       }
-      markPending(variantId, true);
       try {
         commitCart(await addCartItem(variantId, line.qty));
-        trackCommerceEvent("product_added_to_cart", { productId: line.productId, variantId, metadata: { quantity: line.qty } });
+        setCartFeedbackKey((current) => current + 1);
+        if (
+          typeof navigator !== "undefined" &&
+          navigator.maxTouchPoints > 0 &&
+          typeof navigator.vibrate === "function"
+        ) {
+          navigator.vibrate(18);
+        }
+        trackCommerceEvent("product_added_to_cart", {
+          productId: line.productId,
+          variantId,
+          metadata: { quantity: line.qty },
+        });
         return true;
       } catch (error) {
         if (previous) commitCart(previous);
@@ -201,12 +255,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         markPending(variantId, false);
       }
     },
-    [commitCart, fail, markPending, queryClient],
+    [commitCart, fail, locale, markPending, queryClient],
   );
 
   const remove = useCallback(
     async (variantId: string) => {
+      if (pendingVariantIds.current.has(variantId)) return;
+      markPending(variantId, true);
       const previous = queryClient.getQueryData<CommerceCartResponse>(["cart"]);
+      const removedItem = previous?.items.find((item) => item.variantId === variantId);
       if (previous) {
         commitCart(
           recalculateCart(
@@ -215,11 +272,23 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           ),
         );
       }
-      markPending(variantId, true);
       try {
         commitCart(await removeCartItem(variantId));
         trackCommerceEvent("product_removed_from_cart", { variantId });
-        toast("Removed from your bag");
+        toast(locale === "ar" ? "تمت الإزالة من حقيبتك" : "Removed from your bag", {
+          action: removedItem
+            ? {
+                label: locale === "ar" ? "تراجع" : "Undo",
+                onClick: () => {
+                  markPending(variantId, true);
+                  void addCartItem(variantId, removedItem.quantity)
+                    .then(commitCart)
+                    .catch(fail)
+                    .finally(() => markPending(variantId, false));
+                },
+              }
+            : undefined,
+        });
       } catch (error) {
         if (previous) commitCart(previous);
         fail(error);
@@ -227,11 +296,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         markPending(variantId, false);
       }
     },
-    [commitCart, fail, markPending, queryClient],
+    [commitCart, fail, locale, markPending, queryClient],
   );
 
   const setQty = useCallback(
     async (variantId: string, sizeOrQty: string | number, optionalQty?: number) => {
+      if (pendingVariantIds.current.has(variantId)) return;
+      markPending(variantId, true);
       const quantity = typeof sizeOrQty === "number" ? sizeOrQty : (optionalQty ?? 1);
       const previous = queryClient.getQueryData<CommerceCartResponse>(["cart"]);
       if (previous) {
@@ -245,7 +316,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
               );
         commitCart(recalculateCart(previous, items));
       }
-      markPending(variantId, true);
       try {
         commitCart(
           quantity <= 0
@@ -273,15 +343,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
   }, [commitCart, fail, queryClient]);
 
-  const applyCoupon = useCallback(async (code: string) => {
-    try {
-      commitCart(await applyCartCoupon(code));
-      return true;
-    } catch (error) {
-      fail(error);
-      return false;
-    }
-  }, [commitCart, fail]);
+  const applyCoupon = useCallback(
+    async (code: string) => {
+      try {
+        commitCart(await applyCartCoupon(code));
+        return true;
+      } catch (error) {
+        fail(error);
+        return false;
+      }
+    },
+    [commitCart, fail],
+  );
 
   const removeCoupon = useCallback(async () => {
     try {
@@ -307,7 +380,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const toggleWish = useCallback(
     async (productId: string, slug: string) => {
       if (!user) {
-        toast("Sign in to save a wishlist");
+        toast(locale === "ar" ? "سجّلي الدخول لحفظ قائمة المفضلة" : "Sign in to save a wishlist");
         return;
       }
       const desired = !wishlist.includes(slug);
@@ -316,7 +389,15 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         const next = desired ? await addWishlist(productId) : await removeWishlist(productId);
         commitWishlist(next);
         trackCommerceEvent(desired ? "wishlist_added" : "wishlist_removed", { productId });
-        toast(desired ? "Saved to your wishlist" : "Removed from your wishlist");
+        toast(
+          locale === "ar"
+            ? desired
+              ? "تم الحفظ في المفضلة"
+              : "تمت الإزالة من المفضلة"
+            : desired
+              ? "Saved to your wishlist"
+              : "Removed from your wishlist",
+        );
       } catch (error) {
         fail(error);
       } finally {
@@ -327,17 +408,24 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         });
       }
     },
-    [commitWishlist, fail, user, wishlist],
+    [commitWishlist, fail, locale, user, wishlist],
   );
 
   const setSession = useCallback(
-    (session: AuthSession) => {
+    async (session: AuthSession) => {
       rememberSession(session);
       setUser(session.user);
       setAuthHydrated(true);
-      void queryClient.invalidateQueries();
+      try {
+        commitCart(await mergeGuestCart());
+      } catch {
+        void queryClient.invalidateQueries({ queryKey: ["cart"] });
+      }
+      void queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey[0] !== "cart",
+      });
     },
-    [queryClient],
+    [commitCart, queryClient],
   );
 
   const signOut = useCallback(async () => {
@@ -351,6 +439,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     (next: Locale) => {
       setLocaleState(next);
       window.localStorage.setItem("bioreza.locale", next);
+      document.cookie = `bioreza.locale=${next}; Path=/; Max-Age=31536000; SameSite=Lax`;
       document.documentElement.lang = next;
       document.documentElement.dir = next === "ar" ? "rtl" : "ltr";
       void queryClient.invalidateQueries({ queryKey: ["catalog"] });
@@ -385,6 +474,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       cartOpen,
       searchOpen,
       count: cart?.totalQuantity ?? 0,
+      cartFeedbackKey,
       subtotal: (cart?.subtotal ?? 0) / 100,
       discountTotal: (cart?.discountTotal ?? 0) / 100,
       estimatedTotal: (cart?.estimatedTotal ?? cart?.subtotal ?? 0) / 100,
@@ -416,6 +506,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       applyCoupon,
       authHydrated,
       cart,
+      cartFeedbackKey,
       cartOpen,
       cartQuery.isLoading,
       clear,
@@ -425,6 +516,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       remove,
       removeCoupon,
       searchOpen,
+      setSession,
       setLocale,
       setQty,
       signOut,
@@ -437,7 +529,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
 }
 
-function recalculateCart(cart: CommerceCartResponse, items: CommerceCartResponse["items"]): CommerceCartResponse {
+function recalculateCart(
+  cart: CommerceCartResponse,
+  items: CommerceCartResponse["items"],
+): CommerceCartResponse {
   return {
     ...cart,
     items,

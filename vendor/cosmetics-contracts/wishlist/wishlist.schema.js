@@ -4,9 +4,11 @@ exports.wishlistSchema = exports.wishlistItemSchema = exports.addWishlistItemSch
 const zod_1 = require("zod");
 const primitives_1 = require("../common/primitives");
 const product_schema_1 = require("../catalog/product.schema");
-exports.addWishlistItemSchema = zod_1.z.object({
+exports.addWishlistItemSchema = zod_1.z
+    .object({
     productId: primitives_1.uuidSchema,
-}).strict();
+})
+    .strict();
 exports.wishlistItemSchema = zod_1.z.object({
     id: primitives_1.uuidSchema,
     userId: primitives_1.uuidSchema,

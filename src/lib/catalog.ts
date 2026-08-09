@@ -27,10 +27,13 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
   const gallery = product.images
     .slice()
     .sort((a, b) => a.sortOrder - b.sortOrder)
-    .map((image) => image.url);
-  const primary = product.imageUrl ?? gallery[0] ?? categoryFallback;
+    .map((image) => image.url.trim())
+    .filter(Boolean);
+  const primary = product.imageUrl?.trim() || gallery[0] || categoryFallback;
   return {
     id: product.id,
+    categoryId: product.category.id,
+    brandId: product.brand?.id ?? null,
     slug: product.slug,
     name: arabic ? product.nameAr : product.nameEn,
     category: categoryName,
@@ -44,8 +47,8 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
       product.descriptionAr ??
       "A carefully selected BIOREZA essential.",
     price: product.basePrice / 100,
-    rating: 0,
-    reviews: 0,
+    rating: product.rating,
+    reviews: product.reviewCount,
     image: primary,
     gallery: gallery.length ? gallery : [primary],
     sizes: variants.map((variant) => ({
@@ -72,41 +75,68 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
 export function useCatalog(
   params: Record<string, string | number | undefined> = {},
   locale: Locale = "en",
+  initialData?: Product[],
 ) {
   return useQuery({
     queryKey: ["catalog", params, locale],
     queryFn: async () => {
       const records = await listProducts(params);
-      if (typeof params.search === "string" && params.search.trim()) trackCommerceEvent("search_performed", { searchTerm: params.search.trim(), resultCount: records.length });
+      if (
+        typeof window !== "undefined" &&
+        typeof params["search"] === "string" &&
+        params["search"].trim()
+      )
+        trackCommerceEvent("search_performed", {
+          searchTerm: params["search"].trim(),
+          resultCount: records.length,
+        });
       const prices = await promotionalPrices(records);
       return records.map((product) => applyPrices(mapProduct(product, locale), prices));
     },
-    enabled: typeof window !== "undefined",
+    initialData,
     staleTime: 60_000,
   });
 }
 
-export function useProduct(slug: string, locale: Locale = "en") {
+export function useProduct(slug: string, locale: Locale = "en", initialData?: Product) {
   return useQuery({
     queryKey: ["product", slug, locale],
     queryFn: async () => {
       const record = await getProduct(slug);
-      trackCommerceEvent("product_viewed", { productId: record.id });
+      if (typeof window !== "undefined")
+        trackCommerceEvent("product_viewed", { productId: record.id });
       return applyPrices(mapProduct(record, locale), await promotionalPrices([record]));
     },
-    enabled: typeof window !== "undefined" && Boolean(slug),
+    enabled: Boolean(slug),
+    initialData,
     staleTime: 60_000,
   });
 }
 
-export function useCategories() {
+export function useCategories(initialData?: Awaited<ReturnType<typeof listCategories>>) {
   return useQuery({
     queryKey: ["categories"],
     queryFn: listCategories,
-    enabled: typeof window !== "undefined",
+    initialData,
     staleTime: 300_000,
   });
 }
+
+export async function loadCatalog(
+  params: Record<string, string | number | undefined> = {},
+  locale: Locale = "en",
+) {
+  const records = await listProducts(params);
+  const prices = await promotionalPrices(records);
+  return records.map((product) => applyPrices(mapProduct(product, locale), prices));
+}
+
+export async function loadProduct(slug: string, locale: Locale = "en") {
+  const record = await getProduct(slug);
+  return applyPrices(mapProduct(record, locale), await promotionalPrices([record]));
+}
+
+export const loadCategories = listCategories;
 
 function prettyEnum(value: string) {
   return value

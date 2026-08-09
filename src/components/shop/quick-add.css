@@ -3,8 +3,19 @@
 }
 
 .product-card-image {
-  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    transform 760ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 620ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
+}
+
+.product-card .image-reveal-shell[data-loaded="true"] .product-card-image {
+  transform: translate3d(var(--card-pan-x, 0), var(--card-pan-y, 0), 0) scale(1.001);
+}
+
+.product-card-secondary {
+  opacity: 0;
+  transition: opacity 680ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .quick-add {
@@ -155,9 +166,19 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .product-card-media:hover .product-card-image,
-  .product-card-media:focus-within .product-card-image {
-    transform: scale(1.02);
+  .product-card-media:hover .image-reveal-shell[data-loaded="true"] .product-card-image,
+  .product-card-media:focus-within .image-reveal-shell[data-loaded="true"] .product-card-image {
+    transform: translate3d(var(--card-pan-x, 0), var(--card-pan-y, 0), 0) scale(1.035);
+  }
+
+  .product-card-media[data-secondary-ready="true"]:hover .product-card-secondary,
+  .product-card-media[data-secondary-ready="true"]:focus-within .product-card-secondary {
+    opacity: 1;
+  }
+
+  .product-card-media[data-secondary-ready="true"]:hover .product-card-primary,
+  .product-card-media[data-secondary-ready="true"]:focus-within .product-card-primary {
+    opacity: 0;
   }
 
   .product-card-media:hover .quick-add,

@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import logo from "@/assets/bioreza-logo.png.asset.json";
 
 export function Logo({
   size = "md",
@@ -14,7 +13,7 @@ export function Logo({
   return (
     <Link to="/" className="group flex items-center gap-3" aria-label="BIOREZA home">
       <img
-        src={logo.url}
+        src="/favicon.png"
         alt=""
         aria-hidden="true"
         className={`${mark} w-auto transition-transform duration-700 group-hover:-translate-y-0.5`}

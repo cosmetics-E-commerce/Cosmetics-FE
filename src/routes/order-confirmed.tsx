@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Reveal } from "@/components/motion/Primitives";
+import { getOrderStatusCopy } from "@/lib/i18n";
+import { useStore } from "@/lib/store";
 type Search = { order?: string; status?: string; payment?: string };
 export const Route = createFileRoute("/order-confirmed")({
   validateSearch: (raw: Record<string, unknown>): Search => ({
@@ -13,9 +16,16 @@ export const Route = createFileRoute("/order-confirmed")({
 });
 function Confirmed() {
   const search = Route.useSearch();
+  const { locale } = useStore();
   const underReview = search.status === "PAYMENT_REVIEW";
+  const statusCopy = getOrderStatusCopy(search.status ?? "CONFIRMED", locale);
   return (
-    <div className="mx-auto max-w-2xl px-5 py-28 text-center md:px-10">
+    <Reveal
+      stagger
+      staggerMs={74}
+      distance={20}
+      className="mx-auto max-w-2xl px-5 py-28 text-center md:px-10"
+    >
       <span className="mx-auto grid size-16 place-items-center rounded-full border border-gold text-gold">
         <Check className="size-6" />
       </span>
@@ -36,7 +46,8 @@ function Confirmed() {
         </div>
         <div>
           <dt className="label-xs text-taupe">Status</dt>
-          <dd className="mt-2 text-sm">{search.status?.replaceAll("_", " ") ?? "Confirmed"}</dd>
+          <dd className="mt-2 text-sm">{statusCopy.label}</dd>
+          <dd className="mt-1 text-xs text-muted-foreground">{statusCopy.description}</dd>
         </div>
         <div>
           <dt className="label-xs text-taupe">Support</dt>
@@ -45,12 +56,14 @@ function Confirmed() {
       </dl>
       <div className="mt-14 flex flex-wrap justify-center gap-4">
         <Button asChild variant="solid" size="pill">
-          <Link to="/account">View account</Link>
+          <Link to="/account" search={{ section: "orders" }}>
+            Track this order
+          </Link>
         </Button>
         <Button asChild variant="quiet" size="pill">
           <Link to="/shop">Continue shopping</Link>
         </Button>
       </div>
-    </div>
+    </Reveal>
   );
 }

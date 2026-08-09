@@ -1,46 +1,69 @@
 import { useState, type FormEvent } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 import { AuthShell, AuthField } from "@/components/layout/AuthShell";
 import { Button } from "@/components/ui/button";
-import { apiErrorMessage, register } from "@/lib/api";
-import { useStore } from "@/lib/store";
+import { apiErrorCode, apiErrorMessage, register } from "@/lib/api";
+import {
+  savePendingEmailAfterDeliveryFailure,
+  savePendingVerification,
+} from "@/lib/pending-verification";
+import { normalizeEgyptPhone } from "@/lib/forms";
 export const Route = createFileRoute("/register")({
   head: () => ({ meta: [{ title: "Create account — BIOREZA" }] }),
   component: Register,
 });
 function Register() {
   const navigate = useNavigate();
-  const { setSession } = useStore();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    const email = String(data.get("email"));
+    const password = String(data.get("password"));
+    const rePassword = String(data.get("rePassword"));
+    if (password !== rePassword) {
+      setError("The passwords do not match. Re-enter the confirmation password.");
+      const confirmation = event.currentTarget.elements.namedItem("rePassword");
+      if (confirmation instanceof HTMLElement) confirmation.focus();
+      return;
+    }
     setPending(true);
     setError("");
     try {
       const result = await register({
         firstName: data.get("firstName"),
         lastName: data.get("lastName"),
-        phone: data.get("phone"),
-        email: data.get("email"),
+        phone: normalizeEgyptPhone(String(data.get("phone"))),
+        email,
         gender: data.get("gender"),
-        password: data.get("password"),
-        rePassword: data.get("rePassword"),
+        password,
+        rePassword,
         otpChannel: "EMAIL",
       });
-      if ("tokens" in result) {
-        setSession(result);
-        await navigate({ to: "/account" });
-      } else {
-        toast("Account created", {
-          description: "Check your email for the verification code, then sign in.",
-        });
-        await navigate({ to: "/sign-in" });
-      }
+      savePendingVerification(result);
+      toast("Verification code sent", {
+        description: `Enter the 6-digit code sent to ${result.maskedEmail}.`,
+      });
+      await navigate({ to: "/verify-email" });
     } catch (problem) {
+      if (
+        [
+          "EMAIL_DELIVERY_FAILED",
+          "EMAIL_PROVIDER_UNAVAILABLE",
+          "EMAIL_PROVIDER_NOT_CONFIGURED",
+          "REDIS_REQUIRED",
+          "REDIS_UNAVAILABLE",
+        ].includes(apiErrorCode(problem))
+      ) {
+        savePendingEmailAfterDeliveryFailure(email);
+        toast.error("Your account is pending verification", {
+          description: "Request a new code when email delivery is available.",
+        });
+        await navigate({ to: "/verify-email" });
+        return;
+      }
       setError(apiErrorMessage(problem));
     } finally {
       setPending(false);
@@ -54,7 +77,11 @@ function Register() {
       footer={
         <>
           Already a member?{" "}
-          <Link to="/sign-in" className="text-gold hover:underline">
+          <Link
+            to="/sign-in"
+            search={{ returnTo: undefined }}
+            className="text-gold hover:underline"
+          >
             Sign in
           </Link>
         </>
@@ -65,7 +92,16 @@ function Register() {
           <AuthField id="firstName" label="First name" autoComplete="given-name" />
           <AuthField id="lastName" label="Last name" autoComplete="family-name" />
         </div>
-        <AuthField id="phone" label="Egyptian mobile number" type="tel" autoComplete="tel" />
+        <AuthField
+          id="phone"
+          label="Egyptian mobile number"
+          type="tel"
+          autoComplete="tel"
+          pattern="01[0125][0-9]{8}"
+          minLength={11}
+          maxLength={11}
+          hint="11 digits, such as 01012345678."
+        />
         <AuthField id="email" label="Email" type="email" autoComplete="email" />
         <div>
           <label htmlFor="gender" className="label-xs text-taupe">
@@ -82,16 +118,21 @@ function Register() {
             <option value="OTHER">Prefer not to say</option>
           </select>
         </div>
-        <AuthField id="password" label="Password" type="password" autoComplete="new-password" />
+        <AuthField
+          id="password"
+          label="Password"
+          type="password"
+          autoComplete="new-password"
+          minLength={8}
+          pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}"
+          hint="Use 8+ characters with uppercase, lowercase and a number."
+        />
         <AuthField
           id="rePassword"
           label="Confirm password"
           type="password"
           autoComplete="new-password"
         />
-        <p className="text-xs leading-relaxed text-muted-foreground">
-          Use 8+ characters with uppercase, lowercase and a number.
-        </p>
         {error && (
           <p role="alert" className="border border-destructive/30 p-4 text-sm text-destructive">
             {error}

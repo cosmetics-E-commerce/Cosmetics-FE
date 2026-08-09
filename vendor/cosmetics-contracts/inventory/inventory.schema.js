@@ -1,31 +1,44 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.receiveInventoryBatchSchema = exports.paginatedStockReservationsSchema = exports.paginatedInventoryBatchesSchema = exports.paginatedInventoryStockSchema = exports.stockReservationSchema = exports.inventoryBatchSchema = exports.inventoryStockItemSchema = exports.inventoryBrandSummarySchema = exports.inventoryCategorySummarySchema = exports.inventoryProductSummarySchema = exports.stockReservationQuerySchema = exports.inventoryBatchQuerySchema = exports.inventoryStockQuerySchema = exports.stockStatusEnum = exports.reservationStatusEnum = void 0;
+exports.writeOffInventorySchema = exports.adjustInventorySchema = exports.receiveInventoryBatchSchema = exports.paginatedStockReservationsSchema = exports.paginatedInventoryBatchesSchema = exports.paginatedInventoryStockSchema = exports.stockReservationSchema = exports.inventoryBatchSchema = exports.inventoryStockItemSchema = exports.inventoryBrandSummarySchema = exports.inventoryCategorySummarySchema = exports.inventoryProductSummarySchema = exports.stockReservationQuerySchema = exports.inventoryBatchQuerySchema = exports.inventoryStockQuerySchema = exports.stockStatusEnum = exports.reservationStatusEnum = void 0;
 const zod_1 = require("zod");
 const product_schema_1 = require("../catalog/product.schema");
 const pagination_1 = require("../common/pagination");
 const primitives_1 = require("../common/primitives");
-exports.reservationStatusEnum = zod_1.z.enum(['ACTIVE', 'COMMITTED', 'RELEASED']);
-exports.stockStatusEnum = zod_1.z.enum(['IN_STOCK', 'LOW_STOCK', 'OUT_OF_STOCK']);
+exports.reservationStatusEnum = zod_1.z.enum([
+    "ACTIVE",
+    "COMMITTED",
+    "RELEASED",
+    "RESTORED",
+]);
+exports.stockStatusEnum = zod_1.z.enum([
+    "IN_STOCK",
+    "LOW_STOCK",
+    "OUT_OF_STOCK",
+]);
 exports.inventoryStockQuerySchema = pagination_1.paginationQuerySchema.extend({
     search: zod_1.z.string().trim().min(1).max(120).optional(),
     status: exports.stockStatusEnum.optional(),
     categoryId: primitives_1.uuidSchema.optional(),
     brandId: primitives_1.uuidSchema.optional(),
-    sortBy: zod_1.z.enum(['productName', 'sku', 'available', 'nextExpiryAt']).default('productName'),
+    sortBy: zod_1.z
+        .enum(["productName", "sku", "available", "nextExpiryAt"])
+        .default("productName"),
 });
 exports.inventoryBatchQuerySchema = pagination_1.paginationQuerySchema.extend({
     search: zod_1.z.string().trim().min(1).max(120).optional(),
     variantId: primitives_1.uuidSchema.optional(),
-    status: zod_1.z.enum(['AVAILABLE', 'DEPLETED', 'EXPIRED']).optional(),
-    sortBy: zod_1.z.enum(['expiresAt', 'receivedAt', 'batchNumber', 'available']).default('expiresAt'),
+    status: zod_1.z.enum(["AVAILABLE", "DEPLETED", "EXPIRED"]).optional(),
+    sortBy: zod_1.z
+        .enum(["expiresAt", "receivedAt", "batchNumber", "available"])
+        .default("expiresAt"),
 });
 exports.stockReservationQuerySchema = pagination_1.paginationQuerySchema.extend({
     search: zod_1.z.string().trim().min(1).max(120).optional(),
     variantId: primitives_1.uuidSchema.optional(),
     orderId: primitives_1.uuidSchema.optional(),
     status: exports.reservationStatusEnum.optional(),
-    sortBy: zod_1.z.enum(['createdAt', 'expiresAt', 'quantity']).default('createdAt'),
+    sortBy: zod_1.z.enum(["createdAt", "expiresAt", "quantity"]).default("createdAt"),
 });
 exports.inventoryProductSummarySchema = zod_1.z.object({
     id: primitives_1.uuidSchema,
@@ -117,4 +130,17 @@ exports.paginatedStockReservationsSchema = zod_1.z.object({
     meta: pagination_1.paginationMetaSchema,
 });
 exports.receiveInventoryBatchSchema = product_schema_1.receiveBatchSchema;
+exports.adjustInventorySchema = zod_1.z.object({
+    batchId: primitives_1.uuidSchema,
+    quantityDelta: zod_1.z
+        .number()
+        .int()
+        .refine((value) => value !== 0, "Quantity delta cannot be zero"),
+    reason: zod_1.z.string().trim().min(5).max(500),
+});
+exports.writeOffInventorySchema = zod_1.z.object({
+    batchId: primitives_1.uuidSchema,
+    quantity: zod_1.z.number().int().positive(),
+    reason: zod_1.z.string().trim().min(5).max(500),
+});
 //# sourceMappingURL=inventory.schema.js.map

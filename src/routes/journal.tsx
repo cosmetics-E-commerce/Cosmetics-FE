@@ -1,15 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Reveal } from "@/components/brand/Reveal";
 import { Button } from "@/components/ui/button";
-import { images, journal } from "@/lib/products";
+import { images } from "@/lib/products";
+import { useStore } from "@/lib/store";
+import { ImageReveal, ParallaxMedia, Reveal } from "@/components/motion/Primitives";
 
 export const Route = createFileRoute("/journal")({
   head: () => ({
     meta: [
-      { title: "The Journal — BIOREZA Cosmetics" },
+      { title: "About BIOREZA Cosmetics" },
       {
         name: "description",
-        content: "Rituals, ingredient science and editorial stories from the BIOREZA laboratory.",
+        content: "BIOREZA's approach to curated beauty, transparent ingredients and customer care.",
       },
       { property: "og:title", content: "The Journal — BIOREZA Cosmetics" },
       {
@@ -24,59 +25,53 @@ export const Route = createFileRoute("/journal")({
 });
 
 function JournalPage() {
+  const { locale } = useStore();
+  const ar = locale === "ar";
   return (
     <div>
-      <section className="mx-auto max-w-[1560px] px-5 py-16 md:px-10">
-        <p className="label-xs text-gold">The Journal</p>
+      <Reveal
+        as="section"
+        stagger
+        staggerMs={78}
+        className="mx-auto max-w-[1560px] px-5 py-16 md:px-10"
+      >
+        <p className="label-xs text-gold">{ar ? "عن بيوريزا" : "About BIOREZA"}</p>
         <h1 className="display mt-5 max-w-3xl text-[clamp(2.4rem,5vw,4rem)]">
-          Beauty grounded in science and refined by nature.
+          {ar
+            ? "جمال قائم على معلومات واضحة واختيارات مدروسة."
+            : "Beauty grounded in clear information and considered choices."}
         </h1>
         <p className="mt-8 max-w-xl text-[0.95rem] leading-relaxed text-muted-foreground">
-          BIOREZA began in a small European laboratory with a simple conviction: efficacy and
-          elegance belong together. Every formula is developed with dermatologists, assessed over
-          eight weeks and finished in packaging designed to live beautifully on your vanity.
+          {ar
+            ? "نقدم منتجات تجميل مختارة مع عرض المكونات وطريقة الاستخدام والمخزون والمراجعات الموثقة بوضوح. لا ننشر ادعاءات مختبرية أو تحريرية لا يدعمها سجل منتج حقيقي."
+            : "We curate beauty products while making ingredients, directions, stock, and verified-customer reviews clear. We do not publish laboratory claims or editorial stories without a real, reviewable product record behind them."}
         </p>
-      </section>
+      </Reveal>
 
       <section className="img-zoom mx-auto max-w-[1560px] px-5 md:px-10">
-        <img
-          src={images.collection}
-          alt="The BIOREZA collection on warm marble"
-          loading="lazy"
-          decoding="async"
-          draggable={false}
-          className="aspect-[21/9] w-full object-cover"
-        />
+        <ImageReveal direction="left" className="aspect-[21/9] w-full">
+          <ParallaxMedia className="size-full" strength={24}>
+            <img
+              src={images.collection}
+              alt="The BIOREZA collection on warm marble"
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+              className="size-full object-cover"
+            />
+          </ParallaxMedia>
+        </ImageReveal>
       </section>
 
       <section className="mx-auto max-w-[1560px] px-5 py-24 md:px-10">
-        <div className="grid gap-x-8 gap-y-14 md:grid-cols-3">
-          {journal.map((a, i) => (
-            <Reveal key={a.title} delay={i * 90} as="article">
-              <div className="img-zoom">
-                <img
-                  src={a.image}
-                  alt={a.title}
-                  loading="lazy"
-                  decoding="async"
-                  draggable={false}
-                  className="aspect-[4/3] w-full bg-ivory object-cover"
-                />
-              </div>
-              <p className="label-xs mt-6 text-gold">{a.category}</p>
-              <h2 className="mt-3 font-serif text-2xl leading-tight">{a.title}</h2>
-              <p className="mt-3 text-sm text-muted-foreground">{a.read}</p>
-              <span className="nav-link label-xs mt-5 inline-block">Read Article</span>
-            </Reveal>
-          ))}
-        </div>
-
-        <div className="mt-24 border-t border-border pt-16 text-center">
-          <h2 className="display text-[clamp(1.9rem,3.2vw,2.8rem)]">Begin your ritual.</h2>
+        <Reveal className="mt-24 border-t border-border pt-16 text-center">
+          <h2 className="display text-[clamp(1.9rem,3.2vw,2.8rem)]">
+            {ar ? "ابدئي اختيارك." : "Begin your selection."}
+          </h2>
           <Button asChild variant="solid" size="pill" className="mt-8">
-            <Link to="/shop">Discover the Collection</Link>
+            <Link to="/shop">{ar ? "تصفحي المجموعة" : "Discover the collection"}</Link>
           </Button>
-        </div>
+        </Reveal>
       </section>
     </div>
   );

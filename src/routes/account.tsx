@@ -1,31 +1,53 @@
-import { useState, type FormEvent, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { LoaderCircle, MapPin, Package, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { AddressForm } from "@/components/forms/AddressForm";
+import { ProductCard } from "@/components/shop/ProductCard";
 import {
   apiErrorMessage,
   createAddress,
   deleteAddress,
   getProfile,
+  getWishlist,
   listAddresses,
   listOrders,
   setDefaultAddress,
   updateProfile,
 } from "@/lib/api";
 import { formatPrice } from "@/lib/products";
+import { mapProduct } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
+import { Reveal } from "@/components/motion/Primitives";
+import { getOrderStatusCopy } from "@/lib/i18n";
 export const Route = createFileRoute("/account")({
+  validateSearch: (raw: Record<string, unknown>) => ({
+    section:
+      raw["section"] === "orders" ||
+      raw["section"] === "wishlist" ||
+      raw["section"] === "addresses" ||
+      raw["section"] === "settings"
+        ? raw["section"]
+        : undefined,
+  }),
   head: () => ({ meta: [{ title: "My account — BIOREZA" }] }),
   component: Account,
 });
-const tabs = ["Overview", "Orders", "Wishlist", "Addresses", "Settings"] as const;
+const tabs = [
+  { label: "Overview", value: "overview" },
+  { label: "Orders", value: "orders" },
+  { label: "Wishlist", value: "wishlist" },
+  { label: "Addresses", value: "addresses" },
+  { label: "Settings", value: "settings" },
+] as const;
 function Account() {
-  const { user, authHydrated, signOut, wishlist } = useStore();
+  const { user, authHydrated, signOut, wishlist, locale } = useStore();
   const navigate = useNavigate();
   const client = useQueryClient();
-  const [tab, setTab] = useState<(typeof tabs)[number]>("Overview");
+  const search = Route.useSearch();
+  const tab = search.section ?? "overview";
   const profile = useQuery({
     queryKey: ["account", "profile"],
     queryFn: getProfile,
@@ -39,6 +61,11 @@ function Account() {
   const orders = useQuery({
     queryKey: ["account", "orders"],
     queryFn: listOrders,
+    enabled: Boolean(user),
+  });
+  const wishlistProducts = useQuery({
+    queryKey: ["wishlist"],
+    queryFn: getWishlist,
     enabled: Boolean(user),
   });
   const addressMutation = useMutation({
@@ -71,43 +98,39 @@ function Account() {
           Sign in to view orders, addresses and saved products.
         </p>
         <Button asChild variant="solid" size="pill" className="mt-8">
-          <Link to="/sign-in">Sign in</Link>
+          <Link to="/sign-in" search={{ returnTo: undefined }}>
+            Sign in
+          </Link>
         </Button>
       </div>
     );
   const name = profile.data
     ? `${profile.data.firstName} ${profile.data.lastName}`
     : `${user.firstName} ${user.lastName}`;
-  async function addAddress(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const data = Object.fromEntries(new FormData(event.currentTarget));
-    addressMutation.mutate({
-      label: "HOME",
-      receiverName: String(data["receiverName"]),
-      phone: String(data["phone"]),
-      country: "Egypt",
-      governorate: String(data["governorate"]),
-      city: String(data["city"]),
-      area: String(data["area"]),
-      street: String(data["street"]),
-      building: String(data["building"]),
-      isDefault: !addresses.data?.length,
-    });
-  }
   return (
     <div className="mx-auto max-w-[1560px] px-5 py-14 md:px-10 lg:py-20">
-      <p className="label-xs text-gold">Client account</p>
-      <h1 className="display mt-5 text-[clamp(2.2rem,4.4vw,3.4rem)]">Welcome, {name}.</h1>
-      <div className="mt-12 grid gap-14 lg:grid-cols-[220px_1fr]">
-        <nav>
+      <Reveal stagger distance={20}>
+        <p className="label-xs text-gold">Client account</p>
+        <h1 className="display mt-5 text-[clamp(2.2rem,4.4vw,3.4rem)]">Welcome, {name}.</h1>
+      </Reveal>
+      <Reveal stagger className="mt-12 grid gap-14 lg:grid-cols-[220px_1fr]">
+        <nav className="account-nav h-fit">
           <ul className="flex gap-6 overflow-auto border-b border-border pb-3 lg:flex-col lg:border-b-0 lg:border-e lg:pe-6">
             {tabs.map((item) => (
-              <li key={item}>
+              <li key={item.value}>
                 <button
-                  onClick={() => setTab(item)}
-                  className={`label-xs min-h-11 whitespace-nowrap ${tab === item ? "text-gold" : "text-taupe"}`}
+                  onClick={() =>
+                    void navigate({
+                      to: "/account",
+                      search: {
+                        section: item.value === "overview" ? undefined : item.value,
+                      },
+                    })
+                  }
+                  aria-current={tab === item.value ? "page" : undefined}
+                  className={`label-xs min-h-11 whitespace-nowrap ${tab === item.value ? "text-gold" : "text-taupe"}`}
                 >
-                  {item}
+                  {item.label}
                 </button>
               </li>
             ))}
@@ -121,22 +144,34 @@ function Account() {
             </li>
           </ul>
         </nav>
-        <section>
-          {tab === "Overview" && (
-            <div className="grid gap-6 sm:grid-cols-3">
+        <section key={tab} className="account-panel">
+          {tab === "overview" && (
+            <Reveal stagger className="grid gap-6 sm:grid-cols-3">
               {[
-                ["Orders", orders.data?.length ?? 0],
-                ["Wishlist", wishlist.length],
-                ["Addresses", addresses.data?.length ?? 0],
-              ].map(([label, value]) => (
-                <div key={label} className="border border-border bg-ivory p-8">
+                { label: "Orders", value: orders.data?.length ?? 0, section: "orders" as const },
+                { label: "Wishlist", value: wishlist.length, section: "wishlist" as const },
+                {
+                  label: "Addresses",
+                  value: addresses.data?.length ?? 0,
+                  section: "addresses" as const,
+                },
+              ].map(({ label, value, section }) => (
+                <button
+                  type="button"
+                  key={label}
+                  onClick={() => void navigate({ to: "/account", search: { section } })}
+                  className="account-overview-card border border-border bg-ivory p-8 text-start"
+                >
                   <p className="label-xs text-taupe">{label}</p>
                   <p className="mt-4 font-serif text-4xl">{value}</p>
-                </div>
+                  <span className="label-xs mt-5 inline-block text-gold">
+                    View {String(label).toLowerCase()}
+                  </span>
+                </button>
               ))}
-            </div>
+            </Reveal>
           )}
-          {tab === "Orders" && (
+          {tab === "orders" && (
             <div>
               {orders.isLoading ? (
                 <p>Loading orders...</p>
@@ -154,44 +189,85 @@ function Account() {
                 </div>
               ) : orders.data?.length ? (
                 <ul className="divide-y divide-border border-y border-border">
-                  {orders.data.map((order) => (
-                    <li
-                      key={order.id}
-                      className="flex flex-wrap items-center justify-between gap-5 py-6"
-                    >
-                      <div>
-                        <p className="font-serif text-2xl">{order.orderNumber}</p>
-                        <p className="label-xs mt-2 text-taupe">
-                          {new Intl.DateTimeFormat("en-EG", {
-                            dateStyle: "medium",
-                            timeZone: "Africa/Cairo",
-                          }).format(new Date(order.placedAt))}
-                        </p>
-                      </div>
-                      <span className="label-xs text-gold">
-                        {order.status.replaceAll("_", " ")}
-                      </span>
-                      <span className="font-serif text-xl">
-                        {formatPrice(order.grandTotal / 100)}
-                      </span>
-                    </li>
-                  ))}
+                  {orders.data.map((order) => {
+                    const status = getOrderStatusCopy(order.status, locale);
+                    return (
+                      <li
+                        key={order.id}
+                        className="grid gap-5 py-6 sm:grid-cols-[1fr_1.2fr_auto] sm:items-center"
+                      >
+                        <div>
+                          <p className="font-serif text-2xl">{order.orderNumber}</p>
+                          <p className="label-xs mt-2 text-taupe">
+                            {new Intl.DateTimeFormat(locale === "ar" ? "ar-EG" : "en-EG", {
+                              dateStyle: "medium",
+                              timeZone: "Africa/Cairo",
+                            }).format(new Date(order.placedAt))}
+                          </p>
+                        </div>
+                        <div>
+                          <span className="label-xs text-gold">{status.label}</span>
+                          <p className="mt-1 text-xs text-muted-foreground">{status.description}</p>
+                        </div>
+                        <span className="font-serif text-xl">
+                          {formatPrice(order.grandTotal / 100)}
+                        </span>
+                      </li>
+                    );
+                  })}
                 </ul>
               ) : (
                 <Empty icon={<Package />} text="No orders yet." />
               )}
             </div>
           )}
-          {tab === "Wishlist" && (
-            <Empty
-              text={
-                wishlist.length
-                  ? `${wishlist.length} saved product${wishlist.length === 1 ? "" : "s"}. Open the shop to revisit them.`
-                  : "Your wishlist is empty."
-              }
-            />
+          {tab === "wishlist" && (
+            <div>
+              <div className="flex items-end justify-between gap-4 border-b border-border pb-5">
+                <div>
+                  <p className="label-xs text-gold">Saved selection</p>
+                  <h2 className="mt-3 font-serif text-3xl">Your wishlist</h2>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {wishlistProducts.data?.totalItems ?? wishlist.length} saved
+                </p>
+              </div>
+              {wishlistProducts.isLoading ? (
+                <div className="mt-8 grid grid-cols-2 gap-5 sm:grid-cols-3">
+                  {[0, 1, 2].map((item) => (
+                    <div key={item} className="animate-pulse">
+                      <div className="aspect-[4/5] bg-stone" />
+                      <div className="mt-4 h-4 w-3/4 bg-stone" />
+                    </div>
+                  ))}
+                </div>
+              ) : wishlistProducts.isError ? (
+                <div className="mt-8 border border-border px-8 py-14 text-center">
+                  <p role="alert" className="font-serif text-2xl">
+                    Your wishlist could not be loaded.
+                  </p>
+                  <Button
+                    type="button"
+                    variant="line"
+                    size="pill"
+                    className="mt-7"
+                    onClick={() => void wishlistProducts.refetch()}
+                  >
+                    Try again
+                  </Button>
+                </div>
+              ) : wishlistProducts.data?.items.length ? (
+                <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-12 sm:grid-cols-3 xl:grid-cols-4">
+                  {wishlistProducts.data.items.map((item) => (
+                    <ProductCard key={item.id} product={mapProduct(item.product, locale)} compact />
+                  ))}
+                </div>
+              ) : (
+                <Empty text="Your wishlist is empty." />
+              )}
+            </div>
           )}
-          {tab === "Addresses" && (
+          {tab === "addresses" && (
             <div>
               <div className="grid gap-5 sm:grid-cols-2">
                 {addresses.data?.map((address) => (
@@ -221,11 +297,15 @@ function Account() {
                         </button>
                       )}
                       <button
-                        onClick={() =>
-                          void deleteAddress(address.id).then(() =>
-                            client.invalidateQueries({ queryKey: ["account", "addresses"] }),
-                          )
-                        }
+                        onClick={() => {
+                          if (!window.confirm("Delete this address? This cannot be undone."))
+                            return;
+                          void deleteAddress(address.id)
+                            .then(() =>
+                              client.invalidateQueries({ queryKey: ["account", "addresses"] }),
+                            )
+                            .catch((error) => toast.error(apiErrorMessage(error)));
+                        }}
                         aria-label="Delete address"
                       >
                         <Trash2 className="size-4" />
@@ -234,35 +314,29 @@ function Account() {
                   </article>
                 ))}
               </div>
-              <form
-                onSubmit={addAddress}
-                className="mt-10 grid gap-5 border-t border-border pt-8 sm:grid-cols-2"
-              >
+              <div className="mt-10 border-t border-border pt-8">
                 <h2 className="font-serif text-2xl sm:col-span-2">Add a delivery address</h2>
-                {["receiverName", "phone", "governorate", "city", "area", "street", "building"].map(
-                  (field) => (
-                    <label key={field} className="label-xs text-taupe">
-                      {field.replace(/([A-Z])/g, " $1")}
-                      <input
-                        name={field}
-                        required
-                        className="mt-2 h-12 w-full border border-input bg-warm-white px-4 text-sm normal-case tracking-normal"
-                      />
-                    </label>
-                  ),
-                )}
-                <Button
-                  type="submit"
-                  variant="solid"
-                  size="pill"
-                  disabled={addressMutation.isPending}
-                >
-                  Save address
-                </Button>
-              </form>
+                <p className="mb-7 mt-2 text-sm text-muted-foreground">
+                  Add enough detail for the courier to find you without calling twice.
+                </p>
+                <AddressForm
+                  initialName={name}
+                  initialPhone={profile.data?.phone ?? user.phone ?? ""}
+                  pending={addressMutation.isPending}
+                  submitLabel="Save address"
+                  onSubmit={(input) =>
+                    addressMutation
+                      .mutateAsync({
+                        ...input,
+                        isDefault: !addresses.data?.length,
+                      })
+                      .then(() => undefined)
+                  }
+                />
+              </div>
             </div>
           )}
-          {tab === "Settings" && (
+          {tab === "settings" && (
             <form
               className="max-w-lg space-y-6"
               onSubmit={(event) => {
@@ -290,13 +364,13 @@ function Account() {
                   />
                 </label>
               ))}
-              <Button type="submit" variant="solid" size="pill">
+              <Button type="submit" variant="solid" size="pill" loading={profileMutation.isPending}>
                 Save changes
               </Button>
             </form>
           )}
         </section>
-      </div>
+      </Reveal>
     </div>
   );
 }

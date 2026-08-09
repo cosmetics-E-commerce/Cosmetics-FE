@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { useState, type FormEvent } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Search, X } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { formatPrice } from "@/lib/products";
@@ -10,18 +10,33 @@ import { PolishedImage } from "@/components/ui/polished-image";
 
 export function SearchOverlay() {
   const { searchOpen, setSearchOpen, locale } = useStore();
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const deferred = useDebouncedValue(query.trim(), 220);
   const results = useCatalog(deferred ? { search: deferred, limit: 6 } : { limit: 6 }, locale);
+  const goToResults = () => {
+    const value = query.trim();
+    if (!value) return;
+    setSearchOpen(false);
+    void navigate({ to: "/shop", search: { search: value } });
+  };
+  const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    goToResults();
+  };
   return (
     <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
       <DialogContent
         showCloseButton={false}
-        className="top-0 max-w-none translate-y-0 gap-0 rounded-none border-0 border-b border-border bg-warm-white p-0 sm:max-w-none"
+        className="search-overlay top-0 max-w-none translate-y-0 gap-0 rounded-none border-0 border-b border-border bg-warm-white p-0 sm:max-w-none"
       >
         <DialogTitle className="sr-only">Search BIOREZA</DialogTitle>
-        <div className="mx-auto max-h-[100dvh] w-full max-w-5xl overflow-y-auto px-6 pb-12 pt-10 md:px-10">
-          <div className="flex items-center gap-4 border-b border-gold/40 pb-4">
+        <div className="search-overlay-content mx-auto max-h-[100dvh] w-full max-w-5xl overflow-y-auto px-6 pb-12 pt-10 md:px-10">
+          <form
+            className="flex items-center gap-4 border-b border-gold/40 pb-4"
+            onSubmit={submit}
+            role="search"
+          >
             <Search strokeWidth={1} className="size-5 shrink-0 text-gold" />
             <input
               autoFocus
@@ -31,6 +46,8 @@ export function SearchOverlay() {
                 locale === "ar" ? "ابحثي عن منتج أو فئة" : "Search products or categories"
               }
               className="w-full bg-transparent font-serif text-xl outline-none placeholder:text-greige md:text-3xl"
+              aria-label={locale === "ar" ? "البحث في المنتجات" : "Search products"}
+              aria-controls="search-results"
             />
             <button
               type="button"
@@ -40,8 +57,13 @@ export function SearchOverlay() {
             >
               <X strokeWidth={1} className="size-5" />
             </button>
-          </div>
-          <div aria-live="polite" aria-atomic="true">
+          </form>
+          <div id="search-results" aria-live="polite" aria-atomic="true">
+            {!deferred && !results.isLoading && (
+              <p className="label-xs mt-8 text-taupe">
+                {locale === "ar" ? "اكتشفي المجموعة" : "Explore the collection"}
+              </p>
+            )}
             {results.isFetching && deferred && (
               <p className="mt-10 text-sm text-muted-foreground">Searching the collection...</p>
             )}
@@ -51,7 +73,19 @@ export function SearchOverlay() {
               </p>
             )}
             {!results.isLoading && deferred && results.data?.length === 0 && (
-              <p className="mt-10 text-sm text-muted-foreground">No products match “{deferred}”.</p>
+              <div className="mt-10 border border-border p-6">
+                <p className="font-serif text-2xl">No products match “{deferred}”.</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Check the spelling, try a shorter term, or browse the full collection.
+                </p>
+                <Link
+                  to="/shop"
+                  onClick={() => setSearchOpen(false)}
+                  className="label-xs mt-5 inline-block text-gold hover:underline"
+                >
+                  Browse all products
+                </Link>
+              </div>
             )}
             <ul className="mt-8 divide-y divide-border">
               {results.data?.map((product, index) => (
@@ -64,7 +98,7 @@ export function SearchOverlay() {
                     to="/product/$slug"
                     params={{ slug: product.slug }}
                     onClick={() => setSearchOpen(false)}
-                    className="flex items-center gap-5 py-4 transition-colors duration-200 hover:bg-ivory"
+                    className="search-result flex items-center gap-5 py-4"
                   >
                     <PolishedImage
                       src={product.image}
@@ -84,6 +118,15 @@ export function SearchOverlay() {
                 </li>
               ))}
             </ul>
+            {deferred && Boolean(results.data?.length) && (
+              <button
+                type="button"
+                onClick={goToResults}
+                className="label-xs mt-7 min-h-11 text-gold hover:underline"
+              >
+                View all results for “{deferred}”
+              </button>
+            )}
           </div>
         </div>
       </DialogContent>

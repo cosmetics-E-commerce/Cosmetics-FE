@@ -12,69 +12,83 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Reveal } from "@/components/brand/Reveal";
-import { Stars } from "@/components/brand/Stars";
+import { ImageReveal, Magnetic, ParallaxMedia, TextReveal } from "@/components/motion/Primitives";
 import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { PolishedImage } from "@/components/ui/polished-image";
-import { useCatalog } from "@/lib/catalog";
-import {
-  categories,
-  concerns,
-  formatPrice,
-  images,
-  journal,
-  products,
-  testimonials,
-} from "@/lib/products";
+import { useCatalog, useCategories } from "@/lib/catalog";
+import { concerns, formatPrice, images } from "@/lib/products";
 import { useStore } from "@/lib/store";
+import { apiErrorMessage, subscribeNewsletter } from "@/lib/api";
+import { useI18n } from "@/lib/i18n";
+import type { PublicCategoryResponse } from "@/lib/api";
+import type { Product } from "@/lib/products";
 import { toast } from "sonner";
 
 export function Hero() {
   return (
-    <section className="relative bg-ivory">
+    <section className="hero-intro relative bg-ivory">
       <div className="mx-auto grid max-w-[1560px] items-stretch gap-0 px-0 lg:grid-cols-[0.95fr_1.05fr]">
         <div className="flex flex-col justify-center px-5 py-20 md:px-14 lg:py-32 xl:px-24">
-          <Reveal>
-            <p className="label-xs text-gold">Science-backed beauty</p>
-            <h1 className="display mt-8 text-[clamp(2.9rem,6.4vw,5.4rem)]">
-              Healthy skin
-              <br />
-              is beautiful skin.
-            </h1>
-            <p className="mt-8 max-w-md text-[0.95rem] leading-relaxed text-muted-foreground">
-              Advanced skincare and carefully curated beauty essentials, selected for visible
-              results and everyday confidence.
-            </p>
-            <div className="mt-12 flex flex-wrap items-center gap-8">
-              <Button asChild variant="solid" size="pill">
-                <Link to="/shop">Discover the Collection</Link>
-              </Button>
-              <Link
-                to="/shop"
-                search={{ sort: "new" }}
-                className="nav-link label-xs inline-flex items-center gap-2 text-taupe"
-              >
-                Explore New Arrivals
-                <ArrowRight strokeWidth={1} className="size-4" aria-hidden="true" />
-              </Link>
-            </div>
-          </Reveal>
+          <div>
+            <Reveal variant="fade" delay={160} duration={720} distance={0}>
+              <p className="label-xs text-gold">Science-backed beauty</p>
+            </Reveal>
+            <TextReveal
+              as="h1"
+              className="display mt-8 text-[clamp(2.9rem,6.4vw,5.4rem)]"
+              lines={["Healthy skin", "is beautiful skin."]}
+              delay={230}
+              staggerMs={105}
+            />
+            <Reveal delay={500} distance={20}>
+              <p className="mt-8 max-w-md text-[0.95rem] leading-relaxed text-muted-foreground">
+                Advanced skincare and carefully curated beauty essentials, selected for visible
+                results and everyday confidence.
+              </p>
+            </Reveal>
+            <Reveal delay={620} distance={16}>
+              <div className="mt-12 flex flex-wrap items-center gap-8">
+                <Magnetic>
+                  <Button asChild variant="solid" size="pill">
+                    <Link to="/shop">Discover the Collection</Link>
+                  </Button>
+                </Magnetic>
+                <Link
+                  to="/shop"
+                  search={{ sort: "new" }}
+                  className="nav-link label-xs inline-flex items-center gap-2 text-taupe"
+                >
+                  Explore New Arrivals
+                  <ArrowRight strokeWidth={1} className="size-4" aria-hidden="true" />
+                </Link>
+              </div>
+            </Reveal>
+          </div>
         </div>
 
         <div className="relative min-h-[62vh] lg:min-h-[86vh]">
-          <img
-            src={images.hero}
-            alt="BIOREZA skincare essence and serum arranged on a travertine plinth"
-            width={1408}
-            height={1712}
-            fetchPriority="high"
-            decoding="sync"
-            className="absolute inset-0 size-full object-cover motion-safe:kenburns"
-          />
-          <div className="absolute bottom-6 left-6 hidden bg-warm-white/90 px-6 py-5 backdrop-blur-sm md:block">
+          <ImageReveal direction="right" className="absolute inset-0">
+            <ParallaxMedia className="size-full" strength={22}>
+              <img
+                src={images.hero}
+                alt="BIOREZA skincare essence and serum arranged on a travertine plinth"
+                width={1408}
+                height={1712}
+                fetchPriority="high"
+                decoding="sync"
+                className="size-full object-cover"
+              />
+            </ParallaxMedia>
+          </ImageReveal>
+          <Reveal
+            variant="scale"
+            delay={780}
+            className="absolute bottom-6 left-6 hidden bg-warm-white/90 px-6 py-5 backdrop-blur-sm md:block"
+          >
             <p className="label-xs text-gold">The Renewal Collection</p>
             <p className="mt-2 font-serif text-xl">Renew Serum — Anti-Ageing</p>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>
@@ -92,81 +106,120 @@ const benefits = [
 export function Benefits() {
   return (
     <section className="border-y border-border bg-warm-white" aria-label="Brand promises">
-      <ul className="mx-auto grid max-w-[1560px] grid-cols-2 gap-y-8 px-5 py-10 md:grid-cols-3 md:px-10 lg:grid-cols-5">
+      <Reveal
+        as="ul"
+        stagger
+        staggerMs={70}
+        distance={18}
+        className="mx-auto grid max-w-[1560px] grid-cols-2 gap-y-8 px-5 py-10 md:grid-cols-3 md:px-10 lg:grid-cols-5"
+      >
         {benefits.map(({ icon: Icon, label }) => (
           <li key={label} className="flex items-center gap-3">
             <Icon strokeWidth={0.9} className="size-6 shrink-0 text-gold" aria-hidden="true" />
             <span className="label-xs text-[0.6rem] text-foreground/80">{label}</span>
           </li>
         ))}
-      </ul>
+      </Reveal>
     </section>
   );
 }
 
-export function CategoryGrid() {
+export function CategoryGrid({
+  initialCategories,
+}: {
+  initialCategories?: PublicCategoryResponse[];
+}) {
+  const { locale } = useStore();
+  const { t } = useI18n();
+  const categoryQuery = useCategories(initialCategories);
+  const categories = categoryQuery.data ?? [];
   return (
     <section className="mx-auto max-w-[1560px] px-5 py-24 md:px-10 lg:py-32">
-      <Reveal className="flex flex-wrap items-end justify-between gap-6">
+      <Reveal stagger className="flex flex-wrap items-end justify-between gap-6">
         <div>
-          <p className="label-xs text-gold">Shop by category</p>
-          <h2 className="display mt-5 text-[clamp(2.1rem,4vw,3.4rem)]">A considered edit.</h2>
+          <p className="label-xs text-gold">{t("home.categoryEyebrow")}</p>
+          <h2 className="display mt-5 text-[clamp(2.1rem,4vw,3.4rem)]">
+            {t("home.categoryTitle")}
+          </h2>
         </div>
         <Link to="/shop" className="nav-link label-xs text-taupe">
-          View all products
+          {t("common.viewAll")}
         </Link>
       </Reveal>
 
       <div className="mt-16 grid gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-4">
-        {categories.map((c, i) => (
-          <Reveal key={c.name} delay={i * 90}>
-            <Link
-              to="/shop"
-              search={{ category: c.name }}
-              className={`img-zoom group block transition-transform duration-500 hover:-translate-y-1 ${
-                i % 2 === 1 ? "lg:mt-16" : ""
-              }`}
-            >
-              <img
-                src={c.image}
-                alt={c.name}
-                loading="lazy"
-                decoding="async"
-                draggable={false}
-                className="aspect-[3/4] w-full bg-ivory object-cover"
-              />
-              <div className="flex items-end justify-between gap-4 border-b border-border pb-4 pt-5 transition-colors duration-500 group-hover:border-gold">
-                <div>
-                  <h3 className="font-serif text-2xl">{c.name}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">{c.copy}</p>
+        {categories.map((category, i) => {
+          const name = locale === "ar" ? category.nameAr : category.nameEn;
+          const categoryImage =
+            category.imageUrl?.trim() ||
+            {
+              skincare: images.catSkincare,
+              makeup: images.catMakeup,
+              haircare: images.catHaircare,
+              fragrance: images.catFragrance,
+            }[category.slug.toLowerCase()] ||
+            images.collection;
+          return (
+            <Reveal key={category.id} delay={i * 90}>
+              <Link
+                to="/shop"
+                search={{ category: category.slug }}
+                className={`img-zoom group block transition-transform duration-500 hover:-translate-y-1 ${
+                  i % 2 === 1 ? "lg:mt-16" : ""
+                }`}
+              >
+                <ImageReveal direction={i % 3 === 1 ? "right" : i % 3 === 2 ? "left" : "up"}>
+                  <img
+                    src={categoryImage}
+                    alt={name}
+                    loading="lazy"
+                    decoding="async"
+                    draggable={false}
+                    className="aspect-[3/4] w-full bg-ivory object-cover"
+                  />
+                </ImageReveal>
+                <div className="flex items-end justify-between gap-4 border-b border-border pb-4 pt-5 transition-colors duration-500 group-hover:border-gold">
+                  <div>
+                    <h3 className="font-serif text-2xl">{name}</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {category.productCount} {t("common.products")}
+                    </p>
+                  </div>
+                  <ArrowRight
+                    strokeWidth={1}
+                    className="size-5 shrink-0 text-gold transition-transform duration-500 group-hover:translate-x-1"
+                    aria-hidden="true"
+                  />
                 </div>
-                <ArrowRight
-                  strokeWidth={1}
-                  className="size-5 shrink-0 text-gold transition-transform duration-500 group-hover:translate-x-1"
-                  aria-hidden="true"
-                />
-              </div>
-            </Link>
-          </Reveal>
-        ))}
+              </Link>
+            </Reveal>
+          );
+        })}
       </div>
     </section>
   );
 }
 
-export function Featured() {
+export function Featured({ initialProducts }: { initialProducts?: Product[] }) {
+  const { locale } = useStore();
+  const { t } = useI18n();
+  const catalog = useCatalog(
+    { limit: 4, sortBy: "createdAt", sortOrder: "desc" },
+    locale,
+    initialProducts,
+  );
   return (
     <section className="bg-ivory">
       <div className="mx-auto max-w-[1560px] px-5 py-24 md:px-10 lg:py-32">
-        <Reveal className="max-w-xl">
-          <p className="label-xs text-gold">Featured</p>
+        <Reveal stagger className="max-w-xl">
+          <p className="label-xs text-gold">{t("home.featured")}</p>
           <h2 className="display mt-5 text-[clamp(2.1rem,4vw,3.4rem)]">
-            The essentials our clients return to.
+            {t("home.featuredTitle")}
           </h2>
         </Reveal>
 
         <div className="mt-16 grid grid-cols-2 gap-x-6 gap-y-14 lg:grid-cols-4">
-          {products.slice(0, 4).map((p, i) => (
+          {(catalog.data ?? []).map((p, i) => (
             <Reveal key={p.slug} delay={i * 80}>
               <ProductCard product={p} />
             </Reveal>
@@ -181,16 +234,20 @@ export function CollectionFeature() {
   return (
     <section className="mx-auto grid max-w-[1560px] items-center gap-0 lg:grid-cols-[1.15fr_0.85fr]">
       <div className="img-zoom relative min-h-[52vh] lg:min-h-[80vh]">
-        <img
-          src={images.collection}
-          alt="The Renewal Collection arranged on warm marble"
-          loading="lazy"
-          decoding="async"
-          draggable={false}
-          className="absolute inset-0 size-full object-cover"
-        />
+        <ImageReveal direction="left" className="absolute inset-0">
+          <ParallaxMedia className="size-full" strength={34}>
+            <img
+              src={images.collection}
+              alt="The Renewal Collection arranged on warm marble"
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+              className="size-full object-cover"
+            />
+          </ParallaxMedia>
+        </ImageReveal>
       </div>
-      <Reveal className="px-5 py-20 md:px-14 lg:px-20">
+      <Reveal stagger staggerMs={76} className="px-5 py-20 md:px-14 lg:px-20">
         <p className="label-xs text-gold">The Renewal Collection</p>
         <h2 className="display mt-6 text-[clamp(2.2rem,3.6vw,3.6rem)]">
           Restore your natural radiance.
@@ -208,11 +265,13 @@ export function CollectionFeature() {
             </li>
           ))}
         </ul>
-        <Button asChild variant="line" size="pill" className="mt-10">
-          <Link to="/shop" search={{ category: "Skincare" }}>
-            Explore the Collection
-          </Link>
-        </Button>
+        <Magnetic>
+          <Button asChild variant="line" size="pill" className="mt-10">
+            <Link to="/shop" search={{ category: "Skincare" }}>
+              Explore the Collection
+            </Link>
+          </Button>
+        </Magnetic>
       </Reveal>
     </section>
   );
@@ -221,7 +280,7 @@ export function CollectionFeature() {
 export function Concerns() {
   return (
     <section className="mx-auto max-w-[1560px] px-5 py-24 md:px-10 lg:py-32">
-      <Reveal className="max-w-xl">
+      <Reveal stagger className="max-w-xl">
         <p className="label-xs text-gold">Shop by skin concern</p>
         <h2 className="display mt-5 text-[clamp(2.1rem,4vw,3.4rem)]">Begin with your skin.</h2>
       </Reveal>
@@ -249,12 +308,17 @@ export function Concerns() {
   );
 }
 
-export function BestSellers() {
+export function BestSellers({ initialProducts }: { initialProducts?: Product[] }) {
   const { add, locale, pendingVariants } = useStore();
-  const catalog = useCatalog({ limit: 8, sortBy: "createdAt", sortOrder: "desc" }, locale);
-  const list = catalog.data?.length
-    ? catalog.data
-    : [...products].sort((a, b) => b.rating - a.rating);
+  const { t } = useI18n();
+  const catalog = useCatalog(
+    { limit: 8, sortBy: "createdAt", sortOrder: "desc" },
+    locale,
+    initialProducts,
+  );
+  const list = [...(catalog.data ?? [])].sort(
+    (a, b) => b.reviews - a.reviews || b.rating - a.rating,
+  );
   const trackRef = useRef<HTMLUListElement>(null);
 
   const scrollTrack = (dir: 1 | -1) => {
@@ -268,10 +332,13 @@ export function BestSellers() {
 
   return (
     <section className="bg-ivory py-24 lg:py-32">
-      <div className="mx-auto flex max-w-[1560px] flex-wrap items-end justify-between gap-6 px-5 md:px-10">
+      <Reveal
+        stagger
+        className="mx-auto flex max-w-[1560px] flex-wrap items-end justify-between gap-6 px-5 md:px-10"
+      >
         <div>
-          <p className="label-xs text-gold">Best sellers</p>
-          <h2 className="display mt-5 text-[clamp(2.1rem,4vw,3.4rem)]">Quietly loved.</h2>
+          <p className="label-xs text-gold">{t("home.best")}</p>
+          <h2 className="display mt-5 text-[clamp(2.1rem,4vw,3.4rem)]">{t("home.bestTitle")}</h2>
         </div>
         <div className="flex items-center gap-6">
           <p className="label-xs text-taupe lg:hidden">Scroll →</p>
@@ -294,11 +361,11 @@ export function BestSellers() {
             </button>
           </div>
         </div>
-      </div>
+      </Reveal>
 
       <ul
         ref={trackRef}
-        className="no-scrollbar mt-14 flex snap-x snap-mandatory gap-6 overflow-x-auto px-5 pb-4 md:px-10 lg:edge-fade"
+        className="motion-carousel no-scrollbar mt-14 flex snap-x snap-mandatory gap-6 overflow-x-auto px-5 pb-4 md:px-10 lg:edge-fade"
       >
         {list.map((p) => (
           <li key={p.slug} className="w-[72vw] shrink-0 snap-start sm:w-[42vw] lg:w-[23vw]">
@@ -328,6 +395,8 @@ export function BestSellers() {
                   void add({
                     variantId: variant.id,
                     productId: p.id,
+                    categoryId: p.categoryId,
+                    brandId: p.brandId,
                     slug: p.slug,
                     name: p.name,
                     image: p.image,
@@ -358,18 +427,20 @@ export function BrandStory() {
   return (
     <section className="mx-auto max-w-[1560px] px-5 py-24 md:px-10 lg:py-32">
       <div className="grid items-center gap-14 lg:grid-cols-[1.1fr_0.9fr]">
-        <Reveal className="img-zoom">
-          <img
-            src={images.storyLarge}
-            alt="A woman in a cream silk robe beside a travertine vanity"
-            loading="lazy"
-            decoding="async"
-            draggable={false}
-            className="aspect-[4/5] w-full object-cover lg:aspect-[5/6]"
-          />
-        </Reveal>
+        <ImageReveal direction="right" className="img-zoom aspect-[4/5] w-full lg:aspect-[5/6]">
+          <ParallaxMedia className="size-full" strength={30}>
+            <img
+              src={images.storyLarge}
+              alt="A woman in a cream silk robe beside a travertine vanity"
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+              className="size-full object-cover"
+            />
+          </ParallaxMedia>
+        </ImageReveal>
 
-        <Reveal delay={120} className="relative lg:-ml-24">
+        <Reveal stagger delay={120} staggerMs={78} className="relative lg:-ml-24">
           <div className="bg-warm-white p-8 md:p-14">
             <p className="label-xs text-gold">Our philosophy</p>
             <h2 className="display mt-6 text-[clamp(2rem,3.4vw,3.2rem)]">
@@ -386,159 +457,68 @@ export function BrandStory() {
               <ArrowRight strokeWidth={1} className="size-4" aria-hidden="true" />
             </Link>
           </div>
-          <img
-            src={images.storyDetail}
-            alt="Cream texture swatch on marble"
-            loading="lazy"
-            decoding="async"
-            draggable={false}
-            className="mt-8 hidden w-56 object-cover lg:ml-14 lg:block"
-          />
+          <ImageReveal direction="up" delay={180} className="mt-8 hidden w-56 lg:ml-14 lg:block">
+            <img
+              src={images.storyDetail}
+              alt="Cream texture swatch on marble"
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+              className="w-full object-cover"
+            />
+          </ImageReveal>
         </Reveal>
       </div>
-    </section>
-  );
-}
-
-export function Journal() {
-  return (
-    <section className="border-t border-border bg-warm-white">
-      <div className="mx-auto max-w-[1560px] px-5 py-24 md:px-10 lg:py-32">
-        <Reveal className="flex flex-wrap items-end justify-between gap-6">
-          <div>
-            <p className="label-xs text-gold">Beauty journal</p>
-            <h2 className="display mt-5 text-[clamp(2.1rem,4vw,3.4rem)]">Rituals & knowledge.</h2>
-          </div>
-          <Link to="/journal" className="nav-link label-xs text-taupe">
-            All articles
-          </Link>
-        </Reveal>
-
-        <div className="mt-16 grid gap-x-8 gap-y-14 md:grid-cols-3">
-          {journal.map((a, i) => (
-            <Reveal key={a.title} delay={i * 90} as="article">
-              <Link to="/journal" className="img-zoom group block">
-                <img
-                  src={a.image}
-                  alt={a.title}
-                  loading="lazy"
-                  decoding="async"
-                  draggable={false}
-                  className="aspect-[4/3] w-full bg-ivory object-cover"
-                />
-              </Link>
-              <p className="label-xs mt-6 text-gold">{a.category}</p>
-              <h3 className="mt-3 font-serif text-2xl leading-tight">
-                <Link to="/journal" className="hover:text-gold">
-                  {a.title}
-                </Link>
-              </h3>
-              <p className="mt-3 text-sm text-muted-foreground">{a.read}</p>
-              <Link to="/journal" className="nav-link label-xs mt-5 inline-block">
-                Read Article
-              </Link>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-export function Testimonials() {
-  return (
-    <section className="bg-ivory">
-      <div className="mx-auto max-w-[1560px] px-5 py-24 md:px-10 lg:py-32">
-        <Reveal className="text-center">
-          <p className="label-xs text-gold">In their words</p>
-        </Reveal>
-        <div className="mt-16 grid gap-16 md:grid-cols-3">
-          {testimonials.map((t, i) => (
-            <Reveal key={t.name} delay={i * 100} className="text-center">
-              <Stars value={5} size={13} />
-              <blockquote className="mt-6 font-serif text-[1.6rem] leading-snug">
-                “{t.quote}”
-              </blockquote>
-              <p className="label-xs mt-8 text-taupe">
-                {t.name} — {t.place}
-              </p>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-export function Gallery() {
-  const shots = [
-    images.collection,
-    images.catMakeup,
-    images.storyDetail,
-    images.catFragrance,
-    images.serum,
-    images.catHaircare,
-  ];
-  return (
-    <section className="mx-auto max-w-[1560px] px-5 py-24 md:px-10 lg:py-32">
-      <Reveal className="text-center">
-        <p className="label-xs text-gold">@bioreza.cosmetics</p>
-        <h2 className="display mt-5 text-[clamp(2.1rem,4vw,3.4rem)]">The BIOREZA Edit</h2>
-      </Reveal>
-      <ul className="mt-14 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
-        {shots.map((src, i) => (
-          <li key={i} className="img-zoom">
-            <a href="#" aria-label="View post on Instagram">
-              <img
-                src={src}
-                alt=""
-                loading="lazy"
-                decoding="async"
-                draggable={false}
-                className="aspect-square w-full bg-ivory object-cover"
-              />
-            </a>
-          </li>
-        ))}
-      </ul>
     </section>
   );
 }
 
 export function Newsletter() {
+  const { locale } = useStore();
+  const { t } = useI18n();
   return (
     <section className="bg-ink">
       <div className="mx-auto max-w-3xl px-5 py-24 text-center md:px-10 lg:py-32">
-        <Reveal>
-          <p className="label-xs text-gold">Newsletter</p>
+        <Reveal stagger staggerMs={78}>
+          <p className="label-xs text-gold">{t("newsletter.label")}</p>
           <h2 className="display mt-6 text-[clamp(2.1rem,4vw,3.4rem)] text-warm-white">
-            Enter the world of BIOREZA.
+            {t("newsletter.title")}
           </h2>
           <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-warm-white/70">
-            Receive private offers, beauty rituals, new arrivals, and editorial stories.
+            {t("newsletter.copy")}
           </p>
           <form
             className="mx-auto mt-12 flex max-w-md items-center gap-4 border-b border-gold/50 pb-3"
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
-              toast("Welcome to BIOREZA", { description: "Please confirm via your inbox." });
+              const form = e.currentTarget;
+              const email = new FormData(form).get("email");
+              if (typeof email !== "string") return;
+              try {
+                await subscribeNewsletter(email, locale);
+                form.reset();
+                toast.success(t("newsletter.success"));
+              } catch (error) {
+                toast.error(apiErrorMessage(error));
+              }
             }}
           >
             <label htmlFor="newsletter-email" className="sr-only">
-              Email address
+              {t("newsletter.email")}
             </label>
             <input
               id="newsletter-email"
+              name="email"
               type="email"
               required
-              placeholder="Email address"
+              placeholder={t("newsletter.email")}
               className="w-full bg-transparent text-warm-white outline-none placeholder:text-warm-white/40"
             />
             <button
               type="submit"
               className="label-xs shrink-0 py-2 text-gold transition-colors duration-500 hover:text-warm-white"
             >
-              Subscribe
+              {t("newsletter.subscribe")}
             </button>
           </form>
         </Reveal>

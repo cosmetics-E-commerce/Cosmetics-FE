@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { Link } from "@tanstack/react-router";
 import { Check, LoaderCircle, Minus, Plus, ShoppingBag, SlidersHorizontal } from "lucide-react";
 import type { Product } from "@/lib/products";
 import { useStore } from "@/lib/store";
@@ -77,6 +78,8 @@ export function QuickAddToolbar({
     const added = await add({
       variantId: variant.id,
       productId: product.id,
+      categoryId: product.categoryId,
+      brandId: product.brandId,
       slug: product.slug,
       name: product.name,
       image: product.image,
@@ -93,9 +96,6 @@ export function QuickAddToolbar({
     }
   };
 
-  const destination = product.id
-    ? `/product/${product.slug}`
-    : `/shop?search=${encodeURIComponent(product.name)}`;
   const disabled = busy || outOfStock || !variant?.id || !product.id;
 
   return (
@@ -124,15 +124,30 @@ export function QuickAddToolbar({
         </div>
 
         {requiresSelection ? (
-          <a
-            className="quick-add__action"
-            href={destination}
-            aria-label={`${labels.choose}: ${product.name}`}
-            onClick={stop}
-          >
-            <SlidersHorizontal aria-hidden="true" />
-            <span>{labels.choose}</span>
-          </a>
+          product.id ? (
+            <Link
+              className="quick-add__action"
+              to="/product/$slug"
+              params={{ slug: product.slug }}
+              preload="intent"
+              aria-label={`${labels.choose}: ${product.name}`}
+              onClick={stop}
+            >
+              <SlidersHorizontal aria-hidden="true" />
+              <span>{labels.choose}</span>
+            </Link>
+          ) : (
+            <Link
+              className="quick-add__action"
+              to="/shop"
+              search={{ search: product.name }}
+              aria-label={`${labels.choose}: ${product.name}`}
+              onClick={stop}
+            >
+              <SlidersHorizontal aria-hidden="true" />
+              <span>{labels.choose}</span>
+            </Link>
+          )
         ) : (
           <button
             type="button"

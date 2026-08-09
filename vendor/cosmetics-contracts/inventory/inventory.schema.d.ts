@@ -1,5 +1,5 @@
-import { z } from 'zod';
-export declare const reservationStatusEnum: z.ZodEnum<["ACTIVE", "COMMITTED", "RELEASED"]>;
+import { z } from "zod";
+export declare const reservationStatusEnum: z.ZodEnum<["ACTIVE", "COMMITTED", "RELEASED", "RESTORED"]>;
 export type ReservationStatusValue = z.infer<typeof reservationStatusEnum>;
 export declare const stockStatusEnum: z.ZodEnum<["IN_STOCK", "LOW_STOCK", "OUT_OF_STOCK"]>;
 export type StockStatus = z.infer<typeof stockStatusEnum>;
@@ -16,7 +16,7 @@ export declare const inventoryStockQuerySchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     page: number;
     limit: number;
-    sortBy: "sku" | "available" | "productName" | "nextExpiryAt";
+    sortBy: "productName" | "sku" | "available" | "nextExpiryAt";
     sortOrder: "asc" | "desc";
     status?: "OUT_OF_STOCK" | "IN_STOCK" | "LOW_STOCK" | undefined;
     search?: string | undefined;
@@ -26,7 +26,7 @@ export declare const inventoryStockQuerySchema: z.ZodObject<{
     status?: "OUT_OF_STOCK" | "IN_STOCK" | "LOW_STOCK" | undefined;
     page?: number | undefined;
     limit?: number | undefined;
-    sortBy?: "sku" | "available" | "productName" | "nextExpiryAt" | undefined;
+    sortBy?: "productName" | "sku" | "available" | "nextExpiryAt" | undefined;
     sortOrder?: "asc" | "desc" | undefined;
     search?: string | undefined;
     categoryId?: string | undefined;
@@ -45,16 +45,16 @@ export declare const inventoryBatchQuerySchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     page: number;
     limit: number;
-    sortBy: "batchNumber" | "expiresAt" | "available" | "receivedAt";
+    sortBy: "expiresAt" | "batchNumber" | "available" | "receivedAt";
     sortOrder: "asc" | "desc";
-    status?: "AVAILABLE" | "DEPLETED" | "EXPIRED" | undefined;
+    status?: "EXPIRED" | "AVAILABLE" | "DEPLETED" | undefined;
     search?: string | undefined;
     variantId?: string | undefined;
 }, {
-    status?: "AVAILABLE" | "DEPLETED" | "EXPIRED" | undefined;
+    status?: "EXPIRED" | "AVAILABLE" | "DEPLETED" | undefined;
     page?: number | undefined;
     limit?: number | undefined;
-    sortBy?: "batchNumber" | "expiresAt" | "available" | "receivedAt" | undefined;
+    sortBy?: "expiresAt" | "batchNumber" | "available" | "receivedAt" | undefined;
     sortOrder?: "asc" | "desc" | undefined;
     search?: string | undefined;
     variantId?: string | undefined;
@@ -68,26 +68,26 @@ export declare const stockReservationQuerySchema: z.ZodObject<{
     search: z.ZodOptional<z.ZodString>;
     variantId: z.ZodOptional<z.ZodString>;
     orderId: z.ZodOptional<z.ZodString>;
-    status: z.ZodOptional<z.ZodEnum<["ACTIVE", "COMMITTED", "RELEASED"]>>;
+    status: z.ZodOptional<z.ZodEnum<["ACTIVE", "COMMITTED", "RELEASED", "RESTORED"]>>;
     sortBy: z.ZodDefault<z.ZodEnum<["createdAt", "expiresAt", "quantity"]>>;
 }, "strip", z.ZodTypeAny, {
     page: number;
     limit: number;
     sortBy: "createdAt" | "quantity" | "expiresAt";
     sortOrder: "asc" | "desc";
-    status?: "ACTIVE" | "COMMITTED" | "RELEASED" | undefined;
+    status?: "ACTIVE" | "COMMITTED" | "RELEASED" | "RESTORED" | undefined;
     search?: string | undefined;
-    variantId?: string | undefined;
     orderId?: string | undefined;
+    variantId?: string | undefined;
 }, {
-    status?: "ACTIVE" | "COMMITTED" | "RELEASED" | undefined;
+    status?: "ACTIVE" | "COMMITTED" | "RELEASED" | "RESTORED" | undefined;
     page?: number | undefined;
     limit?: number | undefined;
     sortBy?: "createdAt" | "quantity" | "expiresAt" | undefined;
     sortOrder?: "asc" | "desc" | undefined;
     search?: string | undefined;
-    variantId?: string | undefined;
     orderId?: string | undefined;
+    variantId?: string | undefined;
 }>;
 export type StockReservationQuery = z.infer<typeof stockReservationQuerySchema>;
 export declare const inventoryProductSummarySchema: z.ZodObject<{
@@ -99,17 +99,17 @@ export declare const inventoryProductSummarySchema: z.ZodObject<{
     publishedAt: z.ZodNullable<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
     id: string;
+    isActive: boolean;
+    slug: string;
     nameEn: string;
     nameAr: string;
-    slug: string;
-    isActive: boolean;
     publishedAt: string | null;
 }, {
     id: string;
+    isActive: boolean;
+    slug: string;
     nameEn: string;
     nameAr: string;
-    slug: string;
-    isActive: boolean;
     publishedAt: string | null;
 }>;
 export declare const inventoryCategorySummarySchema: z.ZodObject<{
@@ -119,14 +119,14 @@ export declare const inventoryCategorySummarySchema: z.ZodObject<{
     nameAr: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     id: string;
+    slug: string;
     nameEn: string;
     nameAr: string;
-    slug: string;
 }, {
     id: string;
+    slug: string;
     nameEn: string;
     nameAr: string;
-    slug: string;
 }>;
 export declare const inventoryBrandSummarySchema: z.ZodObject<{
     id: z.ZodString;
@@ -155,17 +155,17 @@ export declare const inventoryStockItemSchema: z.ZodObject<{
         publishedAt: z.ZodNullable<z.ZodString>;
     }, "strip", z.ZodTypeAny, {
         id: string;
+        isActive: boolean;
+        slug: string;
         nameEn: string;
         nameAr: string;
-        slug: string;
-        isActive: boolean;
         publishedAt: string | null;
     }, {
         id: string;
+        isActive: boolean;
+        slug: string;
         nameEn: string;
         nameAr: string;
-        slug: string;
-        isActive: boolean;
         publishedAt: string | null;
     }>;
     category: z.ZodObject<{
@@ -175,14 +175,14 @@ export declare const inventoryStockItemSchema: z.ZodObject<{
         nameAr: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         id: string;
+        slug: string;
         nameEn: string;
         nameAr: string;
-        slug: string;
     }, {
         id: string;
+        slug: string;
         nameEn: string;
         nameAr: string;
-        slug: string;
     }>;
     brand: z.ZodNullable<z.ZodObject<{
         id: z.ZodString;
@@ -210,9 +210,9 @@ export declare const inventoryStockItemSchema: z.ZodObject<{
     sku: string;
     category: {
         id: string;
+        slug: string;
         nameEn: string;
         nameAr: string;
-        slug: string;
     };
     brand: {
         id: string;
@@ -224,10 +224,10 @@ export declare const inventoryStockItemSchema: z.ZodObject<{
     available: number;
     product: {
         id: string;
+        isActive: boolean;
+        slug: string;
         nameEn: string;
         nameAr: string;
-        slug: string;
-        isActive: boolean;
         publishedAt: string | null;
     };
     nextExpiryAt: string | null;
@@ -241,9 +241,9 @@ export declare const inventoryStockItemSchema: z.ZodObject<{
     sku: string;
     category: {
         id: string;
+        slug: string;
         nameEn: string;
         nameAr: string;
-        slug: string;
     };
     brand: {
         id: string;
@@ -255,10 +255,10 @@ export declare const inventoryStockItemSchema: z.ZodObject<{
     available: number;
     product: {
         id: string;
+        isActive: boolean;
+        slug: string;
         nameEn: string;
         nameAr: string;
-        slug: string;
-        isActive: boolean;
         publishedAt: string | null;
     };
     nextExpiryAt: string | null;
@@ -294,17 +294,17 @@ export declare const inventoryBatchSchema: z.ZodObject<{
             publishedAt: z.ZodNullable<z.ZodString>;
         }, "strip", z.ZodTypeAny, {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         }, {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         }>;
     }, "strip", z.ZodTypeAny, {
@@ -314,10 +314,10 @@ export declare const inventoryBatchSchema: z.ZodObject<{
         nameAr: string;
         product: {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         };
     }, {
@@ -327,19 +327,19 @@ export declare const inventoryBatchSchema: z.ZodObject<{
         nameAr: string;
         product: {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         };
     }>;
 }, "strip", z.ZodTypeAny, {
     id: string;
     variantId: string;
+    expiresAt: string;
     batchNumber: string;
     manufacturedAt: string | null;
-    expiresAt: string;
     paoMonths: number | null;
     costPrice: number;
     available: number;
@@ -353,19 +353,19 @@ export declare const inventoryBatchSchema: z.ZodObject<{
         nameAr: string;
         product: {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         };
     };
 }, {
     id: string;
     variantId: string;
+    expiresAt: string;
     batchNumber: string;
     manufacturedAt: string | null;
-    expiresAt: string;
     paoMonths: number | null;
     costPrice: number;
     available: number;
@@ -379,10 +379,10 @@ export declare const inventoryBatchSchema: z.ZodObject<{
         nameAr: string;
         product: {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         };
     };
@@ -394,7 +394,7 @@ export declare const stockReservationSchema: z.ZodObject<{
     variantId: z.ZodString;
     batchId: z.ZodString;
     quantity: z.ZodNumber;
-    status: z.ZodEnum<["ACTIVE", "COMMITTED", "RELEASED"]>;
+    status: z.ZodEnum<["ACTIVE", "COMMITTED", "RELEASED", "RESTORED"]>;
     expiresAt: z.ZodString;
     createdAt: z.ZodString;
     variant: z.ZodObject<{
@@ -411,17 +411,17 @@ export declare const stockReservationSchema: z.ZodObject<{
             publishedAt: z.ZodNullable<z.ZodString>;
         }, "strip", z.ZodTypeAny, {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         }, {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         }>;
     }, "strip", z.ZodTypeAny, {
@@ -431,10 +431,10 @@ export declare const stockReservationSchema: z.ZodObject<{
         nameAr: string;
         product: {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         };
     }, {
@@ -444,10 +444,10 @@ export declare const stockReservationSchema: z.ZodObject<{
         nameAr: string;
         product: {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         };
     }>;
@@ -457,21 +457,21 @@ export declare const stockReservationSchema: z.ZodObject<{
         expiresAt: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         id: string;
-        batchNumber: string;
         expiresAt: string;
+        batchNumber: string;
     }, {
         id: string;
-        batchNumber: string;
         expiresAt: string;
+        batchNumber: string;
     }>;
 }, "strip", z.ZodTypeAny, {
-    status: "ACTIVE" | "COMMITTED" | "RELEASED";
+    status: "ACTIVE" | "COMMITTED" | "RELEASED" | "RESTORED";
     id: string;
     createdAt: string;
+    orderId: string;
     variantId: string;
     quantity: number;
     expiresAt: string;
-    orderId: string;
     variant: {
         id: string;
         sku: string;
@@ -479,27 +479,27 @@ export declare const stockReservationSchema: z.ZodObject<{
         nameAr: string;
         product: {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         };
     };
     batchId: string;
     batch: {
         id: string;
-        batchNumber: string;
         expiresAt: string;
+        batchNumber: string;
     };
 }, {
-    status: "ACTIVE" | "COMMITTED" | "RELEASED";
+    status: "ACTIVE" | "COMMITTED" | "RELEASED" | "RESTORED";
     id: string;
     createdAt: string;
+    orderId: string;
     variantId: string;
     quantity: number;
     expiresAt: string;
-    orderId: string;
     variant: {
         id: string;
         sku: string;
@@ -507,18 +507,18 @@ export declare const stockReservationSchema: z.ZodObject<{
         nameAr: string;
         product: {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         };
     };
     batchId: string;
     batch: {
         id: string;
-        batchNumber: string;
         expiresAt: string;
+        batchNumber: string;
     };
 }>;
 export type StockReservationResponse = z.infer<typeof stockReservationSchema>;
@@ -537,17 +537,17 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
             publishedAt: z.ZodNullable<z.ZodString>;
         }, "strip", z.ZodTypeAny, {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         }, {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         }>;
         category: z.ZodObject<{
@@ -557,14 +557,14 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
             nameAr: z.ZodString;
         }, "strip", z.ZodTypeAny, {
             id: string;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
         }, {
             id: string;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
         }>;
         brand: z.ZodNullable<z.ZodObject<{
             id: z.ZodString;
@@ -592,9 +592,9 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
         sku: string;
         category: {
             id: string;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
         };
         brand: {
             id: string;
@@ -606,10 +606,10 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
         available: number;
         product: {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         };
         nextExpiryAt: string | null;
@@ -623,9 +623,9 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
         sku: string;
         category: {
             id: string;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
         };
         brand: {
             id: string;
@@ -637,10 +637,10 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
         available: number;
         product: {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         };
         nextExpiryAt: string | null;
@@ -678,9 +678,9 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
         sku: string;
         category: {
             id: string;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
         };
         brand: {
             id: string;
@@ -692,10 +692,10 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
         available: number;
         product: {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         };
         nextExpiryAt: string | null;
@@ -719,9 +719,9 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
         sku: string;
         category: {
             id: string;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
         };
         brand: {
             id: string;
@@ -733,10 +733,10 @@ export declare const paginatedInventoryStockSchema: z.ZodObject<{
         available: number;
         product: {
             id: string;
+            isActive: boolean;
+            slug: string;
             nameEn: string;
             nameAr: string;
-            slug: string;
-            isActive: boolean;
             publishedAt: string | null;
         };
         nextExpiryAt: string | null;
@@ -781,17 +781,17 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
                 publishedAt: z.ZodNullable<z.ZodString>;
             }, "strip", z.ZodTypeAny, {
                 id: string;
+                isActive: boolean;
+                slug: string;
                 nameEn: string;
                 nameAr: string;
-                slug: string;
-                isActive: boolean;
                 publishedAt: string | null;
             }, {
                 id: string;
+                isActive: boolean;
+                slug: string;
                 nameEn: string;
                 nameAr: string;
-                slug: string;
-                isActive: boolean;
                 publishedAt: string | null;
             }>;
         }, "strip", z.ZodTypeAny, {
@@ -801,10 +801,10 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
             nameAr: string;
             product: {
                 id: string;
+                isActive: boolean;
+                slug: string;
                 nameEn: string;
                 nameAr: string;
-                slug: string;
-                isActive: boolean;
                 publishedAt: string | null;
             };
         }, {
@@ -814,19 +814,19 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
             nameAr: string;
             product: {
                 id: string;
+                isActive: boolean;
+                slug: string;
                 nameEn: string;
                 nameAr: string;
-                slug: string;
-                isActive: boolean;
                 publishedAt: string | null;
             };
         }>;
     }, "strip", z.ZodTypeAny, {
         id: string;
         variantId: string;
+        expiresAt: string;
         batchNumber: string;
         manufacturedAt: string | null;
-        expiresAt: string;
         paoMonths: number | null;
         costPrice: number;
         available: number;
@@ -840,19 +840,19 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
             nameAr: string;
             product: {
                 id: string;
+                isActive: boolean;
+                slug: string;
                 nameEn: string;
                 nameAr: string;
-                slug: string;
-                isActive: boolean;
                 publishedAt: string | null;
             };
         };
     }, {
         id: string;
         variantId: string;
+        expiresAt: string;
         batchNumber: string;
         manufacturedAt: string | null;
-        expiresAt: string;
         paoMonths: number | null;
         costPrice: number;
         available: number;
@@ -866,10 +866,10 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
             nameAr: string;
             product: {
                 id: string;
+                isActive: boolean;
+                slug: string;
                 nameEn: string;
                 nameAr: string;
-                slug: string;
-                isActive: boolean;
                 publishedAt: string | null;
             };
         };
@@ -900,9 +900,9 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
     data: {
         id: string;
         variantId: string;
+        expiresAt: string;
         batchNumber: string;
         manufacturedAt: string | null;
-        expiresAt: string;
         paoMonths: number | null;
         costPrice: number;
         available: number;
@@ -916,10 +916,10 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
             nameAr: string;
             product: {
                 id: string;
+                isActive: boolean;
+                slug: string;
                 nameEn: string;
                 nameAr: string;
-                slug: string;
-                isActive: boolean;
                 publishedAt: string | null;
             };
         };
@@ -936,9 +936,9 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
     data: {
         id: string;
         variantId: string;
+        expiresAt: string;
         batchNumber: string;
         manufacturedAt: string | null;
-        expiresAt: string;
         paoMonths: number | null;
         costPrice: number;
         available: number;
@@ -952,10 +952,10 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
             nameAr: string;
             product: {
                 id: string;
+                isActive: boolean;
+                slug: string;
                 nameEn: string;
                 nameAr: string;
-                slug: string;
-                isActive: boolean;
                 publishedAt: string | null;
             };
         };
@@ -976,7 +976,7 @@ export declare const paginatedStockReservationsSchema: z.ZodObject<{
         variantId: z.ZodString;
         batchId: z.ZodString;
         quantity: z.ZodNumber;
-        status: z.ZodEnum<["ACTIVE", "COMMITTED", "RELEASED"]>;
+        status: z.ZodEnum<["ACTIVE", "COMMITTED", "RELEASED", "RESTORED"]>;
         expiresAt: z.ZodString;
         createdAt: z.ZodString;
         variant: z.ZodObject<{
@@ -993,17 +993,17 @@ export declare const paginatedStockReservationsSchema: z.ZodObject<{
                 publishedAt: z.ZodNullable<z.ZodString>;
             }, "strip", z.ZodTypeAny, {
                 id: string;
+                isActive: boolean;
+                slug: string;
                 nameEn: string;
                 nameAr: string;
-                slug: string;
-                isActive: boolean;
                 publishedAt: string | null;
             }, {
                 id: string;
+                isActive: boolean;
+                slug: string;
                 nameEn: string;
                 nameAr: string;
-                slug: string;
-                isActive: boolean;
                 publishedAt: string | null;
             }>;
         }, "strip", z.ZodTypeAny, {
@@ -1013,10 +1013,10 @@ export declare const paginatedStockReservationsSchema: z.ZodObject<{
             nameAr: string;
             product: {
                 id: string;
+                isActive: boolean;
+                slug: string;
                 nameEn: string;
                 nameAr: string;
-                slug: string;
-                isActive: boolean;
                 publishedAt: string | null;
             };
         }, {
@@ -1026,10 +1026,10 @@ export declare const paginatedStockReservationsSchema: z.ZodObject<{
             nameAr: string;
             product: {
                 id: string;
+                isActive: boolean;
+                slug: string;
                 nameEn: string;
                 nameAr: string;
-                slug: string;
-                isActive: boolean;
                 publishedAt: string | null;
             };
         }>;
@@ -1039,21 +1039,21 @@ export declare const paginatedStockReservationsSchema: z.ZodObject<{
             expiresAt: z.ZodString;
         }, "strip", z.ZodTypeAny, {
             id: string;
-            batchNumber: string;
             expiresAt: string;
+            batchNumber: string;
         }, {
             id: string;
-            batchNumber: string;
             expiresAt: string;
+            batchNumber: string;
         }>;
     }, "strip", z.ZodTypeAny, {
-        status: "ACTIVE" | "COMMITTED" | "RELEASED";
+        status: "ACTIVE" | "COMMITTED" | "RELEASED" | "RESTORED";
         id: string;
         createdAt: string;
+        orderId: string;
         variantId: string;
         quantity: number;
         expiresAt: string;
-        orderId: string;
         variant: {
             id: string;
             sku: string;
@@ -1061,27 +1061,27 @@ export declare const paginatedStockReservationsSchema: z.ZodObject<{
             nameAr: string;
             product: {
                 id: string;
+                isActive: boolean;
+                slug: string;
                 nameEn: string;
                 nameAr: string;
-                slug: string;
-                isActive: boolean;
                 publishedAt: string | null;
             };
         };
         batchId: string;
         batch: {
             id: string;
-            batchNumber: string;
             expiresAt: string;
+            batchNumber: string;
         };
     }, {
-        status: "ACTIVE" | "COMMITTED" | "RELEASED";
+        status: "ACTIVE" | "COMMITTED" | "RELEASED" | "RESTORED";
         id: string;
         createdAt: string;
+        orderId: string;
         variantId: string;
         quantity: number;
         expiresAt: string;
-        orderId: string;
         variant: {
             id: string;
             sku: string;
@@ -1089,18 +1089,18 @@ export declare const paginatedStockReservationsSchema: z.ZodObject<{
             nameAr: string;
             product: {
                 id: string;
+                isActive: boolean;
+                slug: string;
                 nameEn: string;
                 nameAr: string;
-                slug: string;
-                isActive: boolean;
                 publishedAt: string | null;
             };
         };
         batchId: string;
         batch: {
             id: string;
-            batchNumber: string;
             expiresAt: string;
+            batchNumber: string;
         };
     }>, "many">;
     meta: z.ZodObject<{
@@ -1127,13 +1127,13 @@ export declare const paginatedStockReservationsSchema: z.ZodObject<{
     }>;
 }, "strip", z.ZodTypeAny, {
     data: {
-        status: "ACTIVE" | "COMMITTED" | "RELEASED";
+        status: "ACTIVE" | "COMMITTED" | "RELEASED" | "RESTORED";
         id: string;
         createdAt: string;
+        orderId: string;
         variantId: string;
         quantity: number;
         expiresAt: string;
-        orderId: string;
         variant: {
             id: string;
             sku: string;
@@ -1141,18 +1141,18 @@ export declare const paginatedStockReservationsSchema: z.ZodObject<{
             nameAr: string;
             product: {
                 id: string;
+                isActive: boolean;
+                slug: string;
                 nameEn: string;
                 nameAr: string;
-                slug: string;
-                isActive: boolean;
                 publishedAt: string | null;
             };
         };
         batchId: string;
         batch: {
             id: string;
-            batchNumber: string;
             expiresAt: string;
+            batchNumber: string;
         };
     }[];
     meta: {
@@ -1165,13 +1165,13 @@ export declare const paginatedStockReservationsSchema: z.ZodObject<{
     };
 }, {
     data: {
-        status: "ACTIVE" | "COMMITTED" | "RELEASED";
+        status: "ACTIVE" | "COMMITTED" | "RELEASED" | "RESTORED";
         id: string;
         createdAt: string;
+        orderId: string;
         variantId: string;
         quantity: number;
         expiresAt: string;
-        orderId: string;
         variant: {
             id: string;
             sku: string;
@@ -1179,18 +1179,18 @@ export declare const paginatedStockReservationsSchema: z.ZodObject<{
             nameAr: string;
             product: {
                 id: string;
+                isActive: boolean;
+                slug: string;
                 nameEn: string;
                 nameAr: string;
-                slug: string;
-                isActive: boolean;
                 publishedAt: string | null;
             };
         };
         batchId: string;
         batch: {
             id: string;
-            batchNumber: string;
             expiresAt: string;
+            batchNumber: string;
         };
     }[];
     meta: {
@@ -1213,51 +1213,79 @@ export declare const receiveInventoryBatchSchema: z.ZodEffects<z.ZodEffects<z.Zo
 }, "strip", z.ZodTypeAny, {
     variantId: string;
     quantity: number;
-    batchNumber: string;
     expiresAt: Date;
+    batchNumber: string;
     costPrice: number;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }, {
     variantId: string;
     quantity: number;
-    batchNumber: string;
     expiresAt: Date;
+    batchNumber: string;
     costPrice: number;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }>, {
     variantId: string;
     quantity: number;
-    batchNumber: string;
     expiresAt: Date;
+    batchNumber: string;
     costPrice: number;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }, {
     variantId: string;
     quantity: number;
-    batchNumber: string;
     expiresAt: Date;
+    batchNumber: string;
     costPrice: number;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }>, {
     variantId: string;
     quantity: number;
-    batchNumber: string;
     expiresAt: Date;
+    batchNumber: string;
     costPrice: number;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }, {
     variantId: string;
     quantity: number;
-    batchNumber: string;
     expiresAt: Date;
+    batchNumber: string;
     costPrice: number;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }>;
 export type ReceiveInventoryBatchInput = z.infer<typeof receiveInventoryBatchSchema>;
+export declare const adjustInventorySchema: z.ZodObject<{
+    batchId: z.ZodString;
+    quantityDelta: z.ZodEffects<z.ZodNumber, number, number>;
+    reason: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    reason: string;
+    batchId: string;
+    quantityDelta: number;
+}, {
+    reason: string;
+    batchId: string;
+    quantityDelta: number;
+}>;
+export type AdjustInventoryInput = z.infer<typeof adjustInventorySchema>;
+export declare const writeOffInventorySchema: z.ZodObject<{
+    batchId: z.ZodString;
+    quantity: z.ZodNumber;
+    reason: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    quantity: number;
+    reason: string;
+    batchId: string;
+}, {
+    quantity: number;
+    reason: string;
+    batchId: string;
+}>;
+export type WriteOffInventoryInput = z.infer<typeof writeOffInventorySchema>;
 //# sourceMappingURL=inventory.schema.d.ts.map

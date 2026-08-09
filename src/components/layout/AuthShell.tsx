@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
-import { useState, type ReactNode } from "react";
+import { useState, type InputHTMLAttributes, type ReactNode } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { images } from "@/lib/products";
+import { ImageReveal, ParallaxMedia, Reveal } from "@/components/motion/Primitives";
 
 export function AuthShell({
   label,
@@ -19,7 +20,7 @@ export function AuthShell({
   return (
     <div className="grid min-h-[80vh] lg:grid-cols-2">
       <div className="flex items-center justify-center px-5 py-20 md:px-16">
-        <div className="w-full max-w-sm">
+        <Reveal stagger staggerMs={74} distance={22} className="w-full max-w-sm">
           <p className="label-xs text-gold">{label}</p>
           <h1 className="display mt-5 text-[clamp(2.1rem,3.6vw,3rem)]">{title}</h1>
           <p className="mt-5 text-sm leading-relaxed text-muted-foreground">{intro}</p>
@@ -28,15 +29,19 @@ export function AuthShell({
           <Link to="/" className="nav-link label-xs mt-10 inline-block text-taupe">
             Return to BIOREZA
           </Link>
-        </div>
+        </Reveal>
       </div>
       <div className="relative hidden lg:block">
-        <img
-          src={images.storyLarge}
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 size-full object-cover"
-        />
+        <ImageReveal direction="right" className="absolute inset-0">
+          <ParallaxMedia className="size-full" strength={24}>
+            <img
+              src={images.storyLarge}
+              alt=""
+              aria-hidden="true"
+              className="size-full object-cover"
+            />
+          </ParallaxMedia>
+        </ImageReveal>
       </div>
     </div>
   );
@@ -47,12 +52,18 @@ export function AuthField({
   label,
   type = "text",
   autoComplete,
+  hint,
+  error,
+  required = true,
+  ...inputProps
 }: {
   id: string;
   label: string;
   type?: string;
   autoComplete?: string;
-}) {
+  hint?: string;
+  error?: string;
+} & Omit<InputHTMLAttributes<HTMLInputElement>, "id" | "name" | "type" | "autoComplete">) {
   const [visible, setVisible] = useState(false);
   const password = type === "password";
   return (
@@ -65,10 +76,13 @@ export function AuthField({
           id={id}
           name={id}
           type={password && visible ? "text" : type}
-          required
+          required={required}
           autoComplete={autoComplete}
           inputMode={type === "tel" ? "tel" : type === "email" ? "email" : undefined}
-          className="h-12 w-full border border-input bg-warm-white px-4 pe-12 text-sm outline-none transition-[border-color,box-shadow] duration-200 focus:border-gold focus:shadow-[0_0_0_1px_var(--color-gold-soft)]"
+          aria-invalid={Boolean(error)}
+          aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
+          className="h-12 w-full border border-input bg-warm-white px-4 pe-12 text-sm outline-none transition-[border-color,box-shadow] duration-200 focus:border-gold focus:shadow-[0_0_0_1px_var(--color-gold-soft)] aria-invalid:border-destructive"
+          {...inputProps}
         />
         {password && (
           <button
@@ -82,6 +96,15 @@ export function AuthField({
           </button>
         )}
       </div>
+      {error ? (
+        <p id={`${id}-error`} className="mt-2 text-xs text-destructive">
+          {error}
+        </p>
+      ) : hint ? (
+        <p id={`${id}-hint`} className="mt-2 text-xs text-muted-foreground">
+          {hint}
+        </p>
+      ) : null}
     </div>
   );
 }

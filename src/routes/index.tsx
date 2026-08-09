@@ -8,13 +8,21 @@ import {
   Concerns,
   BestSellers,
   BrandStory,
-  Journal,
-  Testimonials,
-  Gallery,
   Newsletter,
 } from "@/components/home/Sections";
+import { loadCatalog, loadCategories } from "@/lib/catalog";
 
 export const Route = createFileRoute("/")({
+  loader: async ({ context }) => {
+    const [products, categories] = await Promise.all([
+      loadCatalog(
+        { limit: 8, sortBy: "createdAt", sortOrder: "desc" },
+        context.locale === "ar" ? "ar" : "en",
+      ),
+      loadCategories(),
+    ]);
+    return { products, categories };
+  },
   head: () => ({
     meta: [
       { title: "BIOREZA Cosmetics — Healthy skin is beautiful skin" },
@@ -36,19 +44,17 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  const { products, categories } = Route.useLoaderData();
   return (
     <>
       <Hero />
       <Benefits />
-      <CategoryGrid />
-      <Featured />
+      <CategoryGrid initialCategories={categories} />
+      <Featured initialProducts={products.slice(0, 4)} />
       <CollectionFeature />
       <Concerns />
-      <BestSellers />
+      <BestSellers initialProducts={products} />
       <BrandStory />
-      <Journal />
-      <Testimonials />
-      <Gallery />
       <Newsletter />
     </>
   );

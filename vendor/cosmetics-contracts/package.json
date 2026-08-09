@@ -16,6 +16,12 @@
       "require": "./index.js",
       "types": "./index.d.ts",
       "default": "./index.js"
+    },
+    "./*": {
+      "import": "./*.js",
+      "require": "./*.js",
+      "types": "./*.d.ts",
+      "default": "./*.js"
     }
   },
   "publishConfig": {

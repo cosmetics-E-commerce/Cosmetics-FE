@@ -1,5 +1,4 @@
 {
-  "package": "@cosmetics/contracts",
-  "version": "0.1.0",
-  "sourceDigest": "95d56fe0d8b9eaf2757f7a273d7e655f5b93421bc79e7e8ef11ac5fb4685836c"
+  "schemaVersion": 1,
+  "sha256": "d3d0a72089cc7b9d013c5547f38cd2da90463d8760a0fa578cc63c90661c985f"
 }

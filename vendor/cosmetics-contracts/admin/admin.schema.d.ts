@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 export declare const managedAdminRoleSchema: z.ZodEnum<["SUPER_ADMIN", "ADMIN"]>;
 export declare const adminAccountSchema: z.ZodObject<{
     id: z.ZodString;

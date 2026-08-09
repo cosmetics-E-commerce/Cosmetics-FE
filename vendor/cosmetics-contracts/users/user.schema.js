@@ -6,19 +6,21 @@ const primitives_1 = require("../common/primitives");
 const enums_1 = require("../enums");
 const isoDateSchema = zod_1.z
     .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY-MM-DD format')
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be in YYYY-MM-DD format")
     .refine((value) => {
     const date = new Date(`${value}T00:00:00.000Z`);
     return !Number.isNaN(date.getTime()) && date <= new Date();
-}, 'Date of birth cannot be in the future');
-exports.updateMyProfileSchema = zod_1.z.object({
+}, "Date of birth cannot be in the future");
+exports.updateMyProfileSchema = zod_1.z
+    .object({
     firstName: zod_1.z.string().trim().min(2).max(100).optional(),
     lastName: zod_1.z.string().trim().min(2).max(100).optional(),
     phone: primitives_1.egyptPhoneSchema.optional(),
     profileImage: zod_1.z.string().trim().url().max(2048).nullable().optional(),
     gender: enums_1.GenderEnum.nullable().optional(),
     dateOfBirth: isoDateSchema.nullable().optional(),
-}).strict();
+})
+    .strict();
 exports.addressSchema = zod_1.z.object({
     id: primitives_1.uuidSchema,
     label: enums_1.AddressLabelEnum.nullable(),
@@ -33,17 +35,20 @@ exports.addressSchema = zod_1.z.object({
     floor: zod_1.z.string().nullable(),
     apartment: zod_1.z.string().nullable(),
     postalCode: zod_1.z.string().nullable(),
+    bostaCityId: zod_1.z.string().nullable(),
+    bostaZoneId: zod_1.z.string().nullable(),
     deliveryInstructions: zod_1.z.string().nullable(),
     landmark: zod_1.z.string().nullable(),
     isDefault: zod_1.z.boolean(),
     createdAt: zod_1.z.string(),
     updatedAt: zod_1.z.string(),
 });
-const addressWriteSchema = zod_1.z.object({
-    label: enums_1.AddressLabelEnum.default('HOME'),
+const addressWriteSchema = zod_1.z
+    .object({
+    label: enums_1.AddressLabelEnum.default("HOME"),
     receiverName: zod_1.z.string().trim().min(2).max(150),
     phone: primitives_1.egyptPhoneSchema,
-    country: zod_1.z.string().trim().min(2).max(80).default('EG'),
+    country: zod_1.z.string().trim().min(2).max(80).default("EG"),
     governorate: zod_1.z.string().trim().min(2).max(64),
     city: zod_1.z.string().trim().min(2).max(100),
     area: zod_1.z.string().trim().min(2).max(100),
@@ -52,16 +57,27 @@ const addressWriteSchema = zod_1.z.object({
     floor: optionalNullableText(1, 50),
     apartment: optionalNullableText(1, 50),
     postalCode: optionalNullableText(3, 20),
+    /**
+     * Carrier location ids, taken from GET /shipping/cities and
+     * /shipping/zones/:cityId. Optional here so the address book still works
+     * under the MOCK provider; checkout rejects an address without a city id
+     * once a real carrier is active.
+     */
+    bostaCityId: optionalNullableText(1, 64),
+    bostaZoneId: optionalNullableText(1, 64),
     deliveryInstructions: optionalNullableText(1, 1000),
     landmark: optionalNullableText(1, 500),
     isDefault: zod_1.z.boolean().default(false),
-}).strict();
+})
+    .strict();
 function optionalNullableText(min, max) {
-    return zod_1.z.union([
+    return zod_1.z
+        .union([
         zod_1.z.string().trim().min(min).max(max),
-        zod_1.z.literal('').transform(() => null),
+        zod_1.z.literal("").transform(() => null),
         zod_1.z.null(),
-    ]).optional();
+    ])
+        .optional();
 }
 exports.createAddressSchema = addressWriteSchema;
 exports.updateAddressSchema = addressWriteSchema.partial().strict();
@@ -132,12 +148,12 @@ exports.adminUsersQuerySchema = zod_1.z.object({
     status: enums_1.UserStatusEnum.optional(),
     gender: enums_1.GenderEnum.optional(),
     emailVerified: zod_1.z
-        .enum(['true', 'false'])
-        .transform((value) => value === 'true')
+        .enum(["true", "false"])
+        .transform((value) => value === "true")
         .optional(),
     isVip: zod_1.z
-        .enum(['true', 'false'])
-        .transform((value) => value === 'true')
+        .enum(["true", "false"])
+        .transform((value) => value === "true")
         .optional(),
     createdFrom: isoDateSchema.optional(),
     createdTo: isoDateSchema.optional(),
@@ -146,22 +162,33 @@ exports.adminUsersQuerySchema = zod_1.z.object({
     totalSpentMin: zod_1.z.coerce.number().int().min(0).optional(),
     totalSpentMax: zod_1.z.coerce.number().int().min(0).optional(),
     sortBy: zod_1.z
-        .enum(['createdAt', 'updatedAt', 'firstName', 'newest', 'oldest', 'name', 'orders', 'spending'])
-        .default('newest'),
-    sortOrder: zod_1.z.enum(['asc', 'desc']).default('desc'),
+        .enum([
+        "createdAt",
+        "updatedAt",
+        "firstName",
+        "newest",
+        "oldest",
+        "name",
+        "orders",
+        "spending",
+    ])
+        .default("newest"),
+    sortOrder: zod_1.z.enum(["asc", "desc"]).default("desc"),
 });
 exports.adminCustomerOrdersQuerySchema = zod_1.z.object({
     page: zod_1.z.coerce.number().int().positive().default(1),
     limit: zod_1.z.coerce.number().int().positive().max(100).default(10),
 });
-exports.updateAdminUserSchema = zod_1.z.object({
+exports.updateAdminUserSchema = zod_1.z
+    .object({
     firstName: zod_1.z.string().trim().min(2).max(100).optional(),
     lastName: zod_1.z.string().trim().min(2).max(100).optional(),
     phone: primitives_1.egyptPhoneSchema.optional(),
-    status: enums_1.UserStatusEnum.exclude(['DELETED']).optional(),
+    status: enums_1.UserStatusEnum.exclude(["DELETED"]).optional(),
     emailVerified: zod_1.z.boolean().optional(),
     gender: enums_1.GenderEnum.nullable().optional(),
     dateOfBirth: isoDateSchema.nullable().optional(),
     isVip: zod_1.z.boolean().optional(),
-}).strict();
+})
+    .strict();
 //# sourceMappingURL=user.schema.js.map

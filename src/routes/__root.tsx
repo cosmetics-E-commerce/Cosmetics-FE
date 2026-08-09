@@ -21,6 +21,8 @@ import { SearchOverlay } from "@/components/layout/SearchOverlay";
 import { Toaster } from "@/components/ui/sonner";
 import { Button } from "@/components/ui/button";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { getRequestLocale } from "@/lib/locale.server";
+import { MotionProvider } from "@/components/motion/MotionProvider";
 
 function NotFoundComponent() {
   return (
@@ -80,6 +82,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  beforeLoad: async () => ({ locale: await getRequestLocale() }),
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -110,7 +113,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Jost:wght@200;300;400;500&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Jost:wght@200;300;400;500&family=Noto+Sans+Arabic:wght@300;400;500&display=swap",
+      },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "BIOREZA Cosmetics",
+          url: (import.meta.env["VITE_SITE_URL"] as string | undefined) ?? "https://bioreza.com",
+          logo: `${(import.meta.env["VITE_SITE_URL"] as string | undefined) ?? "https://bioreza.com"}/favicon.png`,
+          contactPoint: {
+            "@type": "ContactPoint",
+            contactType: "customer support",
+            email: "hello@bioreza.com",
+            availableLanguage: ["English", "Arabic"],
+          },
+        }),
       },
     ],
   }),
@@ -121,8 +142,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const { locale } = Route.useRouteContext();
   return (
-    <html lang="en">
+    <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"}>
       <head>
         <HeadContent />
       </head>
@@ -163,7 +185,7 @@ function GlobalShortcuts() {
 }
 
 function RootComponent() {
-  const { queryClient } = Route.useRouteContext();
+  const { queryClient, locale } = Route.useRouteContext();
   const { pathname } = useLocation();
   const pageRef = useRef<HTMLDivElement>(null);
   const isFirstRender = useRef(true);
@@ -185,24 +207,34 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <StoreProvider>
-        <div className="flex min-h-dvh flex-col bg-background">
-          <Header />
-          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-          <main className="flex-1" style={{ paddingTop: "var(--store-header-offset, 106px)" }}>
-            <div ref={pageRef} key={pathname}>
-              <Outlet />
-            </div>
-          </main>
-          <Footer />
-          <GlobalBannerSlot position="BOTTOM" />
-        </div>
-        <BackToTop />
-        <CartDrawer />
-        <SearchOverlay />
-        <Toaster position="bottom-right" />
-        <GlobalShortcuts />
-      </StoreProvider>
+      <MotionProvider>
+        <StoreProvider initialLocale={locale === "ar" ? "ar" : "en"}>
+          <div className="flex min-h-dvh flex-col bg-background">
+            <a href="#main-content" className="skip-link">
+              Skip to content
+            </a>
+            <Header />
+            {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+            <main
+              id="main-content"
+              tabIndex={-1}
+              className="flex-1 outline-none"
+              style={{ paddingTop: "var(--store-header-offset, 106px)" }}
+            >
+              <div ref={pageRef} key={pathname} className="motion-page">
+                <Outlet />
+              </div>
+            </main>
+            <Footer />
+            <GlobalBannerSlot position="BOTTOM" />
+          </div>
+          <BackToTop />
+          <CartDrawer />
+          <SearchOverlay />
+          <Toaster position="bottom-right" />
+          <GlobalShortcuts />
+        </StoreProvider>
+      </MotionProvider>
     </QueryClientProvider>
   );
 }

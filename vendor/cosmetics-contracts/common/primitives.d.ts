@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 export declare const uuidSchema: z.ZodString;
 /**
  * Money is always integer piastres (1 EGP = 100 piastres).

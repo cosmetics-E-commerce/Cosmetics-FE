@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 export declare const orderItemInputSchema: z.ZodObject<{
     variantId: z.ZodString;
     quantity: z.ZodNumber;
@@ -9,10 +9,11 @@ export declare const orderItemInputSchema: z.ZodObject<{
     variantId: string;
     quantity: number;
 }>;
+export type OrderItemInput = z.infer<typeof orderItemInputSchema>;
 /**
- * POST /orders — requires an Idempotency-Key header (PLAN.md §6.6).
- * Consumed by the API's ZodValidationPipe and by the checkout form's
- * zodResolver. One definition, both sides.
+ * POST /orders — requires an Idempotency-Key header.
+ * The customer may submit cart-derived items; the API always revalidates
+ * product status, price and stock server-side.
  */
 export declare const createOrderSchema: z.ZodObject<{
     items: z.ZodArray<z.ZodObject<{
@@ -26,29 +27,62 @@ export declare const createOrderSchema: z.ZodObject<{
         quantity: number;
     }>, "many">;
     shippingAddressId: z.ZodString;
-    paymentMethod: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "COD"]>;
+    paymentMethod: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>;
     couponCode: z.ZodOptional<z.ZodString>;
+    giftVariantIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     notes: z.ZodOptional<z.ZodString>;
 }, "strip", z.ZodTypeAny, {
-    paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "COD";
+    paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
     items: {
         variantId: string;
         quantity: number;
     }[];
     shippingAddressId: string;
     couponCode?: string | undefined;
+    giftVariantIds?: string[] | undefined;
     notes?: string | undefined;
 }, {
-    paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "COD";
+    paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
     items: {
         variantId: string;
         quantity: number;
     }[];
     shippingAddressId: string;
     couponCode?: string | undefined;
+    giftVariantIds?: string[] | undefined;
     notes?: string | undefined;
 }>;
 export type CreateOrderInput = z.infer<typeof createOrderSchema>;
+export declare const checkoutOrderSchema: z.ZodObject<Omit<{
+    items: z.ZodArray<z.ZodObject<{
+        variantId: z.ZodString;
+        quantity: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        variantId: string;
+        quantity: number;
+    }, {
+        variantId: string;
+        quantity: number;
+    }>, "many">;
+    shippingAddressId: z.ZodString;
+    paymentMethod: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>;
+    couponCode: z.ZodOptional<z.ZodString>;
+    giftVariantIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+    notes: z.ZodOptional<z.ZodString>;
+}, "items">, "strip", z.ZodTypeAny, {
+    paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+    shippingAddressId: string;
+    couponCode?: string | undefined;
+    giftVariantIds?: string[] | undefined;
+    notes?: string | undefined;
+}, {
+    paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+    shippingAddressId: string;
+    couponCode?: string | undefined;
+    giftVariantIds?: string[] | undefined;
+    notes?: string | undefined;
+}>;
+export type CheckoutOrderInput = z.infer<typeof checkoutOrderSchema>;
 export declare const cancelOrderSchema: z.ZodObject<{
     reason: z.ZodString;
 }, "strip", z.ZodTypeAny, {
@@ -57,35 +91,2382 @@ export declare const cancelOrderSchema: z.ZodObject<{
     reason: string;
 }>;
 export type CancelOrderInput = z.infer<typeof cancelOrderSchema>;
-/**
- * Returned on order creation. For VODAFONE_CASH / INSTAPAY this carries the
- * merchant handle the customer must transfer to, plus the deadline after which
- * the reservation is released.
- */
+export declare const uploadPaymentProofSchema: z.ZodObject<{
+    imageKey: z.ZodString;
+    senderRef: z.ZodString;
+    txnReference: z.ZodString;
+    amountClaimed: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    imageKey: string;
+    senderRef: string;
+    txnReference: string;
+    amountClaimed: number;
+}, {
+    imageKey: string;
+    senderRef: string;
+    txnReference: string;
+    amountClaimed: number;
+}>;
+export type UploadPaymentProofInput = z.infer<typeof uploadPaymentProofSchema>;
+export declare const rejectPaymentProofSchema: z.ZodObject<{
+    reason: z.ZodDefault<z.ZodEnum<["WRONG_AMOUNT", "ILLEGIBLE_SCREENSHOT", "REFERENCE_NOT_FOUND", "DUPLICATE_REFERENCE", "OTHER"]>>;
+    adminNotes: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    reason: "OTHER" | "WRONG_AMOUNT" | "ILLEGIBLE_SCREENSHOT" | "REFERENCE_NOT_FOUND" | "DUPLICATE_REFERENCE";
+    adminNotes?: string | undefined;
+}, {
+    reason?: "OTHER" | "WRONG_AMOUNT" | "ILLEGIBLE_SCREENSHOT" | "REFERENCE_NOT_FOUND" | "DUPLICATE_REFERENCE" | undefined;
+    adminNotes?: string | undefined;
+}>;
+export type RejectPaymentProofInput = z.infer<typeof rejectPaymentProofSchema>;
+export declare const updateOrderStatusSchema: z.ZodObject<{
+    status: z.ZodEnum<["PENDING_PAYMENT", "AWAITING_PAYMENT", "PAYMENT_REVIEW", "PAYMENT_FAILED", "PAID", "CONFIRMED", "PROCESSING", "READY_TO_SHIP", "READY_FOR_SHIPPING", "SHIPPED", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "RETURNED", "CANCELLED", "REFUNDED", "FAILED"]>;
+    note: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    status: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED";
+    note?: string | undefined;
+}, {
+    status: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED";
+    note?: string | undefined;
+}>;
+export type UpdateOrderStatusInput = z.infer<typeof updateOrderStatusSchema>;
+export declare const orderQuerySchema: z.ZodObject<{
+    page: z.ZodDefault<z.ZodNumber>;
+    limit: z.ZodDefault<z.ZodNumber>;
+    sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
+} & {
+    status: z.ZodOptional<z.ZodEnum<["PENDING_PAYMENT", "AWAITING_PAYMENT", "PAYMENT_REVIEW", "PAYMENT_FAILED", "PAID", "CONFIRMED", "PROCESSING", "READY_TO_SHIP", "READY_FOR_SHIPPING", "SHIPPED", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "RETURNED", "CANCELLED", "REFUNDED", "FAILED"]>>;
+    paymentStatus: z.ZodOptional<z.ZodEnum<["UNPAID", "PENDING", "WAITING_REVIEW", "UNDER_REVIEW", "PROOF_SUBMITTED", "APPROVED", "VERIFIED", "REJECTED", "REFUNDED", "EXPIRED", "FAILED"]>>;
+    shippingStatus: z.ZodOptional<z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "FAILED", "RETURNED", "CANCELLED"]>>;
+    customer: z.ZodOptional<z.ZodString>;
+    dateFrom: z.ZodOptional<z.ZodString>;
+    dateTo: z.ZodOptional<z.ZodString>;
+    totalMin: z.ZodOptional<z.ZodNumber>;
+    totalMax: z.ZodOptional<z.ZodNumber>;
+    city: z.ZodOptional<z.ZodString>;
+    governorate: z.ZodOptional<z.ZodString>;
+    search: z.ZodOptional<z.ZodString>;
+    orderNumber: z.ZodOptional<z.ZodString>;
+    trackingNumber: z.ZodOptional<z.ZodString>;
+    invoiceNumber: z.ZodOptional<z.ZodString>;
+    shippingProvider: z.ZodOptional<z.ZodEnum<["MOCK", "BOSTA"]>>;
+    createdBy: z.ZodOptional<z.ZodString>;
+    paymentMethod: z.ZodOptional<z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>>;
+    sortBy: z.ZodDefault<z.ZodEnum<["placedAt", "updatedAt", "grandTotal", "orderNumber"]>>;
+}, "strip", z.ZodTypeAny, {
+    page: number;
+    limit: number;
+    sortBy: "updatedAt" | "orderNumber" | "grandTotal" | "placedAt";
+    sortOrder: "asc" | "desc";
+    status?: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED" | undefined;
+    search?: string | undefined;
+    governorate?: string | undefined;
+    city?: string | undefined;
+    orderNumber?: string | undefined;
+    paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+    paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+    trackingNumber?: string | undefined;
+    shippingStatus?: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | undefined;
+    customer?: string | undefined;
+    dateFrom?: string | undefined;
+    dateTo?: string | undefined;
+    totalMin?: number | undefined;
+    totalMax?: number | undefined;
+    invoiceNumber?: string | undefined;
+    shippingProvider?: "MOCK" | "BOSTA" | undefined;
+    createdBy?: string | undefined;
+}, {
+    status?: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED" | undefined;
+    page?: number | undefined;
+    limit?: number | undefined;
+    sortBy?: "updatedAt" | "orderNumber" | "grandTotal" | "placedAt" | undefined;
+    sortOrder?: "asc" | "desc" | undefined;
+    search?: string | undefined;
+    governorate?: string | undefined;
+    city?: string | undefined;
+    orderNumber?: string | undefined;
+    paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+    paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+    trackingNumber?: string | undefined;
+    shippingStatus?: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | undefined;
+    customer?: string | undefined;
+    dateFrom?: string | undefined;
+    dateTo?: string | undefined;
+    totalMin?: number | undefined;
+    totalMax?: number | undefined;
+    invoiceNumber?: string | undefined;
+    shippingProvider?: "MOCK" | "BOSTA" | undefined;
+    createdBy?: string | undefined;
+}>;
+export type OrderQuery = z.infer<typeof orderQuerySchema>;
+export declare const orderItemResponseSchema: z.ZodObject<{
+    id: z.ZodString;
+    productId: z.ZodString;
+    variantId: z.ZodString;
+    productName: z.ZodString;
+    sku: z.ZodString;
+    price: z.ZodNumber;
+    quantity: z.ZodNumber;
+    discount: z.ZodNumber;
+    subtotal: z.ZodNumber;
+    discountedSubtotal: z.ZodNumber;
+    promotionSnapshot: z.ZodNullable<z.ZodUnknown>;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    variantId: string;
+    quantity: number;
+    productId: string;
+    productName: string;
+    sku: string;
+    price: number;
+    discount: number;
+    subtotal: number;
+    discountedSubtotal: number;
+    promotionSnapshot?: unknown;
+}, {
+    id: string;
+    variantId: string;
+    quantity: number;
+    productId: string;
+    productName: string;
+    sku: string;
+    price: number;
+    discount: number;
+    subtotal: number;
+    discountedSubtotal: number;
+    promotionSnapshot?: unknown;
+}>;
+export type OrderItemResponse = z.infer<typeof orderItemResponseSchema>;
+export declare const orderTimelineResponseSchema: z.ZodObject<{
+    id: z.ZodString;
+    orderId: z.ZodString;
+    action: z.ZodString;
+    performedById: z.ZodNullable<z.ZodString>;
+    description: z.ZodString;
+    createdAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    action: string;
+    description: string;
+    createdAt: string;
+    orderId: string;
+    performedById: string | null;
+}, {
+    id: string;
+    action: string;
+    description: string;
+    createdAt: string;
+    orderId: string;
+    performedById: string | null;
+}>;
+export type OrderTimelineResponse = z.infer<typeof orderTimelineResponseSchema>;
+export declare const orderCustomerSummarySchema: z.ZodObject<{
+    id: z.ZodString;
+    firstName: z.ZodString;
+    lastName: z.ZodString;
+    email: z.ZodNullable<z.ZodString>;
+    phone: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    email: string | null;
+}, {
+    id: string;
+    firstName: string;
+    lastName: string;
+    phone: string;
+    email: string | null;
+}>;
+export type OrderCustomerSummary = z.infer<typeof orderCustomerSummarySchema>;
+export declare const invoiceResponseSchema: z.ZodObject<{
+    id: z.ZodString;
+    orderId: z.ZodString;
+    invoiceNumber: z.ZodString;
+    pdfUrl: z.ZodNullable<z.ZodString>;
+    issuedAt: z.ZodString;
+    orderNumber: z.ZodOptional<z.ZodString>;
+    customer: z.ZodOptional<z.ZodObject<{
+        id: z.ZodString;
+        firstName: z.ZodString;
+        lastName: z.ZodString;
+        email: z.ZodNullable<z.ZodString>;
+        phone: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        firstName: string;
+        lastName: string;
+        phone: string;
+        email: string | null;
+    }, {
+        id: string;
+        firstName: string;
+        lastName: string;
+        phone: string;
+        email: string | null;
+    }>>;
+    items: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        productId: z.ZodString;
+        variantId: z.ZodString;
+        productName: z.ZodString;
+        sku: z.ZodString;
+        price: z.ZodNumber;
+        quantity: z.ZodNumber;
+        discount: z.ZodNumber;
+        subtotal: z.ZodNumber;
+        discountedSubtotal: z.ZodNumber;
+        promotionSnapshot: z.ZodNullable<z.ZodUnknown>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        variantId: string;
+        quantity: number;
+        productId: string;
+        productName: string;
+        sku: string;
+        price: number;
+        discount: number;
+        subtotal: number;
+        discountedSubtotal: number;
+        promotionSnapshot?: unknown;
+    }, {
+        id: string;
+        variantId: string;
+        quantity: number;
+        productId: string;
+        productName: string;
+        sku: string;
+        price: number;
+        discount: number;
+        subtotal: number;
+        discountedSubtotal: number;
+        promotionSnapshot?: unknown;
+    }>, "many">>;
+    subtotal: z.ZodOptional<z.ZodNumber>;
+    discount: z.ZodOptional<z.ZodNumber>;
+    shippingCost: z.ZodOptional<z.ZodNumber>;
+    tax: z.ZodOptional<z.ZodNumber>;
+    total: z.ZodOptional<z.ZodNumber>;
+    currency: z.ZodOptional<z.ZodString>;
+    paymentMethod: z.ZodOptional<z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>>;
+    paymentStatus: z.ZodOptional<z.ZodEnum<["UNPAID", "PENDING", "WAITING_REVIEW", "UNDER_REVIEW", "PROOF_SUBMITTED", "APPROVED", "VERIFIED", "REJECTED", "REFUNDED", "EXPIRED", "FAILED"]>>;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    orderId: string;
+    invoiceNumber: string;
+    pdfUrl: string | null;
+    issuedAt: string;
+    total?: number | undefined;
+    orderNumber?: string | undefined;
+    paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+    paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+    currency?: string | undefined;
+    shippingCost?: number | undefined;
+    items?: {
+        id: string;
+        variantId: string;
+        quantity: number;
+        productId: string;
+        productName: string;
+        sku: string;
+        price: number;
+        discount: number;
+        subtotal: number;
+        discountedSubtotal: number;
+        promotionSnapshot?: unknown;
+    }[] | undefined;
+    customer?: {
+        id: string;
+        firstName: string;
+        lastName: string;
+        phone: string;
+        email: string | null;
+    } | undefined;
+    discount?: number | undefined;
+    subtotal?: number | undefined;
+    tax?: number | undefined;
+}, {
+    id: string;
+    orderId: string;
+    invoiceNumber: string;
+    pdfUrl: string | null;
+    issuedAt: string;
+    total?: number | undefined;
+    orderNumber?: string | undefined;
+    paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+    paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+    currency?: string | undefined;
+    shippingCost?: number | undefined;
+    items?: {
+        id: string;
+        variantId: string;
+        quantity: number;
+        productId: string;
+        productName: string;
+        sku: string;
+        price: number;
+        discount: number;
+        subtotal: number;
+        discountedSubtotal: number;
+        promotionSnapshot?: unknown;
+    }[] | undefined;
+    customer?: {
+        id: string;
+        firstName: string;
+        lastName: string;
+        phone: string;
+        email: string | null;
+    } | undefined;
+    discount?: number | undefined;
+    subtotal?: number | undefined;
+    tax?: number | undefined;
+}>;
+export type InvoiceResponse = z.infer<typeof invoiceResponseSchema>;
+export declare const paymentProofResponseSchema: z.ZodObject<{
+    id: z.ZodString;
+    orderId: z.ZodString;
+    imageUrl: z.ZodString;
+    status: z.ZodString;
+    reviewedById: z.ZodNullable<z.ZodString>;
+    reviewedAt: z.ZodNullable<z.ZodString>;
+    adminNotes: z.ZodNullable<z.ZodString>;
+    submittedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    status: string;
+    id: string;
+    orderId: string;
+    adminNotes: string | null;
+    imageUrl: string;
+    reviewedById: string | null;
+    reviewedAt: string | null;
+    submittedAt: string;
+}, {
+    status: string;
+    id: string;
+    orderId: string;
+    adminNotes: string | null;
+    imageUrl: string;
+    reviewedById: string | null;
+    reviewedAt: string | null;
+    submittedAt: string;
+}>;
+export type PaymentProofResponse = z.infer<typeof paymentProofResponseSchema>;
+export declare const orderResponseSchema: z.ZodObject<{
+    id: z.ZodString;
+    orderNumber: z.ZodString;
+    customerId: z.ZodString;
+    customer: z.ZodOptional<z.ZodObject<{
+        id: z.ZodString;
+        firstName: z.ZodString;
+        lastName: z.ZodString;
+        email: z.ZodNullable<z.ZodString>;
+        phone: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        firstName: string;
+        lastName: string;
+        phone: string;
+        email: string | null;
+    }, {
+        id: string;
+        firstName: string;
+        lastName: string;
+        phone: string;
+        email: string | null;
+    }>>;
+    status: z.ZodEnum<["PENDING_PAYMENT", "AWAITING_PAYMENT", "PAYMENT_REVIEW", "PAYMENT_FAILED", "PAID", "CONFIRMED", "PROCESSING", "READY_TO_SHIP", "READY_FOR_SHIPPING", "SHIPPED", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "RETURNED", "CANCELLED", "REFUNDED", "FAILED"]>;
+    subtotal: z.ZodNumber;
+    discount: z.ZodNumber;
+    shippingDiscount: z.ZodNumber;
+    totalSavings: z.ZodNumber;
+    shippingCost: z.ZodNumber;
+    tax: z.ZodNumber;
+    total: z.ZodNumber;
+    paymentMethod: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>;
+    paymentStatus: z.ZodEnum<["UNPAID", "PENDING", "WAITING_REVIEW", "UNDER_REVIEW", "PROOF_SUBMITTED", "APPROVED", "VERIFIED", "REJECTED", "REFUNDED", "EXPIRED", "FAILED"]>;
+    shippingStatus: z.ZodNullable<z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "FAILED", "RETURNED", "CANCELLED"]>>;
+    shippingAddressId: z.ZodNullable<z.ZodString>;
+    /** The shipping quote frozen at checkout. Immutable once the order exists. */
+    shippingProvider: z.ZodNullable<z.ZodEnum<["MOCK", "BOSTA"]>>;
+    estimatedDeliveryDays: z.ZodNullable<z.ZodNumber>;
+    estimatedDeliveryDate: z.ZodNullable<z.ZodString>;
+    notes: z.ZodNullable<z.ZodString>;
+    createdAt: z.ZodString;
+    updatedAt: z.ZodString;
+    paymentDueAt: z.ZodNullable<z.ZodString>;
+    items: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        productId: z.ZodString;
+        variantId: z.ZodString;
+        productName: z.ZodString;
+        sku: z.ZodString;
+        price: z.ZodNumber;
+        quantity: z.ZodNumber;
+        discount: z.ZodNumber;
+        subtotal: z.ZodNumber;
+        discountedSubtotal: z.ZodNumber;
+        promotionSnapshot: z.ZodNullable<z.ZodUnknown>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        variantId: string;
+        quantity: number;
+        productId: string;
+        productName: string;
+        sku: string;
+        price: number;
+        discount: number;
+        subtotal: number;
+        discountedSubtotal: number;
+        promotionSnapshot?: unknown;
+    }, {
+        id: string;
+        variantId: string;
+        quantity: number;
+        productId: string;
+        productName: string;
+        sku: string;
+        price: number;
+        discount: number;
+        subtotal: number;
+        discountedSubtotal: number;
+        promotionSnapshot?: unknown;
+    }>, "many">;
+    invoice: z.ZodNullable<z.ZodObject<{
+        id: z.ZodString;
+        orderId: z.ZodString;
+        invoiceNumber: z.ZodString;
+        pdfUrl: z.ZodNullable<z.ZodString>;
+        issuedAt: z.ZodString;
+        orderNumber: z.ZodOptional<z.ZodString>;
+        customer: z.ZodOptional<z.ZodObject<{
+            id: z.ZodString;
+            firstName: z.ZodString;
+            lastName: z.ZodString;
+            email: z.ZodNullable<z.ZodString>;
+            phone: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        }, {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        }>>;
+        items: z.ZodOptional<z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            productId: z.ZodString;
+            variantId: z.ZodString;
+            productName: z.ZodString;
+            sku: z.ZodString;
+            price: z.ZodNumber;
+            quantity: z.ZodNumber;
+            discount: z.ZodNumber;
+            subtotal: z.ZodNumber;
+            discountedSubtotal: z.ZodNumber;
+            promotionSnapshot: z.ZodNullable<z.ZodUnknown>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            variantId: string;
+            quantity: number;
+            productId: string;
+            productName: string;
+            sku: string;
+            price: number;
+            discount: number;
+            subtotal: number;
+            discountedSubtotal: number;
+            promotionSnapshot?: unknown;
+        }, {
+            id: string;
+            variantId: string;
+            quantity: number;
+            productId: string;
+            productName: string;
+            sku: string;
+            price: number;
+            discount: number;
+            subtotal: number;
+            discountedSubtotal: number;
+            promotionSnapshot?: unknown;
+        }>, "many">>;
+        subtotal: z.ZodOptional<z.ZodNumber>;
+        discount: z.ZodOptional<z.ZodNumber>;
+        shippingCost: z.ZodOptional<z.ZodNumber>;
+        tax: z.ZodOptional<z.ZodNumber>;
+        total: z.ZodOptional<z.ZodNumber>;
+        currency: z.ZodOptional<z.ZodString>;
+        paymentMethod: z.ZodOptional<z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>>;
+        paymentStatus: z.ZodOptional<z.ZodEnum<["UNPAID", "PENDING", "WAITING_REVIEW", "UNDER_REVIEW", "PROOF_SUBMITTED", "APPROVED", "VERIFIED", "REJECTED", "REFUNDED", "EXPIRED", "FAILED"]>>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        orderId: string;
+        invoiceNumber: string;
+        pdfUrl: string | null;
+        issuedAt: string;
+        total?: number | undefined;
+        orderNumber?: string | undefined;
+        paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+        paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+        currency?: string | undefined;
+        shippingCost?: number | undefined;
+        items?: {
+            id: string;
+            variantId: string;
+            quantity: number;
+            productId: string;
+            productName: string;
+            sku: string;
+            price: number;
+            discount: number;
+            subtotal: number;
+            discountedSubtotal: number;
+            promotionSnapshot?: unknown;
+        }[] | undefined;
+        customer?: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        } | undefined;
+        discount?: number | undefined;
+        subtotal?: number | undefined;
+        tax?: number | undefined;
+    }, {
+        id: string;
+        orderId: string;
+        invoiceNumber: string;
+        pdfUrl: string | null;
+        issuedAt: string;
+        total?: number | undefined;
+        orderNumber?: string | undefined;
+        paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+        paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+        currency?: string | undefined;
+        shippingCost?: number | undefined;
+        items?: {
+            id: string;
+            variantId: string;
+            quantity: number;
+            productId: string;
+            productName: string;
+            sku: string;
+            price: number;
+            discount: number;
+            subtotal: number;
+            discountedSubtotal: number;
+            promotionSnapshot?: unknown;
+        }[] | undefined;
+        customer?: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        } | undefined;
+        discount?: number | undefined;
+        subtotal?: number | undefined;
+        tax?: number | undefined;
+    }>>;
+    latestPaymentProof: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+        id: z.ZodString;
+        orderId: z.ZodString;
+        imageUrl: z.ZodString;
+        status: z.ZodString;
+        reviewedById: z.ZodNullable<z.ZodString>;
+        reviewedAt: z.ZodNullable<z.ZodString>;
+        adminNotes: z.ZodNullable<z.ZodString>;
+        submittedAt: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        status: string;
+        id: string;
+        orderId: string;
+        adminNotes: string | null;
+        imageUrl: string;
+        reviewedById: string | null;
+        reviewedAt: string | null;
+        submittedAt: string;
+    }, {
+        status: string;
+        id: string;
+        orderId: string;
+        adminNotes: string | null;
+        imageUrl: string;
+        reviewedById: string | null;
+        reviewedAt: string | null;
+        submittedAt: string;
+    }>>>;
+    appliedPromotions: z.ZodArray<z.ZodObject<{
+        promotionId: z.ZodNullable<z.ZodString>;
+        name: z.ZodString;
+        couponCode: z.ZodNullable<z.ZodString>;
+        discountAmount: z.ZodNumber;
+        shippingDiscount: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        name: string;
+        couponCode: string | null;
+        shippingDiscount: number;
+        promotionId: string | null;
+        discountAmount: number;
+    }, {
+        name: string;
+        couponCode: string | null;
+        shippingDiscount: number;
+        promotionId: string | null;
+        discountAmount: number;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    status: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED";
+    total: number;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    orderNumber: string;
+    paymentStatus: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED";
+    paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+    shippingCost: number;
+    estimatedDeliveryDate: string | null;
+    items: {
+        id: string;
+        variantId: string;
+        quantity: number;
+        productId: string;
+        productName: string;
+        sku: string;
+        price: number;
+        discount: number;
+        subtotal: number;
+        discountedSubtotal: number;
+        promotionSnapshot?: unknown;
+    }[];
+    shippingAddressId: string | null;
+    notes: string | null;
+    shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+    shippingProvider: "MOCK" | "BOSTA" | null;
+    discount: number;
+    subtotal: number;
+    tax: number;
+    customerId: string;
+    shippingDiscount: number;
+    totalSavings: number;
+    estimatedDeliveryDays: number | null;
+    paymentDueAt: string | null;
+    invoice: {
+        id: string;
+        orderId: string;
+        invoiceNumber: string;
+        pdfUrl: string | null;
+        issuedAt: string;
+        total?: number | undefined;
+        orderNumber?: string | undefined;
+        paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+        paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+        currency?: string | undefined;
+        shippingCost?: number | undefined;
+        items?: {
+            id: string;
+            variantId: string;
+            quantity: number;
+            productId: string;
+            productName: string;
+            sku: string;
+            price: number;
+            discount: number;
+            subtotal: number;
+            discountedSubtotal: number;
+            promotionSnapshot?: unknown;
+        }[] | undefined;
+        customer?: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        } | undefined;
+        discount?: number | undefined;
+        subtotal?: number | undefined;
+        tax?: number | undefined;
+    } | null;
+    appliedPromotions: {
+        name: string;
+        couponCode: string | null;
+        shippingDiscount: number;
+        promotionId: string | null;
+        discountAmount: number;
+    }[];
+    customer?: {
+        id: string;
+        firstName: string;
+        lastName: string;
+        phone: string;
+        email: string | null;
+    } | undefined;
+    latestPaymentProof?: {
+        status: string;
+        id: string;
+        orderId: string;
+        adminNotes: string | null;
+        imageUrl: string;
+        reviewedById: string | null;
+        reviewedAt: string | null;
+        submittedAt: string;
+    } | null | undefined;
+}, {
+    status: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED";
+    total: number;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    orderNumber: string;
+    paymentStatus: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED";
+    paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+    shippingCost: number;
+    estimatedDeliveryDate: string | null;
+    items: {
+        id: string;
+        variantId: string;
+        quantity: number;
+        productId: string;
+        productName: string;
+        sku: string;
+        price: number;
+        discount: number;
+        subtotal: number;
+        discountedSubtotal: number;
+        promotionSnapshot?: unknown;
+    }[];
+    shippingAddressId: string | null;
+    notes: string | null;
+    shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+    shippingProvider: "MOCK" | "BOSTA" | null;
+    discount: number;
+    subtotal: number;
+    tax: number;
+    customerId: string;
+    shippingDiscount: number;
+    totalSavings: number;
+    estimatedDeliveryDays: number | null;
+    paymentDueAt: string | null;
+    invoice: {
+        id: string;
+        orderId: string;
+        invoiceNumber: string;
+        pdfUrl: string | null;
+        issuedAt: string;
+        total?: number | undefined;
+        orderNumber?: string | undefined;
+        paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+        paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+        currency?: string | undefined;
+        shippingCost?: number | undefined;
+        items?: {
+            id: string;
+            variantId: string;
+            quantity: number;
+            productId: string;
+            productName: string;
+            sku: string;
+            price: number;
+            discount: number;
+            subtotal: number;
+            discountedSubtotal: number;
+            promotionSnapshot?: unknown;
+        }[] | undefined;
+        customer?: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        } | undefined;
+        discount?: number | undefined;
+        subtotal?: number | undefined;
+        tax?: number | undefined;
+    } | null;
+    appliedPromotions: {
+        name: string;
+        couponCode: string | null;
+        shippingDiscount: number;
+        promotionId: string | null;
+        discountAmount: number;
+    }[];
+    customer?: {
+        id: string;
+        firstName: string;
+        lastName: string;
+        phone: string;
+        email: string | null;
+    } | undefined;
+    latestPaymentProof?: {
+        status: string;
+        id: string;
+        orderId: string;
+        adminNotes: string | null;
+        imageUrl: string;
+        reviewedById: string | null;
+        reviewedAt: string | null;
+        submittedAt: string;
+    } | null | undefined;
+}>;
+export type OrderResponse = z.infer<typeof orderResponseSchema>;
+export declare const paginatedOrdersSchema: z.ZodObject<{
+    data: z.ZodArray<z.ZodObject<Omit<{
+        id: z.ZodString;
+        orderNumber: z.ZodString;
+        customerId: z.ZodString;
+        customer: z.ZodOptional<z.ZodObject<{
+            id: z.ZodString;
+            firstName: z.ZodString;
+            lastName: z.ZodString;
+            email: z.ZodNullable<z.ZodString>;
+            phone: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        }, {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        }>>;
+        status: z.ZodEnum<["PENDING_PAYMENT", "AWAITING_PAYMENT", "PAYMENT_REVIEW", "PAYMENT_FAILED", "PAID", "CONFIRMED", "PROCESSING", "READY_TO_SHIP", "READY_FOR_SHIPPING", "SHIPPED", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "RETURNED", "CANCELLED", "REFUNDED", "FAILED"]>;
+        subtotal: z.ZodNumber;
+        discount: z.ZodNumber;
+        shippingDiscount: z.ZodNumber;
+        totalSavings: z.ZodNumber;
+        shippingCost: z.ZodNumber;
+        tax: z.ZodNumber;
+        total: z.ZodNumber;
+        paymentMethod: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>;
+        paymentStatus: z.ZodEnum<["UNPAID", "PENDING", "WAITING_REVIEW", "UNDER_REVIEW", "PROOF_SUBMITTED", "APPROVED", "VERIFIED", "REJECTED", "REFUNDED", "EXPIRED", "FAILED"]>;
+        shippingStatus: z.ZodNullable<z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "FAILED", "RETURNED", "CANCELLED"]>>;
+        shippingAddressId: z.ZodNullable<z.ZodString>;
+        /** The shipping quote frozen at checkout. Immutable once the order exists. */
+        shippingProvider: z.ZodNullable<z.ZodEnum<["MOCK", "BOSTA"]>>;
+        estimatedDeliveryDays: z.ZodNullable<z.ZodNumber>;
+        estimatedDeliveryDate: z.ZodNullable<z.ZodString>;
+        notes: z.ZodNullable<z.ZodString>;
+        createdAt: z.ZodString;
+        updatedAt: z.ZodString;
+        paymentDueAt: z.ZodNullable<z.ZodString>;
+        items: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            productId: z.ZodString;
+            variantId: z.ZodString;
+            productName: z.ZodString;
+            sku: z.ZodString;
+            price: z.ZodNumber;
+            quantity: z.ZodNumber;
+            discount: z.ZodNumber;
+            subtotal: z.ZodNumber;
+            discountedSubtotal: z.ZodNumber;
+            promotionSnapshot: z.ZodNullable<z.ZodUnknown>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            variantId: string;
+            quantity: number;
+            productId: string;
+            productName: string;
+            sku: string;
+            price: number;
+            discount: number;
+            subtotal: number;
+            discountedSubtotal: number;
+            promotionSnapshot?: unknown;
+        }, {
+            id: string;
+            variantId: string;
+            quantity: number;
+            productId: string;
+            productName: string;
+            sku: string;
+            price: number;
+            discount: number;
+            subtotal: number;
+            discountedSubtotal: number;
+            promotionSnapshot?: unknown;
+        }>, "many">;
+        invoice: z.ZodNullable<z.ZodObject<{
+            id: z.ZodString;
+            orderId: z.ZodString;
+            invoiceNumber: z.ZodString;
+            pdfUrl: z.ZodNullable<z.ZodString>;
+            issuedAt: z.ZodString;
+            orderNumber: z.ZodOptional<z.ZodString>;
+            customer: z.ZodOptional<z.ZodObject<{
+                id: z.ZodString;
+                firstName: z.ZodString;
+                lastName: z.ZodString;
+                email: z.ZodNullable<z.ZodString>;
+                phone: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                id: string;
+                firstName: string;
+                lastName: string;
+                phone: string;
+                email: string | null;
+            }, {
+                id: string;
+                firstName: string;
+                lastName: string;
+                phone: string;
+                email: string | null;
+            }>>;
+            items: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                productId: z.ZodString;
+                variantId: z.ZodString;
+                productName: z.ZodString;
+                sku: z.ZodString;
+                price: z.ZodNumber;
+                quantity: z.ZodNumber;
+                discount: z.ZodNumber;
+                subtotal: z.ZodNumber;
+                discountedSubtotal: z.ZodNumber;
+                promotionSnapshot: z.ZodNullable<z.ZodUnknown>;
+            }, "strip", z.ZodTypeAny, {
+                id: string;
+                variantId: string;
+                quantity: number;
+                productId: string;
+                productName: string;
+                sku: string;
+                price: number;
+                discount: number;
+                subtotal: number;
+                discountedSubtotal: number;
+                promotionSnapshot?: unknown;
+            }, {
+                id: string;
+                variantId: string;
+                quantity: number;
+                productId: string;
+                productName: string;
+                sku: string;
+                price: number;
+                discount: number;
+                subtotal: number;
+                discountedSubtotal: number;
+                promotionSnapshot?: unknown;
+            }>, "many">>;
+            subtotal: z.ZodOptional<z.ZodNumber>;
+            discount: z.ZodOptional<z.ZodNumber>;
+            shippingCost: z.ZodOptional<z.ZodNumber>;
+            tax: z.ZodOptional<z.ZodNumber>;
+            total: z.ZodOptional<z.ZodNumber>;
+            currency: z.ZodOptional<z.ZodString>;
+            paymentMethod: z.ZodOptional<z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>>;
+            paymentStatus: z.ZodOptional<z.ZodEnum<["UNPAID", "PENDING", "WAITING_REVIEW", "UNDER_REVIEW", "PROOF_SUBMITTED", "APPROVED", "VERIFIED", "REJECTED", "REFUNDED", "EXPIRED", "FAILED"]>>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            orderId: string;
+            invoiceNumber: string;
+            pdfUrl: string | null;
+            issuedAt: string;
+            total?: number | undefined;
+            orderNumber?: string | undefined;
+            paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+            paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+            currency?: string | undefined;
+            shippingCost?: number | undefined;
+            items?: {
+                id: string;
+                variantId: string;
+                quantity: number;
+                productId: string;
+                productName: string;
+                sku: string;
+                price: number;
+                discount: number;
+                subtotal: number;
+                discountedSubtotal: number;
+                promotionSnapshot?: unknown;
+            }[] | undefined;
+            customer?: {
+                id: string;
+                firstName: string;
+                lastName: string;
+                phone: string;
+                email: string | null;
+            } | undefined;
+            discount?: number | undefined;
+            subtotal?: number | undefined;
+            tax?: number | undefined;
+        }, {
+            id: string;
+            orderId: string;
+            invoiceNumber: string;
+            pdfUrl: string | null;
+            issuedAt: string;
+            total?: number | undefined;
+            orderNumber?: string | undefined;
+            paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+            paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+            currency?: string | undefined;
+            shippingCost?: number | undefined;
+            items?: {
+                id: string;
+                variantId: string;
+                quantity: number;
+                productId: string;
+                productName: string;
+                sku: string;
+                price: number;
+                discount: number;
+                subtotal: number;
+                discountedSubtotal: number;
+                promotionSnapshot?: unknown;
+            }[] | undefined;
+            customer?: {
+                id: string;
+                firstName: string;
+                lastName: string;
+                phone: string;
+                email: string | null;
+            } | undefined;
+            discount?: number | undefined;
+            subtotal?: number | undefined;
+            tax?: number | undefined;
+        }>>;
+        latestPaymentProof: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            id: z.ZodString;
+            orderId: z.ZodString;
+            imageUrl: z.ZodString;
+            status: z.ZodString;
+            reviewedById: z.ZodNullable<z.ZodString>;
+            reviewedAt: z.ZodNullable<z.ZodString>;
+            adminNotes: z.ZodNullable<z.ZodString>;
+            submittedAt: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            status: string;
+            id: string;
+            orderId: string;
+            adminNotes: string | null;
+            imageUrl: string;
+            reviewedById: string | null;
+            reviewedAt: string | null;
+            submittedAt: string;
+        }, {
+            status: string;
+            id: string;
+            orderId: string;
+            adminNotes: string | null;
+            imageUrl: string;
+            reviewedById: string | null;
+            reviewedAt: string | null;
+            submittedAt: string;
+        }>>>;
+        appliedPromotions: z.ZodArray<z.ZodObject<{
+            promotionId: z.ZodNullable<z.ZodString>;
+            name: z.ZodString;
+            couponCode: z.ZodNullable<z.ZodString>;
+            discountAmount: z.ZodNumber;
+            shippingDiscount: z.ZodNumber;
+        }, "strip", z.ZodTypeAny, {
+            name: string;
+            couponCode: string | null;
+            shippingDiscount: number;
+            promotionId: string | null;
+            discountAmount: number;
+        }, {
+            name: string;
+            couponCode: string | null;
+            shippingDiscount: number;
+            promotionId: string | null;
+            discountAmount: number;
+        }>, "many">;
+    }, "items">, "strip", z.ZodTypeAny, {
+        status: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED";
+        total: number;
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        orderNumber: string;
+        paymentStatus: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED";
+        paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+        shippingCost: number;
+        estimatedDeliveryDate: string | null;
+        shippingAddressId: string | null;
+        notes: string | null;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+        shippingProvider: "MOCK" | "BOSTA" | null;
+        discount: number;
+        subtotal: number;
+        tax: number;
+        customerId: string;
+        shippingDiscount: number;
+        totalSavings: number;
+        estimatedDeliveryDays: number | null;
+        paymentDueAt: string | null;
+        invoice: {
+            id: string;
+            orderId: string;
+            invoiceNumber: string;
+            pdfUrl: string | null;
+            issuedAt: string;
+            total?: number | undefined;
+            orderNumber?: string | undefined;
+            paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+            paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+            currency?: string | undefined;
+            shippingCost?: number | undefined;
+            items?: {
+                id: string;
+                variantId: string;
+                quantity: number;
+                productId: string;
+                productName: string;
+                sku: string;
+                price: number;
+                discount: number;
+                subtotal: number;
+                discountedSubtotal: number;
+                promotionSnapshot?: unknown;
+            }[] | undefined;
+            customer?: {
+                id: string;
+                firstName: string;
+                lastName: string;
+                phone: string;
+                email: string | null;
+            } | undefined;
+            discount?: number | undefined;
+            subtotal?: number | undefined;
+            tax?: number | undefined;
+        } | null;
+        appliedPromotions: {
+            name: string;
+            couponCode: string | null;
+            shippingDiscount: number;
+            promotionId: string | null;
+            discountAmount: number;
+        }[];
+        customer?: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        } | undefined;
+        latestPaymentProof?: {
+            status: string;
+            id: string;
+            orderId: string;
+            adminNotes: string | null;
+            imageUrl: string;
+            reviewedById: string | null;
+            reviewedAt: string | null;
+            submittedAt: string;
+        } | null | undefined;
+    }, {
+        status: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED";
+        total: number;
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        orderNumber: string;
+        paymentStatus: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED";
+        paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+        shippingCost: number;
+        estimatedDeliveryDate: string | null;
+        shippingAddressId: string | null;
+        notes: string | null;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+        shippingProvider: "MOCK" | "BOSTA" | null;
+        discount: number;
+        subtotal: number;
+        tax: number;
+        customerId: string;
+        shippingDiscount: number;
+        totalSavings: number;
+        estimatedDeliveryDays: number | null;
+        paymentDueAt: string | null;
+        invoice: {
+            id: string;
+            orderId: string;
+            invoiceNumber: string;
+            pdfUrl: string | null;
+            issuedAt: string;
+            total?: number | undefined;
+            orderNumber?: string | undefined;
+            paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+            paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+            currency?: string | undefined;
+            shippingCost?: number | undefined;
+            items?: {
+                id: string;
+                variantId: string;
+                quantity: number;
+                productId: string;
+                productName: string;
+                sku: string;
+                price: number;
+                discount: number;
+                subtotal: number;
+                discountedSubtotal: number;
+                promotionSnapshot?: unknown;
+            }[] | undefined;
+            customer?: {
+                id: string;
+                firstName: string;
+                lastName: string;
+                phone: string;
+                email: string | null;
+            } | undefined;
+            discount?: number | undefined;
+            subtotal?: number | undefined;
+            tax?: number | undefined;
+        } | null;
+        appliedPromotions: {
+            name: string;
+            couponCode: string | null;
+            shippingDiscount: number;
+            promotionId: string | null;
+            discountAmount: number;
+        }[];
+        customer?: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        } | undefined;
+        latestPaymentProof?: {
+            status: string;
+            id: string;
+            orderId: string;
+            adminNotes: string | null;
+            imageUrl: string;
+            reviewedById: string | null;
+            reviewedAt: string | null;
+            submittedAt: string;
+        } | null | undefined;
+    }>, "many">;
+    meta: z.ZodObject<{
+        page: z.ZodNumber;
+        limit: z.ZodNumber;
+        total: z.ZodNumber;
+        totalPages: z.ZodNumber;
+        hasNext: z.ZodBoolean;
+        hasPrev: z.ZodBoolean;
+    }, "strip", z.ZodTypeAny, {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    }, {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    data: {
+        status: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED";
+        total: number;
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        orderNumber: string;
+        paymentStatus: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED";
+        paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+        shippingCost: number;
+        estimatedDeliveryDate: string | null;
+        shippingAddressId: string | null;
+        notes: string | null;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+        shippingProvider: "MOCK" | "BOSTA" | null;
+        discount: number;
+        subtotal: number;
+        tax: number;
+        customerId: string;
+        shippingDiscount: number;
+        totalSavings: number;
+        estimatedDeliveryDays: number | null;
+        paymentDueAt: string | null;
+        invoice: {
+            id: string;
+            orderId: string;
+            invoiceNumber: string;
+            pdfUrl: string | null;
+            issuedAt: string;
+            total?: number | undefined;
+            orderNumber?: string | undefined;
+            paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+            paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+            currency?: string | undefined;
+            shippingCost?: number | undefined;
+            items?: {
+                id: string;
+                variantId: string;
+                quantity: number;
+                productId: string;
+                productName: string;
+                sku: string;
+                price: number;
+                discount: number;
+                subtotal: number;
+                discountedSubtotal: number;
+                promotionSnapshot?: unknown;
+            }[] | undefined;
+            customer?: {
+                id: string;
+                firstName: string;
+                lastName: string;
+                phone: string;
+                email: string | null;
+            } | undefined;
+            discount?: number | undefined;
+            subtotal?: number | undefined;
+            tax?: number | undefined;
+        } | null;
+        appliedPromotions: {
+            name: string;
+            couponCode: string | null;
+            shippingDiscount: number;
+            promotionId: string | null;
+            discountAmount: number;
+        }[];
+        customer?: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        } | undefined;
+        latestPaymentProof?: {
+            status: string;
+            id: string;
+            orderId: string;
+            adminNotes: string | null;
+            imageUrl: string;
+            reviewedById: string | null;
+            reviewedAt: string | null;
+            submittedAt: string;
+        } | null | undefined;
+    }[];
+    meta: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    };
+}, {
+    data: {
+        status: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED";
+        total: number;
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        orderNumber: string;
+        paymentStatus: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED";
+        paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+        shippingCost: number;
+        estimatedDeliveryDate: string | null;
+        shippingAddressId: string | null;
+        notes: string | null;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+        shippingProvider: "MOCK" | "BOSTA" | null;
+        discount: number;
+        subtotal: number;
+        tax: number;
+        customerId: string;
+        shippingDiscount: number;
+        totalSavings: number;
+        estimatedDeliveryDays: number | null;
+        paymentDueAt: string | null;
+        invoice: {
+            id: string;
+            orderId: string;
+            invoiceNumber: string;
+            pdfUrl: string | null;
+            issuedAt: string;
+            total?: number | undefined;
+            orderNumber?: string | undefined;
+            paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+            paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+            currency?: string | undefined;
+            shippingCost?: number | undefined;
+            items?: {
+                id: string;
+                variantId: string;
+                quantity: number;
+                productId: string;
+                productName: string;
+                sku: string;
+                price: number;
+                discount: number;
+                subtotal: number;
+                discountedSubtotal: number;
+                promotionSnapshot?: unknown;
+            }[] | undefined;
+            customer?: {
+                id: string;
+                firstName: string;
+                lastName: string;
+                phone: string;
+                email: string | null;
+            } | undefined;
+            discount?: number | undefined;
+            subtotal?: number | undefined;
+            tax?: number | undefined;
+        } | null;
+        appliedPromotions: {
+            name: string;
+            couponCode: string | null;
+            shippingDiscount: number;
+            promotionId: string | null;
+            discountAmount: number;
+        }[];
+        customer?: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        } | undefined;
+        latestPaymentProof?: {
+            status: string;
+            id: string;
+            orderId: string;
+            adminNotes: string | null;
+            imageUrl: string;
+            reviewedById: string | null;
+            reviewedAt: string | null;
+            submittedAt: string;
+        } | null | undefined;
+    }[];
+    meta: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    };
+}>;
+export declare const orderStatisticsSchema: z.ZodObject<{
+    totalOrders: z.ZodNumber;
+    pendingPayment: z.ZodNumber;
+    paymentReview: z.ZodNumber;
+    processing: z.ZodNumber;
+    readyForShipping: z.ZodNumber;
+    shipped: z.ZodNumber;
+    delivered: z.ZodNumber;
+    cancelled: z.ZodNumber;
+    refunded: z.ZodNumber;
+    revenue: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    totalOrders: number;
+    pendingPayment: number;
+    paymentReview: number;
+    processing: number;
+    readyForShipping: number;
+    shipped: number;
+    delivered: number;
+    cancelled: number;
+    refunded: number;
+    revenue: number;
+}, {
+    totalOrders: number;
+    pendingPayment: number;
+    paymentReview: number;
+    processing: number;
+    readyForShipping: number;
+    shipped: number;
+    delivered: number;
+    cancelled: number;
+    refunded: number;
+    revenue: number;
+}>;
+export type OrderStatisticsResponse = z.infer<typeof orderStatisticsSchema>;
 export declare const orderPaymentInstructionsSchema: z.ZodObject<{
     orderNumber: z.ZodString;
     amountDue: z.ZodNumber;
-    method: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "COD"]>;
+    method: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>;
     vodafoneCashNumber: z.ZodNullable<z.ZodString>;
     instapayAddress: z.ZodNullable<z.ZodString>;
     paymentDueAt: z.ZodNullable<z.ZodString>;
     transferNote: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     orderNumber: string;
+    paymentDueAt: string | null;
     amountDue: number;
-    method: "VODAFONE_CASH" | "INSTAPAY" | "COD";
+    method: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
     vodafoneCashNumber: string | null;
     instapayAddress: string | null;
-    paymentDueAt: string | null;
     transferNote: string;
 }, {
     orderNumber: string;
+    paymentDueAt: string | null;
     amountDue: number;
-    method: "VODAFONE_CASH" | "INSTAPAY" | "COD";
+    method: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
     vodafoneCashNumber: string | null;
     instapayAddress: string | null;
-    paymentDueAt: string | null;
     transferNote: string;
 }>;
 export type OrderPaymentInstructions = z.infer<typeof orderPaymentInstructionsSchema>;
+export declare const createOrderResponseSchema: z.ZodObject<{
+    order: z.ZodObject<{
+        id: z.ZodString;
+        orderNumber: z.ZodString;
+        customerId: z.ZodString;
+        customer: z.ZodOptional<z.ZodObject<{
+            id: z.ZodString;
+            firstName: z.ZodString;
+            lastName: z.ZodString;
+            email: z.ZodNullable<z.ZodString>;
+            phone: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        }, {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        }>>;
+        status: z.ZodEnum<["PENDING_PAYMENT", "AWAITING_PAYMENT", "PAYMENT_REVIEW", "PAYMENT_FAILED", "PAID", "CONFIRMED", "PROCESSING", "READY_TO_SHIP", "READY_FOR_SHIPPING", "SHIPPED", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "RETURNED", "CANCELLED", "REFUNDED", "FAILED"]>;
+        subtotal: z.ZodNumber;
+        discount: z.ZodNumber;
+        shippingDiscount: z.ZodNumber;
+        totalSavings: z.ZodNumber;
+        shippingCost: z.ZodNumber;
+        tax: z.ZodNumber;
+        total: z.ZodNumber;
+        paymentMethod: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>;
+        paymentStatus: z.ZodEnum<["UNPAID", "PENDING", "WAITING_REVIEW", "UNDER_REVIEW", "PROOF_SUBMITTED", "APPROVED", "VERIFIED", "REJECTED", "REFUNDED", "EXPIRED", "FAILED"]>;
+        shippingStatus: z.ZodNullable<z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "FAILED", "RETURNED", "CANCELLED"]>>;
+        shippingAddressId: z.ZodNullable<z.ZodString>;
+        /** The shipping quote frozen at checkout. Immutable once the order exists. */
+        shippingProvider: z.ZodNullable<z.ZodEnum<["MOCK", "BOSTA"]>>;
+        estimatedDeliveryDays: z.ZodNullable<z.ZodNumber>;
+        estimatedDeliveryDate: z.ZodNullable<z.ZodString>;
+        notes: z.ZodNullable<z.ZodString>;
+        createdAt: z.ZodString;
+        updatedAt: z.ZodString;
+        paymentDueAt: z.ZodNullable<z.ZodString>;
+        items: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            productId: z.ZodString;
+            variantId: z.ZodString;
+            productName: z.ZodString;
+            sku: z.ZodString;
+            price: z.ZodNumber;
+            quantity: z.ZodNumber;
+            discount: z.ZodNumber;
+            subtotal: z.ZodNumber;
+            discountedSubtotal: z.ZodNumber;
+            promotionSnapshot: z.ZodNullable<z.ZodUnknown>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            variantId: string;
+            quantity: number;
+            productId: string;
+            productName: string;
+            sku: string;
+            price: number;
+            discount: number;
+            subtotal: number;
+            discountedSubtotal: number;
+            promotionSnapshot?: unknown;
+        }, {
+            id: string;
+            variantId: string;
+            quantity: number;
+            productId: string;
+            productName: string;
+            sku: string;
+            price: number;
+            discount: number;
+            subtotal: number;
+            discountedSubtotal: number;
+            promotionSnapshot?: unknown;
+        }>, "many">;
+        invoice: z.ZodNullable<z.ZodObject<{
+            id: z.ZodString;
+            orderId: z.ZodString;
+            invoiceNumber: z.ZodString;
+            pdfUrl: z.ZodNullable<z.ZodString>;
+            issuedAt: z.ZodString;
+            orderNumber: z.ZodOptional<z.ZodString>;
+            customer: z.ZodOptional<z.ZodObject<{
+                id: z.ZodString;
+                firstName: z.ZodString;
+                lastName: z.ZodString;
+                email: z.ZodNullable<z.ZodString>;
+                phone: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                id: string;
+                firstName: string;
+                lastName: string;
+                phone: string;
+                email: string | null;
+            }, {
+                id: string;
+                firstName: string;
+                lastName: string;
+                phone: string;
+                email: string | null;
+            }>>;
+            items: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                productId: z.ZodString;
+                variantId: z.ZodString;
+                productName: z.ZodString;
+                sku: z.ZodString;
+                price: z.ZodNumber;
+                quantity: z.ZodNumber;
+                discount: z.ZodNumber;
+                subtotal: z.ZodNumber;
+                discountedSubtotal: z.ZodNumber;
+                promotionSnapshot: z.ZodNullable<z.ZodUnknown>;
+            }, "strip", z.ZodTypeAny, {
+                id: string;
+                variantId: string;
+                quantity: number;
+                productId: string;
+                productName: string;
+                sku: string;
+                price: number;
+                discount: number;
+                subtotal: number;
+                discountedSubtotal: number;
+                promotionSnapshot?: unknown;
+            }, {
+                id: string;
+                variantId: string;
+                quantity: number;
+                productId: string;
+                productName: string;
+                sku: string;
+                price: number;
+                discount: number;
+                subtotal: number;
+                discountedSubtotal: number;
+                promotionSnapshot?: unknown;
+            }>, "many">>;
+            subtotal: z.ZodOptional<z.ZodNumber>;
+            discount: z.ZodOptional<z.ZodNumber>;
+            shippingCost: z.ZodOptional<z.ZodNumber>;
+            tax: z.ZodOptional<z.ZodNumber>;
+            total: z.ZodOptional<z.ZodNumber>;
+            currency: z.ZodOptional<z.ZodString>;
+            paymentMethod: z.ZodOptional<z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>>;
+            paymentStatus: z.ZodOptional<z.ZodEnum<["UNPAID", "PENDING", "WAITING_REVIEW", "UNDER_REVIEW", "PROOF_SUBMITTED", "APPROVED", "VERIFIED", "REJECTED", "REFUNDED", "EXPIRED", "FAILED"]>>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            orderId: string;
+            invoiceNumber: string;
+            pdfUrl: string | null;
+            issuedAt: string;
+            total?: number | undefined;
+            orderNumber?: string | undefined;
+            paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+            paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+            currency?: string | undefined;
+            shippingCost?: number | undefined;
+            items?: {
+                id: string;
+                variantId: string;
+                quantity: number;
+                productId: string;
+                productName: string;
+                sku: string;
+                price: number;
+                discount: number;
+                subtotal: number;
+                discountedSubtotal: number;
+                promotionSnapshot?: unknown;
+            }[] | undefined;
+            customer?: {
+                id: string;
+                firstName: string;
+                lastName: string;
+                phone: string;
+                email: string | null;
+            } | undefined;
+            discount?: number | undefined;
+            subtotal?: number | undefined;
+            tax?: number | undefined;
+        }, {
+            id: string;
+            orderId: string;
+            invoiceNumber: string;
+            pdfUrl: string | null;
+            issuedAt: string;
+            total?: number | undefined;
+            orderNumber?: string | undefined;
+            paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+            paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+            currency?: string | undefined;
+            shippingCost?: number | undefined;
+            items?: {
+                id: string;
+                variantId: string;
+                quantity: number;
+                productId: string;
+                productName: string;
+                sku: string;
+                price: number;
+                discount: number;
+                subtotal: number;
+                discountedSubtotal: number;
+                promotionSnapshot?: unknown;
+            }[] | undefined;
+            customer?: {
+                id: string;
+                firstName: string;
+                lastName: string;
+                phone: string;
+                email: string | null;
+            } | undefined;
+            discount?: number | undefined;
+            subtotal?: number | undefined;
+            tax?: number | undefined;
+        }>>;
+        latestPaymentProof: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            id: z.ZodString;
+            orderId: z.ZodString;
+            imageUrl: z.ZodString;
+            status: z.ZodString;
+            reviewedById: z.ZodNullable<z.ZodString>;
+            reviewedAt: z.ZodNullable<z.ZodString>;
+            adminNotes: z.ZodNullable<z.ZodString>;
+            submittedAt: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            status: string;
+            id: string;
+            orderId: string;
+            adminNotes: string | null;
+            imageUrl: string;
+            reviewedById: string | null;
+            reviewedAt: string | null;
+            submittedAt: string;
+        }, {
+            status: string;
+            id: string;
+            orderId: string;
+            adminNotes: string | null;
+            imageUrl: string;
+            reviewedById: string | null;
+            reviewedAt: string | null;
+            submittedAt: string;
+        }>>>;
+        appliedPromotions: z.ZodArray<z.ZodObject<{
+            promotionId: z.ZodNullable<z.ZodString>;
+            name: z.ZodString;
+            couponCode: z.ZodNullable<z.ZodString>;
+            discountAmount: z.ZodNumber;
+            shippingDiscount: z.ZodNumber;
+        }, "strip", z.ZodTypeAny, {
+            name: string;
+            couponCode: string | null;
+            shippingDiscount: number;
+            promotionId: string | null;
+            discountAmount: number;
+        }, {
+            name: string;
+            couponCode: string | null;
+            shippingDiscount: number;
+            promotionId: string | null;
+            discountAmount: number;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        status: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED";
+        total: number;
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        orderNumber: string;
+        paymentStatus: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED";
+        paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+        shippingCost: number;
+        estimatedDeliveryDate: string | null;
+        items: {
+            id: string;
+            variantId: string;
+            quantity: number;
+            productId: string;
+            productName: string;
+            sku: string;
+            price: number;
+            discount: number;
+            subtotal: number;
+            discountedSubtotal: number;
+            promotionSnapshot?: unknown;
+        }[];
+        shippingAddressId: string | null;
+        notes: string | null;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+        shippingProvider: "MOCK" | "BOSTA" | null;
+        discount: number;
+        subtotal: number;
+        tax: number;
+        customerId: string;
+        shippingDiscount: number;
+        totalSavings: number;
+        estimatedDeliveryDays: number | null;
+        paymentDueAt: string | null;
+        invoice: {
+            id: string;
+            orderId: string;
+            invoiceNumber: string;
+            pdfUrl: string | null;
+            issuedAt: string;
+            total?: number | undefined;
+            orderNumber?: string | undefined;
+            paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+            paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+            currency?: string | undefined;
+            shippingCost?: number | undefined;
+            items?: {
+                id: string;
+                variantId: string;
+                quantity: number;
+                productId: string;
+                productName: string;
+                sku: string;
+                price: number;
+                discount: number;
+                subtotal: number;
+                discountedSubtotal: number;
+                promotionSnapshot?: unknown;
+            }[] | undefined;
+            customer?: {
+                id: string;
+                firstName: string;
+                lastName: string;
+                phone: string;
+                email: string | null;
+            } | undefined;
+            discount?: number | undefined;
+            subtotal?: number | undefined;
+            tax?: number | undefined;
+        } | null;
+        appliedPromotions: {
+            name: string;
+            couponCode: string | null;
+            shippingDiscount: number;
+            promotionId: string | null;
+            discountAmount: number;
+        }[];
+        customer?: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        } | undefined;
+        latestPaymentProof?: {
+            status: string;
+            id: string;
+            orderId: string;
+            adminNotes: string | null;
+            imageUrl: string;
+            reviewedById: string | null;
+            reviewedAt: string | null;
+            submittedAt: string;
+        } | null | undefined;
+    }, {
+        status: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED";
+        total: number;
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        orderNumber: string;
+        paymentStatus: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED";
+        paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+        shippingCost: number;
+        estimatedDeliveryDate: string | null;
+        items: {
+            id: string;
+            variantId: string;
+            quantity: number;
+            productId: string;
+            productName: string;
+            sku: string;
+            price: number;
+            discount: number;
+            subtotal: number;
+            discountedSubtotal: number;
+            promotionSnapshot?: unknown;
+        }[];
+        shippingAddressId: string | null;
+        notes: string | null;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+        shippingProvider: "MOCK" | "BOSTA" | null;
+        discount: number;
+        subtotal: number;
+        tax: number;
+        customerId: string;
+        shippingDiscount: number;
+        totalSavings: number;
+        estimatedDeliveryDays: number | null;
+        paymentDueAt: string | null;
+        invoice: {
+            id: string;
+            orderId: string;
+            invoiceNumber: string;
+            pdfUrl: string | null;
+            issuedAt: string;
+            total?: number | undefined;
+            orderNumber?: string | undefined;
+            paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+            paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+            currency?: string | undefined;
+            shippingCost?: number | undefined;
+            items?: {
+                id: string;
+                variantId: string;
+                quantity: number;
+                productId: string;
+                productName: string;
+                sku: string;
+                price: number;
+                discount: number;
+                subtotal: number;
+                discountedSubtotal: number;
+                promotionSnapshot?: unknown;
+            }[] | undefined;
+            customer?: {
+                id: string;
+                firstName: string;
+                lastName: string;
+                phone: string;
+                email: string | null;
+            } | undefined;
+            discount?: number | undefined;
+            subtotal?: number | undefined;
+            tax?: number | undefined;
+        } | null;
+        appliedPromotions: {
+            name: string;
+            couponCode: string | null;
+            shippingDiscount: number;
+            promotionId: string | null;
+            discountAmount: number;
+        }[];
+        customer?: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        } | undefined;
+        latestPaymentProof?: {
+            status: string;
+            id: string;
+            orderId: string;
+            adminNotes: string | null;
+            imageUrl: string;
+            reviewedById: string | null;
+            reviewedAt: string | null;
+            submittedAt: string;
+        } | null | undefined;
+    }>;
+    shipment: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+        id: z.ZodString;
+        orderId: z.ZodString;
+        provider: z.ZodEnum<["MOCK", "BOSTA"]>;
+        shipmentId: z.ZodString;
+        trackingNumber: z.ZodString;
+        trackingUrl: z.ZodString;
+        status: z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "FAILED", "RETURNED", "CANCELLED"]>;
+        shippingCost: z.ZodNumber;
+        estimatedDelivery: z.ZodNullable<z.ZodString>;
+        createdAt: z.ZodString;
+        updatedAt: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP";
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        shippingCost: number;
+        estimatedDelivery: string | null;
+        provider: "MOCK" | "BOSTA";
+        orderId: string;
+        trackingNumber: string;
+        trackingUrl: string;
+        shipmentId: string;
+    }, {
+        status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP";
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        shippingCost: number;
+        estimatedDelivery: string | null;
+        provider: "MOCK" | "BOSTA";
+        orderId: string;
+        trackingNumber: string;
+        trackingUrl: string;
+        shipmentId: string;
+    }>>>;
+    paymentInstructions: z.ZodObject<{
+        orderNumber: z.ZodString;
+        amountDue: z.ZodNumber;
+        method: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>;
+        vodafoneCashNumber: z.ZodNullable<z.ZodString>;
+        instapayAddress: z.ZodNullable<z.ZodString>;
+        paymentDueAt: z.ZodNullable<z.ZodString>;
+        transferNote: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        orderNumber: string;
+        paymentDueAt: string | null;
+        amountDue: number;
+        method: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+        vodafoneCashNumber: string | null;
+        instapayAddress: string | null;
+        transferNote: string;
+    }, {
+        orderNumber: string;
+        paymentDueAt: string | null;
+        amountDue: number;
+        method: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+        vodafoneCashNumber: string | null;
+        instapayAddress: string | null;
+        transferNote: string;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    order: {
+        status: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED";
+        total: number;
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        orderNumber: string;
+        paymentStatus: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED";
+        paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+        shippingCost: number;
+        estimatedDeliveryDate: string | null;
+        items: {
+            id: string;
+            variantId: string;
+            quantity: number;
+            productId: string;
+            productName: string;
+            sku: string;
+            price: number;
+            discount: number;
+            subtotal: number;
+            discountedSubtotal: number;
+            promotionSnapshot?: unknown;
+        }[];
+        shippingAddressId: string | null;
+        notes: string | null;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+        shippingProvider: "MOCK" | "BOSTA" | null;
+        discount: number;
+        subtotal: number;
+        tax: number;
+        customerId: string;
+        shippingDiscount: number;
+        totalSavings: number;
+        estimatedDeliveryDays: number | null;
+        paymentDueAt: string | null;
+        invoice: {
+            id: string;
+            orderId: string;
+            invoiceNumber: string;
+            pdfUrl: string | null;
+            issuedAt: string;
+            total?: number | undefined;
+            orderNumber?: string | undefined;
+            paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+            paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+            currency?: string | undefined;
+            shippingCost?: number | undefined;
+            items?: {
+                id: string;
+                variantId: string;
+                quantity: number;
+                productId: string;
+                productName: string;
+                sku: string;
+                price: number;
+                discount: number;
+                subtotal: number;
+                discountedSubtotal: number;
+                promotionSnapshot?: unknown;
+            }[] | undefined;
+            customer?: {
+                id: string;
+                firstName: string;
+                lastName: string;
+                phone: string;
+                email: string | null;
+            } | undefined;
+            discount?: number | undefined;
+            subtotal?: number | undefined;
+            tax?: number | undefined;
+        } | null;
+        appliedPromotions: {
+            name: string;
+            couponCode: string | null;
+            shippingDiscount: number;
+            promotionId: string | null;
+            discountAmount: number;
+        }[];
+        customer?: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        } | undefined;
+        latestPaymentProof?: {
+            status: string;
+            id: string;
+            orderId: string;
+            adminNotes: string | null;
+            imageUrl: string;
+            reviewedById: string | null;
+            reviewedAt: string | null;
+            submittedAt: string;
+        } | null | undefined;
+    };
+    paymentInstructions: {
+        orderNumber: string;
+        paymentDueAt: string | null;
+        amountDue: number;
+        method: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+        vodafoneCashNumber: string | null;
+        instapayAddress: string | null;
+        transferNote: string;
+    };
+    shipment?: {
+        status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP";
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        shippingCost: number;
+        estimatedDelivery: string | null;
+        provider: "MOCK" | "BOSTA";
+        orderId: string;
+        trackingNumber: string;
+        trackingUrl: string;
+        shipmentId: string;
+    } | null | undefined;
+}, {
+    order: {
+        status: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED";
+        total: number;
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        orderNumber: string;
+        paymentStatus: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED";
+        paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+        shippingCost: number;
+        estimatedDeliveryDate: string | null;
+        items: {
+            id: string;
+            variantId: string;
+            quantity: number;
+            productId: string;
+            productName: string;
+            sku: string;
+            price: number;
+            discount: number;
+            subtotal: number;
+            discountedSubtotal: number;
+            promotionSnapshot?: unknown;
+        }[];
+        shippingAddressId: string | null;
+        notes: string | null;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+        shippingProvider: "MOCK" | "BOSTA" | null;
+        discount: number;
+        subtotal: number;
+        tax: number;
+        customerId: string;
+        shippingDiscount: number;
+        totalSavings: number;
+        estimatedDeliveryDays: number | null;
+        paymentDueAt: string | null;
+        invoice: {
+            id: string;
+            orderId: string;
+            invoiceNumber: string;
+            pdfUrl: string | null;
+            issuedAt: string;
+            total?: number | undefined;
+            orderNumber?: string | undefined;
+            paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
+            paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
+            currency?: string | undefined;
+            shippingCost?: number | undefined;
+            items?: {
+                id: string;
+                variantId: string;
+                quantity: number;
+                productId: string;
+                productName: string;
+                sku: string;
+                price: number;
+                discount: number;
+                subtotal: number;
+                discountedSubtotal: number;
+                promotionSnapshot?: unknown;
+            }[] | undefined;
+            customer?: {
+                id: string;
+                firstName: string;
+                lastName: string;
+                phone: string;
+                email: string | null;
+            } | undefined;
+            discount?: number | undefined;
+            subtotal?: number | undefined;
+            tax?: number | undefined;
+        } | null;
+        appliedPromotions: {
+            name: string;
+            couponCode: string | null;
+            shippingDiscount: number;
+            promotionId: string | null;
+            discountAmount: number;
+        }[];
+        customer?: {
+            id: string;
+            firstName: string;
+            lastName: string;
+            phone: string;
+            email: string | null;
+        } | undefined;
+        latestPaymentProof?: {
+            status: string;
+            id: string;
+            orderId: string;
+            adminNotes: string | null;
+            imageUrl: string;
+            reviewedById: string | null;
+            reviewedAt: string | null;
+            submittedAt: string;
+        } | null | undefined;
+    };
+    paymentInstructions: {
+        orderNumber: string;
+        paymentDueAt: string | null;
+        amountDue: number;
+        method: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+        vodafoneCashNumber: string | null;
+        instapayAddress: string | null;
+        transferNote: string;
+    };
+    shipment?: {
+        status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP";
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        shippingCost: number;
+        estimatedDelivery: string | null;
+        provider: "MOCK" | "BOSTA";
+        orderId: string;
+        trackingNumber: string;
+        trackingUrl: string;
+        shipmentId: string;
+    } | null | undefined;
+}>;
+export type CreateOrderResponse = z.infer<typeof createOrderResponseSchema>;
+export declare const paginatedOrderTimelineSchema: z.ZodObject<{
+    data: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        orderId: z.ZodString;
+        action: z.ZodString;
+        performedById: z.ZodNullable<z.ZodString>;
+        description: z.ZodString;
+        createdAt: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        action: string;
+        description: string;
+        createdAt: string;
+        orderId: string;
+        performedById: string | null;
+    }, {
+        id: string;
+        action: string;
+        description: string;
+        createdAt: string;
+        orderId: string;
+        performedById: string | null;
+    }>, "many">;
+    meta: z.ZodObject<{
+        page: z.ZodNumber;
+        limit: z.ZodNumber;
+        total: z.ZodNumber;
+        totalPages: z.ZodNumber;
+        hasNext: z.ZodBoolean;
+        hasPrev: z.ZodBoolean;
+    }, "strip", z.ZodTypeAny, {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    }, {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    data: {
+        id: string;
+        action: string;
+        description: string;
+        createdAt: string;
+        orderId: string;
+        performedById: string | null;
+    }[];
+    meta: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    };
+}, {
+    data: {
+        id: string;
+        action: string;
+        description: string;
+        createdAt: string;
+        orderId: string;
+        performedById: string | null;
+    }[];
+    meta: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    };
+}>;
 //# sourceMappingURL=create-order.schema.d.ts.map

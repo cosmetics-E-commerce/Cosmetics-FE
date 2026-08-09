@@ -29,6 +29,14 @@ __exportStar(require("./catalog/product.schema"), exports);
 __exportStar(require("./cart/cart.schema"), exports);
 __exportStar(require("./wishlist/wishlist.schema"), exports);
 __exportStar(require("./inventory/inventory.schema"), exports);
+__exportStar(require("./shipping/shipping.schema"), exports);
 __exportStar(require("./permissions/permission.schema"), exports);
 __exportStar(require("./audit/audit.schema"), exports);
+__exportStar(require("./promotions/promotion.schema"), exports);
+__exportStar(require("./ingredients/ingredient.schema"), exports);
+__exportStar(require("./banners/banner.schema"), exports);
+__exportStar(require("./analytics/analytics.schema"), exports);
+__exportStar(require("./reviews/review.schema"), exports);
+__exportStar(require("./store/store.schema"), exports);
+__exportStar(require("./media/media.schema"), exports);
 //# sourceMappingURL=index.js.map

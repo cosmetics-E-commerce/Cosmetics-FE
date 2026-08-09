@@ -6,7 +6,7 @@ exports.paginationQuerySchema = zod_1.z.object({
     page: zod_1.z.coerce.number().int().positive().default(1),
     limit: zod_1.z.coerce.number().int().positive().max(100).default(20),
     sortBy: zod_1.z.string().trim().optional(),
-    sortOrder: zod_1.z.enum(['asc', 'desc']).default('desc'),
+    sortOrder: zod_1.z.enum(["asc", "desc"]).default("desc"),
 });
 exports.paginationMetaSchema = zod_1.z.object({
     page: zod_1.z.number().int(),

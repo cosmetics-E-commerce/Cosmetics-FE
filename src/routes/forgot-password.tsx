@@ -52,7 +52,7 @@ function Forgot() {
       title={step === "done" ? "Password updated." : "Reset your password."}
       intro="We verify every reset with a one-time code before accepting a new password."
       footer={
-        <Link to="/sign-in" className="text-gold hover:underline">
+        <Link to="/sign-in" search={{ returnTo: undefined }} className="text-gold hover:underline">
           Return to sign in
         </Link>
       }
@@ -61,7 +61,9 @@ function Forgot() {
         <div className="border border-gold/40 bg-ivory p-6">
           <p>Your password is ready. You can now sign in securely.</p>
           <Button asChild variant="solid" size="wide" className="mt-6">
-            <Link to="/sign-in">Sign in</Link>
+            <Link to="/sign-in" search={{ returnTo: undefined }}>
+              Sign in
+            </Link>
           </Button>
         </div>
       ) : (

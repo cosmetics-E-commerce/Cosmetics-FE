@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { useCatalog, useCategories } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
+import { useI18n } from "@/lib/i18n";
 
 type Search = {
   category?: string | undefined;
@@ -41,6 +42,7 @@ function Shop() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   const { locale } = useStore();
+  const { t } = useI18n();
   const [filters, setFilters] = useState(false);
   const view = search.view ?? "compact";
   const hydrated = useSyncExternalStore(
@@ -64,18 +66,35 @@ function Shop() {
     locale,
   );
   const categories = useCategories();
+  const activeFilters = [
+    search.category ? { key: "category" as const, label: search.category } : null,
+    search.concern ? { key: "concern" as const, label: search.concern } : null,
+    search.search
+      ? {
+          key: "search" as const,
+          label: `${locale === "ar" ? "بحث" : "Search"}: ${search.search}`,
+        }
+      : null,
+  ].filter(Boolean) as Array<{ key: "category" | "concern" | "search"; label: string }>;
+  const clearFilters = () =>
+    navigate({
+      search: {
+        ...(search.sort ? { sort: search.sort } : {}),
+        ...(search.view ? { view: search.view } : {}),
+      },
+    });
   const FilterList = (
     <div>
-      <p className="label-xs text-taupe">Category</p>
+      <p className="label-xs text-taupe">{t("shop.category")}</p>
       <ul className="mt-5 space-y-3">
         <li>
-          <Link
-            to="/shop"
-            search={{}}
+          <button
+            type="button"
+            onClick={() => navigate({ search: { ...search, category: undefined } })}
             className={!search.category ? "text-gold" : "hover:text-gold"}
           >
-            All products
-          </Link>
+            {t("shop.all")}
+          </button>
         </li>
         {hydrated &&
           categories.data?.map((category) => (
@@ -83,7 +102,7 @@ function Shop() {
               <button
                 type="button"
                 onClick={() => {
-                  navigate({ search: { category: category.slug } });
+                  navigate({ search: { ...search, category: category.slug } });
                   setFilters(false);
                 }}
                 className={search.category === category.slug ? "text-gold" : "hover:text-gold"}
@@ -99,23 +118,19 @@ function Shop() {
   return (
     <div className="mx-auto max-w-[1560px] px-5 py-14 md:px-10 lg:py-20">
       <nav aria-label="Breadcrumb" className="label-xs text-taupe">
-        <Link to="/">Home</Link> / Shop
+        <Link to="/">{t("common.home")}</Link> / {t("common.shop")}
       </nav>
       <Reveal className="mt-8 max-w-2xl">
-        <p className="label-xs text-gold">The live collection</p>
-        <h1 className="display mt-5 text-[clamp(2.4rem,5vw,4rem)]">
-          {locale === "ar" ? "اختيارات بيوريزا" : "The BIOREZA collection"}
-        </h1>
-        <p className="mt-6 text-muted-foreground">
-          Authentic beauty essentials, priced and stocked directly from our current catalog.
-        </p>
+        <p className="label-xs text-gold">{t("shop.eyebrow")}</p>
+        <h1 className="display mt-5 text-[clamp(2.4rem,5vw,4rem)]">{t("shop.title")}</h1>
+        <p className="mt-6 text-muted-foreground">{t("shop.intro")}</p>
       </Reveal>
       <div className="mt-14 grid gap-12 lg:grid-cols-[240px_1fr]">
         <aside className="hidden border-e border-border pe-8 lg:block">{FilterList}</aside>
         <section>
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
+          <div className="catalog-toolbar flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
             <p className="label-xs text-taupe">
-              {hydrated ? (catalog.data?.length ?? 0) : 0} products
+              {hydrated ? (catalog.data?.length ?? 0) : 0} {t("common.products")}
             </p>
             <div className="flex items-center gap-4">
               <button
@@ -123,7 +138,12 @@ function Shop() {
                 onClick={() => setFilters(true)}
                 className="label-xs inline-flex min-h-11 items-center gap-2 lg:hidden"
               >
-                <SlidersHorizontal className="size-4" /> Filters
+                <SlidersHorizontal className="size-4" /> {t("shop.filters")}
+                {activeFilters.length > 0 && (
+                  <span className="grid size-5 place-items-center rounded-full bg-ink text-[10px] text-warm-white">
+                    {activeFilters.length}
+                  </span>
+                )}
               </button>
               <div
                 role="group"
@@ -159,25 +179,50 @@ function Shop() {
                 }
                 className="editorial-select label-xs min-h-11 border-b border-border bg-transparent"
               >
-                <option value="">Newest</option>
-                <option value="price-asc">Price: low to high</option>
-                <option value="price-desc">Price: high to low</option>
+                <option value="">{t("shop.sortNewest")}</option>
+                <option value="price-asc">{t("shop.sortLow")}</option>
+                <option value="price-desc">{t("shop.sortHigh")}</option>
               </select>
             </div>
           </div>
+          {activeFilters.length > 0 && (
+            <div className="mt-5 flex flex-wrap items-center gap-2" aria-label="Active filters">
+              {activeFilters.map((filter) => (
+                <button
+                  key={filter.key}
+                  type="button"
+                  onClick={() => navigate({ search: { ...search, [filter.key]: undefined } })}
+                  className="label-xs inline-flex min-h-10 items-center gap-2 border border-border bg-ivory px-3 text-taupe transition-colors hover:border-gold hover:text-gold"
+                  aria-label={`Remove ${filter.label} filter`}
+                >
+                  {filter.label}
+                  <X className="size-3" aria-hidden="true" />
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="label-xs min-h-10 px-3 text-gold hover:underline"
+              >
+                {t("common.clearAll")}
+              </button>
+            </div>
+          )}
           {(!hydrated || catalog.isLoading) && <ProductGridSkeleton view={view} />}
           {hydrated && catalog.error && (
             <State
-              title="The collection is taking a moment"
-              copy="Check that the API is running, then try again."
+              title={t("shop.errorTitle")}
+              copy={t("shop.errorCopy")}
               action={() => void catalog.refetch()}
+              actionLabel={t("common.tryAgain")}
             />
           )}
           {hydrated && !catalog.isLoading && !catalog.error && catalog.data?.length === 0 && (
             <State
-              title="Nothing matches yet"
-              copy="Choose another category or clear the filters."
-              action={() => navigate({ search: {} })}
+              title={t("shop.emptyTitle")}
+              copy={t("shop.emptyCopy")}
+              action={clearFilters}
+              actionLabel={t("shop.clearFilters")}
             />
           )}
           {hydrated && catalog.data && (
@@ -210,7 +255,7 @@ function Shop() {
           className="max-h-[80vh] bg-warm-white p-6"
         >
           <SheetTitle className="flex items-center justify-between">
-            Filters{" "}
+            {t("shop.filters")}{" "}
             <button onClick={() => setFilters(false)}>
               <X />
             </button>
@@ -221,13 +266,23 @@ function Shop() {
     </div>
   );
 }
-function State({ title, copy, action }: { title: string; copy: string; action: () => void }) {
+function State({
+  title,
+  copy,
+  action,
+  actionLabel = "Try again",
+}: {
+  title: string;
+  copy: string;
+  action: () => void;
+  actionLabel?: string;
+}) {
   return (
     <div className="mt-10 border border-border px-8 py-20 text-center">
       <h2 className="font-serif text-3xl">{title}</h2>
       <p className="mt-4 text-sm text-muted-foreground">{copy}</p>
       <Button variant="line" size="pill" className="mt-8" onClick={action}>
-        Try again
+        {actionLabel}
       </Button>
     </div>
   );

@@ -7,7 +7,18 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   {
-    ignores: ["dist", ".output", ".next", ".tanstack", ".vinxi", ".wrangler", ".nitro", "coverage"],
+    ignores: [
+      "dist",
+      ".output",
+      ".next",
+      ".tanstack",
+      ".vinxi",
+      ".wrangler",
+      ".nitro",
+      "coverage",
+      "vendor",
+      "src/routeTree.gen.ts",
+    ],
   },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
@@ -34,8 +45,17 @@ export default tseslint.config(
           ],
         },
       ],
-      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
+      "react-refresh/only-export-components": [
+        "warn",
+        { allowConstantExport: true, allowExportNames: ["useStore"] },
+      ],
       "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
+  {
+    files: ["src/components/ui/**/*.{ts,tsx}"],
+    rules: {
+      "react-refresh/only-export-components": "off",
     },
   },
   eslintPluginPrettier,

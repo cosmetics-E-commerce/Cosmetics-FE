@@ -9,20 +9,20 @@ exports.uuidSchema = zod_1.z.string().uuid();
  */
 exports.piastresSchema = zod_1.z
     .number()
-    .int('Amount must be whole piastres — no fractional values')
+    .int("Amount must be whole piastres — no fractional values")
     .nonnegative();
 /** Egyptian mobile: 01[0125] + 8 digits. Also the primary login identifier. */
 exports.egyptPhoneSchema = zod_1.z
     .string()
     .trim()
-    .regex(/^01[0125][0-9]{8}$/, 'Must be a valid Egyptian mobile number (e.g. 01012345678)');
+    .regex(/^01[0125][0-9]{8}$/, "Must be a valid Egyptian mobile number (e.g. 01012345678)");
 exports.emailSchema = zod_1.z.string().trim().toLowerCase().email();
 exports.slugSchema = zod_1.z
     .string()
     .trim()
     .min(1)
     .max(180)
-    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Must be a lowercase hyphenated slug');
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Must be a lowercase hyphenated slug");
 /**
  * Idempotency-Key header value. Client-generated UUID, unique per logical
  * operation attempt, reused across network retries of that same attempt.
@@ -30,7 +30,7 @@ exports.slugSchema = zod_1.z
  */
 exports.idempotencyKeySchema = zod_1.z
     .string()
-    .uuid('Idempotency-Key must be a valid UUID');
+    .uuid("Idempotency-Key must be a valid UUID");
 /** InstaPay address (IPA), e.g. "someone@instapay" or a mobile-linked handle. */
 exports.instapayAddressSchema = zod_1.z.string().trim().min(3).max(120);
 exports.bilingualTextSchema = zod_1.z.object({

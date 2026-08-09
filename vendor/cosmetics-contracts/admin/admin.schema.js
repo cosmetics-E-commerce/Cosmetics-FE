@@ -4,7 +4,7 @@ exports.updateManagedAdminSchema = exports.adminAccountsQuerySchema = exports.ad
 const zod_1 = require("zod");
 const primitives_1 = require("../common/primitives");
 const enums_1 = require("../enums");
-exports.managedAdminRoleSchema = zod_1.z.enum(['SUPER_ADMIN', 'ADMIN']);
+exports.managedAdminRoleSchema = zod_1.z.enum(["SUPER_ADMIN", "ADMIN"]);
 exports.adminAccountSchema = zod_1.z.object({
     id: primitives_1.uuidSchema,
     firstName: zod_1.z.string(),
@@ -24,15 +24,18 @@ exports.adminAccountsQuerySchema = zod_1.z.object({
     search: zod_1.z.string().trim().min(1).max(120).optional(),
     role: exports.managedAdminRoleSchema.optional(),
     status: enums_1.UserStatusEnum.optional(),
-    sortBy: zod_1.z.enum(['createdAt', 'updatedAt', 'firstName']).default('createdAt'),
-    sortOrder: zod_1.z.enum(['asc', 'desc']).default('desc'),
+    sortBy: zod_1.z.enum(["createdAt", "updatedAt", "firstName"]).default("createdAt"),
+    sortOrder: zod_1.z.enum(["asc", "desc"]).default("desc"),
 });
-exports.updateManagedAdminSchema = zod_1.z.object({
+exports.updateManagedAdminSchema = zod_1.z
+    .object({
     firstName: zod_1.z.string().trim().min(2).max(100).optional(),
     lastName: zod_1.z.string().trim().min(2).max(100).optional(),
     phone: primitives_1.egyptPhoneSchema.optional(),
     email: primitives_1.emailSchema.optional(),
-}).strict().refine((input) => Object.keys(input).length > 0, {
-    message: 'At least one field must be provided.',
+})
+    .strict()
+    .refine((input) => Object.keys(input).length > 0, {
+    message: "At least one field must be provided.",
 });
 //# sourceMappingURL=admin.schema.js.map
