@@ -10,7 +10,7 @@ import {
 } from "@tanstack/react-router";
 import { useEffect, useRef, type ReactNode } from "react";
 
-import appCss from "../styles.css?url";
+import appCss from "../app.css?url";
 import { StoreProvider, useStore } from "@/lib/store";
 import { Header } from "@/components/layout/Header";
 import { GlobalBannerSlot } from "@/components/banner/GlobalBannerSlot";
@@ -113,7 +113,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Jost:wght@200;300;400;500&family=Noto+Sans+Arabic:wght@300;400;500&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Lora:wght@400..700&family=Manrope:wght@400..700&family=Noto+Sans+Arabic:wght@400..700&display=swap",
       },
     ],
     scripts: [
@@ -219,7 +219,7 @@ function RootComponent() {
               id="main-content"
               tabIndex={-1}
               className="flex-1 outline-none"
-              style={{ paddingTop: "var(--store-header-offset, 106px)" }}
+              style={{ paddingTop: "var(--store-header-offset, 103px)" }}
             >
               <div ref={pageRef} key={pathname} className="motion-page">
                 <Outlet />

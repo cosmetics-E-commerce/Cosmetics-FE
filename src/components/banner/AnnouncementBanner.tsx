@@ -31,6 +31,7 @@ import {
   type EventType,
   type StoreBanner,
 } from "@/lib/banner-api";
+import { useMotionPreferences } from "@/components/motion/motion-context";
 
 const icons = {
   truck: Truck,
@@ -60,6 +61,7 @@ export function AnnouncementBanner({
   const [dismissed, setDismissed] = useState(() => isDismissed(banner));
   const [active, setActive] = useState(0);
   const [pointer, setPointer] = useState<number | null>(null);
+  const { reducedMotion } = useMotionPreferences();
   const messages = banner.messages || [];
   const mode = banner.effectiveMode || banner.mode;
   const sessionHash = useMemo(getSessionHash, []);
@@ -83,6 +85,7 @@ export function AnnouncementBanner({
     if (
       !["ROTATING", "CAROUSEL"].includes(mode) ||
       banner.behavior.autoplay === false ||
+      reducedMotion ||
       messages.length < 2
     )
       return;
@@ -97,6 +100,7 @@ export function AnnouncementBanner({
     banner.behavior.intervalMs,
     messages.length,
     mode,
+    reducedMotion,
   ]);
   if (dismissed || !messages.length) return null;
   const change = (direction: number) =>

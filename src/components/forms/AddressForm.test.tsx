@@ -22,9 +22,7 @@ vi.mock("@/lib/api", async (importActual) => {
 
 const governorates = [{ id: "CAI", name: "Cairo", nameAr: "القاهرة", code: "CAI" }];
 const cities = [{ id: "bosta-cairo", name: "Nasr City", nameAr: "مدينة نصر" }];
-const areas = [
-  { id: "bosta-nasr-district-1", name: "Abbas El Akkad", nameAr: "عباس العقاد" },
-];
+const areas = [{ id: "bosta-nasr-district-1", name: "Abbas El Akkad", nameAr: "عباس العقاد" }];
 
 function renderAddressForm(props: Partial<Parameters<typeof AddressForm>[0]> = {}) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });

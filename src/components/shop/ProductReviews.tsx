@@ -27,7 +27,7 @@ export function ProductReviews({ productId }: { productId: string }) {
       );
       void queryClient.invalidateQueries({ queryKey: ["reviews", productId] });
     },
-    onError: (error) => toast.error(apiErrorMessage(error)),
+    onError: (error) => toast.error(apiErrorMessage(error, locale)),
   });
   const ar = locale === "ar";
   const summary = reviews.data?.summary;
@@ -90,20 +90,35 @@ export function ProductReviews({ productId }: { productId: string }) {
                         key={value}
                         onClick={() => setRating(value)}
                         aria-label={`${value} stars`}
-                        className={`grid size-10 place-items-center border ${rating === value ? "border-gold bg-gold text-white" : "border-border"}`}
+                        className={`grid size-11 place-items-center border transition-[background-color,border-color,color,transform] duration-150 active:scale-95 ${rating === value ? "border-gold bg-gold text-white" : "border-border hover:border-gold"}`}
                       >
                         {value}
                       </button>
                     ))}
                   </div>
                 </fieldset>
-                <Input name="title" placeholder={ar ? "عنوان مختصر" : "Short title"} />
-                <Textarea
-                  name="body"
-                  minLength={10}
-                  placeholder={ar ? "شاركي تجربتك" : "Share your experience"}
-                />
-                <Button type="submit" variant="solid" size="pill" disabled={create.isPending}>
+                <div>
+                  <label htmlFor="review-title" className="label-xs mb-2 block text-taupe">
+                    {ar ? "عنوان المراجعة" : "Review title"}
+                  </label>
+                  <Input
+                    id="review-title"
+                    name="title"
+                    placeholder={ar ? "عنوان مختصر" : "Short title"}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="review-body" className="label-xs mb-2 block text-taupe">
+                    {ar ? "تجربتك" : "Your experience"}
+                  </label>
+                  <Textarea
+                    id="review-body"
+                    name="body"
+                    minLength={10}
+                    placeholder={ar ? "شاركي تجربتك" : "Share your experience"}
+                  />
+                </div>
+                <Button type="submit" variant="solid" size="pill" loading={create.isPending}>
                   {ar ? "إرسال" : "Submit review"}
                 </Button>
               </form>

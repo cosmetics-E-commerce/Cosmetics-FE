@@ -6,13 +6,11 @@ import { Button } from "@/components/ui/button";
 import { PolishedImage } from "@/components/ui/polished-image";
 import { formatPrice } from "@/lib/products";
 import { useStore } from "@/lib/store";
-import { useMotionPreferences } from "@/components/motion/motion-context";
 import { useI18n } from "@/lib/i18n";
 
 export function CartDrawer() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [removingVariant, setRemovingVariant] = useState<string | null>(null);
-  const { reducedMotion } = useMotionPreferences();
   const {
     cartOpen,
     setCartOpen,
@@ -30,7 +28,6 @@ export function CartDrawer() {
   const hasIssues = lines.some((line) => line.status !== "AVAILABLE" || line.issues.length > 0);
   const removeLine = async (variantId: string) => {
     setRemovingVariant(variantId);
-    if (!reducedMotion) await new Promise((resolve) => window.setTimeout(resolve, 260));
     try {
       await remove(variantId);
     } finally {
@@ -41,7 +38,7 @@ export function CartDrawer() {
   return (
     <Sheet open={cartOpen} onOpenChange={setCartOpen}>
       <SheetContent
-        side="right"
+        side={locale === "ar" ? "left" : "right"}
         className="flex w-full flex-col gap-0 border-l border-border bg-warm-white p-0 sm:max-w-md"
       >
         <SheetHeader className="border-b border-border px-6 py-5 text-start">
@@ -113,7 +110,7 @@ export function CartDrawer() {
                           disabled={pending}
                           onClick={() => void removeLine(line.variantId)}
                           aria-label={`Remove ${line.name}`}
-                          className="grid size-9 shrink-0 place-items-center text-taupe transition-[color,transform] duration-200 hover:text-foreground active:scale-90 disabled:opacity-40"
+                          className="grid size-11 shrink-0 place-items-center text-taupe transition-[color,transform] duration-150 hover:text-foreground active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
                         >
                           <X className="size-4" />
                         </button>
@@ -130,13 +127,13 @@ export function CartDrawer() {
                             disabled={pending || line.qty <= 1}
                             onClick={() => void setQty(line.variantId, line.qty - 1)}
                             aria-label={`Decrease quantity of ${line.name}`}
-                            className="grid size-9 place-items-center text-taupe hover:text-gold disabled:opacity-40"
+                            className="grid size-11 place-items-center text-taupe transition-colors duration-150 hover:text-gold disabled:cursor-not-allowed disabled:opacity-40"
                           >
                             <Minus className="size-3" />
                           </button>
                           <span
                             key={line.qty}
-                            className="count-change grid w-8 place-items-center text-sm"
+                            className="count-change grid w-9 place-items-center text-sm tabular-nums"
                           >
                             {line.qty}
                           </span>
@@ -145,7 +142,7 @@ export function CartDrawer() {
                             disabled={pending || line.qty >= line.maxAvailable}
                             onClick={() => void setQty(line.variantId, line.qty + 1)}
                             aria-label={`Increase quantity of ${line.name}`}
-                            className="grid size-9 place-items-center text-taupe hover:text-gold disabled:opacity-40"
+                            className="grid size-11 place-items-center text-taupe transition-colors duration-150 hover:text-gold disabled:cursor-not-allowed disabled:opacity-40"
                           >
                             <Plus className="size-3" />
                           </button>

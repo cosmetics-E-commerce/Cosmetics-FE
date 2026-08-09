@@ -57,7 +57,7 @@ function CartPage() {
   };
 
   return (
-    <div className="mx-auto max-w-[1400px] px-5 pb-32 pt-14 md:px-10 lg:py-20">
+    <div className="sf-cart-page mx-auto max-w-[1400px] px-5 pb-32 pt-14 md:px-10 lg:py-20">
       <Reveal stagger distance={20}>
         <p className="label-xs text-gold">{t("cart.eyebrow")}</p>
         <h1 className="display mt-5 text-[clamp(2.2rem,4.4vw,3.4rem)]">{t("cart.title")}</h1>
@@ -83,7 +83,7 @@ function CartPage() {
           <Reveal
             as="ul"
             stagger
-            staggerMs={62}
+            staggerMs={40}
             distance={20}
             className="divide-y divide-border border-y border-border"
             aria-live="polite"
@@ -277,7 +277,7 @@ function CartPage() {
             {lines.length} {t("common.products")}, {t("cart.estimated")}{" "}
             {formatPrice(estimatedTotal)}
           </p>
-          <div className="mobile-primary-bar fixed inset-x-0 bottom-0 z-30 border-t border-border bg-warm-white/96 px-4 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.4)] backdrop-blur-sm lg:hidden">
+          <div className="mobile-primary-bar fixed inset-x-0 bottom-0 z-30 border-t border-border bg-warm-white px-4 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.4)] lg:hidden">
             <div className="mx-auto flex max-w-lg items-center gap-3">
               <div className="min-w-0 flex-1">
                 <p className="label-xs text-taupe">{t("cart.estimated")}</p>

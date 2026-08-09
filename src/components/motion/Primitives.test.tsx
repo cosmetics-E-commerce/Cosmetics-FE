@@ -1,6 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { Reveal, TextReveal } from "./Primitives";
+import { ImageReveal, Reveal, TextReveal } from "./Primitives";
 
 describe("motion primitives", () => {
   afterEach(() => {
@@ -26,11 +26,14 @@ describe("motion primitives", () => {
     await waitFor(() => expect(heading).toHaveAttribute("data-motion-state", "visible"));
   });
 
-  it("reveals from the scroll bounds fallback when IntersectionObserver does not deliver", async () => {
-    let top = 2_000;
+  it("uses IntersectionObserver without installing per-component scroll work", async () => {
+    let callback: IntersectionObserverCallback | undefined;
     vi.stubGlobal(
       "IntersectionObserver",
       class {
+        constructor(next: IntersectionObserverCallback) {
+          callback = next;
+        }
         observe() {}
         unobserve() {}
         disconnect() {}
@@ -39,27 +42,48 @@ describe("motion primitives", () => {
         }
       },
     );
-    vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(
-      () =>
-        ({
-          top,
-          bottom: top + 100,
-          left: 0,
-          right: 100,
-          width: 100,
-          height: 100,
-          x: 0,
-          y: top,
-          toJSON: () => ({}),
-        }) as DOMRect,
-    );
+    const scrollListener = vi.spyOn(window, "addEventListener");
 
     render(<Reveal>Campaign image</Reveal>);
     const reveal = screen.getByText("Campaign image");
     expect(reveal).toHaveAttribute("data-motion-state", "hidden");
+    expect(scrollListener).not.toHaveBeenCalledWith(
+      "scroll",
+      expect.any(Function),
+      expect.anything(),
+    );
 
-    top = 100;
-    window.dispatchEvent(new Event("scroll"));
+    callback?.([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver);
+    await waitFor(() => expect(reveal).toHaveAttribute("data-motion-state", "visible"));
+  });
+
+  it("reveals deferred images when their observer enters the viewport", async () => {
+    let callback: IntersectionObserverCallback | undefined;
+    vi.stubGlobal(
+      "IntersectionObserver",
+      class {
+        constructor(next: IntersectionObserverCallback) {
+          callback = next;
+        }
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+        takeRecords() {
+          return [];
+        }
+      },
+    );
+
+    render(
+      <ImageReveal>
+        <img src="/category.jpg" alt="Haircare" />
+      </ImageReveal>,
+    );
+    const image = screen.getByRole("img", { name: "Haircare" });
+    const reveal = image.closest(".motion-image-reveal");
+    expect(reveal).toHaveAttribute("data-motion-state", "hidden");
+
+    callback?.([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver);
     await waitFor(() => expect(reveal).toHaveAttribute("data-motion-state", "visible"));
   });
 });

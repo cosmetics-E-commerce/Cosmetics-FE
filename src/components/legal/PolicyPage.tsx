@@ -21,7 +21,7 @@ export function PolicyPage({
   const content = locale === "ar" ? arabic : { eyebrow, title, intro, sections };
   return (
     <article className="mx-auto max-w-4xl px-5 py-16 md:px-10 lg:py-24">
-      <Reveal stagger staggerMs={70} distance={20}>
+      <Reveal stagger staggerMs={45} distance={20}>
         <p className="label-xs text-gold">{content.eyebrow}</p>
         <h1 className="display mt-5 text-[clamp(2.5rem,5vw,4rem)]">{content.title}</h1>
         <p className="mt-8 max-w-2xl leading-relaxed text-muted-foreground">{content.intro}</p>

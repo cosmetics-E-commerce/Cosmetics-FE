@@ -16,6 +16,63 @@ import { loadProduct, useProduct } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 import { Reveal, TextReveal } from "@/components/motion/Primitives";
 
+const productCopy = {
+  en: {
+    home: "Home",
+    shop: "Shop",
+    unavailable: "Product unavailable",
+    unavailableCopy: "This product may be unpublished or the store may be temporarily offline.",
+    retry: "Try again",
+    return: "Return to shop",
+    image: (index: number) => `View product image ${index}`,
+    save: "Save",
+    applied: "Applied automatically in your bag while eligible.",
+    out: "Out of stock",
+    low: (stock: number) => `Low stock · ${stock} remaining`,
+    variant: "Variant",
+    decrease: "Decrease quantity",
+    increase: "Increase quantity",
+    add: "Add to bag",
+    added: "Added to bag",
+    addedShort: "Added",
+    wishAdd: "Add to wishlist",
+    wishRemove: "Remove from wishlist",
+    live: "Live catalog item",
+    delivery: "Delivery calculated for your Egyptian address",
+    payment: "Cash on delivery and manual transfer available",
+    details: "Product details",
+    ingredients: "Ingredients",
+    use: "How to use",
+  },
+  ar: {
+    home: "الرئيسية",
+    shop: "المتجر",
+    unavailable: "المنتج غير متاح",
+    unavailableCopy: "قد يكون المنتج غير منشور أو المتجر غير متاح مؤقتاً.",
+    retry: "حاولي مرة أخرى",
+    return: "العودة إلى المتجر",
+    image: (index: number) => `عرض صورة المنتج ${index}`,
+    save: "وفّري",
+    applied: "يُطبّق تلقائياً في حقيبتك عند استيفاء الشروط.",
+    out: "نفد المخزون",
+    low: (stock: number) => `مخزون محدود · متبقي ${stock}`,
+    variant: "الخيار",
+    decrease: "تقليل الكمية",
+    increase: "زيادة الكمية",
+    add: "أضيفي إلى الحقيبة",
+    added: "تمت الإضافة إلى الحقيبة",
+    addedShort: "تمت الإضافة",
+    wishAdd: "إضافة إلى المفضلة",
+    wishRemove: "إزالة من المفضلة",
+    live: "متوفر الآن في المتجر",
+    delivery: "يُحسب التوصيل حسب عنوانك في مصر",
+    payment: "الدفع عند الاستلام والتحويل اليدوي متاحان",
+    details: "تفاصيل المنتج",
+    ingredients: "المكونات",
+    use: "طريقة الاستخدام",
+  },
+} as const;
+
 export const Route = createFileRoute("/product/$slug")({
   loader: ({ params, context }) => loadProduct(params.slug, context.locale === "ar" ? "ar" : "en"),
   head: ({ loaderData, params }) => {
@@ -90,6 +147,7 @@ export const Route = createFileRoute("/product/$slug")({
 function ProductPage() {
   const { slug } = Route.useParams();
   const { locale, add, wishlist, toggleWish, pendingVariants } = useStore();
+  const labels = productCopy[locale];
   const initialProduct = Route.useLoaderData();
   const query = useProduct(slug, locale, initialProduct);
   const product = query.data;
@@ -131,18 +189,16 @@ function ProductPage() {
   if (!product || query.error) {
     return (
       <div className="mx-auto max-w-xl px-5 py-28 text-center">
-        <h1 className="font-serif text-4xl">Product unavailable</h1>
-        <p className="mt-4 text-muted-foreground">
-          This product may be unpublished or the store API may be offline.
-        </p>
+        <h1 className="font-serif text-4xl">{labels.unavailable}</h1>
+        <p className="mt-4 text-muted-foreground">{labels.unavailableCopy}</p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           {query.error && (
             <Button type="button" variant="solid" size="pill" onClick={() => void query.refetch()}>
-              Try again
+              {labels.retry}
             </Button>
           )}
           <Button asChild variant="quiet" size="pill">
-            <Link to="/shop">Return to shop</Link>
+            <Link to="/shop">{labels.return}</Link>
           </Button>
         </div>
       </div>
@@ -175,7 +231,7 @@ function ProductPage() {
   };
 
   return (
-    <div className="pb-24 lg:pb-0">
+    <div className="sf-product-page pb-24 lg:pb-0">
       <div className="mx-auto max-w-[1560px] px-5 py-10 md:px-10">
         <Reveal
           as="nav"
@@ -184,23 +240,23 @@ function ProductPage() {
           className="label-xs text-taupe"
           aria-label="Breadcrumb"
         >
-          <Link to="/">Home</Link> / <Link to="/shop">Shop</Link> / {product.name}
+          <Link to="/">{labels.home}</Link> / <Link to="/shop">{labels.shop}</Link> / {product.name}
         </Reveal>
 
         <div className="mt-10 grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
           <Reveal
             variant="scale"
-            duration={820}
+            duration={480}
             distance={0}
             className="grid gap-5 md:grid-cols-[84px_1fr]"
           >
             <div className="no-scrollbar order-2 flex gap-3 overflow-x-auto md:order-1 md:flex-col">
               {product.gallery.map((image, index) => (
                 <button
-                  key={image}
+                  key={`${image}-${index}`}
                   type="button"
                   onClick={() => setImageIndex(index)}
-                  aria-label={`View product image ${index + 1}`}
+                  aria-label={labels.image(index + 1)}
                   aria-current={imageIndex === index}
                   className={`shrink-0 border transition-colors duration-200 ${
                     imageIndex === index ? "border-gold" : "border-border hover:border-taupe"
@@ -210,6 +266,7 @@ function ProductPage() {
                     src={image}
                     alt=""
                     loading="lazy"
+                    sizes="80px"
                     wrapperClassName="aspect-[3/4] w-20"
                     className="size-full object-cover"
                   />
@@ -221,6 +278,7 @@ function ProductPage() {
                 src={activeImage}
                 alt={product.name}
                 fetchPriority="high"
+                sizes="(min-width: 1024px) 46vw, 100vw"
                 wrapperClassName="aspect-[4/5] w-full"
                 className="size-full object-cover"
               />
@@ -230,7 +288,7 @@ function ProductPage() {
           <Reveal
             stagger
             delay={140}
-            staggerMs={72}
+            staggerMs={45}
             distance={22}
             className="product-purchase-panel lg:sticky lg:self-start lg:pt-6"
           >
@@ -257,7 +315,7 @@ function ProductPage() {
                     {formatPrice(variant.originalPrice)}
                   </p>
                   <span className="label-xs border border-gold px-2 py-1 text-gold">
-                    Save {Math.round((1 - variant.price / variant.originalPrice) * 100)}%
+                    {labels.save} {Math.round((1 - variant.price / variant.originalPrice) * 100)}%
                   </span>
                 </>
               )}
@@ -265,24 +323,22 @@ function ProductPage() {
             {variant?.promotionTitle && (
               <p className="mt-4 border-s-2 border-gold bg-ivory px-4 py-3 text-sm">
                 <strong>{variant.promotionTitle}</strong>
-                <span className="mt-1 block text-muted-foreground">
-                  Applied automatically in your bag while eligible.
-                </span>
+                <span className="mt-1 block text-muted-foreground">{labels.applied}</span>
               </p>
             )}
             {outOfStock && (
               <p className="label-xs mt-4 inline-flex border border-red-300 bg-red-50 px-3 py-2 text-red-700">
-                Out of stock
+                {labels.out}
               </p>
             )}
             {lowStock && (
               <p className="label-xs mt-4 inline-flex border border-amber-300 bg-amber-50 px-3 py-2 text-amber-800">
-                Low stock · {variantStock} remaining
+                {labels.low(variantStock)}
               </p>
             )}
 
             <fieldset className="mt-10">
-              <legend className="label-xs text-taupe">Variant</legend>
+              <legend className="label-xs text-taupe">{labels.variant}</legend>
               <div className="mt-4 flex flex-wrap gap-3">
                 {product.sizes.map((item, index) => (
                   <button
@@ -320,7 +376,7 @@ function ProductPage() {
                   type="button"
                   disabled={outOfStock || quantity <= 1}
                   onClick={() => setQuantity((value) => Math.max(1, value - 1))}
-                  aria-label="Decrease quantity"
+                  aria-label={labels.decrease}
                   className="grid size-12 place-items-center text-taupe hover:text-gold disabled:cursor-not-allowed disabled:opacity-35"
                 >
                   <Minus className="size-4" />
@@ -332,7 +388,7 @@ function ProductPage() {
                   type="button"
                   disabled={outOfStock || quantity >= (variantStock ?? 99)}
                   onClick={() => setQuantity((value) => Math.min(variantStock ?? 99, value + 1))}
-                  aria-label="Increase quantity"
+                  aria-label={labels.increase}
                   className="grid size-12 place-items-center text-taupe hover:text-gold disabled:cursor-not-allowed disabled:opacity-35"
                 >
                   <Plus className="size-4" />
@@ -341,12 +397,12 @@ function ProductPage() {
               <Button
                 variant="solid"
                 size="pill"
-                className="min-w-[220px] flex-1"
+                className="product-add-to-cart min-w-[220px] flex-1"
                 disabled={!variant?.id || outOfStock}
                 loading={adding}
                 onClick={() => void addToBag()}
               >
-                {outOfStock ? "Out of stock" : added ? "Added to bag" : "Add to bag"}
+                {outOfStock ? labels.out : added ? labels.added : labels.add}
               </Button>
               {product.id && (
                 <button
@@ -354,7 +410,7 @@ function ProductPage() {
                   onClick={() => void toggleWish(product.id!, product.slug)}
                   className="grid size-12 place-items-center border border-border text-taupe transition-[border-color,color,transform] duration-200 hover:border-gold hover:text-gold active:scale-95"
                   aria-pressed={wished}
-                  aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
+                  aria-label={wished ? labels.wishRemove : labels.wishAdd}
                 >
                   <Heart className={wished ? "pop fill-gold text-gold" : ""} />
                 </button>
@@ -364,28 +420,28 @@ function ProductPage() {
             <ul className="mt-8 space-y-3 text-sm text-muted-foreground">
               <li className="flex items-center gap-3">
                 <Check className="size-4 text-gold" />
-                Live catalog item
+                {labels.live}
               </li>
               <li className="flex items-center gap-3">
                 <Truck className="size-4 text-gold" />
-                Delivery calculated for your Egyptian address
+                {labels.delivery}
               </li>
               <li className="flex items-center gap-3">
                 <RotateCcw className="size-4 text-gold" />
-                Cash on delivery and manual transfer available
+                {labels.payment}
               </li>
             </ul>
 
             <Accordion type="single" collapsible className="mt-12 border-t border-border">
               {[
-                ["Product details", product.details],
-                ["Ingredients", product.ingredients],
-                ["How to use", product.howToUse],
+                [labels.details, product.details],
+                [labels.ingredients, product.ingredients],
+                [labels.use, product.howToUse],
               ].map(([title, content]) => (
                 <AccordionItem key={title} value={title ?? "details"}>
                   <AccordionTrigger>{title}</AccordionTrigger>
                   <AccordionContent className="leading-relaxed text-muted-foreground">
-                    {title === "Ingredients" ? (
+                    {title === labels.ingredients ? (
                       <IngredientExplorer
                         ingredients={product.ingredientDetails}
                         {...(content !== undefined ? { fallback: content } : {})}
@@ -401,7 +457,7 @@ function ProductPage() {
         </div>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-warm-white/95 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur-sm lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-warm-white px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.4)] lg:hidden">
         <div className="mx-auto flex max-w-lg items-center gap-3">
           <div className="min-w-0 flex-1">
             <p className="truncate font-serif text-lg">{product.name}</p>
@@ -422,7 +478,7 @@ function ProductPage() {
             disabled={!variant?.id || outOfStock}
             onClick={() => void addToBag()}
           >
-            {outOfStock ? "Out of stock" : added ? "Added" : "Add to bag"}
+            {outOfStock ? labels.out : added ? labels.addedShort : labels.add}
           </Button>
         </div>
       </div>

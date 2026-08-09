@@ -2,6 +2,8 @@ import { useStore } from "@/lib/store";
 
 const messages = {
   en: {
+    "nav.brands": "Brands",
+    "nav.categories": "Categories",
     "nav.skincare": "Skincare",
     "nav.makeup": "Makeup",
     "nav.haircare": "Haircare",
@@ -85,6 +87,8 @@ const messages = {
     "footer.rights": "All rights reserved.",
   },
   ar: {
+    "nav.brands": "العلامات التجارية",
+    "nav.categories": "الفئات",
     "nav.skincare": "العناية بالبشرة",
     "nav.makeup": "المكياج",
     "nav.haircare": "العناية بالشعر",

@@ -5,11 +5,12 @@ import { ProductCard } from "@/components/shop/ProductCard";
 import { Reveal } from "@/components/brand/Reveal";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { useCatalog, useCategories } from "@/lib/catalog";
+import { useBrands, useCatalog, useCategories } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
 
 type Search = {
+  brand?: string | undefined;
   category?: string | undefined;
   concern?: string | undefined;
   sort?: string | undefined;
@@ -21,6 +22,7 @@ const subscribeToHydration = () => () => undefined;
 
 export const Route = createFileRoute("/shop")({
   validateSearch: (raw: Record<string, unknown>): Search => ({
+    ...(typeof raw["brand"] === "string" ? { brand: raw["brand"] } : {}),
     ...(typeof raw["category"] === "string" ? { category: raw["category"] } : {}),
     ...(typeof raw["concern"] === "string" ? { concern: raw["concern"] } : {}),
     ...(typeof raw["sort"] === "string" ? { sort: raw["sort"] } : {}),
@@ -59,6 +61,7 @@ function Shop() {
   const catalog = useCatalog(
     {
       limit: 100,
+      brandSlug: search.brand?.toLowerCase(),
       categorySlug: search.category?.toLowerCase(),
       search: search.search ?? search.concern,
       ...sort,
@@ -66,7 +69,9 @@ function Shop() {
     locale,
   );
   const categories = useCategories();
+  const brands = useBrands();
   const activeFilters = [
+    search.brand ? { key: "brand" as const, label: search.brand } : null,
     search.category ? { key: "category" as const, label: search.category } : null,
     search.concern ? { key: "concern" as const, label: search.concern } : null,
     search.search
@@ -75,7 +80,10 @@ function Shop() {
           label: `${locale === "ar" ? "بحث" : "Search"}: ${search.search}`,
         }
       : null,
-  ].filter(Boolean) as Array<{ key: "category" | "concern" | "search"; label: string }>;
+  ].filter(Boolean) as Array<{
+    key: "brand" | "category" | "concern" | "search";
+    label: string;
+  }>;
   const clearFilters = () =>
     navigate({
       search: {
@@ -90,8 +98,11 @@ function Shop() {
         <li>
           <button
             type="button"
-            onClick={() => navigate({ search: { ...search, category: undefined } })}
-            className={!search.category ? "text-gold" : "hover:text-gold"}
+            onClick={() => {
+              navigate({ search: { ...search, category: undefined } });
+              setFilters(false);
+            }}
+            className={`inline-flex min-h-11 items-center ${!search.category ? "text-gold" : "hover:text-gold"}`}
           >
             {t("shop.all")}
           </button>
@@ -105,7 +116,7 @@ function Shop() {
                   navigate({ search: { ...search, category: category.slug } });
                   setFilters(false);
                 }}
-                className={search.category === category.slug ? "text-gold" : "hover:text-gold"}
+                className={`inline-flex min-h-11 items-center ${search.category === category.slug ? "text-gold" : "hover:text-gold"}`}
               >
                 {locale === "ar" ? category.nameAr : category.nameEn}{" "}
                 <span className="text-xs text-taupe">({category.productCount})</span>
@@ -113,10 +124,33 @@ function Shop() {
             </li>
           ))}
       </ul>
+      {brands.data && brands.data.length > 0 && (
+        <div className="mt-10 border-t border-border pt-8">
+          <p className="label-xs text-taupe">{locale === "ar" ? "العلامة التجارية" : "Brand"}</p>
+          <ul className="mt-5 space-y-2">
+            {brands.data
+              .filter((brand) => brand.productCount > 0)
+              .map((brand) => (
+                <li key={brand.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigate({ search: { ...search, brand: brand.slug } });
+                      setFilters(false);
+                    }}
+                    className={`inline-flex min-h-11 items-center ${search.brand === brand.slug ? "text-gold" : "hover:text-gold"}`}
+                  >
+                    {brand.name} <span className="text-xs text-taupe">({brand.productCount})</span>
+                  </button>
+                </li>
+              ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
   return (
-    <div className="mx-auto max-w-[1560px] px-5 py-14 md:px-10 lg:py-20">
+    <div className="sf-shop-page mx-auto max-w-[1560px] px-5 py-14 md:px-10 lg:py-20">
       <nav aria-label="Breadcrumb" className="label-xs text-taupe">
         <Link to="/">{t("common.home")}</Link> / {t("common.shop")}
       </nav>
@@ -173,6 +207,7 @@ function Shop() {
                 ))}
               </div>
               <select
+                aria-label={locale === "ar" ? "ترتيب المنتجات" : "Sort products"}
                 value={search.sort ?? ""}
                 onChange={(event) =>
                   navigate({ search: { ...search, sort: event.target.value || undefined } })
@@ -192,7 +227,7 @@ function Shop() {
                   key={filter.key}
                   type="button"
                   onClick={() => navigate({ search: { ...search, [filter.key]: undefined } })}
-                  className="label-xs inline-flex min-h-10 items-center gap-2 border border-border bg-ivory px-3 text-taupe transition-colors hover:border-gold hover:text-gold"
+                  className="label-xs inline-flex min-h-11 items-center gap-2 border border-border bg-ivory px-3 text-taupe transition-colors hover:border-gold hover:text-gold"
                   aria-label={`Remove ${filter.label} filter`}
                 >
                   {filter.label}
@@ -202,7 +237,7 @@ function Shop() {
               <button
                 type="button"
                 onClick={clearFilters}
-                className="label-xs min-h-10 px-3 text-gold hover:underline"
+                className="label-xs min-h-11 px-3 text-gold hover:underline"
               >
                 {t("common.clearAll")}
               </button>
@@ -236,7 +271,7 @@ function Shop() {
               }`}
             >
               {catalog.data.map((product, index) => (
-                <Reveal key={product.slug} delay={index * 45}>
+                <Reveal key={product.slug} delay={(index % 4) * 35}>
                   <ProductCard
                     product={product}
                     compact={view === "compact"}
@@ -252,12 +287,17 @@ function Shop() {
         <SheetContent
           side="bottom"
           showCloseButton={false}
-          className="max-h-[80vh] bg-warm-white p-6"
+          className="max-h-[80dvh] overscroll-contain bg-warm-white p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]"
         >
           <SheetTitle className="flex items-center justify-between">
             {t("shop.filters")}{" "}
-            <button onClick={() => setFilters(false)}>
-              <X />
+            <button
+              type="button"
+              onClick={() => setFilters(false)}
+              aria-label={locale === "ar" ? "إغلاق الفلاتر" : "Close filters"}
+              className="grid size-11 place-items-center"
+            >
+              <X aria-hidden="true" />
             </button>
           </SheetTitle>
           <div className="py-8">{FilterList}</div>

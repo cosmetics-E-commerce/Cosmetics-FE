@@ -22,7 +22,7 @@ function Confirmed() {
   return (
     <Reveal
       stagger
-      staggerMs={74}
+      staggerMs={45}
       distance={20}
       className="mx-auto max-w-2xl px-5 py-28 text-center md:px-10"
     >

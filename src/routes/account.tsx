@@ -12,6 +12,14 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { AddressForm } from "@/components/forms/AddressForm";
 import { ProductCard } from "@/components/shop/ProductCard";
 import {
@@ -61,6 +69,8 @@ function Account() {
   const search = Route.useSearch();
   const tab = search.section ?? "overview";
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+  const [signOutOpen, setSignOutOpen] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const profile = useQuery({
     queryKey: ["account", "profile"],
     queryFn: getProfile,
@@ -87,7 +97,7 @@ function Account() {
       toast("Address saved");
       void client.invalidateQueries({ queryKey: ["account", "addresses"] });
     },
-    onError: (error) => toast.error(apiErrorMessage(error)),
+    onError: (error) => toast.error(apiErrorMessage(error, locale)),
   });
   const profileMutation = useMutation({
     mutationFn: updateProfile,
@@ -95,7 +105,7 @@ function Account() {
       toast("Profile updated");
       void client.invalidateQueries({ queryKey: ["account", "profile"] });
     },
-    onError: (error) => toast.error(apiErrorMessage(error)),
+    onError: (error) => toast.error(apiErrorMessage(error, locale)),
   });
   if (!authHydrated)
     return (
@@ -120,8 +130,42 @@ function Account() {
   const name = profile.data
     ? `${profile.data.firstName} ${profile.data.lastName}`
     : `${user.firstName} ${user.lastName}`;
+  const signOutCopy =
+    locale === "ar"
+      ? {
+          trigger: "تسجيل الخروج",
+          eyebrow: "أمان الحساب",
+          title: "هل تريد تسجيل الخروج؟",
+          description: "هل أنت متأكد من تسجيل الخروج؟ يمكنك تسجيل الدخول مرة أخرى في أي وقت.",
+          cancel: "البقاء مسجلاً",
+          confirm: "نعم، تسجيل الخروج",
+          pending: "جارٍ تسجيل الخروج…",
+        }
+      : {
+          trigger: "Sign out",
+          eyebrow: "Account security",
+          title: "Sign out of BIOREZA?",
+          description: "Are you sure you want to sign out? You can sign back in at any time.",
+          cancel: "Stay signed in",
+          confirm: "Yes, sign out",
+          pending: "Signing out…",
+        };
+
+  const handleSignOut = async () => {
+    if (isSigningOut) return;
+
+    setIsSigningOut(true);
+    try {
+      await signOut();
+      setSignOutOpen(false);
+      await navigate({ to: "/" });
+    } finally {
+      setIsSigningOut(false);
+    }
+  };
+
   return (
-    <div className="mx-auto max-w-[1560px] px-5 py-14 md:px-10 lg:py-20">
+    <div className="sf-account-page mx-auto max-w-[1560px] px-5 py-14 md:px-10 lg:py-20">
       <Reveal stagger distance={20}>
         <p className="label-xs text-gold">Client account</p>
         <h1 className="display mt-5 text-[clamp(2.2rem,4.4vw,3.4rem)]">Welcome, {name}.</h1>
@@ -149,10 +193,11 @@ function Account() {
             ))}
             <li>
               <button
-                onClick={() => void signOut().then(() => navigate({ to: "/" }))}
-                className="label-xs min-h-11 text-taupe"
+                type="button"
+                onClick={() => setSignOutOpen(true)}
+                className="label-xs min-h-11 text-taupe transition-colors duration-150 hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold focus-visible:ring-offset-4"
               >
-                Sign out
+                {signOutCopy.trigger}
               </button>
             </li>
           </ul>
@@ -324,17 +369,19 @@ function Account() {
                       <div className="mt-5 flex gap-4">
                         {!address.isDefault && (
                           <button
+                            type="button"
                             onClick={() =>
                               void setDefaultAddress(address.id).then(() =>
                                 client.invalidateQueries({ queryKey: ["account", "addresses"] }),
                               )
                             }
-                            className="label-xs text-gold"
+                            className="label-xs inline-flex min-h-11 items-center text-gold"
                           >
                             Make default
                           </button>
                         )}
                         <button
+                          type="button"
                           onClick={() => {
                             if (!window.confirm("Delete this address? This cannot be undone."))
                               return;
@@ -342,9 +389,10 @@ function Account() {
                               .then(() =>
                                 client.invalidateQueries({ queryKey: ["account", "addresses"] }),
                               )
-                              .catch((error) => toast.error(apiErrorMessage(error)));
+                              .catch((error) => toast.error(apiErrorMessage(error, locale)));
                           }}
                           aria-label="Delete address"
+                          className="grid size-11 place-items-center text-taupe transition-colors duration-150 hover:text-destructive"
                         >
                           <Trash2 className="size-4" />
                         </button>
@@ -397,6 +445,11 @@ function Account() {
                   {label}
                   <input
                     name={id}
+                    type={id === "phone" ? "tel" : "text"}
+                    inputMode={id === "phone" ? "tel" : undefined}
+                    autoComplete={
+                      id === "phone" ? "tel" : id === "firstName" ? "given-name" : "family-name"
+                    }
                     defaultValue={value}
                     required
                     className="mt-2 h-12 w-full border border-input bg-warm-white px-4 text-sm normal-case tracking-normal"
@@ -410,6 +463,53 @@ function Account() {
           )}
         </section>
       </Reveal>
+      <Dialog
+        open={signOutOpen}
+        onOpenChange={(open) => {
+          if (!isSigningOut) setSignOutOpen(open);
+        }}
+      >
+        <DialogContent
+          dir={locale === "ar" ? "rtl" : "ltr"}
+          showCloseButton={!isSigningOut}
+          className="w-[calc(100%-2rem)] max-w-md gap-0 overflow-hidden rounded-none border-border bg-warm-white p-0 shadow-soft"
+        >
+          <div className="border-b border-border px-6 pb-6 pt-7 sm:px-8 sm:pb-8 sm:pt-9">
+            <p className="label-xs text-gold">{signOutCopy.eyebrow}</p>
+            <DialogHeader className="mt-4 space-y-0 text-start">
+              <DialogTitle className="font-serif text-[clamp(1.75rem,5vw,2.25rem)] font-semibold leading-tight tracking-normal text-foreground">
+                {signOutCopy.title}
+              </DialogTitle>
+              <DialogDescription className="mt-3 max-w-sm text-sm leading-6 text-taupe">
+                {signOutCopy.description}
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+          <div className="grid gap-3 px-6 py-5 sm:grid-cols-2 sm:px-8 sm:py-6">
+            <DialogClose asChild>
+              <Button
+                type="button"
+                variant="quiet"
+                size="pill"
+                className="w-full"
+                disabled={isSigningOut}
+              >
+                {signOutCopy.cancel}
+              </Button>
+            </DialogClose>
+            <Button
+              type="button"
+              variant="solid"
+              size="pill"
+              className="w-full"
+              loading={isSigningOut}
+              onClick={() => void handleSignOut()}
+            >
+              {isSigningOut ? signOutCopy.pending : signOutCopy.confirm}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

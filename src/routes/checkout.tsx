@@ -221,8 +221,8 @@ function Checkout() {
       />
     );
   return (
-    <div className="mx-auto max-w-[1400px] px-5 pb-32 pt-14 md:px-10 lg:py-20">
-      <Reveal stagger staggerMs={72} distance={20}>
+    <div className="sf-checkout-page mx-auto max-w-[1400px] px-5 pb-32 pt-14 md:px-10 lg:py-20">
+      <Reveal stagger staggerMs={45} distance={20}>
         <p className="label-xs text-gold">{t("checkout.eyebrow")}</p>
         <h1 className="display mt-5 text-[clamp(2.2rem,4.4vw,3.4rem)]">{t("checkout.title")}</h1>
         <ol
@@ -549,7 +549,7 @@ function Checkout() {
         </div>
       )}
       {!result && (
-        <div className="mobile-primary-bar fixed inset-x-0 bottom-0 z-30 border-t border-border bg-warm-white/96 px-4 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.4)] backdrop-blur-sm lg:hidden">
+        <div className="mobile-primary-bar fixed inset-x-0 bottom-0 z-30 border-t border-border bg-warm-white px-4 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.4)] lg:hidden">
           <div className="mx-auto flex max-w-lg items-center gap-3">
             <div className="min-w-0 flex-1">
               <p className="label-xs text-taupe">{t("checkout.beforeDelivery")}</p>
@@ -747,12 +747,12 @@ function Copy({ value }: { value: string }) {
           window.setTimeout(() => setCopied(false), 1400);
         })
       }
-      className="mt-3 inline-flex items-center gap-2 text-gold"
+      className="mt-3 inline-flex min-h-11 items-center gap-2 text-gold transition-colors duration-150 hover:text-foreground"
     >
       {value}
       <Clipboard className="size-4" />
-      <span className="sr-only" aria-live="polite">
-        {copied ? "Copied" : "Copy transfer details"}
+      <span className="label-xs" aria-live="polite">
+        {copied ? "Copied" : "Copy"}
       </span>
     </button>
   );

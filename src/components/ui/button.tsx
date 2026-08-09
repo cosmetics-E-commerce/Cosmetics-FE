@@ -6,7 +6,7 @@ import { LoaderCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "relative inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-none text-sm font-medium cursor-pointer transition-[color,background-color,border-color,box-shadow,transform,opacity] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:hover:-translate-y-px motion-safe:active:translate-y-0 motion-safe:active:scale-[0.985] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "relative inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-none text-sm font-medium transition-[color,background-color,border-color,box-shadow,transform,opacity] duration-180 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:hover:-translate-y-px motion-safe:active:translate-y-0 motion-safe:active:scale-[0.985] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -17,21 +17,20 @@ const buttonVariants = cva(
         secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:translate-y-0 hover:underline",
-        solid:
-          "premium-button label-sm bg-foreground text-background transition-all duration-500 hover:text-warm-white",
-        line: "label-sm border border-gold/60 bg-transparent text-foreground transition-all duration-500 hover:border-gold hover:bg-gold hover:text-warm-white",
+        solid: "premium-button label-sm bg-foreground text-background hover:text-warm-white",
+        line: "label-sm border border-gold/60 bg-transparent text-foreground hover:border-gold hover:bg-gold hover:text-warm-white",
         quiet:
-          "label-sm border border-border bg-transparent text-foreground transition-all duration-500 hover:border-foreground",
+          "label-sm border border-border bg-transparent text-foreground hover:border-foreground",
         underline:
-          "label-sm h-auto rounded-none border-b border-gold/50 px-0 pb-1 text-foreground transition-colors duration-500 hover:translate-y-0 hover:border-gold hover:text-gold",
+          "label-sm h-auto rounded-none border-b border-gold/50 px-0 pb-1 text-foreground hover:translate-y-0 hover:border-gold hover:text-gold",
       },
       size: {
-        default: "h-9 px-4 py-2",
-        sm: "h-8 rounded-md px-3 text-xs",
-        lg: "h-10 rounded-md px-8",
+        default: "h-11 px-4 py-2",
+        sm: "h-10 rounded-md px-3 text-xs",
+        lg: "h-12 rounded-md px-8",
         pill: "h-12 px-9",
         wide: "h-14 w-full px-8",
-        icon: "h-9 w-9",
+        icon: "size-11",
       },
     },
     defaultVariants: {

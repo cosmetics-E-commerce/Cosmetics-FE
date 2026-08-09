@@ -18,9 +18,9 @@ export function AuthShell({
   footer: ReactNode;
 }) {
   return (
-    <div className="grid min-h-[80vh] lg:grid-cols-2">
+    <div className="sf-auth-shell grid min-h-[80vh] lg:grid-cols-2">
       <div className="flex items-center justify-center px-5 py-20 md:px-16">
-        <Reveal stagger staggerMs={74} distance={22} className="w-full max-w-sm">
+        <Reveal stagger staggerMs={45} distance={22} className="w-full max-w-sm">
           <p className="label-xs text-gold">{label}</p>
           <h1 className="display mt-5 text-[clamp(2.1rem,3.6vw,3rem)]">{title}</h1>
           <p className="mt-5 text-sm leading-relaxed text-muted-foreground">{intro}</p>
@@ -81,7 +81,7 @@ export function AuthField({
           inputMode={type === "tel" ? "tel" : type === "email" ? "email" : undefined}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
-          className="h-12 w-full border border-input bg-warm-white px-4 pe-12 text-sm outline-none transition-[border-color,box-shadow] duration-200 focus:border-gold focus:shadow-[0_0_0_1px_var(--color-gold-soft)] aria-invalid:border-destructive"
+          className="h-12 w-full border border-input bg-warm-white px-4 pe-12 text-base outline-none transition-[border-color,box-shadow] duration-150 hover:border-taupe focus:border-gold focus:shadow-[0_0_0_1px_var(--color-gold-soft)] aria-invalid:border-destructive disabled:cursor-not-allowed disabled:opacity-55 md:text-sm"
           {...inputProps}
         />
         {password && (

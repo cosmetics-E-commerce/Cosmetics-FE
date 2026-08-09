@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { cn } from "@/lib/utils";
 
 export function Logo({
   size = "md",
@@ -7,25 +8,19 @@ export function Logo({
   size?: "sm" | "md" | "lg";
   tagline?: boolean;
 }) {
-  const mark = size === "lg" ? "h-14" : size === "sm" ? "h-8" : "h-9 sm:h-11";
-  const word = size === "lg" ? "text-3xl" : size === "sm" ? "text-lg" : "text-lg sm:text-xl";
-
   return (
-    <Link to="/" className="group flex items-center gap-3" aria-label="BIOREZA home">
+    <Link to="/" className={cn("brand-logo", `brand-logo--${size}`)} aria-label="BIOREZA home">
       <img
         src="/favicon.png"
         alt=""
+        width={64}
+        height={64}
         aria-hidden="true"
-        className={`${mark} w-auto transition-transform duration-700 group-hover:-translate-y-0.5`}
+        className="brand-logo__mark"
       />
-      <span className="flex flex-col leading-none">
-        <span
-          className={`${word} font-serif tracking-[0.22em] text-foreground sm:tracking-[0.3em]`}
-          style={{ fontWeight: 400 }}
-        >
-          BIOREZA
-        </span>
-        {tagline && <span className="label-xs mt-1.5 text-[0.5rem] text-gold">Cosmetics</span>}
+      <span className="brand-logo__type">
+        <span className="brand-logo__wordmark">BIOREZA</span>
+        {tagline && <span className="brand-logo__descriptor">Cosmetics</span>}
       </span>
     </Link>
   );

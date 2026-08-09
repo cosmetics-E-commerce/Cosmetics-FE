@@ -32,7 +32,7 @@ function JournalPage() {
       <Reveal
         as="section"
         stagger
-        staggerMs={78}
+        staggerMs={45}
         className="mx-auto max-w-[1560px] px-5 py-16 md:px-10"
       >
         <p className="label-xs text-gold">{ar ? "عن بيوريزا" : "About BIOREZA"}</p>

@@ -50,7 +50,7 @@ function Index() {
       <Hero />
       <Benefits />
       <CategoryGrid initialCategories={categories} />
-      <Featured initialProducts={products.slice(0, 4)} />
+      <Featured initialProducts={products.slice(0, 5)} />
       <CollectionFeature />
       <Concerns />
       <BestSellers initialProducts={products} />

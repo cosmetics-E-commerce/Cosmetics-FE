@@ -1,7 +1,12 @@
-import { useRef, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { AlertTriangle, Check, Info, Sparkles } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  HoverCard,
+  HoverCardArrow,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import type { IngredientInfo } from "@/lib/products";
 
@@ -114,56 +119,73 @@ function IngredientDetails({ ingredient }: { ingredient: IngredientInfo }) {
 
 function IngredientChip({
   ingredient,
-  mobile,
-  onMobileOpen,
+  touchMode,
+  open,
+  onOpenChange,
+  onTouchOpen,
 }: {
   ingredient: IngredientInfo;
-  mobile: boolean;
-  onMobileOpen: () => void;
+  touchMode: boolean;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onTouchOpen: () => void;
 }) {
-  const [open, setOpen] = useState(false);
-  const closeTimer = useRef<number | undefined>(undefined);
-  const cancelClose = () => closeTimer.current && window.clearTimeout(closeTimer.current);
-  const scheduleClose = () => {
-    closeTimer.current = window.setTimeout(() => setOpen(false), 100);
-  };
-  return (
-    <Popover open={!mobile && open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          className="group inline-flex min-h-8 items-center gap-1 border-b border-dotted border-foreground/30 text-sm text-foreground/75 outline-none transition-colors duration-150 hover:border-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          onMouseEnter={() => {
-            cancelClose();
-            if (!mobile) setOpen(true);
-          }}
-          onMouseLeave={scheduleClose}
-          onFocus={() => !mobile && setOpen(true)}
-          onBlur={scheduleClose}
-          onClick={(event) => {
-            if (mobile) {
-              event.preventDefault();
-              onMobileOpen();
-            }
-          }}
-          aria-haspopup="dialog"
-          aria-label={`Information about ${ingredient.inciName}`}
-        >
-          {ingredient.inciName}
-          <Info className="size-3 opacity-55 transition-opacity group-hover:opacity-100" />
-        </button>
-      </PopoverTrigger>
-      <PopoverContent
-        className="w-[min(360px,calc(100vw-24px))] border-border bg-background p-5 shadow-xl motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-95"
-        sideOffset={8}
-        onMouseEnter={cancelClose}
-        onMouseLeave={scheduleClose}
-        align="start"
-      >
-        <IngredientDetails ingredient={ingredient} />
-      </PopoverContent>
-    </Popover>
+  const contentId = useId();
+  const trigger = (
+    <button
+      type="button"
+      className="group inline-flex min-h-11 items-center gap-1 border-b border-dotted border-foreground/30 text-sm text-foreground/75 outline-none transition-colors duration-150 hover:border-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      onClick={touchMode ? onTouchOpen : undefined}
+      aria-haspopup="dialog"
+      aria-expanded={open}
+      aria-controls={open && !touchMode ? contentId : undefined}
+      aria-label={`Information about ${ingredient.inciName}`}
+    >
+      {ingredient.inciName}
+      <Info className="size-3 opacity-55 transition-opacity group-hover:opacity-100" />
+    </button>
   );
+
+  if (touchMode) return trigger;
+
+  return (
+    <HoverCard open={open} onOpenChange={onOpenChange} openDelay={60} closeDelay={80}>
+      <HoverCardTrigger asChild>{trigger}</HoverCardTrigger>
+      <HoverCardContent
+        id={contentId}
+        role="dialog"
+        aria-label={`${ingredient.inciName} ingredient information`}
+        className="ingredient-popover-card w-[min(360px,calc(100vw-24px))] rounded-none border-border bg-background p-0 shadow-xl duration-150 data-[state=closed]:duration-100"
+        side="bottom"
+        sideOffset={8}
+        align="start"
+        avoidCollisions
+        collisionPadding={12}
+        sticky="always"
+        hideWhenDetached
+      >
+        <div className="ingredient-popover-card__scroll">
+          <IngredientDetails ingredient={ingredient} />
+        </div>
+        <HoverCardArrow className="fill-background stroke-border" width={12} height={6} />
+      </HoverCardContent>
+    </HoverCard>
+  );
+}
+
+function useTouchMode() {
+  const mobile = useIsMobile();
+  const [coarsePointer, setCoarsePointer] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia("(hover: none), (pointer: coarse)");
+    const update = () => setCoarsePointer(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
+
+  return mobile || coarsePointer;
 }
 
 export function IngredientExplorer({
@@ -173,8 +195,9 @@ export function IngredientExplorer({
   ingredients: IngredientInfo[];
   fallback?: string;
 }) {
-  const mobile = useIsMobile();
+  const touchMode = useTouchMode();
   const [active, setActive] = useState<IngredientInfo | null>(null);
+  const [openIngredientId, setOpenIngredientId] = useState<string | null>(null);
   if (!ingredients.length)
     return fallback ? (
       <p className="text-sm leading-7 text-foreground/70">{fallback}</p>
@@ -193,8 +216,14 @@ export function IngredientExplorer({
           <span key={ingredient.id} className="inline-flex items-center gap-2">
             <IngredientChip
               ingredient={ingredient}
-              mobile={mobile}
-              onMobileOpen={() => setActive(ingredient)}
+              touchMode={touchMode}
+              open={touchMode ? active?.id === ingredient.id : openIngredientId === ingredient.id}
+              onOpenChange={(open) =>
+                setOpenIngredientId((current) =>
+                  open ? ingredient.id : current === ingredient.id ? null : current,
+                )
+              }
+              onTouchOpen={() => setActive(ingredient)}
             />
             {index < ingredients.length - 1 && (
               <span className="text-border" aria-hidden="true">

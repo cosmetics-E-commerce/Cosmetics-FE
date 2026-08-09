@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Instagram, Facebook, Youtube } from "lucide-react";
+import { Instagram, Facebook, Youtube, LoaderCircle } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { apiErrorMessage, subscribeNewsletter } from "@/lib/api";
 import { useI18n } from "@/lib/i18n";
@@ -41,6 +42,30 @@ const careLinks = [
   { label: "footer.cookies" as const, to: "/cookies" as const },
 ];
 
+const paymentMethods = [
+  {
+    label: "InstaPay",
+    src: "/payment-methods/instapay.png",
+    className: "payment-method-logo--instapay",
+    width: 512,
+    height: 512,
+  },
+  {
+    label: "Vodafone Cash",
+    src: "/payment-methods/vodafone-cash.png",
+    className: "payment-method-logo--vodafone",
+    width: 500,
+    height: 500,
+  },
+  {
+    label: "Trading Icon - Page - Cash On Delivery Icon @clipartmax.com",
+    src: "https://www.clipartmax.com/png/small/219-2198967_trading-icon-page-cash-on-delivery-icon.png",
+    className: "payment-method-logo--cash",
+    width: 300,
+    height: 300,
+  },
+] as const;
+
 /*const columns = [
   {
     title: "Shop",
@@ -65,12 +90,13 @@ const careLinks = [
 
 export function Footer() {
   const { locale, t } = useI18n();
+  const [subscribing, setSubscribing] = useState(false);
   return (
     <footer className="border-t border-border bg-ivory">
       <div className="mx-auto max-w-[1560px] px-5 py-20 md:px-10">
         <Reveal
           stagger
-          staggerMs={88}
+          staggerMs={45}
           distance={24}
           className="grid gap-14 lg:grid-cols-[1.3fr_1fr_1fr_1fr]"
         >
@@ -90,30 +116,44 @@ export function Footer() {
                 className="mt-4 flex items-center gap-3 border-b border-gold/40 pb-2"
                 onSubmit={async (event) => {
                   event.preventDefault();
+                  if (subscribing) return;
                   const form = event.currentTarget;
                   const email = new FormData(form).get("email");
                   if (typeof email !== "string") return;
+                  setSubscribing(true);
                   try {
                     await subscribeNewsletter(email, locale);
                     form.reset();
                     toast.success(t("newsletter.success"));
                   } catch (error) {
-                    toast.error(apiErrorMessage(error));
+                    toast.error(apiErrorMessage(error, locale));
+                  } finally {
+                    setSubscribing(false);
                   }
                 }}
               >
                 <label htmlFor="footer-email" className="sr-only">
-                  Email address
+                  {t("newsletter.email")}
                 </label>
                 <input
                   id="footer-email"
                   name="email"
                   type="email"
                   required
+                  autoComplete="email"
+                  inputMode="email"
                   placeholder={t("newsletter.email")}
-                  className="w-full bg-transparent text-sm outline-none placeholder:text-taupe/70"
+                  className="min-h-11 w-full bg-transparent text-base outline-none placeholder:text-taupe/70 md:text-sm"
                 />
-                <button type="submit" className="label-xs shrink-0 text-gold hover:text-foreground">
+                <button
+                  type="submit"
+                  disabled={subscribing}
+                  aria-busy={subscribing || undefined}
+                  className="label-xs inline-flex min-h-11 shrink-0 items-center gap-2 text-gold transition-colors duration-150 hover:text-foreground disabled:cursor-wait disabled:opacity-70"
+                >
+                  <span className="inline-grid size-4 place-items-center" aria-hidden="true">
+                    {subscribing ? <LoaderCircle className="size-4 animate-spin" /> : null}
+                  </span>
                   {t("newsletter.subscribe")}
                 </button>
               </form>
@@ -126,7 +166,7 @@ export function Footer() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={label}
-                  className="grid size-11 place-items-center border border-border text-taupe transition-colors duration-500 hover:border-gold hover:text-gold"
+                  className="grid size-11 place-items-center border border-border text-taupe transition-colors duration-180 hover:border-gold hover:text-gold"
                 >
                   <Icon strokeWidth={1} className="size-4" aria-hidden="true" />
                 </a>
@@ -142,7 +182,7 @@ export function Footer() {
                   <Link
                     to="/shop"
                     search={{ category: link.category }}
-                    className="text-sm text-foreground/80 transition-colors duration-500 hover:text-gold"
+                    className="inline-flex min-h-11 items-center text-sm text-foreground/80 transition-colors duration-180 hover:text-gold"
                   >
                     {link.label}
                   </Link>
@@ -157,7 +197,7 @@ export function Footer() {
                 <li key={link.to}>
                   <Link
                     to={link.to}
-                    className="text-sm text-foreground/80 transition-colors duration-500 hover:text-gold"
+                    className="inline-flex min-h-11 items-center text-sm text-foreground/80 transition-colors duration-180 hover:text-gold"
                   >
                     {t(link.label)}
                   </Link>
@@ -169,12 +209,18 @@ export function Footer() {
             <h3 className="label-xs text-taupe">BIOREZA</h3>
             <ul className="mt-6 space-y-3">
               <li>
-                <Link to="/journal" className="text-sm text-foreground/80 hover:text-gold">
+                <Link
+                  to="/journal"
+                  className="inline-flex min-h-11 items-center text-sm text-foreground/80 hover:text-gold"
+                >
                   {t("nav.about")}
                 </Link>
               </li>
               <li>
-                <Link to="/offers" className="text-sm text-foreground/80 hover:text-gold">
+                <Link
+                  to="/offers"
+                  className="inline-flex min-h-11 items-center text-sm text-foreground/80 hover:text-gold"
+                >
                   {t("nav.offers")}
                 </Link>
               </li>
@@ -194,13 +240,21 @@ export function Footer() {
             <p>hello@bioreza.com</p>
             <p>Mon–Sat, 9:00–19:00 Cairo</p>
           </div>
-          <ul className="flex flex-wrap items-center gap-3">
-            {["INSTAPAY", "VODAFONE CASH", "CASH ON DELIVERY"].map((p) => (
-              <li
-                key={p}
-                className="label-xs border border-border px-3 py-1.5 text-[0.55rem] text-taupe"
-              >
-                {p}
+          <ul
+            aria-label={locale === "ar" ? "طرق الدفع المقبولة" : "Accepted payment methods"}
+            className="flex flex-wrap items-center gap-3"
+          >
+            {paymentMethods.map((method) => (
+              <li key={method.label} className="payment-method-logo">
+                <img
+                  src={method.src}
+                  alt={method.label}
+                  width={method.width}
+                  height={method.height}
+                  loading="lazy"
+                  decoding="async"
+                  className={method.className}
+                />
               </li>
             ))}
           </ul>

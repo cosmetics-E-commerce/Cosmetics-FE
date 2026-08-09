@@ -30,8 +30,8 @@ function Contact() {
   const ar = locale === "ar";
   useEffect(() => setHydrated(true), []);
   return (
-    <div className="mx-auto grid max-w-[1200px] gap-14 px-5 py-16 md:px-10 lg:grid-cols-[0.72fr_1.28fr] lg:py-24">
-      <Reveal stagger staggerMs={76} distance={22}>
+    <div className="sf-contact-page mx-auto grid max-w-[1200px] gap-14 px-5 py-16 md:px-10 lg:grid-cols-[0.72fr_1.28fr] lg:py-24">
+      <Reveal stagger staggerMs={45} distance={22}>
         <p className="label-xs text-gold">{ar ? "خدمة العملاء" : "Customer care"}</p>
         <h1 className="display mt-5 text-[clamp(2.5rem,5vw,4rem)]">
           {ar ? "كيف يمكننا مساعدتك؟" : "How can we help?"}
@@ -50,7 +50,7 @@ function Contact() {
           </p>
         </div>
       </Reveal>
-      <Reveal variant="scale" delay={100} duration={720}>
+      <Reveal variant="scale" delay={60} duration={420}>
         <form
           className="border border-border bg-ivory p-6 md:p-10"
           onSubmit={async (event) => {
@@ -74,7 +74,7 @@ function Contact() {
                   : `Request received: ${result.id.slice(0, 8)}`,
               );
             } catch (error) {
-              toast.error(apiErrorMessage(error));
+              toast.error(apiErrorMessage(error, locale));
             } finally {
               setSending(false);
             }
@@ -82,13 +82,13 @@ function Contact() {
         >
           <div className="grid gap-6 sm:grid-cols-2">
             <Field label={ar ? "الاسم" : "Name"}>
-              <Input name="name" required minLength={2} />
+              <Input name="name" autoComplete="name" required minLength={2} />
             </Field>
             <Field label={ar ? "البريد الإلكتروني" : "Email"}>
-              <Input name="email" type="email" required />
+              <Input name="email" type="email" autoComplete="email" inputMode="email" required />
             </Field>
             <Field label={ar ? "رقم الطلب (اختياري)" : "Order number (optional)"}>
-              <Input name="orderNumber" />
+              <Input name="orderNumber" autoComplete="off" />
             </Field>
             <Field label={ar ? "الموضوع" : "Subject"}>
               <Input name="subject" required minLength={3} />
@@ -101,11 +101,11 @@ function Contact() {
             type="submit"
             variant="solid"
             size="pill"
-            disabled={!hydrated || sending}
+            disabled={!hydrated}
+            loading={sending}
             className="mt-8"
           >
-            <Send className="size-4" aria-hidden="true" />{" "}
-            {sending ? (ar ? "جارٍ الإرسال…" : "Sending…") : ar ? "إرسال الطلب" : "Send request"}
+            <Send className="size-4" aria-hidden="true" /> {ar ? "إرسال الطلب" : "Send request"}
           </Button>
         </form>
       </Reveal>

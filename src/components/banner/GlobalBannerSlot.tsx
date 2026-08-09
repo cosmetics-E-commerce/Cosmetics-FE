@@ -4,12 +4,14 @@ import { useLocation } from "@tanstack/react-router";
 import { getActiveBanners, type Device, type StoreBanner } from "@/lib/banner-api";
 import { useStore } from "@/lib/store";
 import { AnnouncementBanner } from "./AnnouncementBanner";
+import { useMotionPreferences } from "@/components/motion/motion-context";
 
 export function GlobalBannerSlot({ position }: { position: StoreBanner["position"] }) {
   const location = useLocation();
   const { locale, user, subtotal, count, couponCode } = useStore();
   const device = useDevice();
   const [active, setActive] = useState(0);
+  const { reducedMotion } = useMotionPreferences();
   const page = `${location.pathname}${location.searchStr || ""}`;
   const context = useMemo(
     () => ({
@@ -38,13 +40,20 @@ export function GlobalBannerSlot({ position }: { position: StoreBanner["position
   const ids = banners.map(({ id }) => id).join("|");
   useEffect(() => setActive(0), [ids]);
   useEffect(() => {
-    if (!["ROTATE", "SEQUENCE"].includes(strategy) || banners.length < 2) return;
+    if (reducedMotion || !["ROTATE", "SEQUENCE"].includes(strategy) || banners.length < 2) return;
     const timer = window.setTimeout(
       () => setActive((index) => (index + 1) % banners.length),
       Number(banners[active]?.behavior.intervalMs || 8000),
     );
     return () => window.clearTimeout(timer);
-  }, [active, banners, strategy]);
+  }, [active, banners, reducedMotion, strategy]);
+  // Match the first client render during hydration while reserving the active
+  // announcement row's height. This prevents both a hydration mismatch and CLS.
+  if (position === "TOP" && (typeof window === "undefined" || query.isLoading)) {
+    return (
+      <div className="global-banner-slot global-banner-slot--top global-banner-slot--loading" />
+    );
+  }
   if (query.isError || banners.length === 0) return null;
   const visible = (strategy === "STACK" ? banners : [banners[active] ?? banners[0]]).filter(
     Boolean,

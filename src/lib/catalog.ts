@@ -1,6 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import type { PublicProductResponse } from "@/lib/api";
-import { getProduct, getPromotionPrices, listCategories, listProducts } from "@/lib/api";
+import {
+  getProduct,
+  getPromotionPrices,
+  listBrands,
+  listCategories,
+  listProducts,
+} from "@/lib/api";
 import { images, type Product } from "@/lib/products";
 import { trackCommerceEvent } from "@/lib/analytics";
 
@@ -122,6 +128,15 @@ export function useCategories(initialData?: Awaited<ReturnType<typeof listCatego
   });
 }
 
+export function useBrands(initialData?: Awaited<ReturnType<typeof listBrands>>) {
+  return useQuery({
+    queryKey: ["brands"],
+    queryFn: listBrands,
+    initialData,
+    staleTime: 300_000,
+  });
+}
+
 export async function loadCatalog(
   params: Record<string, string | number | undefined> = {},
   locale: Locale = "en",
@@ -137,6 +152,7 @@ export async function loadProduct(slug: string, locale: Locale = "en") {
 }
 
 export const loadCategories = listCategories;
+export const loadBrands = listBrands;
 
 function prettyEnum(value: string) {
   return value

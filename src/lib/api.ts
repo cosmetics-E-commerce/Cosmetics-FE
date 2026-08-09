@@ -4,6 +4,7 @@ import type {
   CartResponse,
   AddressResponse as ContractAddressResponse,
   CreateAddressInput as ContractCreateAddressInput,
+  PublicBrandListItemResponse,
   PublicCategoryResponse,
   PublicProductResponse,
   RegistrationOtpChallenge,
@@ -17,6 +18,7 @@ export type {
   AuthSession,
   AuthUser,
   CartResponse,
+  PublicBrandListItemResponse,
   PublicCategoryResponse,
   PublicProductResponse,
   RegistrationOtpChallenge,
@@ -604,6 +606,14 @@ export async function listCategories() {
   const result = await rawRequest<
     PublicCategoryResponse[] | { items?: PublicCategoryResponse[]; data?: PublicCategoryResponse[] }
   >("/categories?limit=100", { auth: false });
+  return normalizeList(result);
+}
+
+export async function listBrands() {
+  const result = await rawRequest<
+    | PublicBrandListItemResponse[]
+    | { items?: PublicBrandListItemResponse[]; data?: PublicBrandListItemResponse[] }
+  >("/brands?limit=100&sortBy=name&sortOrder=asc", { auth: false });
   return normalizeList(result);
 }
 

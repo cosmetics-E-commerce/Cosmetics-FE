@@ -46,41 +46,12 @@ function useMotionInView<T extends HTMLElement>(once = true) {
       return;
     }
 
-    let frame = 0;
-    let revealed = false;
-
-    const stopWatching = () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", requestCheck);
-      window.removeEventListener("resize", requestCheck);
-      if (frame) window.cancelAnimationFrame(frame);
-      frame = 0;
-    };
-
-    const updateFromBounds = () => {
-      frame = 0;
-      const currentBounds = element.getBoundingClientRect();
-      const isInView = currentBounds.top < window.innerHeight * 0.94 && currentBounds.bottom > 0;
-      if (isInView) {
-        revealed = true;
-        setVisible(true);
-        if (once) stopWatching();
-      } else if (!once) {
-        setVisible(false);
-      }
-    };
-
-    function requestCheck() {
-      if (!revealed && !frame) frame = window.requestAnimationFrame(updateFromBounds);
-    }
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry) return;
         if (entry.isIntersecting) {
-          revealed = true;
           setVisible(true);
-          if (once) stopWatching();
+          if (once) observer.disconnect();
         } else if (!once) {
           setVisible(false);
         }
@@ -88,13 +59,7 @@ function useMotionInView<T extends HTMLElement>(once = true) {
       { threshold: MOTION_VIEWPORT_THRESHOLD, rootMargin: MOTION_VIEWPORT_MARGIN },
     );
     observer.observe(element);
-    // Lenis can update the visual scroll position between IntersectionObserver
-    // delivery frames. The passive bounds check keeps reveals reliable while
-    // retaining IntersectionObserver as the primary, low-cost path.
-    window.addEventListener("scroll", requestCheck, { passive: true });
-    window.addEventListener("resize", requestCheck, { passive: true });
-    requestCheck();
-    return stopWatching;
+    return () => observer.disconnect();
   }, [once, reducedMotion]);
 
   return { ref, visible };
@@ -211,42 +176,14 @@ export function ImageReveal({
 
 export function ParallaxMedia({
   children,
-  strength = 28,
   className,
 }: {
   children: ReactNode;
   strength?: number;
   className?: string;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { reducedMotion, finePointer } = useMotionPreferences();
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!element || reducedMotion || !finePointer) return;
-    let frame = 0;
-    const update = () => {
-      const bounds = element.getBoundingClientRect();
-      const travel = window.innerHeight + bounds.height;
-      const progress = (window.innerHeight - bounds.top) / travel - 0.5;
-      element.style.setProperty("--parallax-y", `${progress * strength * 2}px`);
-      frame = 0;
-    };
-    const requestUpdate = () => {
-      if (!frame) frame = window.requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener("scroll", requestUpdate, { passive: true });
-    window.addEventListener("resize", requestUpdate, { passive: true });
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", requestUpdate);
-      window.removeEventListener("resize", requestUpdate);
-    };
-  }, [finePointer, reducedMotion, strength]);
-
   return (
-    <div ref={ref} className={cn("motion-parallax", className)}>
+    <div className={cn("motion-parallax", className)}>
       <div className="motion-parallax__media">{children}</div>
     </div>
   );

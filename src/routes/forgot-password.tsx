@@ -70,7 +70,11 @@ function Forgot() {
         <form className="space-y-6" onSubmit={submit}>
           {step === "request" && (
             <>
-              <AuthField id="identifier" label="Email or Egyptian mobile number" />
+              <AuthField
+                id="identifier"
+                label="Email or Egyptian mobile number"
+                autoComplete="username"
+              />
               <div>
                 <label htmlFor="channel" className="label-xs text-taupe">
                   Send code by
@@ -115,14 +119,12 @@ function Forgot() {
               {error}
             </p>
           )}
-          <Button type="submit" variant="solid" size="wide" disabled={pending}>
-            {pending
-              ? "Please wait..."
-              : step === "request"
-                ? "Send verification code"
-                : step === "verify"
-                  ? "Verify code"
-                  : "Update password"}
+          <Button type="submit" variant="solid" size="wide" loading={pending}>
+            {step === "request"
+              ? "Send verification code"
+              : step === "verify"
+                ? "Verify code"
+                : "Update password"}
           </Button>
         </form>
       )}

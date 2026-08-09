@@ -13,8 +13,8 @@ export const Route = createFileRoute("/offers")({
 function OffersPage() {
   const query = useQuery({ queryKey: ["offers"], queryFn: listOffers, refetchInterval: 60_000 });
   return (
-    <main className="mx-auto min-h-[70vh] max-w-[1400px] px-5 py-14 md:px-10 lg:py-20">
-      <Reveal stagger staggerMs={76} distance={22}>
+    <main className="sf-offers-page mx-auto min-h-[70vh] max-w-[1400px] px-5 py-14 md:px-10 lg:py-20">
+      <Reveal stagger staggerMs={45} distance={22}>
         <p className="label-xs text-gold">Current rituals</p>
         <h1 className="display mt-5 text-[clamp(2.5rem,5vw,4.8rem)]">
           Offers, thoughtfully applied.

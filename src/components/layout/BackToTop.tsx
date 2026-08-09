@@ -35,7 +35,7 @@ export function BackToTop() {
       aria-label="Back to top"
       aria-hidden={!show}
       tabIndex={show ? 0 : -1}
-      className={`fixed bottom-6 end-5 z-30 grid size-12 place-items-center border border-border bg-warm-white/90 text-taupe shadow-soft backdrop-blur-sm transition-[opacity,transform,border-color,color] duration-300 hover:border-gold hover:text-gold md:end-8 ${show ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0"}`}
+      className={`fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] end-5 z-30 grid size-12 place-items-center border border-border bg-warm-white text-taupe shadow-soft transition-[opacity,transform,border-color,color] duration-200 hover:border-gold hover:text-gold active:scale-95 md:end-8 ${show ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0"}`}
     >
       <ArrowUp strokeWidth={1} className="size-4" aria-hidden="true" />
     </button>
