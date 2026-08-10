@@ -35,6 +35,7 @@ exports.addressSchema = zod_1.z.object({
     floor: zod_1.z.string().nullable(),
     apartment: zod_1.z.string().nullable(),
     postalCode: zod_1.z.string().nullable(),
+    bostaGovernorateId: zod_1.z.string().nullable(),
     bostaCityId: zod_1.z.string().nullable(),
     bostaZoneId: zod_1.z.string().nullable(),
     deliveryInstructions: zod_1.z.string().nullable(),
@@ -63,6 +64,7 @@ const addressWriteSchema = zod_1.z
      * under the MOCK provider; checkout rejects an address without a city id
      * once a real carrier is active.
      */
+    bostaGovernorateId: optionalNullableText(1, 64),
     bostaCityId: optionalNullableText(1, 64),
     bostaZoneId: optionalNullableText(1, 64),
     deliveryInstructions: optionalNullableText(1, 1000),

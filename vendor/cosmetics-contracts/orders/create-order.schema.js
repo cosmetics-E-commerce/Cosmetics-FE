@@ -140,6 +140,14 @@ exports.orderResponseSchema = zod_1.z.object({
     shippingAddressId: primitives_1.uuidSchema.nullable(),
     /** The shipping quote frozen at checkout. Immutable once the order exists. */
     shippingProvider: enums_1.ShipmentProviderEnum.nullable(),
+    shipment: shipping_schema_1.shipmentResponseSchema.nullable().optional(),
+    latestShipmentFailure: zod_1.z
+        .object({
+        reason: zod_1.z.string().nullable(),
+        createdAt: zod_1.z.string(),
+    })
+        .nullable()
+        .optional(),
     estimatedDeliveryDays: zod_1.z.number().int().nonnegative().nullable(),
     estimatedDeliveryDate: zod_1.z.string().nullable(),
     notes: zod_1.z.string().nullable(),

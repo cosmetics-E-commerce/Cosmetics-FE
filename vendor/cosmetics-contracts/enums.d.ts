@@ -19,7 +19,7 @@ export declare const OrderStatusEnum: z.ZodEnum<["PENDING_PAYMENT", "AWAITING_PA
 export type OrderStatus = z.infer<typeof OrderStatusEnum>;
 export declare const PaymentStatusEnum: z.ZodEnum<["UNPAID", "PENDING", "WAITING_REVIEW", "UNDER_REVIEW", "PROOF_SUBMITTED", "APPROVED", "VERIFIED", "REJECTED", "REFUNDED", "EXPIRED", "FAILED"]>;
 export type PaymentStatus = z.infer<typeof PaymentStatusEnum>;
-export declare const ShipmentStatusEnum: z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "FAILED", "RETURNED", "CANCELLED"]>;
+export declare const ShipmentStatusEnum: z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "AT_WAREHOUSE", "IN_TRANSIT", "OUT_FOR_DELIVERY", "FULFILLED", "DELIVERED", "EXCEPTION", "TERMINATED", "FAILED", "LOST", "DAMAGED", "RETURNED", "CANCELLED", "AWAITING_ACTION", "ARCHIVED", "ON_HOLD"]>;
 export type ShipmentStatus = z.infer<typeof ShipmentStatusEnum>;
 export declare const ShipmentProviderEnum: z.ZodEnum<["MOCK", "BOSTA"]>;
 export type ShipmentProvider = z.infer<typeof ShipmentProviderEnum>;

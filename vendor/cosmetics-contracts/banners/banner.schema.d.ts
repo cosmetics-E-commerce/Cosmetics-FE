@@ -807,7 +807,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     sortOrder: number;
     promotionId: string | null;
     position: "TOP" | "BELOW_HEADER" | "BOTTOM";
-    state: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED";
+    state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
     priority: number;
     timezone: string;
     messages: {
@@ -974,7 +974,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     sortOrder?: number | undefined;
     promotionId?: string | null | undefined;
     position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
-    state?: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED" | undefined;
+    state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
     priority?: number | undefined;
     startsAt?: string | null | undefined;
     endsAt?: string | null | undefined;
@@ -1097,7 +1097,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     sortOrder: number;
     promotionId: string | null;
     position: "TOP" | "BELOW_HEADER" | "BOTTOM";
-    state: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED";
+    state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
     priority: number;
     timezone: string;
     messages: {
@@ -1264,7 +1264,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     sortOrder?: number | undefined;
     promotionId?: string | null | undefined;
     position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
-    state?: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED" | undefined;
+    state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
     priority?: number | undefined;
     startsAt?: string | null | undefined;
     endsAt?: string | null | undefined;
@@ -1399,14 +1399,14 @@ export declare const bannerQuerySchema: z.ZodObject<{
     limit: number;
     direction: "asc" | "desc";
     search?: string | undefined;
-    state?: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED" | undefined;
+    state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
     mode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | undefined;
 }, {
     sort?: "updatedAt" | "name" | "priority" | "startsAt" | undefined;
     page?: number | undefined;
     limit?: number | undefined;
     search?: string | undefined;
-    state?: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED" | undefined;
+    state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
     mode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | undefined;
     direction?: "asc" | "desc" | undefined;
 }>;
@@ -1913,7 +1913,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         sortOrder: number;
         promotionId: string | null;
         position: "TOP" | "BELOW_HEADER" | "BOTTOM";
-        state: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED";
+        state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         priority: number;
         timezone: string;
         messages: {
@@ -2080,7 +2080,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         sortOrder?: number | undefined;
         promotionId?: string | null | undefined;
         position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
-        state?: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED" | undefined;
+        state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
         priority?: number | undefined;
         startsAt?: string | null | undefined;
         endsAt?: string | null | undefined;
@@ -2203,7 +2203,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         sortOrder: number;
         promotionId: string | null;
         position: "TOP" | "BELOW_HEADER" | "BOTTOM";
-        state: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED";
+        state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         priority: number;
         timezone: string;
         messages: {
@@ -2370,7 +2370,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         sortOrder?: number | undefined;
         promotionId?: string | null | undefined;
         position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
-        state?: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED" | undefined;
+        state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
         priority?: number | undefined;
         startsAt?: string | null | undefined;
         endsAt?: string | null | undefined;
@@ -2496,7 +2496,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         sortOrder: number;
         promotionId: string | null;
         position: "TOP" | "BELOW_HEADER" | "BOTTOM";
-        state: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED";
+        state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         priority: number;
         timezone: string;
         messages: {
@@ -2667,7 +2667,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         sortOrder?: number | undefined;
         promotionId?: string | null | undefined;
         position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
-        state?: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED" | undefined;
+        state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
         priority?: number | undefined;
         startsAt?: string | null | undefined;
         endsAt?: string | null | undefined;

@@ -137,7 +137,7 @@ export declare const orderQuerySchema: z.ZodObject<{
 } & {
     status: z.ZodOptional<z.ZodEnum<["PENDING_PAYMENT", "AWAITING_PAYMENT", "PAYMENT_REVIEW", "PAYMENT_FAILED", "PAID", "CONFIRMED", "PROCESSING", "READY_TO_SHIP", "READY_FOR_SHIPPING", "SHIPPED", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "RETURNED", "CANCELLED", "REFUNDED", "FAILED"]>>;
     paymentStatus: z.ZodOptional<z.ZodEnum<["UNPAID", "PENDING", "WAITING_REVIEW", "UNDER_REVIEW", "PROOF_SUBMITTED", "APPROVED", "VERIFIED", "REJECTED", "REFUNDED", "EXPIRED", "FAILED"]>>;
-    shippingStatus: z.ZodOptional<z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "FAILED", "RETURNED", "CANCELLED"]>>;
+    shippingStatus: z.ZodOptional<z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "AT_WAREHOUSE", "IN_TRANSIT", "OUT_FOR_DELIVERY", "FULFILLED", "DELIVERED", "EXCEPTION", "TERMINATED", "FAILED", "LOST", "DAMAGED", "RETURNED", "CANCELLED", "AWAITING_ACTION", "ARCHIVED", "ON_HOLD"]>>;
     customer: z.ZodOptional<z.ZodString>;
     dateFrom: z.ZodOptional<z.ZodString>;
     dateTo: z.ZodOptional<z.ZodString>;
@@ -166,7 +166,7 @@ export declare const orderQuerySchema: z.ZodObject<{
     paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
     paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
     trackingNumber?: string | undefined;
-    shippingStatus?: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | undefined;
+    shippingStatus?: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | undefined;
     customer?: string | undefined;
     dateFrom?: string | undefined;
     dateTo?: string | undefined;
@@ -188,7 +188,7 @@ export declare const orderQuerySchema: z.ZodObject<{
     paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
     paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
     trackingNumber?: string | undefined;
-    shippingStatus?: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | undefined;
+    shippingStatus?: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | undefined;
     customer?: string | undefined;
     dateFrom?: string | undefined;
     dateTo?: string | undefined;
@@ -485,10 +485,84 @@ export declare const orderResponseSchema: z.ZodObject<{
     total: z.ZodNumber;
     paymentMethod: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>;
     paymentStatus: z.ZodEnum<["UNPAID", "PENDING", "WAITING_REVIEW", "UNDER_REVIEW", "PROOF_SUBMITTED", "APPROVED", "VERIFIED", "REJECTED", "REFUNDED", "EXPIRED", "FAILED"]>;
-    shippingStatus: z.ZodNullable<z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "FAILED", "RETURNED", "CANCELLED"]>>;
+    shippingStatus: z.ZodNullable<z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "AT_WAREHOUSE", "IN_TRANSIT", "OUT_FOR_DELIVERY", "FULFILLED", "DELIVERED", "EXCEPTION", "TERMINATED", "FAILED", "LOST", "DAMAGED", "RETURNED", "CANCELLED", "AWAITING_ACTION", "ARCHIVED", "ON_HOLD"]>>;
     shippingAddressId: z.ZodNullable<z.ZodString>;
     /** The shipping quote frozen at checkout. Immutable once the order exists. */
     shippingProvider: z.ZodNullable<z.ZodEnum<["MOCK", "BOSTA"]>>;
+    shipment: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+        id: z.ZodString;
+        orderId: z.ZodString;
+        provider: z.ZodEnum<["MOCK", "BOSTA"]>;
+        shipmentId: z.ZodString;
+        trackingNumber: z.ZodString;
+        trackingUrl: z.ZodString;
+        status: z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "AT_WAREHOUSE", "IN_TRANSIT", "OUT_FOR_DELIVERY", "FULFILLED", "DELIVERED", "EXCEPTION", "TERMINATED", "FAILED", "LOST", "DAMAGED", "RETURNED", "CANCELLED", "AWAITING_ACTION", "ARCHIVED", "ON_HOLD"]>;
+        shippingCost: z.ZodNumber;
+        estimatedDelivery: z.ZodNullable<z.ZodString>;
+        bostaState: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        bostaStateLabel: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        bostaType: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        bostaStatusUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        deliveryPromiseDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        exceptionCode: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        exceptionReason: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        numberOfAttempts: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        isConfirmedDelivery: z.ZodOptional<z.ZodNullable<z.ZodBoolean>>;
+        createdAt: z.ZodString;
+        updatedAt: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        shippingCost: number;
+        estimatedDelivery: string | null;
+        provider: "MOCK" | "BOSTA";
+        orderId: string;
+        trackingNumber: string;
+        trackingUrl: string;
+        shipmentId: string;
+        bostaState?: number | null | undefined;
+        bostaStateLabel?: string | null | undefined;
+        bostaType?: string | null | undefined;
+        bostaStatusUpdatedAt?: string | null | undefined;
+        deliveryPromiseDate?: string | null | undefined;
+        exceptionCode?: number | null | undefined;
+        exceptionReason?: string | null | undefined;
+        numberOfAttempts?: number | null | undefined;
+        isConfirmedDelivery?: boolean | null | undefined;
+    }, {
+        status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        shippingCost: number;
+        estimatedDelivery: string | null;
+        provider: "MOCK" | "BOSTA";
+        orderId: string;
+        trackingNumber: string;
+        trackingUrl: string;
+        shipmentId: string;
+        bostaState?: number | null | undefined;
+        bostaStateLabel?: string | null | undefined;
+        bostaType?: string | null | undefined;
+        bostaStatusUpdatedAt?: string | null | undefined;
+        deliveryPromiseDate?: string | null | undefined;
+        exceptionCode?: number | null | undefined;
+        exceptionReason?: string | null | undefined;
+        numberOfAttempts?: number | null | undefined;
+        isConfirmedDelivery?: boolean | null | undefined;
+    }>>>;
+    latestShipmentFailure: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+        reason: z.ZodNullable<z.ZodString>;
+        createdAt: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        createdAt: string;
+        reason: string | null;
+    }, {
+        createdAt: string;
+        reason: string | null;
+    }>>>;
     estimatedDeliveryDays: z.ZodNullable<z.ZodNumber>;
     estimatedDeliveryDate: z.ZodNullable<z.ZodString>;
     notes: z.ZodNullable<z.ZodString>;
@@ -747,7 +821,7 @@ export declare const orderResponseSchema: z.ZodObject<{
     }[];
     shippingAddressId: string | null;
     notes: string | null;
-    shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+    shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
     shippingProvider: "MOCK" | "BOSTA" | null;
     discount: number;
     subtotal: number;
@@ -800,6 +874,28 @@ export declare const orderResponseSchema: z.ZodObject<{
         promotionId: string | null;
         discountAmount: number;
     }[];
+    shipment?: {
+        status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        shippingCost: number;
+        estimatedDelivery: string | null;
+        provider: "MOCK" | "BOSTA";
+        orderId: string;
+        trackingNumber: string;
+        trackingUrl: string;
+        shipmentId: string;
+        bostaState?: number | null | undefined;
+        bostaStateLabel?: string | null | undefined;
+        bostaType?: string | null | undefined;
+        bostaStatusUpdatedAt?: string | null | undefined;
+        deliveryPromiseDate?: string | null | undefined;
+        exceptionCode?: number | null | undefined;
+        exceptionReason?: string | null | undefined;
+        numberOfAttempts?: number | null | undefined;
+        isConfirmedDelivery?: boolean | null | undefined;
+    } | null | undefined;
     customer?: {
         id: string;
         firstName: string;
@@ -807,6 +903,10 @@ export declare const orderResponseSchema: z.ZodObject<{
         phone: string;
         email: string | null;
     } | undefined;
+    latestShipmentFailure?: {
+        createdAt: string;
+        reason: string | null;
+    } | null | undefined;
     latestPaymentProof?: {
         status: string;
         id: string;
@@ -843,7 +943,7 @@ export declare const orderResponseSchema: z.ZodObject<{
     }[];
     shippingAddressId: string | null;
     notes: string | null;
-    shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+    shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
     shippingProvider: "MOCK" | "BOSTA" | null;
     discount: number;
     subtotal: number;
@@ -896,6 +996,28 @@ export declare const orderResponseSchema: z.ZodObject<{
         promotionId: string | null;
         discountAmount: number;
     }[];
+    shipment?: {
+        status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
+        id: string;
+        createdAt: string;
+        updatedAt: string;
+        shippingCost: number;
+        estimatedDelivery: string | null;
+        provider: "MOCK" | "BOSTA";
+        orderId: string;
+        trackingNumber: string;
+        trackingUrl: string;
+        shipmentId: string;
+        bostaState?: number | null | undefined;
+        bostaStateLabel?: string | null | undefined;
+        bostaType?: string | null | undefined;
+        bostaStatusUpdatedAt?: string | null | undefined;
+        deliveryPromiseDate?: string | null | undefined;
+        exceptionCode?: number | null | undefined;
+        exceptionReason?: string | null | undefined;
+        numberOfAttempts?: number | null | undefined;
+        isConfirmedDelivery?: boolean | null | undefined;
+    } | null | undefined;
     customer?: {
         id: string;
         firstName: string;
@@ -903,6 +1025,10 @@ export declare const orderResponseSchema: z.ZodObject<{
         phone: string;
         email: string | null;
     } | undefined;
+    latestShipmentFailure?: {
+        createdAt: string;
+        reason: string | null;
+    } | null | undefined;
     latestPaymentProof?: {
         status: string;
         id: string;
@@ -949,10 +1075,84 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
         total: z.ZodNumber;
         paymentMethod: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>;
         paymentStatus: z.ZodEnum<["UNPAID", "PENDING", "WAITING_REVIEW", "UNDER_REVIEW", "PROOF_SUBMITTED", "APPROVED", "VERIFIED", "REJECTED", "REFUNDED", "EXPIRED", "FAILED"]>;
-        shippingStatus: z.ZodNullable<z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "FAILED", "RETURNED", "CANCELLED"]>>;
+        shippingStatus: z.ZodNullable<z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "AT_WAREHOUSE", "IN_TRANSIT", "OUT_FOR_DELIVERY", "FULFILLED", "DELIVERED", "EXCEPTION", "TERMINATED", "FAILED", "LOST", "DAMAGED", "RETURNED", "CANCELLED", "AWAITING_ACTION", "ARCHIVED", "ON_HOLD"]>>;
         shippingAddressId: z.ZodNullable<z.ZodString>;
         /** The shipping quote frozen at checkout. Immutable once the order exists. */
         shippingProvider: z.ZodNullable<z.ZodEnum<["MOCK", "BOSTA"]>>;
+        shipment: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            id: z.ZodString;
+            orderId: z.ZodString;
+            provider: z.ZodEnum<["MOCK", "BOSTA"]>;
+            shipmentId: z.ZodString;
+            trackingNumber: z.ZodString;
+            trackingUrl: z.ZodString;
+            status: z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "AT_WAREHOUSE", "IN_TRANSIT", "OUT_FOR_DELIVERY", "FULFILLED", "DELIVERED", "EXCEPTION", "TERMINATED", "FAILED", "LOST", "DAMAGED", "RETURNED", "CANCELLED", "AWAITING_ACTION", "ARCHIVED", "ON_HOLD"]>;
+            shippingCost: z.ZodNumber;
+            estimatedDelivery: z.ZodNullable<z.ZodString>;
+            bostaState: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+            bostaStateLabel: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            bostaType: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            bostaStatusUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            deliveryPromiseDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            exceptionCode: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+            exceptionReason: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            numberOfAttempts: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+            isConfirmedDelivery: z.ZodOptional<z.ZodNullable<z.ZodBoolean>>;
+            createdAt: z.ZodString;
+            updatedAt: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
+            id: string;
+            createdAt: string;
+            updatedAt: string;
+            shippingCost: number;
+            estimatedDelivery: string | null;
+            provider: "MOCK" | "BOSTA";
+            orderId: string;
+            trackingNumber: string;
+            trackingUrl: string;
+            shipmentId: string;
+            bostaState?: number | null | undefined;
+            bostaStateLabel?: string | null | undefined;
+            bostaType?: string | null | undefined;
+            bostaStatusUpdatedAt?: string | null | undefined;
+            deliveryPromiseDate?: string | null | undefined;
+            exceptionCode?: number | null | undefined;
+            exceptionReason?: string | null | undefined;
+            numberOfAttempts?: number | null | undefined;
+            isConfirmedDelivery?: boolean | null | undefined;
+        }, {
+            status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
+            id: string;
+            createdAt: string;
+            updatedAt: string;
+            shippingCost: number;
+            estimatedDelivery: string | null;
+            provider: "MOCK" | "BOSTA";
+            orderId: string;
+            trackingNumber: string;
+            trackingUrl: string;
+            shipmentId: string;
+            bostaState?: number | null | undefined;
+            bostaStateLabel?: string | null | undefined;
+            bostaType?: string | null | undefined;
+            bostaStatusUpdatedAt?: string | null | undefined;
+            deliveryPromiseDate?: string | null | undefined;
+            exceptionCode?: number | null | undefined;
+            exceptionReason?: string | null | undefined;
+            numberOfAttempts?: number | null | undefined;
+            isConfirmedDelivery?: boolean | null | undefined;
+        }>>>;
+        latestShipmentFailure: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            reason: z.ZodNullable<z.ZodString>;
+            createdAt: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            createdAt: string;
+            reason: string | null;
+        }, {
+            createdAt: string;
+            reason: string | null;
+        }>>>;
         estimatedDeliveryDays: z.ZodNullable<z.ZodNumber>;
         estimatedDeliveryDate: z.ZodNullable<z.ZodString>;
         notes: z.ZodNullable<z.ZodString>;
@@ -1198,7 +1398,7 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
         estimatedDeliveryDate: string | null;
         shippingAddressId: string | null;
         notes: string | null;
-        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
         shippingProvider: "MOCK" | "BOSTA" | null;
         discount: number;
         subtotal: number;
@@ -1251,6 +1451,28 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             promotionId: string | null;
             discountAmount: number;
         }[];
+        shipment?: {
+            status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
+            id: string;
+            createdAt: string;
+            updatedAt: string;
+            shippingCost: number;
+            estimatedDelivery: string | null;
+            provider: "MOCK" | "BOSTA";
+            orderId: string;
+            trackingNumber: string;
+            trackingUrl: string;
+            shipmentId: string;
+            bostaState?: number | null | undefined;
+            bostaStateLabel?: string | null | undefined;
+            bostaType?: string | null | undefined;
+            bostaStatusUpdatedAt?: string | null | undefined;
+            deliveryPromiseDate?: string | null | undefined;
+            exceptionCode?: number | null | undefined;
+            exceptionReason?: string | null | undefined;
+            numberOfAttempts?: number | null | undefined;
+            isConfirmedDelivery?: boolean | null | undefined;
+        } | null | undefined;
         customer?: {
             id: string;
             firstName: string;
@@ -1258,6 +1480,10 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             phone: string;
             email: string | null;
         } | undefined;
+        latestShipmentFailure?: {
+            createdAt: string;
+            reason: string | null;
+        } | null | undefined;
         latestPaymentProof?: {
             status: string;
             id: string;
@@ -1281,7 +1507,7 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
         estimatedDeliveryDate: string | null;
         shippingAddressId: string | null;
         notes: string | null;
-        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
         shippingProvider: "MOCK" | "BOSTA" | null;
         discount: number;
         subtotal: number;
@@ -1334,6 +1560,28 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             promotionId: string | null;
             discountAmount: number;
         }[];
+        shipment?: {
+            status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
+            id: string;
+            createdAt: string;
+            updatedAt: string;
+            shippingCost: number;
+            estimatedDelivery: string | null;
+            provider: "MOCK" | "BOSTA";
+            orderId: string;
+            trackingNumber: string;
+            trackingUrl: string;
+            shipmentId: string;
+            bostaState?: number | null | undefined;
+            bostaStateLabel?: string | null | undefined;
+            bostaType?: string | null | undefined;
+            bostaStatusUpdatedAt?: string | null | undefined;
+            deliveryPromiseDate?: string | null | undefined;
+            exceptionCode?: number | null | undefined;
+            exceptionReason?: string | null | undefined;
+            numberOfAttempts?: number | null | undefined;
+            isConfirmedDelivery?: boolean | null | undefined;
+        } | null | undefined;
         customer?: {
             id: string;
             firstName: string;
@@ -1341,6 +1589,10 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             phone: string;
             email: string | null;
         } | undefined;
+        latestShipmentFailure?: {
+            createdAt: string;
+            reason: string | null;
+        } | null | undefined;
         latestPaymentProof?: {
             status: string;
             id: string;
@@ -1388,7 +1640,7 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
         estimatedDeliveryDate: string | null;
         shippingAddressId: string | null;
         notes: string | null;
-        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
         shippingProvider: "MOCK" | "BOSTA" | null;
         discount: number;
         subtotal: number;
@@ -1441,6 +1693,28 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             promotionId: string | null;
             discountAmount: number;
         }[];
+        shipment?: {
+            status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
+            id: string;
+            createdAt: string;
+            updatedAt: string;
+            shippingCost: number;
+            estimatedDelivery: string | null;
+            provider: "MOCK" | "BOSTA";
+            orderId: string;
+            trackingNumber: string;
+            trackingUrl: string;
+            shipmentId: string;
+            bostaState?: number | null | undefined;
+            bostaStateLabel?: string | null | undefined;
+            bostaType?: string | null | undefined;
+            bostaStatusUpdatedAt?: string | null | undefined;
+            deliveryPromiseDate?: string | null | undefined;
+            exceptionCode?: number | null | undefined;
+            exceptionReason?: string | null | undefined;
+            numberOfAttempts?: number | null | undefined;
+            isConfirmedDelivery?: boolean | null | undefined;
+        } | null | undefined;
         customer?: {
             id: string;
             firstName: string;
@@ -1448,6 +1722,10 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             phone: string;
             email: string | null;
         } | undefined;
+        latestShipmentFailure?: {
+            createdAt: string;
+            reason: string | null;
+        } | null | undefined;
         latestPaymentProof?: {
             status: string;
             id: string;
@@ -1481,7 +1759,7 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
         estimatedDeliveryDate: string | null;
         shippingAddressId: string | null;
         notes: string | null;
-        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
         shippingProvider: "MOCK" | "BOSTA" | null;
         discount: number;
         subtotal: number;
@@ -1534,6 +1812,28 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             promotionId: string | null;
             discountAmount: number;
         }[];
+        shipment?: {
+            status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
+            id: string;
+            createdAt: string;
+            updatedAt: string;
+            shippingCost: number;
+            estimatedDelivery: string | null;
+            provider: "MOCK" | "BOSTA";
+            orderId: string;
+            trackingNumber: string;
+            trackingUrl: string;
+            shipmentId: string;
+            bostaState?: number | null | undefined;
+            bostaStateLabel?: string | null | undefined;
+            bostaType?: string | null | undefined;
+            bostaStatusUpdatedAt?: string | null | undefined;
+            deliveryPromiseDate?: string | null | undefined;
+            exceptionCode?: number | null | undefined;
+            exceptionReason?: string | null | undefined;
+            numberOfAttempts?: number | null | undefined;
+            isConfirmedDelivery?: boolean | null | undefined;
+        } | null | undefined;
         customer?: {
             id: string;
             firstName: string;
@@ -1541,6 +1841,10 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             phone: string;
             email: string | null;
         } | undefined;
+        latestShipmentFailure?: {
+            createdAt: string;
+            reason: string | null;
+        } | null | undefined;
         latestPaymentProof?: {
             status: string;
             id: string;
@@ -1656,10 +1960,84 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         total: z.ZodNumber;
         paymentMethod: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>;
         paymentStatus: z.ZodEnum<["UNPAID", "PENDING", "WAITING_REVIEW", "UNDER_REVIEW", "PROOF_SUBMITTED", "APPROVED", "VERIFIED", "REJECTED", "REFUNDED", "EXPIRED", "FAILED"]>;
-        shippingStatus: z.ZodNullable<z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "FAILED", "RETURNED", "CANCELLED"]>>;
+        shippingStatus: z.ZodNullable<z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "AT_WAREHOUSE", "IN_TRANSIT", "OUT_FOR_DELIVERY", "FULFILLED", "DELIVERED", "EXCEPTION", "TERMINATED", "FAILED", "LOST", "DAMAGED", "RETURNED", "CANCELLED", "AWAITING_ACTION", "ARCHIVED", "ON_HOLD"]>>;
         shippingAddressId: z.ZodNullable<z.ZodString>;
         /** The shipping quote frozen at checkout. Immutable once the order exists. */
         shippingProvider: z.ZodNullable<z.ZodEnum<["MOCK", "BOSTA"]>>;
+        shipment: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            id: z.ZodString;
+            orderId: z.ZodString;
+            provider: z.ZodEnum<["MOCK", "BOSTA"]>;
+            shipmentId: z.ZodString;
+            trackingNumber: z.ZodString;
+            trackingUrl: z.ZodString;
+            status: z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "AT_WAREHOUSE", "IN_TRANSIT", "OUT_FOR_DELIVERY", "FULFILLED", "DELIVERED", "EXCEPTION", "TERMINATED", "FAILED", "LOST", "DAMAGED", "RETURNED", "CANCELLED", "AWAITING_ACTION", "ARCHIVED", "ON_HOLD"]>;
+            shippingCost: z.ZodNumber;
+            estimatedDelivery: z.ZodNullable<z.ZodString>;
+            bostaState: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+            bostaStateLabel: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            bostaType: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            bostaStatusUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            deliveryPromiseDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            exceptionCode: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+            exceptionReason: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            numberOfAttempts: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+            isConfirmedDelivery: z.ZodOptional<z.ZodNullable<z.ZodBoolean>>;
+            createdAt: z.ZodString;
+            updatedAt: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
+            id: string;
+            createdAt: string;
+            updatedAt: string;
+            shippingCost: number;
+            estimatedDelivery: string | null;
+            provider: "MOCK" | "BOSTA";
+            orderId: string;
+            trackingNumber: string;
+            trackingUrl: string;
+            shipmentId: string;
+            bostaState?: number | null | undefined;
+            bostaStateLabel?: string | null | undefined;
+            bostaType?: string | null | undefined;
+            bostaStatusUpdatedAt?: string | null | undefined;
+            deliveryPromiseDate?: string | null | undefined;
+            exceptionCode?: number | null | undefined;
+            exceptionReason?: string | null | undefined;
+            numberOfAttempts?: number | null | undefined;
+            isConfirmedDelivery?: boolean | null | undefined;
+        }, {
+            status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
+            id: string;
+            createdAt: string;
+            updatedAt: string;
+            shippingCost: number;
+            estimatedDelivery: string | null;
+            provider: "MOCK" | "BOSTA";
+            orderId: string;
+            trackingNumber: string;
+            trackingUrl: string;
+            shipmentId: string;
+            bostaState?: number | null | undefined;
+            bostaStateLabel?: string | null | undefined;
+            bostaType?: string | null | undefined;
+            bostaStatusUpdatedAt?: string | null | undefined;
+            deliveryPromiseDate?: string | null | undefined;
+            exceptionCode?: number | null | undefined;
+            exceptionReason?: string | null | undefined;
+            numberOfAttempts?: number | null | undefined;
+            isConfirmedDelivery?: boolean | null | undefined;
+        }>>>;
+        latestShipmentFailure: z.ZodOptional<z.ZodNullable<z.ZodObject<{
+            reason: z.ZodNullable<z.ZodString>;
+            createdAt: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            createdAt: string;
+            reason: string | null;
+        }, {
+            createdAt: string;
+            reason: string | null;
+        }>>>;
         estimatedDeliveryDays: z.ZodNullable<z.ZodNumber>;
         estimatedDeliveryDate: z.ZodNullable<z.ZodString>;
         notes: z.ZodNullable<z.ZodString>;
@@ -1918,7 +2296,7 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         }[];
         shippingAddressId: string | null;
         notes: string | null;
-        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
         shippingProvider: "MOCK" | "BOSTA" | null;
         discount: number;
         subtotal: number;
@@ -1971,6 +2349,28 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             promotionId: string | null;
             discountAmount: number;
         }[];
+        shipment?: {
+            status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
+            id: string;
+            createdAt: string;
+            updatedAt: string;
+            shippingCost: number;
+            estimatedDelivery: string | null;
+            provider: "MOCK" | "BOSTA";
+            orderId: string;
+            trackingNumber: string;
+            trackingUrl: string;
+            shipmentId: string;
+            bostaState?: number | null | undefined;
+            bostaStateLabel?: string | null | undefined;
+            bostaType?: string | null | undefined;
+            bostaStatusUpdatedAt?: string | null | undefined;
+            deliveryPromiseDate?: string | null | undefined;
+            exceptionCode?: number | null | undefined;
+            exceptionReason?: string | null | undefined;
+            numberOfAttempts?: number | null | undefined;
+            isConfirmedDelivery?: boolean | null | undefined;
+        } | null | undefined;
         customer?: {
             id: string;
             firstName: string;
@@ -1978,6 +2378,10 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             phone: string;
             email: string | null;
         } | undefined;
+        latestShipmentFailure?: {
+            createdAt: string;
+            reason: string | null;
+        } | null | undefined;
         latestPaymentProof?: {
             status: string;
             id: string;
@@ -2014,7 +2418,7 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         }[];
         shippingAddressId: string | null;
         notes: string | null;
-        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
         shippingProvider: "MOCK" | "BOSTA" | null;
         discount: number;
         subtotal: number;
@@ -2067,6 +2471,28 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             promotionId: string | null;
             discountAmount: number;
         }[];
+        shipment?: {
+            status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
+            id: string;
+            createdAt: string;
+            updatedAt: string;
+            shippingCost: number;
+            estimatedDelivery: string | null;
+            provider: "MOCK" | "BOSTA";
+            orderId: string;
+            trackingNumber: string;
+            trackingUrl: string;
+            shipmentId: string;
+            bostaState?: number | null | undefined;
+            bostaStateLabel?: string | null | undefined;
+            bostaType?: string | null | undefined;
+            bostaStatusUpdatedAt?: string | null | undefined;
+            deliveryPromiseDate?: string | null | undefined;
+            exceptionCode?: number | null | undefined;
+            exceptionReason?: string | null | undefined;
+            numberOfAttempts?: number | null | undefined;
+            isConfirmedDelivery?: boolean | null | undefined;
+        } | null | undefined;
         customer?: {
             id: string;
             firstName: string;
@@ -2074,6 +2500,10 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             phone: string;
             email: string | null;
         } | undefined;
+        latestShipmentFailure?: {
+            createdAt: string;
+            reason: string | null;
+        } | null | undefined;
         latestPaymentProof?: {
             status: string;
             id: string;
@@ -2092,13 +2522,22 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         shipmentId: z.ZodString;
         trackingNumber: z.ZodString;
         trackingUrl: z.ZodString;
-        status: z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "IN_TRANSIT", "OUT_FOR_DELIVERY", "DELIVERED", "FAILED", "RETURNED", "CANCELLED"]>;
+        status: z.ZodEnum<["CREATED", "PENDING_PICKUP", "PICKED_UP", "AT_WAREHOUSE", "IN_TRANSIT", "OUT_FOR_DELIVERY", "FULFILLED", "DELIVERED", "EXCEPTION", "TERMINATED", "FAILED", "LOST", "DAMAGED", "RETURNED", "CANCELLED", "AWAITING_ACTION", "ARCHIVED", "ON_HOLD"]>;
         shippingCost: z.ZodNumber;
         estimatedDelivery: z.ZodNullable<z.ZodString>;
+        bostaState: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        bostaStateLabel: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        bostaType: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        bostaStatusUpdatedAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        deliveryPromiseDate: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        exceptionCode: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        exceptionReason: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        numberOfAttempts: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+        isConfirmedDelivery: z.ZodOptional<z.ZodNullable<z.ZodBoolean>>;
         createdAt: z.ZodString;
         updatedAt: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP";
+        status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
         id: string;
         createdAt: string;
         updatedAt: string;
@@ -2109,8 +2548,17 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         trackingNumber: string;
         trackingUrl: string;
         shipmentId: string;
+        bostaState?: number | null | undefined;
+        bostaStateLabel?: string | null | undefined;
+        bostaType?: string | null | undefined;
+        bostaStatusUpdatedAt?: string | null | undefined;
+        deliveryPromiseDate?: string | null | undefined;
+        exceptionCode?: number | null | undefined;
+        exceptionReason?: string | null | undefined;
+        numberOfAttempts?: number | null | undefined;
+        isConfirmedDelivery?: boolean | null | undefined;
     }, {
-        status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP";
+        status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
         id: string;
         createdAt: string;
         updatedAt: string;
@@ -2121,6 +2569,15 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         trackingNumber: string;
         trackingUrl: string;
         shipmentId: string;
+        bostaState?: number | null | undefined;
+        bostaStateLabel?: string | null | undefined;
+        bostaType?: string | null | undefined;
+        bostaStatusUpdatedAt?: string | null | undefined;
+        deliveryPromiseDate?: string | null | undefined;
+        exceptionCode?: number | null | undefined;
+        exceptionReason?: string | null | undefined;
+        numberOfAttempts?: number | null | undefined;
+        isConfirmedDelivery?: boolean | null | undefined;
     }>>>;
     paymentInstructions: z.ZodObject<{
         orderNumber: z.ZodString;
@@ -2174,7 +2631,7 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         }[];
         shippingAddressId: string | null;
         notes: string | null;
-        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
         shippingProvider: "MOCK" | "BOSTA" | null;
         discount: number;
         subtotal: number;
@@ -2227,6 +2684,28 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             promotionId: string | null;
             discountAmount: number;
         }[];
+        shipment?: {
+            status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
+            id: string;
+            createdAt: string;
+            updatedAt: string;
+            shippingCost: number;
+            estimatedDelivery: string | null;
+            provider: "MOCK" | "BOSTA";
+            orderId: string;
+            trackingNumber: string;
+            trackingUrl: string;
+            shipmentId: string;
+            bostaState?: number | null | undefined;
+            bostaStateLabel?: string | null | undefined;
+            bostaType?: string | null | undefined;
+            bostaStatusUpdatedAt?: string | null | undefined;
+            deliveryPromiseDate?: string | null | undefined;
+            exceptionCode?: number | null | undefined;
+            exceptionReason?: string | null | undefined;
+            numberOfAttempts?: number | null | undefined;
+            isConfirmedDelivery?: boolean | null | undefined;
+        } | null | undefined;
         customer?: {
             id: string;
             firstName: string;
@@ -2234,6 +2713,10 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             phone: string;
             email: string | null;
         } | undefined;
+        latestShipmentFailure?: {
+            createdAt: string;
+            reason: string | null;
+        } | null | undefined;
         latestPaymentProof?: {
             status: string;
             id: string;
@@ -2255,7 +2738,7 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         transferNote: string;
     };
     shipment?: {
-        status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP";
+        status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
         id: string;
         createdAt: string;
         updatedAt: string;
@@ -2266,6 +2749,15 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         trackingNumber: string;
         trackingUrl: string;
         shipmentId: string;
+        bostaState?: number | null | undefined;
+        bostaStateLabel?: string | null | undefined;
+        bostaType?: string | null | undefined;
+        bostaStatusUpdatedAt?: string | null | undefined;
+        deliveryPromiseDate?: string | null | undefined;
+        exceptionCode?: number | null | undefined;
+        exceptionReason?: string | null | undefined;
+        numberOfAttempts?: number | null | undefined;
+        isConfirmedDelivery?: boolean | null | undefined;
     } | null | undefined;
 }, {
     order: {
@@ -2294,7 +2786,7 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         }[];
         shippingAddressId: string | null;
         notes: string | null;
-        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | null;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
         shippingProvider: "MOCK" | "BOSTA" | null;
         discount: number;
         subtotal: number;
@@ -2347,6 +2839,28 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             promotionId: string | null;
             discountAmount: number;
         }[];
+        shipment?: {
+            status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
+            id: string;
+            createdAt: string;
+            updatedAt: string;
+            shippingCost: number;
+            estimatedDelivery: string | null;
+            provider: "MOCK" | "BOSTA";
+            orderId: string;
+            trackingNumber: string;
+            trackingUrl: string;
+            shipmentId: string;
+            bostaState?: number | null | undefined;
+            bostaStateLabel?: string | null | undefined;
+            bostaType?: string | null | undefined;
+            bostaStatusUpdatedAt?: string | null | undefined;
+            deliveryPromiseDate?: string | null | undefined;
+            exceptionCode?: number | null | undefined;
+            exceptionReason?: string | null | undefined;
+            numberOfAttempts?: number | null | undefined;
+            isConfirmedDelivery?: boolean | null | undefined;
+        } | null | undefined;
         customer?: {
             id: string;
             firstName: string;
@@ -2354,6 +2868,10 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             phone: string;
             email: string | null;
         } | undefined;
+        latestShipmentFailure?: {
+            createdAt: string;
+            reason: string | null;
+        } | null | undefined;
         latestPaymentProof?: {
             status: string;
             id: string;
@@ -2375,7 +2893,7 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         transferNote: string;
     };
     shipment?: {
-        status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP";
+        status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
         id: string;
         createdAt: string;
         updatedAt: string;
@@ -2386,6 +2904,15 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         trackingNumber: string;
         trackingUrl: string;
         shipmentId: string;
+        bostaState?: number | null | undefined;
+        bostaStateLabel?: string | null | undefined;
+        bostaType?: string | null | undefined;
+        bostaStatusUpdatedAt?: string | null | undefined;
+        deliveryPromiseDate?: string | null | undefined;
+        exceptionCode?: number | null | undefined;
+        exceptionReason?: string | null | undefined;
+        numberOfAttempts?: number | null | undefined;
+        isConfirmedDelivery?: boolean | null | undefined;
     } | null | undefined;
 }>;
 export type CreateOrderResponse = z.infer<typeof createOrderResponseSchema>;

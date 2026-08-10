@@ -55,12 +55,21 @@ exports.ShipmentStatusEnum = zod_1.z.enum([
     "CREATED",
     "PENDING_PICKUP",
     "PICKED_UP",
+    "AT_WAREHOUSE",
     "IN_TRANSIT",
     "OUT_FOR_DELIVERY",
+    "FULFILLED",
     "DELIVERED",
+    "EXCEPTION",
+    "TERMINATED",
     "FAILED",
+    "LOST",
+    "DAMAGED",
     "RETURNED",
     "CANCELLED",
+    "AWAITING_ACTION",
+    "ARCHIVED",
+    "ON_HOLD",
 ]);
 exports.ShipmentProviderEnum = zod_1.z.enum(["MOCK", "BOSTA"]);
 exports.StoreStatusEnum = zod_1.z.enum(["OPEN", "CLOSED", "BUSY"]);

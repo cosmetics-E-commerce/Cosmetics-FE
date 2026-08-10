@@ -1978,7 +1978,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     name: string;
     customerTitle: string;
     trigger: "AUTOMATIC" | "CODE";
-    state: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED";
+    state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
     priority: number;
     stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
     combinableWith: ("FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE")[];
@@ -2385,7 +2385,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     internalDescription?: string | null | undefined;
     customerDescription?: string | null | undefined;
     trigger?: "AUTOMATIC" | "CODE" | undefined;
-    state?: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED" | undefined;
+    state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
     priority?: number | undefined;
     stacking?: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER" | undefined;
     combinableWith?: ("FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE")[] | undefined;
@@ -2496,7 +2496,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     name: string;
     customerTitle: string;
     trigger: "AUTOMATIC" | "CODE";
-    state: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED";
+    state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
     priority: number;
     stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
     combinableWith: ("FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE")[];
@@ -2903,7 +2903,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     internalDescription?: string | null | undefined;
     customerDescription?: string | null | undefined;
     trigger?: "AUTOMATIC" | "CODE" | undefined;
-    state?: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED" | undefined;
+    state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
     priority?: number | undefined;
     stacking?: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER" | undefined;
     combinableWith?: ("FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE")[] | undefined;
@@ -3994,7 +3994,7 @@ export declare const updatePromotionSchema: z.ZodObject<{
     customerTitle?: string | undefined;
     customerDescription?: string | null | undefined;
     trigger?: "AUTOMATIC" | "CODE" | undefined;
-    state?: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED" | undefined;
+    state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
     priority?: number | undefined;
     stacking?: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER" | undefined;
     combinableWith?: ("FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE")[] | undefined;
@@ -4253,7 +4253,7 @@ export declare const updatePromotionSchema: z.ZodObject<{
     customerTitle?: string | undefined;
     customerDescription?: string | null | undefined;
     trigger?: "AUTOMATIC" | "CODE" | undefined;
-    state?: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED" | undefined;
+    state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
     priority?: number | undefined;
     stacking?: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER" | undefined;
     combinableWith?: ("FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE")[] | undefined;
@@ -4523,12 +4523,12 @@ export declare const promotionQuerySchema: z.ZodObject<{
     sortBy: "createdAt" | "updatedAt" | "priority" | "startsAt" | "usedCount";
     sortOrder: "asc" | "desc";
     type?: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE" | undefined;
-    status?: "ACTIVE" | "EXPIRED" | "DRAFT" | "PAUSED" | "ARCHIVED" | "SCHEDULED" | "EXHAUSTED" | undefined;
+    status?: "ACTIVE" | "EXPIRED" | "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "EXHAUSTED" | undefined;
     search?: string | undefined;
     trigger?: "AUTOMATIC" | "CODE" | undefined;
 }, {
     type?: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE" | undefined;
-    status?: "ACTIVE" | "EXPIRED" | "DRAFT" | "PAUSED" | "ARCHIVED" | "SCHEDULED" | "EXHAUSTED" | undefined;
+    status?: "ACTIVE" | "EXPIRED" | "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "EXHAUSTED" | undefined;
     page?: number | undefined;
     limit?: number | undefined;
     sortBy?: "createdAt" | "updatedAt" | "priority" | "startsAt" | "usedCount" | undefined;
@@ -5544,7 +5544,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         name: string;
         customerTitle: string;
         trigger: "AUTOMATIC" | "CODE";
-        state: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED";
+        state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         priority: number;
         stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         combinableWith: ("FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE")[];
@@ -5951,7 +5951,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         internalDescription?: string | null | undefined;
         customerDescription?: string | null | undefined;
         trigger?: "AUTOMATIC" | "CODE" | undefined;
-        state?: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED" | undefined;
+        state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
         priority?: number | undefined;
         stacking?: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER" | undefined;
         combinableWith?: ("FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE")[] | undefined;
@@ -6110,7 +6110,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         name: string;
         customerTitle: string;
         trigger: "AUTOMATIC" | "CODE";
-        state: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED";
+        state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         priority: number;
         stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         combinableWith: ("FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE")[];
@@ -6533,7 +6533,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         internalDescription?: string | null | undefined;
         customerDescription?: string | null | undefined;
         trigger?: "AUTOMATIC" | "CODE" | undefined;
-        state?: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED" | undefined;
+        state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
         priority?: number | undefined;
         stacking?: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER" | undefined;
         combinableWith?: ("FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE")[] | undefined;
@@ -7831,7 +7831,7 @@ export declare const promotionResponseSchema: z.ZodObject<{
     summary: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
-    status: "ACTIVE" | "EXPIRED" | "DRAFT" | "PAUSED" | "ARCHIVED" | "SCHEDULED" | "EXHAUSTED";
+    status: "ACTIVE" | "EXPIRED" | "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "EXHAUSTED";
     id: string;
     createdAt: string;
     updatedAt: string;
@@ -7842,7 +7842,7 @@ export declare const promotionResponseSchema: z.ZodObject<{
     customerTitle: string;
     customerDescription: string | null;
     trigger: "AUTOMATIC" | "CODE";
-    state: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED";
+    state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
     priority: number;
     stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
     combinableWith: string[];
@@ -8099,7 +8099,7 @@ export declare const promotionResponseSchema: z.ZodObject<{
     discountGranted: number;
 }, {
     type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
-    status: "ACTIVE" | "EXPIRED" | "DRAFT" | "PAUSED" | "ARCHIVED" | "SCHEDULED" | "EXHAUSTED";
+    status: "ACTIVE" | "EXPIRED" | "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "EXHAUSTED";
     id: string;
     createdAt: string;
     updatedAt: string;
@@ -8110,7 +8110,7 @@ export declare const promotionResponseSchema: z.ZodObject<{
     customerTitle: string;
     customerDescription: string | null;
     trigger: "AUTOMATIC" | "CODE";
-    state: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED";
+    state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
     priority: number;
     stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
     combinableWith: string[];
@@ -9357,7 +9357,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         summary: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
-        status: "ACTIVE" | "EXPIRED" | "DRAFT" | "PAUSED" | "ARCHIVED" | "SCHEDULED" | "EXHAUSTED";
+        status: "ACTIVE" | "EXPIRED" | "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "EXHAUSTED";
         id: string;
         createdAt: string;
         updatedAt: string;
@@ -9368,7 +9368,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         customerTitle: string;
         customerDescription: string | null;
         trigger: "AUTOMATIC" | "CODE";
-        state: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED";
+        state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         priority: number;
         stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         combinableWith: string[];
@@ -9625,7 +9625,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         discountGranted: number;
     }, {
         type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
-        status: "ACTIVE" | "EXPIRED" | "DRAFT" | "PAUSED" | "ARCHIVED" | "SCHEDULED" | "EXHAUSTED";
+        status: "ACTIVE" | "EXPIRED" | "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "EXHAUSTED";
         id: string;
         createdAt: string;
         updatedAt: string;
@@ -9636,7 +9636,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         customerTitle: string;
         customerDescription: string | null;
         trigger: "AUTOMATIC" | "CODE";
-        state: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED";
+        state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         priority: number;
         stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         combinableWith: string[];
@@ -9917,7 +9917,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     data: {
         type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
-        status: "ACTIVE" | "EXPIRED" | "DRAFT" | "PAUSED" | "ARCHIVED" | "SCHEDULED" | "EXHAUSTED";
+        status: "ACTIVE" | "EXPIRED" | "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "EXHAUSTED";
         id: string;
         createdAt: string;
         updatedAt: string;
@@ -9928,7 +9928,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         customerTitle: string;
         customerDescription: string | null;
         trigger: "AUTOMATIC" | "CODE";
-        state: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED";
+        state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         priority: number;
         stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         combinableWith: string[];
@@ -10195,7 +10195,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
 }, {
     data: {
         type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
-        status: "ACTIVE" | "EXPIRED" | "DRAFT" | "PAUSED" | "ARCHIVED" | "SCHEDULED" | "EXHAUSTED";
+        status: "ACTIVE" | "EXPIRED" | "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "EXHAUSTED";
         id: string;
         createdAt: string;
         updatedAt: string;
@@ -10206,7 +10206,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         customerTitle: string;
         customerDescription: string | null;
         trigger: "AUTOMATIC" | "CODE";
-        state: "ACTIVE" | "DRAFT" | "PAUSED" | "ARCHIVED";
+        state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         priority: number;
         stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         combinableWith: string[];

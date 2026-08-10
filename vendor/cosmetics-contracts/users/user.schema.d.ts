@@ -36,6 +36,7 @@ export declare const addressSchema: z.ZodObject<{
     floor: z.ZodNullable<z.ZodString>;
     apartment: z.ZodNullable<z.ZodString>;
     postalCode: z.ZodNullable<z.ZodString>;
+    bostaGovernorateId: z.ZodNullable<z.ZodString>;
     bostaCityId: z.ZodNullable<z.ZodString>;
     bostaZoneId: z.ZodNullable<z.ZodString>;
     deliveryInstructions: z.ZodNullable<z.ZodString>;
@@ -59,6 +60,7 @@ export declare const addressSchema: z.ZodObject<{
     floor: string | null;
     apartment: string | null;
     postalCode: string | null;
+    bostaGovernorateId: string | null;
     bostaCityId: string | null;
     bostaZoneId: string | null;
     deliveryInstructions: string | null;
@@ -80,6 +82,7 @@ export declare const addressSchema: z.ZodObject<{
     floor: string | null;
     apartment: string | null;
     postalCode: string | null;
+    bostaGovernorateId: string | null;
     bostaCityId: string | null;
     bostaZoneId: string | null;
     deliveryInstructions: string | null;
@@ -106,6 +109,7 @@ export declare const createAddressSchema: z.ZodObject<{
      * under the MOCK provider; checkout rejects an address without a city id
      * once a real carrier is active.
      */
+    bostaGovernorateId: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>;
     bostaCityId: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>;
     bostaZoneId: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>;
     deliveryInstructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>;
@@ -125,6 +129,7 @@ export declare const createAddressSchema: z.ZodObject<{
     floor?: string | null | undefined;
     apartment?: string | null | undefined;
     postalCode?: string | null | undefined;
+    bostaGovernorateId?: string | null | undefined;
     bostaCityId?: string | null | undefined;
     bostaZoneId?: string | null | undefined;
     deliveryInstructions?: string | null | undefined;
@@ -142,6 +147,7 @@ export declare const createAddressSchema: z.ZodObject<{
     floor?: string | null | undefined;
     apartment?: string | null | undefined;
     postalCode?: string | null | undefined;
+    bostaGovernorateId?: string | null | undefined;
     bostaCityId?: string | null | undefined;
     bostaZoneId?: string | null | undefined;
     deliveryInstructions?: string | null | undefined;
@@ -162,6 +168,7 @@ export declare const updateAddressSchema: z.ZodObject<{
     floor: z.ZodOptional<z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>>;
     apartment: z.ZodOptional<z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>>;
     postalCode: z.ZodOptional<z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>>;
+    bostaGovernorateId: z.ZodOptional<z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>>;
     bostaCityId: z.ZodOptional<z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>>;
     bostaZoneId: z.ZodOptional<z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>>;
     deliveryInstructions: z.ZodOptional<z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>>;
@@ -180,6 +187,7 @@ export declare const updateAddressSchema: z.ZodObject<{
     floor?: string | null | undefined;
     apartment?: string | null | undefined;
     postalCode?: string | null | undefined;
+    bostaGovernorateId?: string | null | undefined;
     bostaCityId?: string | null | undefined;
     bostaZoneId?: string | null | undefined;
     deliveryInstructions?: string | null | undefined;
@@ -198,6 +206,7 @@ export declare const updateAddressSchema: z.ZodObject<{
     floor?: string | null | undefined;
     apartment?: string | null | undefined;
     postalCode?: string | null | undefined;
+    bostaGovernorateId?: string | null | undefined;
     bostaCityId?: string | null | undefined;
     bostaZoneId?: string | null | undefined;
     deliveryInstructions?: string | null | undefined;
@@ -446,6 +455,7 @@ export declare const adminUserDetailSchema: z.ZodObject<{
         floor: z.ZodNullable<z.ZodString>;
         apartment: z.ZodNullable<z.ZodString>;
         postalCode: z.ZodNullable<z.ZodString>;
+        bostaGovernorateId: z.ZodNullable<z.ZodString>;
         bostaCityId: z.ZodNullable<z.ZodString>;
         bostaZoneId: z.ZodNullable<z.ZodString>;
         deliveryInstructions: z.ZodNullable<z.ZodString>;
@@ -469,6 +479,7 @@ export declare const adminUserDetailSchema: z.ZodObject<{
         floor: string | null;
         apartment: string | null;
         postalCode: string | null;
+        bostaGovernorateId: string | null;
         bostaCityId: string | null;
         bostaZoneId: string | null;
         deliveryInstructions: string | null;
@@ -490,6 +501,7 @@ export declare const adminUserDetailSchema: z.ZodObject<{
         floor: string | null;
         apartment: string | null;
         postalCode: string | null;
+        bostaGovernorateId: string | null;
         bostaCityId: string | null;
         bostaZoneId: string | null;
         deliveryInstructions: string | null;
@@ -591,6 +603,7 @@ export declare const adminUserDetailSchema: z.ZodObject<{
         floor: string | null;
         apartment: string | null;
         postalCode: string | null;
+        bostaGovernorateId: string | null;
         bostaCityId: string | null;
         bostaZoneId: string | null;
         deliveryInstructions: string | null;
@@ -652,6 +665,7 @@ export declare const adminUserDetailSchema: z.ZodObject<{
         floor: string | null;
         apartment: string | null;
         postalCode: string | null;
+        bostaGovernorateId: string | null;
         bostaCityId: string | null;
         bostaZoneId: string | null;
         deliveryInstructions: string | null;
