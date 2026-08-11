@@ -1,28 +1,35 @@
 import { z } from "zod";
-export declare const updateMyProfileSchema: z.ZodObject<{
+export declare const updateMyProfileSchema: z.ZodObject<
+  {
     firstName: z.ZodOptional<z.ZodString>;
     lastName: z.ZodOptional<z.ZodString>;
     phone: z.ZodOptional<z.ZodString>;
     profileImage: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     gender: z.ZodOptional<z.ZodNullable<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>>;
     dateOfBirth: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>>;
-}, "strict", z.ZodTypeAny, {
+  },
+  "strict",
+  z.ZodTypeAny,
+  {
     firstName?: string | undefined;
     lastName?: string | undefined;
     phone?: string | undefined;
     gender?: "MALE" | "FEMALE" | "OTHER" | null | undefined;
     profileImage?: string | null | undefined;
     dateOfBirth?: string | null | undefined;
-}, {
+  },
+  {
     firstName?: string | undefined;
     lastName?: string | undefined;
     phone?: string | undefined;
     gender?: "MALE" | "FEMALE" | "OTHER" | null | undefined;
     profileImage?: string | null | undefined;
     dateOfBirth?: string | null | undefined;
-}>;
+  }
+>;
 export type UpdateMyProfileInput = z.infer<typeof updateMyProfileSchema>;
-export declare const addressSchema: z.ZodObject<{
+export declare const addressSchema: z.ZodObject<
+  {
     id: z.ZodString;
     label: z.ZodNullable<z.ZodEnum<["HOME", "WORK", "OTHER"]>>;
     receiverName: z.ZodString;
@@ -44,7 +51,10 @@ export declare const addressSchema: z.ZodObject<{
     isDefault: z.ZodBoolean;
     createdAt: z.ZodString;
     updatedAt: z.ZodString;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     id: string;
     phone: string;
     createdAt: string;
@@ -66,7 +76,8 @@ export declare const addressSchema: z.ZodObject<{
     deliveryInstructions: string | null;
     landmark: string | null;
     isDefault: boolean;
-}, {
+  },
+  {
     id: string;
     phone: string;
     createdAt: string;
@@ -88,9 +99,11 @@ export declare const addressSchema: z.ZodObject<{
     deliveryInstructions: string | null;
     landmark: string | null;
     isDefault: boolean;
-}>;
+  }
+>;
 export type AddressResponse = z.infer<typeof addressSchema>;
-export declare const createAddressSchema: z.ZodObject<{
+export declare const createAddressSchema: z.ZodObject<
+  {
     label: z.ZodDefault<z.ZodEnum<["HOME", "WORK", "OTHER"]>>;
     receiverName: z.ZodString;
     phone: z.ZodString;
@@ -100,22 +113,41 @@ export declare const createAddressSchema: z.ZodObject<{
     area: z.ZodString;
     street: z.ZodString;
     building: z.ZodString;
-    floor: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>;
-    apartment: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>;
-    postalCode: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>;
+    floor: z.ZodOptional<
+      z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>
+    >;
+    apartment: z.ZodOptional<
+      z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>
+    >;
+    postalCode: z.ZodOptional<
+      z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>
+    >;
     /**
      * Carrier location ids, taken from GET /shipping/cities and
      * /shipping/zones/:cityId. Optional here so the address book still works
      * under the MOCK provider; checkout rejects an address without a city id
      * once a real carrier is active.
      */
-    bostaGovernorateId: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>;
-    bostaCityId: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>;
-    bostaZoneId: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>;
-    deliveryInstructions: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>;
-    landmark: z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>;
+    bostaGovernorateId: z.ZodOptional<
+      z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>
+    >;
+    bostaCityId: z.ZodOptional<
+      z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>
+    >;
+    bostaZoneId: z.ZodOptional<
+      z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>
+    >;
+    deliveryInstructions: z.ZodOptional<
+      z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>
+    >;
+    landmark: z.ZodOptional<
+      z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>
+    >;
     isDefault: z.ZodDefault<z.ZodBoolean>;
-}, "strict", z.ZodTypeAny, {
+  },
+  "strict",
+  z.ZodTypeAny,
+  {
     phone: string;
     label: "OTHER" | "HOME" | "WORK";
     receiverName: string;
@@ -134,7 +166,8 @@ export declare const createAddressSchema: z.ZodObject<{
     bostaZoneId?: string | null | undefined;
     deliveryInstructions?: string | null | undefined;
     landmark?: string | null | undefined;
-}, {
+  },
+  {
     phone: string;
     receiverName: string;
     governorate: string;
@@ -153,9 +186,11 @@ export declare const createAddressSchema: z.ZodObject<{
     deliveryInstructions?: string | null | undefined;
     landmark?: string | null | undefined;
     isDefault?: boolean | undefined;
-}>;
+  }
+>;
 export type CreateAddressInput = z.infer<typeof createAddressSchema>;
-export declare const updateAddressSchema: z.ZodObject<{
+export declare const updateAddressSchema: z.ZodObject<
+  {
     label: z.ZodOptional<z.ZodDefault<z.ZodEnum<["HOME", "WORK", "OTHER"]>>>;
     receiverName: z.ZodOptional<z.ZodString>;
     phone: z.ZodOptional<z.ZodString>;
@@ -165,16 +200,35 @@ export declare const updateAddressSchema: z.ZodObject<{
     area: z.ZodOptional<z.ZodString>;
     street: z.ZodOptional<z.ZodString>;
     building: z.ZodOptional<z.ZodString>;
-    floor: z.ZodOptional<z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>>;
-    apartment: z.ZodOptional<z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>>;
-    postalCode: z.ZodOptional<z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>>;
-    bostaGovernorateId: z.ZodOptional<z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>>;
-    bostaCityId: z.ZodOptional<z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>>;
-    bostaZoneId: z.ZodOptional<z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>>;
-    deliveryInstructions: z.ZodOptional<z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>>;
-    landmark: z.ZodOptional<z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>>;
+    floor: z.ZodOptional<
+      z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>
+    >;
+    apartment: z.ZodOptional<
+      z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>
+    >;
+    postalCode: z.ZodOptional<
+      z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>
+    >;
+    bostaGovernorateId: z.ZodOptional<
+      z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>
+    >;
+    bostaCityId: z.ZodOptional<
+      z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>
+    >;
+    bostaZoneId: z.ZodOptional<
+      z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>
+    >;
+    deliveryInstructions: z.ZodOptional<
+      z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>
+    >;
+    landmark: z.ZodOptional<
+      z.ZodOptional<z.ZodUnion<[z.ZodString, z.ZodEffects<z.ZodLiteral<"">, null, "">, z.ZodNull]>>
+    >;
     isDefault: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
-}, "strict", z.ZodTypeAny, {
+  },
+  "strict",
+  z.ZodTypeAny,
+  {
     phone?: string | undefined;
     label?: "OTHER" | "HOME" | "WORK" | undefined;
     receiverName?: string | undefined;
@@ -193,7 +247,8 @@ export declare const updateAddressSchema: z.ZodObject<{
     deliveryInstructions?: string | null | undefined;
     landmark?: string | null | undefined;
     isDefault?: boolean | undefined;
-}, {
+  },
+  {
     phone?: string | undefined;
     label?: "OTHER" | "HOME" | "WORK" | undefined;
     receiverName?: string | undefined;
@@ -212,9 +267,11 @@ export declare const updateAddressSchema: z.ZodObject<{
     deliveryInstructions?: string | null | undefined;
     landmark?: string | null | undefined;
     isDefault?: boolean | undefined;
-}>;
+  }
+>;
 export type UpdateAddressInput = z.infer<typeof updateAddressSchema>;
-export declare const userProfileSchema: z.ZodObject<{
+export declare const userProfileSchema: z.ZodObject<
+  {
     id: z.ZodString;
     firstName: z.ZodString;
     lastName: z.ZodString;
@@ -231,7 +288,10 @@ export declare const userProfileSchema: z.ZodObject<{
     createdAt: z.ZodString;
     updatedAt: z.ZodString;
     deletedAt: z.ZodNullable<z.ZodString>;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     status: "ACTIVE" | "INACTIVE" | "DELETED";
     id: string;
     firstName: string;
@@ -248,7 +308,8 @@ export declare const userProfileSchema: z.ZodObject<{
     isVip: boolean;
     phoneVerified: boolean;
     emailVerified: boolean;
-}, {
+  },
+  {
     status: "ACTIVE" | "INACTIVE" | "DELETED";
     id: string;
     firstName: string;
@@ -265,9 +326,11 @@ export declare const userProfileSchema: z.ZodObject<{
     isVip: boolean;
     phoneVerified: boolean;
     emailVerified: boolean;
-}>;
+  }
+>;
 export type UserProfileResponse = z.infer<typeof userProfileSchema>;
-export declare const adminCustomerOrderSchema: z.ZodObject<{
+export declare const adminCustomerOrderSchema: z.ZodObject<
+  {
     id: z.ZodString;
     orderNumber: z.ZodString;
     status: z.ZodString;
@@ -277,7 +340,10 @@ export declare const adminCustomerOrderSchema: z.ZodObject<{
     currency: z.ZodString;
     placedAt: z.ZodString;
     updatedAt: z.ZodString;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     status: string;
     id: string;
     updatedAt: string;
@@ -287,7 +353,8 @@ export declare const adminCustomerOrderSchema: z.ZodObject<{
     grandTotal: number;
     currency: string;
     placedAt: string;
-}, {
+  },
+  {
     status: string;
     id: string;
     updatedAt: string;
@@ -297,9 +364,11 @@ export declare const adminCustomerOrderSchema: z.ZodObject<{
     grandTotal: number;
     currency: string;
     placedAt: string;
-}>;
+  }
+>;
 export type AdminCustomerOrderResponse = z.infer<typeof adminCustomerOrderSchema>;
-export declare const adminCustomerListItemSchema: z.ZodObject<{
+export declare const adminCustomerListItemSchema: z.ZodObject<
+  {
     id: z.ZodString;
     firstName: z.ZodString;
     lastName: z.ZodString;
@@ -316,11 +385,14 @@ export declare const adminCustomerListItemSchema: z.ZodObject<{
     createdAt: z.ZodString;
     updatedAt: z.ZodString;
     deletedAt: z.ZodNullable<z.ZodString>;
-} & {
+  } & {
     ordersCount: z.ZodNumber;
     totalSpent: z.ZodNumber;
     lastOrderAt: z.ZodNullable<z.ZodString>;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     status: "ACTIVE" | "INACTIVE" | "DELETED";
     id: string;
     firstName: string;
@@ -340,7 +412,8 @@ export declare const adminCustomerListItemSchema: z.ZodObject<{
     ordersCount: number;
     totalSpent: number;
     lastOrderAt: string | null;
-}, {
+  },
+  {
     status: "ACTIVE" | "INACTIVE" | "DELETED";
     id: string;
     firstName: string;
@@ -360,9 +433,11 @@ export declare const adminCustomerListItemSchema: z.ZodObject<{
     ordersCount: number;
     totalSpent: number;
     lastOrderAt: string | null;
-}>;
+  }
+>;
 export type AdminCustomerListItemResponse = z.infer<typeof adminCustomerListItemSchema>;
-export declare const adminCustomerStatisticsSchema: z.ZodObject<{
+export declare const adminCustomerStatisticsSchema: z.ZodObject<
+  {
     totalCustomers: z.ZodNumber;
     activeCustomers: z.ZodNumber;
     blockedCustomers: z.ZodNumber;
@@ -371,7 +446,10 @@ export declare const adminCustomerStatisticsSchema: z.ZodObject<{
     ordersCount: z.ZodNumber;
     totalRevenue: z.ZodNumber;
     averageOrderValue: z.ZodNumber;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     ordersCount: number;
     totalCustomers: number;
     activeCustomers: number;
@@ -380,7 +458,8 @@ export declare const adminCustomerStatisticsSchema: z.ZodObject<{
     newThisMonth: number;
     totalRevenue: number;
     averageOrderValue: number;
-}, {
+  },
+  {
     ordersCount: number;
     totalCustomers: number;
     activeCustomers: number;
@@ -389,9 +468,11 @@ export declare const adminCustomerStatisticsSchema: z.ZodObject<{
     newThisMonth: number;
     totalRevenue: number;
     averageOrderValue: number;
-}>;
+  }
+>;
 export type AdminCustomerStatisticsResponse = z.infer<typeof adminCustomerStatisticsSchema>;
-export declare const adminCustomerSummarySchema: z.ZodObject<{
+export declare const adminCustomerSummarySchema: z.ZodObject<
+  {
     ordersCount: z.ZodNumber;
     totalSpent: z.ZodNumber;
     averageOrderValue: z.ZodNumber;
@@ -401,7 +482,10 @@ export declare const adminCustomerSummarySchema: z.ZodObject<{
     cartQuantity: z.ZodNumber;
     wishlistCount: z.ZodNumber;
     lastLoginAt: z.ZodNullable<z.ZodString>;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     ordersCount: number;
     totalSpent: number;
     lastOrderAt: string | null;
@@ -411,7 +495,8 @@ export declare const adminCustomerSummarySchema: z.ZodObject<{
     cartQuantity: number;
     wishlistCount: number;
     lastLoginAt: string | null;
-}, {
+  },
+  {
     ordersCount: number;
     totalSpent: number;
     lastOrderAt: string | null;
@@ -421,9 +506,11 @@ export declare const adminCustomerSummarySchema: z.ZodObject<{
     cartQuantity: number;
     wishlistCount: number;
     lastLoginAt: string | null;
-}>;
+  }
+>;
 export type AdminCustomerSummaryResponse = z.infer<typeof adminCustomerSummarySchema>;
-export declare const adminUserDetailSchema: z.ZodObject<{
+export declare const adminUserDetailSchema: z.ZodObject<
+  {
     id: z.ZodString;
     firstName: z.ZodString;
     lastName: z.ZodString;
@@ -440,106 +527,125 @@ export declare const adminUserDetailSchema: z.ZodObject<{
     createdAt: z.ZodString;
     updatedAt: z.ZodString;
     deletedAt: z.ZodNullable<z.ZodString>;
-} & {
-    addresses: z.ZodArray<z.ZodObject<{
-        id: z.ZodString;
-        label: z.ZodNullable<z.ZodEnum<["HOME", "WORK", "OTHER"]>>;
-        receiverName: z.ZodString;
-        phone: z.ZodString;
-        country: z.ZodString;
-        governorate: z.ZodString;
-        city: z.ZodString;
-        area: z.ZodString;
-        street: z.ZodString;
-        building: z.ZodString;
-        floor: z.ZodNullable<z.ZodString>;
-        apartment: z.ZodNullable<z.ZodString>;
-        postalCode: z.ZodNullable<z.ZodString>;
-        bostaGovernorateId: z.ZodNullable<z.ZodString>;
-        bostaCityId: z.ZodNullable<z.ZodString>;
-        bostaZoneId: z.ZodNullable<z.ZodString>;
-        deliveryInstructions: z.ZodNullable<z.ZodString>;
-        landmark: z.ZodNullable<z.ZodString>;
-        isDefault: z.ZodBoolean;
-        createdAt: z.ZodString;
-        updatedAt: z.ZodString;
-    }, "strip", z.ZodTypeAny, {
-        id: string;
-        phone: string;
-        createdAt: string;
-        updatedAt: string;
-        label: "OTHER" | "HOME" | "WORK" | null;
-        receiverName: string;
-        country: string;
-        governorate: string;
-        city: string;
-        area: string;
-        street: string;
-        building: string;
-        floor: string | null;
-        apartment: string | null;
-        postalCode: string | null;
-        bostaGovernorateId: string | null;
-        bostaCityId: string | null;
-        bostaZoneId: string | null;
-        deliveryInstructions: string | null;
-        landmark: string | null;
-        isDefault: boolean;
-    }, {
-        id: string;
-        phone: string;
-        createdAt: string;
-        updatedAt: string;
-        label: "OTHER" | "HOME" | "WORK" | null;
-        receiverName: string;
-        country: string;
-        governorate: string;
-        city: string;
-        area: string;
-        street: string;
-        building: string;
-        floor: string | null;
-        apartment: string | null;
-        postalCode: string | null;
-        bostaGovernorateId: string | null;
-        bostaCityId: string | null;
-        bostaZoneId: string | null;
-        deliveryInstructions: string | null;
-        landmark: string | null;
-        isDefault: boolean;
-    }>, "many">;
-    recentOrders: z.ZodArray<z.ZodObject<{
-        id: z.ZodString;
-        orderNumber: z.ZodString;
-        status: z.ZodString;
-        paymentStatus: z.ZodString;
-        paymentMethod: z.ZodString;
-        grandTotal: z.ZodNumber;
-        currency: z.ZodString;
-        placedAt: z.ZodString;
-        updatedAt: z.ZodString;
-    }, "strip", z.ZodTypeAny, {
-        status: string;
-        id: string;
-        updatedAt: string;
-        orderNumber: string;
-        paymentStatus: string;
-        paymentMethod: string;
-        grandTotal: number;
-        currency: string;
-        placedAt: string;
-    }, {
-        status: string;
-        id: string;
-        updatedAt: string;
-        orderNumber: string;
-        paymentStatus: string;
-        paymentMethod: string;
-        grandTotal: number;
-        currency: string;
-        placedAt: string;
-    }>, "many">;
-    summary: z.ZodObject<{
+  } & {
+    addresses: z.ZodArray<
+      z.ZodObject<
+        {
+          id: z.ZodString;
+          label: z.ZodNullable<z.ZodEnum<["HOME", "WORK", "OTHER"]>>;
+          receiverName: z.ZodString;
+          phone: z.ZodString;
+          country: z.ZodString;
+          governorate: z.ZodString;
+          city: z.ZodString;
+          area: z.ZodString;
+          street: z.ZodString;
+          building: z.ZodString;
+          floor: z.ZodNullable<z.ZodString>;
+          apartment: z.ZodNullable<z.ZodString>;
+          postalCode: z.ZodNullable<z.ZodString>;
+          bostaGovernorateId: z.ZodNullable<z.ZodString>;
+          bostaCityId: z.ZodNullable<z.ZodString>;
+          bostaZoneId: z.ZodNullable<z.ZodString>;
+          deliveryInstructions: z.ZodNullable<z.ZodString>;
+          landmark: z.ZodNullable<z.ZodString>;
+          isDefault: z.ZodBoolean;
+          createdAt: z.ZodString;
+          updatedAt: z.ZodString;
+        },
+        "strip",
+        z.ZodTypeAny,
+        {
+          id: string;
+          phone: string;
+          createdAt: string;
+          updatedAt: string;
+          label: "OTHER" | "HOME" | "WORK" | null;
+          receiverName: string;
+          country: string;
+          governorate: string;
+          city: string;
+          area: string;
+          street: string;
+          building: string;
+          floor: string | null;
+          apartment: string | null;
+          postalCode: string | null;
+          bostaGovernorateId: string | null;
+          bostaCityId: string | null;
+          bostaZoneId: string | null;
+          deliveryInstructions: string | null;
+          landmark: string | null;
+          isDefault: boolean;
+        },
+        {
+          id: string;
+          phone: string;
+          createdAt: string;
+          updatedAt: string;
+          label: "OTHER" | "HOME" | "WORK" | null;
+          receiverName: string;
+          country: string;
+          governorate: string;
+          city: string;
+          area: string;
+          street: string;
+          building: string;
+          floor: string | null;
+          apartment: string | null;
+          postalCode: string | null;
+          bostaGovernorateId: string | null;
+          bostaCityId: string | null;
+          bostaZoneId: string | null;
+          deliveryInstructions: string | null;
+          landmark: string | null;
+          isDefault: boolean;
+        }
+      >,
+      "many"
+    >;
+    recentOrders: z.ZodArray<
+      z.ZodObject<
+        {
+          id: z.ZodString;
+          orderNumber: z.ZodString;
+          status: z.ZodString;
+          paymentStatus: z.ZodString;
+          paymentMethod: z.ZodString;
+          grandTotal: z.ZodNumber;
+          currency: z.ZodString;
+          placedAt: z.ZodString;
+          updatedAt: z.ZodString;
+        },
+        "strip",
+        z.ZodTypeAny,
+        {
+          status: string;
+          id: string;
+          updatedAt: string;
+          orderNumber: string;
+          paymentStatus: string;
+          paymentMethod: string;
+          grandTotal: number;
+          currency: string;
+          placedAt: string;
+        },
+        {
+          status: string;
+          id: string;
+          updatedAt: string;
+          orderNumber: string;
+          paymentStatus: string;
+          paymentMethod: string;
+          grandTotal: number;
+          currency: string;
+          placedAt: string;
+        }
+      >,
+      "many"
+    >;
+    summary: z.ZodObject<
+      {
         ordersCount: z.ZodNumber;
         totalSpent: z.ZodNumber;
         averageOrderValue: z.ZodNumber;
@@ -549,7 +655,10 @@ export declare const adminUserDetailSchema: z.ZodObject<{
         cartQuantity: z.ZodNumber;
         wishlistCount: z.ZodNumber;
         lastLoginAt: z.ZodNullable<z.ZodString>;
-    }, "strip", z.ZodTypeAny, {
+      },
+      "strip",
+      z.ZodTypeAny,
+      {
         ordersCount: number;
         totalSpent: number;
         lastOrderAt: string | null;
@@ -559,7 +668,8 @@ export declare const adminUserDetailSchema: z.ZodObject<{
         cartQuantity: number;
         wishlistCount: number;
         lastLoginAt: string | null;
-    }, {
+      },
+      {
         ordersCount: number;
         totalSpent: number;
         lastOrderAt: string | null;
@@ -569,8 +679,12 @@ export declare const adminUserDetailSchema: z.ZodObject<{
         cartQuantity: number;
         wishlistCount: number;
         lastLoginAt: string | null;
-    }>;
-}, "strip", z.ZodTypeAny, {
+      }
+    >;
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     status: "ACTIVE" | "INACTIVE" | "DELETED";
     id: string;
     firstName: string;
@@ -588,51 +702,52 @@ export declare const adminUserDetailSchema: z.ZodObject<{
     phoneVerified: boolean;
     emailVerified: boolean;
     addresses: {
-        id: string;
-        phone: string;
-        createdAt: string;
-        updatedAt: string;
-        label: "OTHER" | "HOME" | "WORK" | null;
-        receiverName: string;
-        country: string;
-        governorate: string;
-        city: string;
-        area: string;
-        street: string;
-        building: string;
-        floor: string | null;
-        apartment: string | null;
-        postalCode: string | null;
-        bostaGovernorateId: string | null;
-        bostaCityId: string | null;
-        bostaZoneId: string | null;
-        deliveryInstructions: string | null;
-        landmark: string | null;
-        isDefault: boolean;
+      id: string;
+      phone: string;
+      createdAt: string;
+      updatedAt: string;
+      label: "OTHER" | "HOME" | "WORK" | null;
+      receiverName: string;
+      country: string;
+      governorate: string;
+      city: string;
+      area: string;
+      street: string;
+      building: string;
+      floor: string | null;
+      apartment: string | null;
+      postalCode: string | null;
+      bostaGovernorateId: string | null;
+      bostaCityId: string | null;
+      bostaZoneId: string | null;
+      deliveryInstructions: string | null;
+      landmark: string | null;
+      isDefault: boolean;
     }[];
     recentOrders: {
-        status: string;
-        id: string;
-        updatedAt: string;
-        orderNumber: string;
-        paymentStatus: string;
-        paymentMethod: string;
-        grandTotal: number;
-        currency: string;
-        placedAt: string;
+      status: string;
+      id: string;
+      updatedAt: string;
+      orderNumber: string;
+      paymentStatus: string;
+      paymentMethod: string;
+      grandTotal: number;
+      currency: string;
+      placedAt: string;
     }[];
     summary: {
-        ordersCount: number;
-        totalSpent: number;
-        lastOrderAt: string | null;
-        averageOrderValue: number;
-        addressesCount: number;
-        cartItemsCount: number;
-        cartQuantity: number;
-        wishlistCount: number;
-        lastLoginAt: string | null;
+      ordersCount: number;
+      totalSpent: number;
+      lastOrderAt: string | null;
+      averageOrderValue: number;
+      addressesCount: number;
+      cartItemsCount: number;
+      cartQuantity: number;
+      wishlistCount: number;
+      lastLoginAt: string | null;
     };
-}, {
+  },
+  {
     status: "ACTIVE" | "INACTIVE" | "DELETED";
     id: string;
     firstName: string;
@@ -650,59 +765,63 @@ export declare const adminUserDetailSchema: z.ZodObject<{
     phoneVerified: boolean;
     emailVerified: boolean;
     addresses: {
-        id: string;
-        phone: string;
-        createdAt: string;
-        updatedAt: string;
-        label: "OTHER" | "HOME" | "WORK" | null;
-        receiverName: string;
-        country: string;
-        governorate: string;
-        city: string;
-        area: string;
-        street: string;
-        building: string;
-        floor: string | null;
-        apartment: string | null;
-        postalCode: string | null;
-        bostaGovernorateId: string | null;
-        bostaCityId: string | null;
-        bostaZoneId: string | null;
-        deliveryInstructions: string | null;
-        landmark: string | null;
-        isDefault: boolean;
+      id: string;
+      phone: string;
+      createdAt: string;
+      updatedAt: string;
+      label: "OTHER" | "HOME" | "WORK" | null;
+      receiverName: string;
+      country: string;
+      governorate: string;
+      city: string;
+      area: string;
+      street: string;
+      building: string;
+      floor: string | null;
+      apartment: string | null;
+      postalCode: string | null;
+      bostaGovernorateId: string | null;
+      bostaCityId: string | null;
+      bostaZoneId: string | null;
+      deliveryInstructions: string | null;
+      landmark: string | null;
+      isDefault: boolean;
     }[];
     recentOrders: {
-        status: string;
-        id: string;
-        updatedAt: string;
-        orderNumber: string;
-        paymentStatus: string;
-        paymentMethod: string;
-        grandTotal: number;
-        currency: string;
-        placedAt: string;
+      status: string;
+      id: string;
+      updatedAt: string;
+      orderNumber: string;
+      paymentStatus: string;
+      paymentMethod: string;
+      grandTotal: number;
+      currency: string;
+      placedAt: string;
     }[];
     summary: {
-        ordersCount: number;
-        totalSpent: number;
-        lastOrderAt: string | null;
-        averageOrderValue: number;
-        addressesCount: number;
-        cartItemsCount: number;
-        cartQuantity: number;
-        wishlistCount: number;
-        lastLoginAt: string | null;
+      ordersCount: number;
+      totalSpent: number;
+      lastOrderAt: string | null;
+      averageOrderValue: number;
+      addressesCount: number;
+      cartItemsCount: number;
+      cartQuantity: number;
+      wishlistCount: number;
+      lastLoginAt: string | null;
     };
-}>;
+  }
+>;
 export type AdminUserDetailResponse = z.infer<typeof adminUserDetailSchema>;
-export declare const adminUsersQuerySchema: z.ZodObject<{
+export declare const adminUsersQuerySchema: z.ZodObject<
+  {
     page: z.ZodDefault<z.ZodNumber>;
     limit: z.ZodDefault<z.ZodNumber>;
     search: z.ZodOptional<z.ZodString>;
     status: z.ZodOptional<z.ZodEnum<["ACTIVE", "INACTIVE", "DELETED"]>>;
     gender: z.ZodOptional<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>;
-    emailVerified: z.ZodOptional<z.ZodEffects<z.ZodEnum<["true", "false"]>, boolean, "true" | "false">>;
+    emailVerified: z.ZodOptional<
+      z.ZodEffects<z.ZodEnum<["true", "false"]>, boolean, "true" | "false">
+    >;
     isVip: z.ZodOptional<z.ZodEffects<z.ZodEnum<["true", "false"]>, boolean, "true" | "false">>;
     createdFrom: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
     createdTo: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
@@ -710,12 +829,27 @@ export declare const adminUsersQuerySchema: z.ZodObject<{
     totalOrdersMax: z.ZodOptional<z.ZodNumber>;
     totalSpentMin: z.ZodOptional<z.ZodNumber>;
     totalSpentMax: z.ZodOptional<z.ZodNumber>;
-    sortBy: z.ZodDefault<z.ZodEnum<["createdAt", "updatedAt", "firstName", "newest", "oldest", "name", "orders", "spending"]>>;
+    sortBy: z.ZodDefault<
+      z.ZodEnum<
+        ["createdAt", "updatedAt", "firstName", "newest", "oldest", "name", "orders", "spending"]
+      >
+    >;
     sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     page: number;
     limit: number;
-    sortBy: "firstName" | "createdAt" | "updatedAt" | "newest" | "oldest" | "name" | "orders" | "spending";
+    sortBy:
+      | "firstName"
+      | "createdAt"
+      | "updatedAt"
+      | "newest"
+      | "oldest"
+      | "name"
+      | "orders"
+      | "spending";
     sortOrder: "asc" | "desc";
     status?: "ACTIVE" | "INACTIVE" | "DELETED" | undefined;
     gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
@@ -728,11 +862,21 @@ export declare const adminUsersQuerySchema: z.ZodObject<{
     totalOrdersMax?: number | undefined;
     totalSpentMin?: number | undefined;
     totalSpentMax?: number | undefined;
-}, {
+  },
+  {
     status?: "ACTIVE" | "INACTIVE" | "DELETED" | undefined;
     page?: number | undefined;
     limit?: number | undefined;
-    sortBy?: "firstName" | "createdAt" | "updatedAt" | "newest" | "oldest" | "name" | "orders" | "spending" | undefined;
+    sortBy?:
+      | "firstName"
+      | "createdAt"
+      | "updatedAt"
+      | "newest"
+      | "oldest"
+      | "name"
+      | "orders"
+      | "spending"
+      | undefined;
     sortOrder?: "asc" | "desc" | undefined;
     gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
     search?: string | undefined;
@@ -744,20 +888,28 @@ export declare const adminUsersQuerySchema: z.ZodObject<{
     totalOrdersMax?: number | undefined;
     totalSpentMin?: number | undefined;
     totalSpentMax?: number | undefined;
-}>;
+  }
+>;
 export type AdminUsersQuery = z.infer<typeof adminUsersQuerySchema>;
-export declare const adminCustomerOrdersQuerySchema: z.ZodObject<{
+export declare const adminCustomerOrdersQuerySchema: z.ZodObject<
+  {
     page: z.ZodDefault<z.ZodNumber>;
     limit: z.ZodDefault<z.ZodNumber>;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     page: number;
     limit: number;
-}, {
+  },
+  {
     page?: number | undefined;
     limit?: number | undefined;
-}>;
+  }
+>;
 export type AdminCustomerOrdersQuery = z.infer<typeof adminCustomerOrdersQuerySchema>;
-export declare const updateAdminUserSchema: z.ZodObject<{
+export declare const updateAdminUserSchema: z.ZodObject<
+  {
     firstName: z.ZodOptional<z.ZodString>;
     lastName: z.ZodOptional<z.ZodString>;
     phone: z.ZodOptional<z.ZodString>;
@@ -766,7 +918,10 @@ export declare const updateAdminUserSchema: z.ZodObject<{
     gender: z.ZodOptional<z.ZodNullable<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>>;
     dateOfBirth: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>>;
     isVip: z.ZodOptional<z.ZodBoolean>;
-}, "strict", z.ZodTypeAny, {
+  },
+  "strict",
+  z.ZodTypeAny,
+  {
     status?: "ACTIVE" | "INACTIVE" | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
@@ -775,7 +930,8 @@ export declare const updateAdminUserSchema: z.ZodObject<{
     dateOfBirth?: string | null | undefined;
     isVip?: boolean | undefined;
     emailVerified?: boolean | undefined;
-}, {
+  },
+  {
     status?: "ACTIVE" | "INACTIVE" | undefined;
     firstName?: string | undefined;
     lastName?: string | undefined;
@@ -784,6 +940,7 @@ export declare const updateAdminUserSchema: z.ZodObject<{
     dateOfBirth?: string | null | undefined;
     isVip?: boolean | undefined;
     emailVerified?: boolean | undefined;
-}>;
+  }
+>;
 export type UpdateAdminUserInput = z.infer<typeof updateAdminUserSchema>;
 //# sourceMappingURL=user.schema.d.ts.map

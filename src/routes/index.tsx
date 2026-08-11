@@ -8,6 +8,7 @@ import {
   Concerns,
   BestSellers,
   BrandStory,
+  BeautyDifference,
   Newsletter,
 } from "@/components/home/Sections";
 import { loadCatalog, loadCategories } from "@/lib/catalog";
@@ -55,6 +56,7 @@ function Index() {
       <Concerns />
       <BestSellers initialProducts={products} />
       <BrandStory />
+      <BeautyDifference />
       <Newsletter />
     </>
   );

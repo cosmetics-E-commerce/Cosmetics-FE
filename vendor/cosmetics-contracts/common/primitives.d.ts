@@ -17,14 +17,20 @@ export declare const slugSchema: z.ZodString;
 export declare const idempotencyKeySchema: z.ZodString;
 /** InstaPay address (IPA), e.g. "someone@instapay" or a mobile-linked handle. */
 export declare const instapayAddressSchema: z.ZodString;
-export declare const bilingualTextSchema: z.ZodObject<{
+export declare const bilingualTextSchema: z.ZodObject<
+  {
     en: z.ZodString;
     ar: z.ZodString;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     en: string;
     ar: string;
-}, {
+  },
+  {
     en: string;
     ar: string;
-}>;
+  }
+>;
 //# sourceMappingURL=primitives.d.ts.map

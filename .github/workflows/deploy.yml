@@ -2,7 +2,12 @@ name: Deploy Storefront
 on:
   workflow_dispatch:
     inputs:
-      ref: { description: "Git ref or previous SHA to deploy/rollback", required: true, default: "main" }
+      ref:
+        {
+          description: "Git ref or previous SHA to deploy/rollback",
+          required: true,
+          default: "main",
+        }
   push:
     tags: ["storefront-v*"]
 jobs:

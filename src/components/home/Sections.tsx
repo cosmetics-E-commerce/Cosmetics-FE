@@ -3,14 +3,21 @@ import {
   ArrowRight,
   ChevronLeft,
   ChevronRight,
+  CreditCard,
   FlaskConical,
+  GripVertical,
+  Grid2X2,
   Leaf,
+  List,
   LoaderCircle,
   Rabbit,
   Recycle,
+  RotateCcw,
   ShieldCheck,
+  Sparkles,
+  Truck,
 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import { toast } from "sonner";
 
 import { ProductCard } from "@/components/shop/ProductCard";
@@ -29,52 +36,150 @@ import { useI18n } from "@/lib/i18n";
 import { concerns, images, type Product } from "@/lib/products";
 import { useStore } from "@/lib/store";
 
+const heroSlides = [
+  {
+    id: "radiance",
+    image: images.heroSlide1,
+    position: "center center",
+    eyebrow: {
+      en: "New skin ritual",
+      ar: "روتين بشرة جديد",
+    },
+    title: {
+      en: ["Natural Beauty", "Collection"],
+      ar: ["مجموعة الجمال", "الطبيعي"],
+    },
+    copy: {
+      en: "Discover clean textures, refined skincare essentials, and a glow that feels effortless.",
+      ar: "اكتشفي قواماً ناعماً، أساسيات عناية راقية، وإشراقة تبدو طبيعية كل يوم.",
+    },
+    cta: {
+      en: "Shop Now",
+      ar: "تسوقي الآن",
+    },
+    note: {
+      en: "Daily skincare essentials",
+      ar: "أساسيات العناية اليومية",
+    },
+  },
+  {
+    id: "serum",
+    image: images.heroSlide2,
+    position: "center center",
+    eyebrow: {
+      en: "Organic skincare",
+      ar: "عناية عضوية بالبشرة",
+    },
+    title: {
+      en: ["Glow Skin", "Every Day"],
+      ar: ["بشرة مشرقة", "كل يوم"],
+    },
+    copy: {
+      en: "Pure formulas for a luminous finish, selected for comfort, clarity, and visible care.",
+      ar: "تركيبات نقية تمنح لمسة مضيئة، مختارة للراحة والوضوح والعناية الملحوظة.",
+    },
+    cta: {
+      en: "Explore Products",
+      ar: "اكتشفي المنتجات",
+    },
+    note: {
+      en: "Original products only",
+      ar: "منتجات أصلية فقط",
+    },
+  },
+  {
+    id: "minimal",
+    image: images.heroSlide3,
+    position: "center center",
+    eyebrow: {
+      en: "Beauty with confidence",
+      ar: "جمال بثقة",
+    },
+    title: {
+      en: ["Beauty Of", "Nature"],
+      ar: ["جمال", "من الطبيعة"],
+    },
+    copy: {
+      en: "A considered edit of skincare and beauty pieces for calm, polished routines.",
+      ar: "اختيارات مدروسة من العناية والجمال لروتين هادئ وأنيق.",
+    },
+    cta: {
+      en: "Discover More",
+      ar: "اكتشفي المزيد",
+    },
+    note: {
+      en: "Curated by BioReza",
+      ar: "مختار من بيوريزا",
+    },
+  },
+] as const;
+
 export function Hero() {
   const { locale } = useStore();
   const ar = locale === "ar";
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const active = heroSlides[activeSlide] ?? heroSlides[0];
+  const goToSlide = (index: number) =>
+    setActiveSlide((index + heroSlides.length) % heroSlides.length);
+  const nextSlide = () => goToSlide(activeSlide + 1);
+  const previousSlide = () => goToSlide(activeSlide - 1);
+
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = window.setInterval(() => {
+      setActiveSlide((current) => (current + 1) % heroSlides.length);
+    }, 6200);
+    return () => window.clearInterval(timer);
+  }, [isPaused]);
 
   return (
     <section
       className="sf-hero"
       aria-label={ar ? "واجهة متجر بيوريزا" : "BIOREZA storefront introduction"}
+      onPointerEnter={() => setIsPaused(true)}
+      onPointerLeave={() => setIsPaused(false)}
     >
-      <ImageReveal direction="right" className="sf-hero__media">
-        <ParallaxMedia className="size-full" strength={22}>
-          <img
-            src={images.hero}
-            alt={
-              ar ? "مجموعة عناية بالبشرة على منصة حجرية" : "Skincare arranged on a mineral plinth"
-            }
-            width={1408}
-            height={1712}
-            fetchPriority="high"
-            decoding="sync"
-            className="size-full object-cover"
-          />
-        </ParallaxMedia>
-      </ImageReveal>
+      <div className="sf-hero__slides" aria-hidden="true">
+        {heroSlides.map((slide, index) => (
+          <div
+            key={slide.id}
+            className="sf-hero__media"
+            data-active={activeSlide === index || undefined}
+            style={{ "--hero-image-position": slide.position } as CSSProperties}
+          >
+            <ParallaxMedia className="size-full" strength={activeSlide === index ? 18 : 0}>
+              <img
+                src={slide.image}
+                alt=""
+                width={2048}
+                height={1000}
+                fetchPriority={index === 0 ? "high" : "auto"}
+                decoding={index === 0 ? "sync" : "async"}
+                className="size-full object-cover"
+              />
+            </ParallaxMedia>
+          </div>
+        ))}
+      </div>
 
       <div className="sf-hero__veil" aria-hidden="true" />
       <div className="sf-shell sf-hero__content">
-        <Reveal stagger staggerMs={50} distance={24} className="sf-hero__copy">
-          <p className="sf-kicker sf-kicker--light">
-            {ar ? "طقوس يومية، مختارة بعناية" : "Considered beauty for every day"}
+        <div key={active.id} className="sf-hero__copy">
+          <p className="sf-hero__eyebrow">
+            <span>{active.eyebrow[ar ? "ar" : "en"]}</span>
           </p>
           <TextReveal
             as="h1"
             className="sf-display sf-hero__title"
-            lines={ar ? ["جمالك الحقيقي", "بخطوات أوضح"] : ["Your best skin.", "A clearer ritual."]}
-            delay={120}
+            lines={[...active.title[ar ? "ar" : "en"]]}
+            delay={90}
           />
-          <p className="sf-hero__lede">
-            {ar
-              ? "منتجات أصلية، مكونات واضحة، وأسعار ومخزون محدثان مباشرة من متجر بيوريزا."
-              : "Authentic beauty, transparent ingredients, and live pricing selected for the way you actually shop."}
-          </p>
+          <p className="sf-hero__lede">{active.copy[ar ? "ar" : "en"]}</p>
           <div className="sf-hero__actions">
             <Magnetic>
               <Button asChild variant="solid" size="pill">
-                <Link to="/shop">{ar ? "تسوقي المجموعة" : "Shop the collection"}</Link>
+                <Link to="/shop">{active.cta[ar ? "ar" : "en"]}</Link>
               </Button>
             </Magnetic>
             <Link to="/offers" className="sf-text-link sf-text-link--light">
@@ -82,12 +187,46 @@ export function Hero() {
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
           </div>
-        </Reveal>
+        </div>
       </div>
 
       <div className="sf-hero__note">
-        <span>01</span>
-        <p>{ar ? "توصيل إلى جميع أنحاء مصر" : "Delivery across Egypt"}</p>
+        <span>{String(activeSlide + 1).padStart(2, "0")}</span>
+        <p>{active.note[ar ? "ar" : "en"]}</p>
+      </div>
+
+      <div className="sf-hero__controls" aria-label={ar ? "شرائح الواجهة" : "Hero slides"}>
+        <button
+          type="button"
+          onClick={previousSlide}
+          aria-label={ar ? "الشريحة السابقة" : "Previous slide"}
+        >
+          <ChevronLeft aria-hidden="true" />
+        </button>
+        <div
+          className="sf-hero__dots"
+          role="tablist"
+          aria-label={ar ? "اختيار الشريحة" : "Choose slide"}
+        >
+          {heroSlides.map((slide, index) => (
+            <button
+              key={slide.id}
+              type="button"
+              role="tab"
+              aria-selected={activeSlide === index}
+              aria-label={`${ar ? "الشريحة" : "Slide"} ${index + 1}`}
+              data-active={activeSlide === index || undefined}
+              onClick={() => goToSlide(index)}
+            />
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={nextSlide}
+          aria-label={ar ? "الشريحة التالية" : "Next slide"}
+        >
+          <ChevronRight aria-hidden="true" />
+        </button>
       </div>
     </section>
   );
@@ -139,7 +278,7 @@ export function CategoryGrid({
     name: string;
     image: string;
     productCount: number;
-  }> = categories.slice(0, 5).map((category) => ({
+  }> = categories.slice(0, 4).map((category) => ({
     id: category.id,
     slug: category.slug,
     name: ar ? category.nameAr : category.nameEn,
@@ -147,7 +286,7 @@ export function CategoryGrid({
     productCount: category.productCount,
   }));
 
-  if (categoryTiles.length < 5) {
+  if (categoryTiles.length < 4) {
     categoryTiles.push({
       id: "all-products",
       slug: null,
@@ -160,9 +299,18 @@ export function CategoryGrid({
   return (
     <section className="sf-categories" aria-labelledby="category-grid-title">
       <div className="sf-shell">
-        <h2 id="category-grid-title" className="sr-only">
-          {ar ? "تسوقي حسب الفئة" : "Shop by category"}
-        </h2>
+        <Reveal className="sf-section-head sf-category-head" stagger>
+          <div className="sf-section-intro">
+            <p className="sf-kicker">{ar ? "تسوقي حسب الفئة" : "Shop by category"}</p>
+            <h2 id="category-grid-title" className="sf-display sf-section-title">
+              {ar ? "اختاري روتينك بسرعة." : "Choose your ritual faster."}
+            </h2>
+          </div>
+          <Link to="/shop" className="sf-text-link">
+            {ar ? "كل المنتجات" : "View all"}
+            <ArrowRight className="size-4" aria-hidden="true" />
+          </Link>
+        </Reveal>
         <Reveal as="ul" stagger staggerMs={45} distance={18} className="sf-category-orbits">
           {categoryTiles.map((category) => (
             <li key={category.id} className="sf-category-orbit">
@@ -189,6 +337,10 @@ export function CategoryGrid({
                   {category.productCount}{" "}
                   {ar ? "منتج" : category.productCount === 1 ? "product" : "products"}
                 </small>
+                <span className="sf-category-orbit__cta">
+                  {ar ? "تسوقي الآن" : "Shop now"}
+                  <ArrowRight className="size-3.5" aria-hidden="true" />
+                </span>
               </Link>
             </li>
           ))}
@@ -203,23 +355,106 @@ export function Featured({ initialProducts }: { initialProducts?: Product[] }) {
   const products =
     useCatalog({ limit: 5, sortBy: "createdAt", sortOrder: "desc" }, locale, initialProducts)
       .data ?? [];
+  const categories = useCategories().data ?? [];
   const ar = locale === "ar";
+  const tabs = categories.slice(0, 4).map((category) => ({
+    slug: category.slug,
+    label: ar ? category.nameAr : category.nameEn,
+  }));
+  const arrivalBenefits = [
+    {
+      icon: ShieldCheck,
+      title: ar ? "منتجات أصلية 100%" : "100% Original",
+      copy: ar ? "نضمن لك الأصالة" : "We guarantee authenticity",
+    },
+    {
+      icon: Truck,
+      title: ar ? "توصيل سريع وآمن" : "Fast & Secure Delivery",
+      copy: ar ? "داخل جميع محافظات مصر" : "Across all Egypt",
+    },
+    {
+      icon: RotateCcw,
+      title: ar ? "استرجاع سهل" : "Easy Returns",
+      copy: ar ? "سياسة استرجاع خلال 14 يوم" : "14-day return policy",
+    },
+    {
+      icon: CreditCard,
+      title: ar ? "دفع آمن" : "Secure Payments",
+      copy: ar ? "خيارات دفع متعددة وآمنة" : "Multiple safe payment options",
+    },
+  ];
 
   return (
     <section className="sf-products-section">
       <div className="sf-shell">
-        <Reveal className="sf-section-head" stagger>
-          <div className="sf-section-intro">
+        <Reveal className="sf-arrivals-hero" stagger>
+          <div className="sf-arrivals-hero__copy">
             <p className="sf-kicker">{ar ? "وصل حديثاً" : "New arrivals"}</p>
-            <h2 className="sf-display sf-section-title">
+            <h2 className="sf-display sf-arrivals-hero__title">
               {ar ? "جديد في روتينك." : "New to the ritual."}
             </h2>
+            <p className="sf-arrivals-hero__text">
+              {ar
+                ? "اكتشفي أحدث الإضافات المختارة بعناية لروتين جمال أكثر نعومة ووضوحاً."
+                : "Discover the latest additions to our collection, handpicked for your beauty ritual and crafted for visible results."}
+            </p>
+            <Link to="/shop" search={{ sort: "newest" }} className="sf-arrivals-hero__cta">
+              {ar ? "تسوقي الجديد" : "Shop new arrivals"}
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
           </div>
-          <Link to="/shop" className="sf-text-link">
-            {ar ? "تسوقي الجديد" : "Shop new arrivals"}
-            <ArrowRight className="size-4" aria-hidden="true" />
-          </Link>
+          <div className="sf-arrivals-hero__media" aria-hidden="true">
+            <img src={images.cream} alt="" loading="lazy" />
+          </div>
         </Reveal>
+
+        <Reveal className="sf-arrivals-toolbar" stagger>
+          <nav
+            className="sf-arrivals-tabs"
+            aria-label={ar ? "فئات المنتجات الجديدة" : "New arrival categories"}
+          >
+            <Link to="/shop" className="sf-arrivals-tab sf-arrivals-tab--active">
+              {ar ? "الكل" : "All"}
+            </Link>
+            {tabs.map((tab) => (
+              <Link
+                key={tab.slug}
+                to="/shop"
+                search={{ category: tab.slug }}
+                className="sf-arrivals-tab"
+              >
+                {tab.label}
+              </Link>
+            ))}
+          </nav>
+          <div
+            className="sf-arrivals-controls"
+            aria-label={ar ? "عرض المنتجات" : "Product display"}
+          >
+            <span>{ar ? "ترتيب:" : "Sort by:"}</span>
+            <Link to="/shop" search={{ sort: "newest" }} className="sf-arrivals-sort">
+              {ar ? "الأحدث أولاً" : "Newest First"}
+              <ChevronRight className="size-3.5" aria-hidden="true" />
+            </Link>
+            <Link
+              to="/shop"
+              search={{ view: "grid" }}
+              className="sf-arrivals-view sf-arrivals-view--active"
+              aria-label={ar ? "عرض شبكي" : "Grid view"}
+            >
+              <Grid2X2 className="size-4" aria-hidden="true" />
+            </Link>
+            <Link
+              to="/shop"
+              search={{ view: "list" }}
+              className="sf-arrivals-view"
+              aria-label={ar ? "عرض قائمة" : "List view"}
+            >
+              <List className="size-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </Reveal>
+
         <div className="sf-product-grid sf-product-grid--five">
           {products.map((product, index) => (
             <Reveal key={product.slug} delay={index * 55}>
@@ -227,6 +462,20 @@ export function Featured({ initialProducts }: { initialProducts?: Product[] }) {
             </Reveal>
           ))}
         </div>
+
+        <Reveal as="ul" className="sf-arrivals-benefits" stagger staggerMs={45}>
+          {arrivalBenefits.map(({ icon: Icon, title, copy }) => (
+            <li key={title}>
+              <span>
+                <Icon className="size-5" aria-hidden="true" />
+              </span>
+              <div>
+                <strong>{title}</strong>
+                <small>{copy}</small>
+              </div>
+            </li>
+          ))}
+        </Reveal>
       </div>
     </section>
   );
@@ -392,6 +641,146 @@ export function BrandStory() {
             {ar ? "تعرفي على بيوريزا" : "Discover our approach"}
             <ArrowRight className="size-4" aria-hidden="true" />
           </Link>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+export function BeautyDifference() {
+  const { locale } = useStore();
+  const ar = locale === "ar";
+  const frameRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState(38);
+  const [dragging, setDragging] = useState(false);
+
+  const clampPosition = useCallback((value: number) => Math.min(92, Math.max(8, value)), []);
+
+  const updateFromClientX = useCallback(
+    (clientX: number) => {
+      const frame = frameRef.current;
+      if (!frame) return;
+      const rect = frame.getBoundingClientRect();
+      const next = ((clientX - rect.left) / rect.width) * 100;
+      setPosition(clampPosition(next));
+    },
+    [clampPosition],
+  );
+
+  const nudge = (amount: number) => {
+    setPosition((current) => clampPosition(current + amount));
+  };
+
+  return (
+    <section className="sf-beauty-difference" aria-labelledby="beauty-difference-title">
+      <div className="sf-shell">
+        <Reveal className="sf-beauty-difference__head" stagger>
+          <div className="sf-section-intro">
+            <p className="sf-kicker">{ar ? "قبل وبعد" : "Visible comparison"}</p>
+            <h2 id="beauty-difference-title" className="sf-display sf-section-title">
+              {ar ? "شاهدي الفرق في لمسة واحدة." : "See the beauty difference."}
+            </h2>
+            <p className="sf-section-copy">
+              {ar
+                ? "حرّكي الخط يميناً أو يساراً لمقارنة ملمس البشرة قبل العناية وبعدها."
+                : "Drag the handle left or right to compare the skin finish before and after care."}
+            </p>
+          </div>
+          <Magnetic>
+            <Button asChild variant="solid" size="pill">
+              <Link to="/shop">
+                {ar ? "اكتشفي الروتين" : "Explore now"}
+                <ArrowRight className="size-4" aria-hidden="true" />
+              </Link>
+            </Button>
+          </Magnetic>
+        </Reveal>
+
+        <Reveal className="sf-beauty-difference__stage">
+          <div
+            ref={frameRef}
+            className="sf-comparison"
+            data-dragging={dragging || undefined}
+            style={{ "--comparison-position": `${position}%` } as CSSProperties}
+            onPointerDown={(event) => {
+              setDragging(true);
+              event.currentTarget.setPointerCapture(event.pointerId);
+              updateFromClientX(event.clientX);
+            }}
+            onPointerMove={(event) => {
+              if (!dragging) return;
+              updateFromClientX(event.clientX);
+            }}
+            onPointerUp={(event) => {
+              setDragging(false);
+              event.currentTarget.releasePointerCapture(event.pointerId);
+            }}
+            onPointerCancel={() => setDragging(false)}
+          >
+            <img
+              src={images.beautyDifferenceBefore}
+              alt={ar ? "البشرة قبل العناية" : "Skin before care"}
+              loading="lazy"
+              decoding="async"
+              width={1920}
+              height={900}
+              className="sf-comparison__image"
+              draggable={false}
+            />
+            <img
+              src={images.beautyDifferenceAfter}
+              alt={ar ? "البشرة بعد العناية" : "Skin after care"}
+              loading="lazy"
+              decoding="async"
+              width={1920}
+              height={900}
+              className="sf-comparison__image sf-comparison__image--after"
+              draggable={false}
+            />
+
+            <span className="sf-comparison__label sf-comparison__label--before">
+              {ar ? "قبل" : "Before"}
+            </span>
+            <span className="sf-comparison__label sf-comparison__label--after">
+              {ar ? "بعد" : "After"}
+            </span>
+
+            <button
+              type="button"
+              className="sf-comparison__handle"
+              role="slider"
+              aria-label={ar ? "مقارنة قبل وبعد" : "Before and after comparison"}
+              aria-valuemin={8}
+              aria-valuemax={92}
+              aria-valuenow={Math.round(position)}
+              onKeyDown={(event) => {
+                if (event.key === "ArrowLeft") {
+                  event.preventDefault();
+                  nudge(-4);
+                }
+                if (event.key === "ArrowRight") {
+                  event.preventDefault();
+                  nudge(4);
+                }
+                if (event.key === "Home") {
+                  event.preventDefault();
+                  setPosition(8);
+                }
+                if (event.key === "End") {
+                  event.preventDefault();
+                  setPosition(92);
+                }
+              }}
+            >
+              <span aria-hidden="true">
+                <GripVertical className="size-5" />
+              </span>
+            </button>
+          </div>
+          <div className="sf-beauty-difference__caption" aria-hidden="true">
+            <Sparkles className="size-4" />
+            <span>{ar ? "اسحبي الخط للمقارنة" : "Drag to compare"}</span>
+          </div>
         </Reveal>
       </div>
     </section>

@@ -1,15 +1,39 @@
 import { z } from "zod";
 export declare const otpDeliveryChannelEnum: z.ZodEnum<["SMS", "EMAIL"]>;
 export type OtpDeliveryChannel = z.infer<typeof otpDeliveryChannelEnum>;
-export declare const createUserSchema: z.ZodEffects<z.ZodObject<{
-    firstName: z.ZodString;
-    lastName: z.ZodString;
-    phone: z.ZodString;
-    email: z.ZodOptional<z.ZodString>;
-    password: z.ZodString;
-    gender: z.ZodOptional<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>;
-    otpChannel: z.ZodDefault<z.ZodEnum<["SMS", "EMAIL"]>>;
-}, "strip", z.ZodTypeAny, {
+export declare const createUserSchema: z.ZodEffects<
+  z.ZodObject<
+    {
+      firstName: z.ZodString;
+      lastName: z.ZodString;
+      phone: z.ZodString;
+      email: z.ZodOptional<z.ZodString>;
+      password: z.ZodString;
+      gender: z.ZodOptional<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>;
+      otpChannel: z.ZodDefault<z.ZodEnum<["SMS", "EMAIL"]>>;
+    },
+    "strip",
+    z.ZodTypeAny,
+    {
+      firstName: string;
+      lastName: string;
+      phone: string;
+      password: string;
+      otpChannel: "SMS" | "EMAIL";
+      email?: string | undefined;
+      gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
+    },
+    {
+      firstName: string;
+      lastName: string;
+      phone: string;
+      password: string;
+      email?: string | undefined;
+      gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
+      otpChannel?: "SMS" | "EMAIL" | undefined;
+    }
+  >,
+  {
     firstName: string;
     lastName: string;
     phone: string;
@@ -17,7 +41,8 @@ export declare const createUserSchema: z.ZodEffects<z.ZodObject<{
     otpChannel: "SMS" | "EMAIL";
     email?: string | undefined;
     gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
-}, {
+  },
+  {
     firstName: string;
     lastName: string;
     phone: string;
@@ -25,35 +50,46 @@ export declare const createUserSchema: z.ZodEffects<z.ZodObject<{
     email?: string | undefined;
     gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
     otpChannel?: "SMS" | "EMAIL" | undefined;
-}>, {
-    firstName: string;
-    lastName: string;
-    phone: string;
-    password: string;
-    otpChannel: "SMS" | "EMAIL";
-    email?: string | undefined;
-    gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
-}, {
-    firstName: string;
-    lastName: string;
-    phone: string;
-    password: string;
-    email?: string | undefined;
-    gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
-    otpChannel?: "SMS" | "EMAIL" | undefined;
-}>;
+  }
+>;
 export type CreateUserInput = z.infer<typeof createUserSchema>;
-export declare const registerSchema: z.ZodEffects<z.ZodObject<{
-    firstName: z.ZodString;
-    lastName: z.ZodString;
-    phone: z.ZodString;
-    password: z.ZodString;
-} & {
-    email: z.ZodString;
-    gender: z.ZodEnum<["MALE", "FEMALE", "OTHER"]>;
-    rePassword: z.ZodString;
-    otpChannel: z.ZodDefault<z.ZodEnum<["SMS", "EMAIL"]>>;
-}, "strict", z.ZodTypeAny, {
+export declare const registerSchema: z.ZodEffects<
+  z.ZodObject<
+    {
+      firstName: z.ZodString;
+      lastName: z.ZodString;
+      phone: z.ZodString;
+      password: z.ZodString;
+    } & {
+      email: z.ZodString;
+      gender: z.ZodEnum<["MALE", "FEMALE", "OTHER"]>;
+      rePassword: z.ZodString;
+      otpChannel: z.ZodDefault<z.ZodEnum<["SMS", "EMAIL"]>>;
+    },
+    "strict",
+    z.ZodTypeAny,
+    {
+      firstName: string;
+      lastName: string;
+      phone: string;
+      email: string;
+      password: string;
+      gender: "MALE" | "FEMALE" | "OTHER";
+      otpChannel: "SMS" | "EMAIL";
+      rePassword: string;
+    },
+    {
+      firstName: string;
+      lastName: string;
+      phone: string;
+      email: string;
+      password: string;
+      gender: "MALE" | "FEMALE" | "OTHER";
+      rePassword: string;
+      otpChannel?: "SMS" | "EMAIL" | undefined;
+    }
+  >,
+  {
     firstName: string;
     lastName: string;
     phone: string;
@@ -62,7 +98,8 @@ export declare const registerSchema: z.ZodEffects<z.ZodObject<{
     gender: "MALE" | "FEMALE" | "OTHER";
     otpChannel: "SMS" | "EMAIL";
     rePassword: string;
-}, {
+  },
+  {
     firstName: string;
     lastName: string;
     phone: string;
@@ -71,95 +108,112 @@ export declare const registerSchema: z.ZodEffects<z.ZodObject<{
     gender: "MALE" | "FEMALE" | "OTHER";
     rePassword: string;
     otpChannel?: "SMS" | "EMAIL" | undefined;
-}>, {
-    firstName: string;
-    lastName: string;
-    phone: string;
-    email: string;
-    password: string;
-    gender: "MALE" | "FEMALE" | "OTHER";
-    otpChannel: "SMS" | "EMAIL";
-    rePassword: string;
-}, {
-    firstName: string;
-    lastName: string;
-    phone: string;
-    email: string;
-    password: string;
-    gender: "MALE" | "FEMALE" | "OTHER";
-    rePassword: string;
-    otpChannel?: "SMS" | "EMAIL" | undefined;
-}>;
+  }
+>;
 export type RegisterInput = z.infer<typeof registerSchema>;
-export declare const registrationOtpChallengeSchema: z.ZodObject<{
+export declare const registrationOtpChallengeSchema: z.ZodObject<
+  {
     email: z.ZodString;
     maskedEmail: z.ZodString;
     ttlSeconds: z.ZodNumber;
     resendAvailableInSeconds: z.ZodNumber;
     verificationRequired: z.ZodLiteral<true>;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     email: string;
     maskedEmail: string;
     ttlSeconds: number;
     resendAvailableInSeconds: number;
     verificationRequired: true;
-}, {
+  },
+  {
     email: string;
     maskedEmail: string;
     ttlSeconds: number;
     resendAvailableInSeconds: number;
     verificationRequired: true;
-}>;
+  }
+>;
 export type RegistrationOtpChallenge = z.infer<typeof registrationOtpChallengeSchema>;
-export declare const verifyRegistrationEmailSchema: z.ZodObject<{
+export declare const verifyRegistrationEmailSchema: z.ZodObject<
+  {
     email: z.ZodString;
     otp: z.ZodString;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     email: string;
     otp: string;
-}, {
+  },
+  {
     email: string;
     otp: string;
-}>;
+  }
+>;
 export type VerifyRegistrationEmailInput = z.infer<typeof verifyRegistrationEmailSchema>;
-export declare const resendRegistrationOtpSchema: z.ZodObject<{
+export declare const resendRegistrationOtpSchema: z.ZodObject<
+  {
     email: z.ZodString;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     email: string;
-}, {
+  },
+  {
     email: string;
-}>;
+  }
+>;
 export type ResendRegistrationOtpInput = z.infer<typeof resendRegistrationOtpSchema>;
-export declare const registrationVerificationResultSchema: z.ZodObject<{
+export declare const registrationVerificationResultSchema: z.ZodObject<
+  {
     verified: z.ZodLiteral<true>;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     verified: true;
-}, {
+  },
+  {
     verified: true;
-}>;
+  }
+>;
 export type RegistrationVerificationResult = z.infer<typeof registrationVerificationResultSchema>;
-export declare const resendRegistrationOtpResultSchema: z.ZodObject<{
+export declare const resendRegistrationOtpResultSchema: z.ZodObject<
+  {
     ttlSeconds: z.ZodNumber;
     resendAvailableInSeconds: z.ZodNumber;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     ttlSeconds: number;
     resendAvailableInSeconds: number;
-}, {
+  },
+  {
     ttlSeconds: number;
     resendAvailableInSeconds: number;
-}>;
+  }
+>;
 export type ResendRegistrationOtpResult = z.infer<typeof resendRegistrationOtpResultSchema>;
-export declare const createAdminUserSchema: z.ZodObject<{
+export declare const createAdminUserSchema: z.ZodObject<
+  {
     firstName: z.ZodString;
     lastName: z.ZodString;
     phone: z.ZodString;
     password: z.ZodString;
     gender: z.ZodOptional<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>;
-} & {
+  } & {
     email: z.ZodString;
     otpChannel: z.ZodDefault<z.ZodEnum<["SMS", "EMAIL"]>>;
     permissions: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-}, "strict", z.ZodTypeAny, {
+  },
+  "strict",
+  z.ZodTypeAny,
+  {
     firstName: string;
     lastName: string;
     phone: string;
@@ -168,7 +222,8 @@ export declare const createAdminUserSchema: z.ZodObject<{
     otpChannel: "SMS" | "EMAIL";
     permissions?: string[] | undefined;
     gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
-}, {
+  },
+  {
     firstName: string;
     lastName: string;
     phone: string;
@@ -177,207 +232,363 @@ export declare const createAdminUserSchema: z.ZodObject<{
     permissions?: string[] | undefined;
     gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
     otpChannel?: "SMS" | "EMAIL" | undefined;
-}>;
+  }
+>;
 export type CreateAdminUserInput = z.infer<typeof createAdminUserSchema>;
 /** Phone is the primary identifier in this market; email is optional. */
-export declare const loginSchema: z.ZodObject<{
+export declare const loginSchema: z.ZodObject<
+  {
     identifier: z.ZodString;
     password: z.ZodString;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     password: string;
     identifier: string;
-}, {
+  },
+  {
     password: string;
     identifier: string;
-}>;
+  }
+>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export declare const refreshSchema: z.ZodObject<{}, "strict", z.ZodTypeAny, {}, {}>;
 export type RefreshInput = z.infer<typeof refreshSchema>;
 export declare const logoutSchema: z.ZodObject<{}, "strict", z.ZodTypeAny, {}, {}>;
 export type LogoutInput = z.infer<typeof logoutSchema>;
-export declare const otpPurposeEnum: z.ZodEnum<["PHONE_VERIFICATION", "EMAIL_VERIFICATION", "LOGIN", "PASSWORD_RESET", "PASSWORD_CHANGE"]>;
+export declare const otpPurposeEnum: z.ZodEnum<
+  ["PHONE_VERIFICATION", "EMAIL_VERIFICATION", "LOGIN", "PASSWORD_RESET", "PASSWORD_CHANGE"]
+>;
 export type OtpPurpose = z.infer<typeof otpPurposeEnum>;
-export declare const sendOtpSchema: z.ZodEffects<z.ZodObject<{
-    identifier: z.ZodString;
-    channel: z.ZodDefault<z.ZodEnum<["SMS", "EMAIL"]>>;
-    purpose: z.ZodDefault<z.ZodEnum<["PHONE_VERIFICATION", "EMAIL_VERIFICATION", "LOGIN", "PASSWORD_RESET", "PASSWORD_CHANGE"]>>;
-}, "strip", z.ZodTypeAny, {
+export declare const sendOtpSchema: z.ZodEffects<
+  z.ZodObject<
+    {
+      identifier: z.ZodString;
+      channel: z.ZodDefault<z.ZodEnum<["SMS", "EMAIL"]>>;
+      purpose: z.ZodDefault<
+        z.ZodEnum<
+          ["PHONE_VERIFICATION", "EMAIL_VERIFICATION", "LOGIN", "PASSWORD_RESET", "PASSWORD_CHANGE"]
+        >
+      >;
+    },
+    "strip",
+    z.ZodTypeAny,
+    {
+      identifier: string;
+      channel: "SMS" | "EMAIL";
+      purpose:
+        | "PHONE_VERIFICATION"
+        | "EMAIL_VERIFICATION"
+        | "LOGIN"
+        | "PASSWORD_RESET"
+        | "PASSWORD_CHANGE";
+    },
+    {
+      identifier: string;
+      channel?: "SMS" | "EMAIL" | undefined;
+      purpose?:
+        | "PHONE_VERIFICATION"
+        | "EMAIL_VERIFICATION"
+        | "LOGIN"
+        | "PASSWORD_RESET"
+        | "PASSWORD_CHANGE"
+        | undefined;
+    }
+  >,
+  {
     identifier: string;
     channel: "SMS" | "EMAIL";
-    purpose: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE";
-}, {
+    purpose:
+      "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE";
+  },
+  {
     identifier: string;
     channel?: "SMS" | "EMAIL" | undefined;
-    purpose?: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | undefined;
-}>, {
-    identifier: string;
-    channel: "SMS" | "EMAIL";
-    purpose: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE";
-}, {
-    identifier: string;
-    channel?: "SMS" | "EMAIL" | undefined;
-    purpose?: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | undefined;
-}>;
+    purpose?:
+      | "PHONE_VERIFICATION"
+      | "EMAIL_VERIFICATION"
+      | "LOGIN"
+      | "PASSWORD_RESET"
+      | "PASSWORD_CHANGE"
+      | undefined;
+  }
+>;
 export type SendOtpInput = z.infer<typeof sendOtpSchema>;
-export declare const verifyOtpSchema: z.ZodEffects<z.ZodObject<{
-    identifier: z.ZodString;
-    channel: z.ZodDefault<z.ZodEnum<["SMS", "EMAIL"]>>;
-    purpose: z.ZodDefault<z.ZodEnum<["PHONE_VERIFICATION", "EMAIL_VERIFICATION", "LOGIN", "PASSWORD_RESET", "PASSWORD_CHANGE"]>>;
-} & {
-    otp: z.ZodString;
-}, "strip", z.ZodTypeAny, {
+export declare const verifyOtpSchema: z.ZodEffects<
+  z.ZodObject<
+    {
+      identifier: z.ZodString;
+      channel: z.ZodDefault<z.ZodEnum<["SMS", "EMAIL"]>>;
+      purpose: z.ZodDefault<
+        z.ZodEnum<
+          ["PHONE_VERIFICATION", "EMAIL_VERIFICATION", "LOGIN", "PASSWORD_RESET", "PASSWORD_CHANGE"]
+        >
+      >;
+    } & {
+      otp: z.ZodString;
+    },
+    "strip",
+    z.ZodTypeAny,
+    {
+      otp: string;
+      identifier: string;
+      channel: "SMS" | "EMAIL";
+      purpose:
+        | "PHONE_VERIFICATION"
+        | "EMAIL_VERIFICATION"
+        | "LOGIN"
+        | "PASSWORD_RESET"
+        | "PASSWORD_CHANGE";
+    },
+    {
+      otp: string;
+      identifier: string;
+      channel?: "SMS" | "EMAIL" | undefined;
+      purpose?:
+        | "PHONE_VERIFICATION"
+        | "EMAIL_VERIFICATION"
+        | "LOGIN"
+        | "PASSWORD_RESET"
+        | "PASSWORD_CHANGE"
+        | undefined;
+    }
+  >,
+  {
     otp: string;
     identifier: string;
     channel: "SMS" | "EMAIL";
-    purpose: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE";
-}, {
+    purpose:
+      "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE";
+  },
+  {
     otp: string;
     identifier: string;
     channel?: "SMS" | "EMAIL" | undefined;
-    purpose?: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | undefined;
-}>, {
-    otp: string;
-    identifier: string;
-    channel: "SMS" | "EMAIL";
-    purpose: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE";
-}, {
-    otp: string;
-    identifier: string;
-    channel?: "SMS" | "EMAIL" | undefined;
-    purpose?: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | undefined;
-}>;
+    purpose?:
+      | "PHONE_VERIFICATION"
+      | "EMAIL_VERIFICATION"
+      | "LOGIN"
+      | "PASSWORD_RESET"
+      | "PASSWORD_CHANGE"
+      | undefined;
+  }
+>;
 export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>;
-export declare const forgotPasswordSchema: z.ZodEffects<z.ZodObject<{
-    identifier: z.ZodString;
-    channel: z.ZodEnum<["SMS", "EMAIL"]>;
-}, "strip", z.ZodTypeAny, {
+export declare const forgotPasswordSchema: z.ZodEffects<
+  z.ZodObject<
+    {
+      identifier: z.ZodString;
+      channel: z.ZodEnum<["SMS", "EMAIL"]>;
+    },
+    "strip",
+    z.ZodTypeAny,
+    {
+      identifier: string;
+      channel: "SMS" | "EMAIL";
+    },
+    {
+      identifier: string;
+      channel: "SMS" | "EMAIL";
+    }
+  >,
+  {
     identifier: string;
     channel: "SMS" | "EMAIL";
-}, {
+  },
+  {
     identifier: string;
     channel: "SMS" | "EMAIL";
-}>, {
-    identifier: string;
-    channel: "SMS" | "EMAIL";
-}, {
-    identifier: string;
-    channel: "SMS" | "EMAIL";
-}>;
+  }
+>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
-export declare const verifyPasswordResetOtpSchema: z.ZodEffects<z.ZodObject<{
-    identifier: z.ZodString;
-    channel: z.ZodEnum<["SMS", "EMAIL"]>;
-} & {
-    otp: z.ZodString;
-}, "strip", z.ZodTypeAny, {
+export declare const verifyPasswordResetOtpSchema: z.ZodEffects<
+  z.ZodObject<
+    {
+      identifier: z.ZodString;
+      channel: z.ZodEnum<["SMS", "EMAIL"]>;
+    } & {
+      otp: z.ZodString;
+    },
+    "strip",
+    z.ZodTypeAny,
+    {
+      otp: string;
+      identifier: string;
+      channel: "SMS" | "EMAIL";
+    },
+    {
+      otp: string;
+      identifier: string;
+      channel: "SMS" | "EMAIL";
+    }
+  >,
+  {
     otp: string;
     identifier: string;
     channel: "SMS" | "EMAIL";
-}, {
+  },
+  {
     otp: string;
     identifier: string;
     channel: "SMS" | "EMAIL";
-}>, {
-    otp: string;
-    identifier: string;
-    channel: "SMS" | "EMAIL";
-}, {
-    otp: string;
-    identifier: string;
-    channel: "SMS" | "EMAIL";
-}>;
+  }
+>;
 export type VerifyPasswordResetOtpInput = z.infer<typeof verifyPasswordResetOtpSchema>;
-export declare const resetPasswordSchema: z.ZodIntersection<z.ZodObject<{
-    identifier: z.ZodString;
-    token: z.ZodString;
-}, "strip", z.ZodTypeAny, {
-    identifier: string;
-    token: string;
-}, {
-    identifier: string;
-    token: string;
-}>, z.ZodEffects<z.ZodObject<{
-    newPassword: z.ZodString;
-    confirmPassword: z.ZodString;
-}, "strip", z.ZodTypeAny, {
-    newPassword: string;
-    confirmPassword: string;
-}, {
-    newPassword: string;
-    confirmPassword: string;
-}>, {
-    newPassword: string;
-    confirmPassword: string;
-}, {
-    newPassword: string;
-    confirmPassword: string;
-}>>;
+export declare const resetPasswordSchema: z.ZodIntersection<
+  z.ZodObject<
+    {
+      identifier: z.ZodString;
+      token: z.ZodString;
+    },
+    "strip",
+    z.ZodTypeAny,
+    {
+      identifier: string;
+      token: string;
+    },
+    {
+      identifier: string;
+      token: string;
+    }
+  >,
+  z.ZodEffects<
+    z.ZodObject<
+      {
+        newPassword: z.ZodString;
+        confirmPassword: z.ZodString;
+      },
+      "strip",
+      z.ZodTypeAny,
+      {
+        newPassword: string;
+        confirmPassword: string;
+      },
+      {
+        newPassword: string;
+        confirmPassword: string;
+      }
+    >,
+    {
+      newPassword: string;
+      confirmPassword: string;
+    },
+    {
+      newPassword: string;
+      confirmPassword: string;
+    }
+  >
+>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
-export declare const requestPasswordChangeSchema: z.ZodObject<{
+export declare const requestPasswordChangeSchema: z.ZodObject<
+  {
     currentPassword: z.ZodString;
     channel: z.ZodEnum<["SMS", "EMAIL"]>;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     channel: "SMS" | "EMAIL";
     currentPassword: string;
-}, {
+  },
+  {
     channel: "SMS" | "EMAIL";
     currentPassword: string;
-}>;
+  }
+>;
 export type RequestPasswordChangeInput = z.infer<typeof requestPasswordChangeSchema>;
-export declare const verifyPasswordChangeOtpSchema: z.ZodObject<{
+export declare const verifyPasswordChangeOtpSchema: z.ZodObject<
+  {
     channel: z.ZodEnum<["SMS", "EMAIL"]>;
     otp: z.ZodString;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     otp: string;
     channel: "SMS" | "EMAIL";
-}, {
+  },
+  {
     otp: string;
     channel: "SMS" | "EMAIL";
-}>;
+  }
+>;
 export type VerifyPasswordChangeOtpInput = z.infer<typeof verifyPasswordChangeOtpSchema>;
-export declare const completePasswordChangeSchema: z.ZodIntersection<z.ZodObject<{
-    token: z.ZodString;
-}, "strip", z.ZodTypeAny, {
-    token: string;
-}, {
-    token: string;
-}>, z.ZodEffects<z.ZodObject<{
-    newPassword: z.ZodString;
-    confirmPassword: z.ZodString;
-}, "strip", z.ZodTypeAny, {
-    newPassword: string;
-    confirmPassword: string;
-}, {
-    newPassword: string;
-    confirmPassword: string;
-}>, {
-    newPassword: string;
-    confirmPassword: string;
-}, {
-    newPassword: string;
-    confirmPassword: string;
-}>>;
+export declare const completePasswordChangeSchema: z.ZodIntersection<
+  z.ZodObject<
+    {
+      token: z.ZodString;
+    },
+    "strip",
+    z.ZodTypeAny,
+    {
+      token: string;
+    },
+    {
+      token: string;
+    }
+  >,
+  z.ZodEffects<
+    z.ZodObject<
+      {
+        newPassword: z.ZodString;
+        confirmPassword: z.ZodString;
+      },
+      "strip",
+      z.ZodTypeAny,
+      {
+        newPassword: string;
+        confirmPassword: string;
+      },
+      {
+        newPassword: string;
+        confirmPassword: string;
+      }
+    >,
+    {
+      newPassword: string;
+      confirmPassword: string;
+    },
+    {
+      newPassword: string;
+      confirmPassword: string;
+    }
+  >
+>;
 export type CompletePasswordChangeInput = z.infer<typeof completePasswordChangeSchema>;
-export declare const sendEmailVerificationSchema: z.ZodObject<{
+export declare const sendEmailVerificationSchema: z.ZodObject<
+  {
     email: z.ZodString;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     email: string;
-}, {
+  },
+  {
     email: string;
-}>;
+  }
+>;
 export type SendEmailVerificationInput = z.infer<typeof sendEmailVerificationSchema>;
-export declare const verifyEmailSchema: z.ZodObject<{
+export declare const verifyEmailSchema: z.ZodObject<
+  {
     email: z.ZodString;
     token: z.ZodString;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     email: string;
     token: string;
-}, {
+  },
+  {
     email: string;
     token: string;
-}>;
+  }
+>;
 export type VerifyEmailInput = z.infer<typeof verifyEmailSchema>;
-export declare const authUserSchema: z.ZodObject<{
+export declare const authUserSchema: z.ZodObject<
+  {
     id: z.ZodString;
     firstName: z.ZodString;
     lastName: z.ZodString;
@@ -387,7 +598,10 @@ export declare const authUserSchema: z.ZodObject<{
     /** Resolved permission keys, e.g. ["product:create"]. Empty for CLIENT and
      *  for SUPER_ADMIN (who bypasses checks via a wildcard ability). */
     permissions: z.ZodArray<z.ZodString, "many">;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     id: string;
     permissions: string[];
     firstName: string;
@@ -395,7 +609,8 @@ export declare const authUserSchema: z.ZodObject<{
     phone: string;
     email: string | null;
     role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
-}, {
+  },
+  {
     id: string;
     permissions: string[];
     firstName: string;
@@ -403,21 +618,30 @@ export declare const authUserSchema: z.ZodObject<{
     phone: string;
     email: string | null;
     role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
-}>;
+  }
+>;
 export type AuthUser = z.infer<typeof authUserSchema>;
-export declare const authTokensSchema: z.ZodObject<{
+export declare const authTokensSchema: z.ZodObject<
+  {
     accessToken: z.ZodString;
     expiresIn: z.ZodNumber;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     accessToken: string;
     expiresIn: number;
-}, {
+  },
+  {
     accessToken: string;
     expiresIn: number;
-}>;
+  }
+>;
 export type AuthTokens = z.infer<typeof authTokensSchema>;
-export declare const authSessionSchema: z.ZodObject<{
-    user: z.ZodObject<{
+export declare const authSessionSchema: z.ZodObject<
+  {
+    user: z.ZodObject<
+      {
         id: z.ZodString;
         firstName: z.ZodString;
         lastName: z.ZodString;
@@ -427,7 +651,10 @@ export declare const authSessionSchema: z.ZodObject<{
         /** Resolved permission keys, e.g. ["product:create"]. Empty for CLIENT and
          *  for SUPER_ADMIN (who bypasses checks via a wildcard ability). */
         permissions: z.ZodArray<z.ZodString, "many">;
-    }, "strip", z.ZodTypeAny, {
+      },
+      "strip",
+      z.ZodTypeAny,
+      {
         id: string;
         permissions: string[];
         firstName: string;
@@ -435,7 +662,8 @@ export declare const authSessionSchema: z.ZodObject<{
         phone: string;
         email: string | null;
         role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
-    }, {
+      },
+      {
         id: string;
         permissions: string[];
         firstName: string;
@@ -443,49 +671,61 @@ export declare const authSessionSchema: z.ZodObject<{
         phone: string;
         email: string | null;
         role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
-    }>;
-    tokens: z.ZodObject<{
+      }
+    >;
+    tokens: z.ZodObject<
+      {
         accessToken: z.ZodString;
         expiresIn: z.ZodNumber;
-    }, "strip", z.ZodTypeAny, {
+      },
+      "strip",
+      z.ZodTypeAny,
+      {
         accessToken: string;
         expiresIn: number;
-    }, {
+      },
+      {
         accessToken: string;
         expiresIn: number;
-    }>;
+      }
+    >;
     /** Echoed by the browser as X-CSRF-Token on refresh/logout requests. */
     csrfToken: z.ZodString;
-}, "strip", z.ZodTypeAny, {
+  },
+  "strip",
+  z.ZodTypeAny,
+  {
     user: {
-        id: string;
-        permissions: string[];
-        firstName: string;
-        lastName: string;
-        phone: string;
-        email: string | null;
-        role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
+      id: string;
+      permissions: string[];
+      firstName: string;
+      lastName: string;
+      phone: string;
+      email: string | null;
+      role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
     };
     tokens: {
-        accessToken: string;
-        expiresIn: number;
+      accessToken: string;
+      expiresIn: number;
     };
     csrfToken: string;
-}, {
+  },
+  {
     user: {
-        id: string;
-        permissions: string[];
-        firstName: string;
-        lastName: string;
-        phone: string;
-        email: string | null;
-        role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
+      id: string;
+      permissions: string[];
+      firstName: string;
+      lastName: string;
+      phone: string;
+      email: string | null;
+      role: "SUPER_ADMIN" | "ADMIN" | "CLIENT";
     };
     tokens: {
-        accessToken: string;
-        expiresIn: number;
+      accessToken: string;
+      expiresIn: number;
     };
     csrfToken: string;
-}>;
+  }
+>;
 export type AuthSession = z.infer<typeof authSessionSchema>;
 //# sourceMappingURL=auth.schema.d.ts.map

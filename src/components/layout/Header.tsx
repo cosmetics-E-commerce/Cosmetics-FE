@@ -12,6 +12,12 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { ChevronDown, Heart, Menu, Search, ShoppingBag, User, X } from "lucide-react";
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
 import { Logo } from "@/components/brand/Logo";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { useBrands, useCategories } from "@/lib/catalog";
 import type { PublicBrandListItemResponse, PublicCategoryResponse } from "@/lib/api";
@@ -19,12 +25,45 @@ import { useStore } from "@/lib/store";
 import { GlobalBannerSlot } from "@/components/banner/GlobalBannerSlot";
 import { useI18n, type MessageKey } from "@/lib/i18n";
 
+const homeNavItem = { id: "home", label: "common.home" as MessageKey, to: "/" as const };
+
 const utilityNav = [
   { id: "new", label: "nav.new" as MessageKey, to: "/shop" as const },
   { id: "offers", label: "nav.offers" as MessageKey, to: "/offers" as const },
   { id: "about", label: "nav.about" as MessageKey, to: "/journal" as const },
   { id: "contact", label: "footer.contact" as MessageKey, to: "/contact" as const },
 ];
+
+/* Directory copy stays local to the header so the shared message catalogue keeps
+   holding navigation labels only. */
+const headerCopy = {
+  en: {
+    brandDirectory: "Brand directory",
+    popular: "Popular",
+    viewAllBrands: "View all brands",
+    categoryDirectory: "Shop by category",
+    viewAllProducts: "View all products",
+    brandsEmpty: "Available brands will appear here soon.",
+    categoriesEmpty: "Available categories will appear here soon.",
+    wishlist: "Wishlist",
+    language: "Language",
+    close: "Close menu",
+    products: (count: number) => `${count} ${count === 1 ? "product" : "products"}`,
+  },
+  ar: {
+    brandDirectory: "دليل العلامات",
+    popular: "الأكثر رواجاً",
+    viewAllBrands: "عرض كل العلامات",
+    categoryDirectory: "تسوقي حسب الفئة",
+    viewAllProducts: "عرض كل المنتجات",
+    brandsEmpty: "ستظهر العلامات المتاحة هنا قريباً.",
+    categoriesEmpty: "ستظهر الفئات المتاحة هنا قريباً.",
+    wishlist: "المفضلة",
+    language: "اللغة",
+    close: "إغلاق القائمة",
+    products: (count: number) => `${count} منتج`,
+  },
+} as const;
 
 type MegaMenuValue = "brands" | "categories";
 
@@ -43,21 +82,25 @@ export function Header() {
   const scrolledRef = useRef(false);
   const primaryNavRef = useRef<HTMLElement>(null);
   const hoveredNavIdRef = useRef<string | null>(null);
+  const copy = headerCopy[locale];
 
   const activeCategory = typeof search.category === "string" ? search.category : undefined;
   const activeBrand = typeof search.brand === "string" ? search.brand : undefined;
   const activeNavId =
-    pathname === "/offers"
-      ? "offers"
-      : pathname === "/journal"
-        ? "about"
-        : pathname === "/contact"
-          ? "contact"
-          : pathname === "/shop"
-            ? activeBrand
-              ? "brands"
-              : "categories"
-            : null;
+    pathname === "/"
+      ? "home"
+      : pathname === "/offers"
+        ? "offers"
+        : pathname === "/journal"
+          ? "about"
+          : pathname === "/contact"
+            ? "contact"
+            : pathname === "/shop"
+              ? activeBrand
+                ? "brands"
+                : "categories"
+              : null;
+  const transparentHeader = pathname === "/" && !scrolled;
   const visibleBrands = useMemo(
     () =>
       (brands.data ?? [])
@@ -98,6 +141,7 @@ export function Header() {
 
   useEffect(() => {
     setMegaMenu("");
+    setMenu(false);
   }, [pathname, activeBrand, activeCategory]);
 
   useLayoutEffect(() => {
@@ -117,17 +161,21 @@ export function Header() {
   useEffect(() => {
     const header = headerRef.current;
     if (!header || typeof ResizeObserver === "undefined") return;
-    const update = () =>
-      document.documentElement.style.setProperty(
-        "--store-header-offset",
-        `${Math.ceil(header.getBoundingClientRect().height)}px`,
-      );
+    const root = document.documentElement;
+    const update = () => {
+      const height = Math.ceil(header.getBoundingClientRect().height);
+      root.style.setProperty("--store-header-height", `${height}px`);
+      // The layout offset stays pinned to the resting height so the compact
+      // scrolled header never shifts the page content underneath it.
+      if (!scrolledRef.current) root.style.setProperty("--store-header-offset", `${height}px`);
+    };
     const observer = new ResizeObserver(update);
     observer.observe(header);
     update();
     return () => {
       observer.disconnect();
-      document.documentElement.style.removeProperty("--store-header-offset");
+      root.style.removeProperty("--store-header-offset");
+      root.style.removeProperty("--store-header-height");
     };
   }, []);
 
@@ -140,24 +188,28 @@ export function Header() {
     onFocus: () => moveNavIndicator(id),
   });
 
+  const accountTo = user ? ("/account" as const) : ("/sign-in" as const);
+
   return (
-    <header ref={headerRef} className="store-header fixed inset-x-0 top-0 z-40">
+    <header
+      ref={headerRef}
+      className="store-header fixed inset-x-0 top-0 z-40"
+      data-transparent={transparentHeader || undefined}
+      data-scrolled={scrolled || undefined}
+    >
       <GlobalBannerSlot position="TOP" />
 
-      <div
-        className={`border-b transition-[background-color,border-color,box-shadow] duration-200 ${
-          scrolled ? "border-border bg-ivory shadow-soft" : "border-transparent bg-warm-white/95"
-        }`}
-      >
-        <div className="mx-auto grid max-w-[1560px] grid-cols-[1fr_auto_1fr] items-center gap-1 px-3 py-4 sm:gap-4 sm:px-5 md:px-10 xl:flex xl:gap-6">
+      <div className="store-header__bar">
+        <div className="store-header__inner">
           <div className="flex shrink-0 items-center justify-self-start">
             <button
               type="button"
               onClick={() => setMenu(true)}
               aria-label={t("nav.menu")}
-              className="header-action grid h-11 w-11 place-items-center text-foreground xl:hidden"
+              aria-expanded={menu}
+              className="header-action grid h-11 w-11 place-items-center xl:hidden"
             >
-              <Menu strokeWidth={1} className="size-5" aria-hidden="true" />
+              <Menu strokeWidth={1.25} className="size-5" aria-hidden="true" />
             </button>
             <div className="hidden xl:block">
               <Logo />
@@ -171,7 +223,7 @@ export function Header() {
           <nav
             ref={primaryNavRef}
             aria-label="Primary"
-            className="header-primary-nav hidden min-w-0 flex-1 xl:block"
+            className="header-primary-nav hidden min-w-0 justify-self-center xl:block"
             onPointerLeave={() => {
               hoveredNavIdRef.current = null;
               const focusedId = primaryNavRef.current
@@ -197,12 +249,26 @@ export function Header() {
               skipDelayDuration={120}
               className="header-navigation-menu"
             >
-              <NavigationMenuPrimitive.List className="grid grid-cols-6 items-center">
+              <NavigationMenuPrimitive.List className="flex items-center justify-center gap-1 2xl:gap-3">
+                <NavigationMenuPrimitive.Item className="header-nav-item">
+                  <NavigationMenuPrimitive.Link asChild>
+                    <Link
+                      to={homeNavItem.to}
+                      {...navInteractionProps(homeNavItem.id)}
+                      data-active={activeNavId === homeNavItem.id}
+                      aria-current={activeNavId === homeNavItem.id ? "page" : undefined}
+                      className="nav-link inline-flex min-h-11 w-full items-center justify-center px-3 text-center"
+                    >
+                      <span data-nav-label>{t(homeNavItem.label)}</span>
+                    </Link>
+                  </NavigationMenuPrimitive.Link>
+                </NavigationMenuPrimitive.Item>
+
                 <NavigationMenuPrimitive.Item value="brands" className="header-nav-item">
                   <NavigationMenuPrimitive.Trigger
                     {...navInteractionProps("brands")}
                     data-active={activeNavId === "brands"}
-                    className="nav-link label-xs inline-flex min-h-11 w-full items-center justify-center gap-1.5 px-1 text-center text-foreground"
+                    className="nav-link inline-flex min-h-11 w-full items-center justify-center gap-1.5 px-3 text-center"
                   >
                     <span data-nav-label>{t("nav.brands")}</span>
                     <ChevronDown className="nav-chevron size-3" aria-hidden="true" />
@@ -221,7 +287,7 @@ export function Header() {
                   <NavigationMenuPrimitive.Trigger
                     {...navInteractionProps("categories")}
                     data-active={activeNavId === "categories"}
-                    className="nav-link label-xs inline-flex min-h-11 w-full items-center justify-center gap-1.5 px-1 text-center text-foreground"
+                    className="nav-link inline-flex min-h-11 w-full items-center justify-center gap-1.5 px-3 text-center"
                   >
                     <span data-nav-label>{t("nav.categories")}</span>
                     <ChevronDown className="nav-chevron size-3" aria-hidden="true" />
@@ -244,7 +310,7 @@ export function Header() {
                         {...navInteractionProps(item.id)}
                         data-active={activeNavId === item.id}
                         aria-current={activeNavId === item.id ? "page" : undefined}
-                        className="nav-link label-xs inline-flex min-h-11 w-full items-center justify-center px-1 text-center text-foreground"
+                        className="nav-link inline-flex min-h-11 w-full items-center justify-center px-3 text-center"
                       >
                         <span data-nav-label>{t(item.label)}</span>
                       </Link>
@@ -270,64 +336,58 @@ export function Header() {
             />
           </nav>
 
-          <div className="flex shrink-0 items-center justify-self-end gap-0.5">
+          <div className="header-actions justify-self-end">
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
               aria-label={t("nav.search")}
-              className="header-action grid h-11 w-11 place-items-center text-foreground"
+              className="header-action grid h-11 w-11 place-items-center"
             >
-              <Search strokeWidth={1} className="size-[18px]" aria-hidden="true" />
+              <Search strokeWidth={1.25} className="size-[18px]" aria-hidden="true" />
             </button>
-            <span className="label-xs hidden items-center gap-1 border border-border px-2 py-1.5 text-[0.55rem] text-taupe 2xl:inline-flex">
-              <kbd>⌘</kbd>
-              <kbd>K</kbd>
-            </span>
             <button
               type="button"
               onClick={() => setLocale(locale === "ar" ? "en" : "ar")}
               aria-label={locale === "ar" ? "Switch to English" : "التبديل إلى العربية"}
               lang={locale === "ar" ? "en" : "ar"}
               dir={locale === "ar" ? "ltr" : "rtl"}
-              className={`label-xs hidden min-h-11 min-w-11 items-center justify-center px-2 text-taupe transition-colors hover:text-gold xl:flex ${
-                locale === "ar" ? "" : "font-arabic text-sm normal-case tracking-normal"
+              className={`header-action header-locale hidden h-11 min-w-11 place-items-center sm:grid ${
+                locale === "ar" ? "" : "font-arabic"
               }`}
             >
               {locale === "ar" ? "EN" : "ع"}
             </button>
+
+            <span className="header-actions__divider" aria-hidden="true" />
+
             <Link
-              to={user ? "/account" : "/sign-in"}
+              to={accountTo}
               search={user ? { section: undefined } : { returnTo: undefined }}
-              aria-label="Account"
-              className="header-action hidden h-11 w-11 place-items-center text-foreground sm:grid"
+              aria-label={t("nav.account")}
+              className="header-action hidden h-11 w-11 place-items-center sm:grid"
             >
-              <User strokeWidth={1} className="size-[18px]" aria-hidden="true" />
+              <User strokeWidth={1.25} className="size-[18px]" aria-hidden="true" />
             </Link>
             <Link
-              to={user ? "/account" : "/sign-in"}
+              to={accountTo}
               search={user ? { section: "wishlist" } : { returnTo: undefined }}
-              aria-label={`Wishlist, ${wishlist.length} items`}
-              className="header-action relative hidden h-11 w-11 place-items-center text-foreground sm:grid"
+              aria-label={`${copy.wishlist}, ${wishlist.length}`}
+              className="header-action relative hidden h-11 w-11 place-items-center sm:grid"
             >
-              <Heart strokeWidth={1} className="size-[18px]" aria-hidden="true" />
-              {wishlist.length > 0 && (
-                <span className="absolute right-1.5 top-2 size-1.5 rounded-full bg-gold" />
-              )}
+              <Heart strokeWidth={1.25} className="size-[18px]" aria-hidden="true" />
+              {wishlist.length > 0 && <span className="header-dot" aria-hidden="true" />}
             </Link>
             <button
               type="button"
               onClick={() => setCartOpen(true)}
               aria-label={`${t("nav.bag")}, ${count}`}
-              className="header-action relative grid h-11 w-11 place-items-center text-foreground"
+              className="header-action relative grid h-11 w-11 place-items-center"
             >
               <span key={cartFeedbackKey} className={cartFeedbackKey ? "bag-feedback" : undefined}>
-                <ShoppingBag strokeWidth={1} className="size-[18px]" aria-hidden="true" />
+                <ShoppingBag strokeWidth={1.25} className="size-[18px]" aria-hidden="true" />
               </span>
               {count > 0 && (
-                <span
-                  key={count}
-                  className="count-change label-xs absolute -right-0.5 top-1.5 grid size-4 place-items-center rounded-full bg-gold text-[0.55rem] text-warm-white"
-                >
+                <span key={count} className="count-change header-badge" aria-hidden="true">
                   {count}
                 </span>
               )}
@@ -342,114 +402,176 @@ export function Header() {
         <SheetContent
           side={locale === "ar" ? "right" : "left"}
           showCloseButton={false}
-          className="w-full border-r border-border bg-warm-white p-0 sm:max-w-sm"
+          className="mobile-nav w-full p-0 sm:max-w-sm"
         >
-          <SheetTitle className="sr-only">Menu</SheetTitle>
-          <div className="flex items-center justify-between border-b border-border px-6 py-5">
+          <SheetTitle className="sr-only">{t("nav.menu")}</SheetTitle>
+          <div className="mobile-nav__head">
             <Logo size="sm" tagline={false} />
             <button
               type="button"
               onClick={() => setMenu(false)}
-              aria-label="Close menu"
-              className="grid h-11 w-11 place-items-center text-taupe"
+              aria-label={copy.close}
+              className="header-action grid h-11 w-11 place-items-center"
             >
-              <X strokeWidth={1} className="size-5" aria-hidden="true" />
+              <X strokeWidth={1.25} className="size-5" aria-hidden="true" />
             </button>
           </div>
-          <nav aria-label="Mobile" className="px-6 py-8">
-            <ul className="space-y-5">
-              <li className="rise-in" style={{ animationDelay: "40ms" }}>
-                <Link
-                  to="/shop"
-                  onClick={() => setMenu(false)}
-                  className="block font-serif text-3xl leading-tight transition-colors duration-200 hover:text-gold"
-                >
-                  {t("nav.shop")}
-                </Link>
-              </li>
-              {utilityNav.slice(0, 2).map((item, index) => (
-                <li
-                  key={item.id}
-                  className="rise-in"
-                  style={{ animationDelay: `${70 + index * 30}ms` }}
-                >
+
+          <div className="mobile-nav__body">
+            <nav aria-label="Mobile">
+              <ul className="mobile-nav__list">
+                <li>
                   <Link
-                    to={item.to}
+                    to={homeNavItem.to}
                     onClick={() => setMenu(false)}
-                    className="block font-serif text-3xl leading-tight transition-colors duration-200 hover:text-gold"
+                    aria-current={activeNavId === homeNavItem.id ? "page" : undefined}
+                    className="mobile-nav__link"
                   >
-                    {t(item.label)}
+                    {t(homeNavItem.label)}
                   </Link>
                 </li>
-              ))}
-            </ul>
 
-            <MobileCatalogGroup label={t("nav.categories")}>
-              {(categories.data ?? []).map((category) => (
-                <Link
-                  key={category.id}
-                  to="/shop"
-                  search={{ category: category.slug }}
-                  onClick={() => setMenu(false)}
-                  className="inline-flex min-h-11 items-center text-sm transition-colors hover:text-gold"
-                >
-                  {locale === "ar" ? category.nameAr : category.nameEn}
-                </Link>
-              ))}
-            </MobileCatalogGroup>
+                <li>
+                  <MobileCatalogGroup id="brands" label={t("nav.brands")}>
+                    {visibleBrands.length ? (
+                      <ul className="mobile-nav__sublist">
+                        {visibleBrands.map((brand) => (
+                          <li key={brand.id}>
+                            <Link
+                              to="/shop"
+                              search={{ brand: brand.slug }}
+                              onClick={() => setMenu(false)}
+                              className="mobile-nav__sublink"
+                            >
+                              <span>{brand.name}</span>
+                              <small>{brand.productCount}</small>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="mobile-nav__empty">{copy.brandsEmpty}</p>
+                    )}
+                    <Link
+                      to="/shop"
+                      onClick={() => setMenu(false)}
+                      className="mobile-nav__subaction"
+                    >
+                      {copy.viewAllBrands}
+                    </Link>
+                  </MobileCatalogGroup>
+                </li>
 
-            <MobileCatalogGroup label={t("nav.brands")}>
-              {visibleBrands.map((brand) => (
-                <Link
-                  key={brand.id}
-                  to="/shop"
-                  search={{ brand: brand.slug }}
-                  onClick={() => setMenu(false)}
-                  className="inline-flex min-h-11 items-center text-sm transition-colors hover:text-gold"
-                >
-                  {brand.name}
-                </Link>
-              ))}
-            </MobileCatalogGroup>
+                <li>
+                  <MobileCatalogGroup id="categories" label={t("nav.categories")}>
+                    {categories.data?.length ? (
+                      <ul className="mobile-nav__sublist">
+                        {categories.data.map((category) => (
+                          <li key={category.id}>
+                            <Link
+                              to="/shop"
+                              search={{ category: category.slug }}
+                              onClick={() => setMenu(false)}
+                              className="mobile-nav__sublink"
+                            >
+                              <span>{locale === "ar" ? category.nameAr : category.nameEn}</span>
+                              <small>{category.productCount}</small>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="mobile-nav__empty">{copy.categoriesEmpty}</p>
+                    )}
+                    <Link
+                      to="/shop"
+                      onClick={() => setMenu(false)}
+                      className="mobile-nav__subaction"
+                    >
+                      {copy.viewAllProducts}
+                    </Link>
+                  </MobileCatalogGroup>
+                </li>
 
-            <div className="rule-gold my-7" />
-            <ul className="space-y-4">
-              {[
-                { to: "/journal", label: t("nav.about") },
-                { to: "/contact", label: t("footer.contact") },
-                { to: "/account", label: t("nav.account") },
-                { to: "/cart", label: t("nav.bag") },
-              ].map((l, i) => (
-                <li key={l.to} className="rise-in" style={{ animationDelay: `${200 + i * 25}ms` }}>
+                {utilityNav.map((item) => (
+                  <li key={item.id}>
+                    <Link
+                      to={item.to}
+                      onClick={() => setMenu(false)}
+                      aria-current={activeNavId === item.id ? "page" : undefined}
+                      className="mobile-nav__link"
+                    >
+                      {t(item.label)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <div className="mobile-nav__foot">
+              <ul className="mobile-nav__utility">
+                <li>
                   <Link
-                    to={l.to}
+                    to={accountTo}
+                    search={user ? { section: undefined } : { returnTo: undefined }}
                     onClick={() => setMenu(false)}
-                    className="label-sm text-taupe hover:text-gold"
+                    className="mobile-nav__utility-link"
                   >
-                    {l.label}
+                    <User strokeWidth={1.25} className="size-4" aria-hidden="true" />
+                    {t("nav.account")}
                   </Link>
                 </li>
-              ))}
-            </ul>
-            <div className="mt-8 flex items-center justify-between border-t border-border pt-6">
-              <span className="label-xs text-taupe">Language</span>
-              <button
-                type="button"
-                onClick={() => setLocale(locale === "ar" ? "en" : "ar")}
-                lang={locale === "ar" ? "en" : "ar"}
-                dir={locale === "ar" ? "ltr" : "rtl"}
-                className={`label-xs inline-flex min-h-11 min-w-20 items-center justify-center border border-border px-4 py-2 text-center text-gold ${
-                  locale === "ar" ? "" : "font-arabic text-sm normal-case tracking-normal"
-                }`}
-              >
-                {locale === "ar" ? "English" : "العربية"}
-              </button>
+                <li>
+                  <Link
+                    to={accountTo}
+                    search={user ? { section: "wishlist" } : { returnTo: undefined }}
+                    onClick={() => setMenu(false)}
+                    className="mobile-nav__utility-link"
+                  >
+                    <Heart strokeWidth={1.25} className="size-4" aria-hidden="true" />
+                    {copy.wishlist}
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/cart"
+                    onClick={() => setMenu(false)}
+                    className="mobile-nav__utility-link"
+                  >
+                    <ShoppingBag strokeWidth={1.25} className="size-4" aria-hidden="true" />
+                    {t("nav.bag")}
+                  </Link>
+                </li>
+              </ul>
+
+              <div className="mobile-nav__locale">
+                <span className="label-xs text-taupe">{copy.language}</span>
+                <button
+                  type="button"
+                  onClick={() => setLocale(locale === "ar" ? "en" : "ar")}
+                  lang={locale === "ar" ? "en" : "ar"}
+                  dir={locale === "ar" ? "ltr" : "rtl"}
+                  className={`label-xs inline-flex min-h-11 min-w-24 items-center justify-center border border-border px-4 text-center text-gold ${
+                    locale === "ar" ? "" : "font-arabic text-sm normal-case tracking-normal"
+                  }`}
+                >
+                  {locale === "ar" ? "English" : "العربية"}
+                </button>
+              </div>
             </div>
-          </nav>
+          </div>
         </SheetContent>
       </Sheet>
     </header>
   );
+}
+
+type BrandGroup = [letter: string, brands: PublicBrandListItemResponse[]];
+
+/** Columns are derived from the catalogue size so the panel never opens wider —
+ *  or emptier — than the number of brands justifies. */
+function directoryColumns(entries: number, groups: number) {
+  return Math.min(4, Math.max(2, Math.ceil(entries / 5)), Math.max(1, groups));
 }
 
 function BrandsMegaMenu({
@@ -463,7 +585,8 @@ function BrandsMegaMenu({
   locale: "ar" | "en";
   onNavigate: () => void;
 }) {
-  const groups = useMemo(() => {
+  const copy = headerCopy[locale];
+  const groups = useMemo<BrandGroup[]>(() => {
     const grouped = new Map<string, PublicBrandListItemResponse[]>();
     for (const brand of brands) {
       const first = brand.name.trim().charAt(0).toLocaleUpperCase(locale);
@@ -473,76 +596,101 @@ function BrandsMegaMenu({
     return Array.from(grouped.entries()).sort(([a], [b]) => a.localeCompare(b, locale));
   }, [brands, locale]);
 
+  // Only surface a shortlist when it is genuinely a shortlist of the catalogue.
+  const popular = useMemo(
+    () =>
+      brands.length >= 6
+        ? [...brands].sort((a, b) => b.productCount - a.productCount).slice(0, 5)
+        : [],
+    [brands],
+  );
+
+  const columns = directoryColumns(brands.length, groups.length);
+
+  // Fill the shortest column first so the directory stays balanced instead of
+  // leaving one column empty when a letter carries most of the catalogue.
+  const columnGroups = useMemo(() => {
+    const filled: BrandGroup[][] = Array.from({ length: columns }, () => []);
+    const weights = new Array<number>(columns).fill(0);
+    for (const group of groups) {
+      let target = 0;
+      for (let index = 1; index < columns; index += 1) {
+        if ((weights[index] ?? 0) < (weights[target] ?? 0)) target = index;
+      }
+      filled[target]?.push(group);
+      weights[target] = (weights[target] ?? 0) + group[1].length + 1.5;
+    }
+    return filled.filter((column) => column.length > 0);
+  }, [columns, groups]);
+
   return (
     <div
-      className="header-mega-panel header-mega-panel--brands"
+      className="header-mega-panel"
       dir={locale === "ar" ? "rtl" : "ltr"}
+      style={{ "--mega-columns": columnGroups.length || 1 } as CSSProperties}
     >
       <div className="header-mega-heading">
-        <div>
-          <p className="label-xs text-gold">
-            {locale === "ar" ? "دليل العلامات" : "Brand directory"}
-          </p>
-          <p className="mt-2 text-sm text-taupe">
-            {locale === "ar"
-              ? "اكتشفي مجموعتنا حسب العلامة التجارية"
-              : "Explore the collection by beauty house."}
-          </p>
-        </div>
-        <Link to="/shop" onClick={onNavigate} className="header-mega-all label-xs">
-          {locale === "ar" ? "عرض كل المنتجات" : "View all products"}
+        <p className="header-mega-eyebrow">{copy.brandDirectory}</p>
+        <Link to="/shop" onClick={onNavigate} className="header-mega-all">
+          {copy.viewAllBrands}
+          <ChevronDown className="size-3 -rotate-90 rtl:rotate-90" aria-hidden="true" />
         </Link>
       </div>
 
       {loading ? (
-        <MegaMenuSkeleton columns={4} />
+        <MegaMenuSkeleton rows={6} />
       ) : groups.length ? (
-        <div className="brand-directory">
-          {groups.map(([letter, entries]) => (
-            <section
-              key={letter}
-              className="brand-directory__group"
-              aria-labelledby={`brand-${letter}`}
-            >
-              <h3 id={`brand-${letter}`} className="brand-directory__letter">
-                {letter}
-              </h3>
+        <>
+          {popular.length > 0 && (
+            <section className="header-mega-popular" aria-label={copy.popular}>
+              <h3>{copy.popular}</h3>
               <ul>
-                {entries.map((brand) => (
+                {popular.map((brand) => (
                   <li key={brand.id}>
-                    <Link
-                      to="/shop"
-                      search={{ brand: brand.slug }}
-                      onClick={onNavigate}
-                      className="brand-directory__link"
-                    >
-                      {brand.logoUrl ? (
-                        <img
-                          src={brand.logoUrl}
-                          alt=""
-                          loading="lazy"
-                          className="brand-directory__logo"
-                        />
-                      ) : (
-                        <span className="brand-directory__monogram" aria-hidden="true">
-                          {brand.name.charAt(0)}
-                        </span>
-                      )}
-                      <span>{brand.name}</span>
-                      <small>{brand.productCount}</small>
+                    <Link to="/shop" search={{ brand: brand.slug }} onClick={onNavigate}>
+                      {brand.name}
                     </Link>
                   </li>
                 ))}
               </ul>
             </section>
-          ))}
-        </div>
+          )}
+
+          <div className="brand-directory">
+            {columnGroups.map((column, index) => (
+              <div key={column[0]?.[0] ?? index} className="brand-directory__column">
+                {column.map(([letter, entries]) => (
+                  <section
+                    key={letter}
+                    className="brand-directory__group"
+                    aria-labelledby={`brand-${letter}`}
+                  >
+                    <h3 id={`brand-${letter}`} className="brand-directory__letter">
+                      {letter}
+                    </h3>
+                    <ul>
+                      {entries.map((brand) => (
+                        <li key={brand.id}>
+                          <Link
+                            to="/shop"
+                            search={{ brand: brand.slug }}
+                            onClick={onNavigate}
+                            className="brand-directory__link"
+                          >
+                            <span>{brand.name}</span>
+                            <small>{brand.productCount}</small>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                ))}
+              </div>
+            ))}
+          </div>
+        </>
       ) : (
-        <p className="header-mega-empty">
-          {locale === "ar"
-            ? "ستظهر العلامات المتاحة هنا قريباً."
-            : "Available brands will appear here soon."}
-        </p>
+        <p className="header-mega-empty">{copy.brandsEmpty}</p>
       )}
     </div>
   );
@@ -559,29 +707,25 @@ function CategoriesMegaMenu({
   locale: "ar" | "en";
   onNavigate: () => void;
 }) {
+  const copy = headerCopy[locale];
+  const columns = Math.min(4, Math.max(2, categories.length));
+
   return (
     <div
-      className="header-mega-panel header-mega-panel--categories"
+      className="header-mega-panel"
       dir={locale === "ar" ? "rtl" : "ltr"}
+      style={{ "--mega-columns": columns } as CSSProperties}
     >
       <div className="header-mega-heading">
-        <div>
-          <p className="label-xs text-gold">
-            {locale === "ar" ? "تسوقي حسب الفئة" : "Shop by category"}
-          </p>
-          <p className="mt-2 text-sm text-taupe">
-            {locale === "ar"
-              ? "اعثري على ما يناسب روتينك بسرعة"
-              : "Find the right edit for your ritual."}
-          </p>
-        </div>
-        <Link to="/shop" onClick={onNavigate} className="header-mega-all label-xs">
-          {locale === "ar" ? "المجموعة الكاملة" : "The full collection"}
+        <p className="header-mega-eyebrow">{copy.categoryDirectory}</p>
+        <Link to="/shop" onClick={onNavigate} className="header-mega-all">
+          {copy.viewAllProducts}
+          <ChevronDown className="size-3 -rotate-90 rtl:rotate-90" aria-hidden="true" />
         </Link>
       </div>
 
       {loading ? (
-        <MegaMenuSkeleton columns={5} />
+        <MegaMenuSkeleton rows={4} />
       ) : categories.length ? (
         <ul className="category-directory">
           {categories.map((category) => (
@@ -593,48 +737,43 @@ function CategoriesMegaMenu({
                 className="category-directory__link"
               >
                 <span>{locale === "ar" ? category.nameAr : category.nameEn}</span>
-                <small>
-                  {category.productCount}{" "}
-                  {locale === "ar" ? "منتج" : category.productCount === 1 ? "product" : "products"}
-                </small>
-                <ChevronDown className="size-3 -rotate-90 rtl:rotate-90" aria-hidden="true" />
+                <small>{copy.products(category.productCount)}</small>
               </Link>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="header-mega-empty">
-          {locale === "ar"
-            ? "ستظهر الفئات المتاحة هنا قريباً."
-            : "Available categories will appear here soon."}
-        </p>
+        <p className="header-mega-empty">{copy.categoriesEmpty}</p>
       )}
     </div>
   );
 }
 
-function MegaMenuSkeleton({ columns }: { columns: number }) {
+function MegaMenuSkeleton({ rows }: { rows: number }) {
   return (
-    <div
-      className="mega-menu-skeleton"
-      style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
-      aria-hidden="true"
-    >
-      {Array.from({ length: columns }, (_, index) => (
+    <div className="mega-menu-skeleton" aria-hidden="true">
+      {Array.from({ length: rows }, (_, index) => (
         <span key={index} />
       ))}
     </div>
   );
 }
 
-function MobileCatalogGroup({ label, children }: { label: string; children: ReactNode }) {
+function MobileCatalogGroup({
+  id,
+  label,
+  children,
+}: {
+  id: string;
+  label: string;
+  children: ReactNode;
+}) {
   return (
-    <details className="mobile-catalog-group border-b border-border py-2">
-      <summary className="label-sm flex min-h-12 cursor-pointer list-none items-center justify-between">
-        {label}
-        <ChevronDown className="size-4 transition-transform duration-200" aria-hidden="true" />
-      </summary>
-      <div className="grid max-h-64 grid-cols-2 gap-x-4 overflow-y-auto pb-4 pt-2">{children}</div>
-    </details>
+    <Accordion type="single" collapsible className="mobile-nav__group">
+      <AccordionItem value={id} className="border-0">
+        <AccordionTrigger className="mobile-nav__link">{label}</AccordionTrigger>
+        <AccordionContent className="pb-5 pt-0">{children}</AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }

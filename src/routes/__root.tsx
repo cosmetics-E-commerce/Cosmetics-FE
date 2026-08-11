@@ -189,6 +189,7 @@ function RootComponent() {
   const { pathname } = useLocation();
   const pageRef = useRef<HTMLDivElement>(null);
   const isFirstRender = useRef(true);
+  const isHome = pathname === "/";
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -219,7 +220,7 @@ function RootComponent() {
               id="main-content"
               tabIndex={-1}
               className="flex-1 outline-none"
-              style={{ paddingTop: "var(--store-header-offset, 103px)" }}
+              style={{ paddingTop: isHome ? 0 : "var(--store-header-offset, 103px)" }}
             >
               <div ref={pageRef} key={pathname} className="motion-page">
                 <Outlet />

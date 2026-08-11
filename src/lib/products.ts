@@ -8,6 +8,11 @@ import catFragrance from "@/assets/cat-fragrance.jpg";
 import storyLarge from "@/assets/story-large.jpg";
 import storyDetail from "@/assets/story-detail.jpg";
 import hero from "@/assets/hero.jpg";
+import heroSlide1 from "@/assets/hero-slide-1.jpg";
+import heroSlide2 from "@/assets/hero-slide-2.jpg";
+import heroSlide3 from "@/assets/hero-slide-3.jpg";
+import beautyDifferenceBefore from "@/assets/beauty-difference-before.jpg";
+import beautyDifferenceAfter from "@/assets/beauty-difference-after.jpg";
 
 export const images = {
   serum,
@@ -20,6 +25,11 @@ export const images = {
   storyLarge,
   storyDetail,
   hero,
+  heroSlide1,
+  heroSlide2,
+  heroSlide3,
+  beautyDifferenceBefore,
+  beautyDifferenceAfter,
 };
 
 export type IngredientInfo = {
