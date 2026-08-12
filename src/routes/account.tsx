@@ -2,13 +2,19 @@ import { useState, type ReactNode } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  ArrowRight,
+  CheckCircle2,
+  Clipboard,
+  CreditCard,
   ExternalLink,
+  Heart,
   LoaderCircle,
   MapPin,
   Package,
   RefreshCw,
   Trash2,
   Truck,
+  Upload,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -25,6 +31,7 @@ import { ProductCard } from "@/components/shop/ProductCard";
 import {
   apiErrorMessage,
   createAddress,
+  createPayment,
   deleteAddress,
   getOrderTracking,
   getProfile,
@@ -34,7 +41,9 @@ import {
   refreshOrderTracking,
   setDefaultAddress,
   updateProfile,
+  uploadPaymentProof,
   type AddressResponse,
+  type OrderSummary,
   type OrderTracking,
 } from "@/lib/api";
 import { formatPrice } from "@/lib/products";
@@ -52,15 +61,15 @@ export const Route = createFileRoute("/account")({
         ? raw["section"]
         : undefined,
   }),
-  head: () => ({ meta: [{ title: "My account — BIOREZA" }] }),
+  head: () => ({ meta: [{ title: "My account - BIOREZA" }] }),
   component: Account,
 });
 const tabs = [
-  { label: "Overview", value: "overview" },
-  { label: "Orders", value: "orders" },
-  { label: "Wishlist", value: "wishlist" },
-  { label: "Addresses", value: "addresses" },
-  { label: "Settings", value: "settings" },
+  { label: { en: "Overview", ar: "نظرة عامة" }, value: "overview" },
+  { label: { en: "Orders", ar: "الطلبات" }, value: "orders" },
+  { label: { en: "Wishlist", ar: "المفضلة" }, value: "wishlist" },
+  { label: { en: "Addresses", ar: "العناوين" }, value: "addresses" },
+  { label: { en: "Settings", ar: "الإعدادات" }, value: "settings" },
 ] as const;
 function Account() {
   const { user, authHydrated, signOut, wishlist, locale } = useStore();
@@ -69,8 +78,11 @@ function Account() {
   const search = Route.useSearch();
   const tab = search.section ?? "overview";
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+  const [expandedPaymentOrderId, setExpandedPaymentOrderId] = useState<string | null>(null);
   const [signOutOpen, setSignOutOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [addressToDelete, setAddressToDelete] = useState<AddressResponse | null>(null);
+  const [deletingAddress, setDeletingAddress] = useState(false);
   const profile = useQuery({
     queryKey: ["account", "profile"],
     queryFn: getProfile,
@@ -130,6 +142,16 @@ function Account() {
   const name = profile.data
     ? `${profile.data.firstName} ${profile.data.lastName}`
     : `${user.firstName} ${user.lastName}`;
+  const firstName = profile.data?.firstName || user.firstName;
+  const recentOrders = [...(orders.data ?? [])]
+    .sort((left, right) => Date.parse(right.placedAt) - Date.parse(left.placedAt))
+    .slice(0, 3);
+  const defaultAddress =
+    addresses.data?.find((address) => address.isDefault) ?? addresses.data?.[0] ?? null;
+  const wishlistPreview = (wishlistProducts.data?.items ?? [])
+    .slice(0, 3)
+    .map((item) => mapProduct(item.product, locale));
+  const wishlistCount = wishlistProducts.data?.totalItems ?? wishlist.length;
   const signOutCopy =
     locale === "ar"
       ? {
@@ -164,18 +186,75 @@ function Account() {
     }
   };
 
+  const handleDeleteAddress = async () => {
+    if (!addressToDelete || deletingAddress) return;
+    setDeletingAddress(true);
+    try {
+      await deleteAddress(addressToDelete.id);
+      await client.invalidateQueries({ queryKey: ["account", "addresses"] });
+      setAddressToDelete(null);
+      toast(locale === "ar" ? "تم حذف العنوان" : "Address deleted");
+    } catch (error) {
+      toast.error(apiErrorMessage(error, locale));
+    } finally {
+      setDeletingAddress(false);
+    }
+  };
+
   return (
-    <div className="sf-account-page mx-auto max-w-[1560px] px-5 py-14 md:px-10 lg:py-20">
-      <Reveal stagger distance={20}>
-        <p className="label-xs text-gold">Client account</p>
-        <h1 className="display mt-5 text-[clamp(2.2rem,4.4vw,3.4rem)]">Welcome, {name}.</h1>
+    <main className="sf-account-page account-page">
+      <Reveal stagger distance={20} className="account-hero">
+        <div className="account-hero__copy">
+          <p className="account-eyebrow">
+            {locale === "ar" ? "حسابك في بيوريزا" : "Your BIOREZA account"}
+          </p>
+          <h1>{locale === "ar" ? `مرحباً بعودتك، ${firstName}` : `Welcome back, ${firstName}.`}</h1>
+          <p className="account-hero__intro">
+            {locale === "ar"
+              ? "تابعي طلباتك واحتفظي بمفضلاتك وحدّثي تفاصيل التوصيل من مكان واحد."
+              : "Track orders, revisit saved pieces, and keep your delivery details up to date."}
+          </p>
+        </div>
+        <dl
+          className="account-hero__registry"
+          aria-label={locale === "ar" ? "ملخص الحساب" : "Account registry"}
+        >
+          <div>
+            <dt>{locale === "ar" ? "تفاصيل الحساب" : "Account details"}</dt>
+            <dd>{name}</dd>
+            <small>{profile.data?.email ?? user.email ?? user.phone}</small>
+          </div>
+          <div>
+            <dt>{locale === "ar" ? "الطلبات" : "Orders"}</dt>
+            <dd>
+              <data value={orders.data?.length ?? 0}>{orders.data?.length ?? 0}</data>
+            </dd>
+          </div>
+          <div>
+            <dt>{locale === "ar" ? "المحفوظ" : "Saved"}</dt>
+            <dd>
+              <data value={wishlistCount}>{wishlistCount}</data>
+            </dd>
+          </div>
+          <div>
+            <dt>{locale === "ar" ? "العناوين" : "Addresses"}</dt>
+            <dd>
+              <data value={addresses.data?.length ?? 0}>{addresses.data?.length ?? 0}</data>
+            </dd>
+          </div>
+        </dl>
       </Reveal>
-      <Reveal stagger className="mt-12 grid gap-14 lg:grid-cols-[220px_1fr]">
-        <nav className="account-nav h-fit">
-          <ul className="flex gap-6 overflow-auto border-b border-border pb-3 lg:flex-col lg:border-b-0 lg:border-e lg:pe-6">
+
+      <Reveal className="account-shell">
+        <nav
+          className="account-nav"
+          aria-label={locale === "ar" ? "أقسام الحساب" : "Account sections"}
+        >
+          <ul>
             {tabs.map((item) => (
               <li key={item.value}>
                 <button
+                  type="button"
                   onClick={() =>
                     void navigate({
                       to: "/account",
@@ -185,17 +264,17 @@ function Account() {
                     })
                   }
                   aria-current={tab === item.value ? "page" : undefined}
-                  className={`label-xs min-h-11 whitespace-nowrap ${tab === item.value ? "text-gold" : "text-taupe"}`}
+                  className="account-nav__button"
                 >
-                  {item.label}
+                  {item.label[locale]}
                 </button>
               </li>
             ))}
-            <li>
+            <li className="account-nav__signout">
               <button
                 type="button"
                 onClick={() => setSignOutOpen(true)}
-                className="label-xs min-h-11 text-taupe transition-colors duration-150 hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold focus-visible:ring-offset-4"
+                className="account-nav__button account-nav__button--signout"
               >
                 {signOutCopy.trigger}
               </button>
@@ -204,169 +283,234 @@ function Account() {
         </nav>
         <section key={tab} className="account-panel">
           {tab === "overview" && (
-            <Reveal stagger className="grid gap-6 sm:grid-cols-3">
-              {[
-                { label: "Orders", value: orders.data?.length ?? 0, section: "orders" as const },
-                { label: "Wishlist", value: wishlist.length, section: "wishlist" as const },
-                {
-                  label: "Addresses",
-                  value: addresses.data?.length ?? 0,
-                  section: "addresses" as const,
-                },
-              ].map(({ label, value, section }) => (
-                <button
-                  type="button"
-                  key={label}
-                  onClick={() => void navigate({ to: "/account", search: { section } })}
-                  className="account-overview-card border border-border bg-ivory p-8 text-start"
-                >
-                  <p className="label-xs text-taupe">{label}</p>
-                  <p className="mt-4 font-serif text-4xl">{value}</p>
-                  <span className="label-xs mt-5 inline-block text-gold">
-                    View {String(label).toLowerCase()}
-                  </span>
-                </button>
-              ))}
-            </Reveal>
+            <Overview
+              locale={locale}
+              orders={recentOrders}
+              ordersLoading={orders.isLoading}
+              ordersError={orders.isError}
+              wishlistCount={wishlistCount}
+              defaultAddress={defaultAddress}
+              wishlistPreview={wishlistPreview}
+              wishlistLoading={wishlistProducts.isLoading}
+              onRetryOrders={() => void orders.refetch()}
+              onNavigate={(section) => void navigate({ to: "/account", search: { section } })}
+            />
           )}
           {tab === "orders" && (
-            <div>
+            <div className="account-detail account-orders">
+              <AccountSectionHeading
+                title={locale === "ar" ? "طلباتك" : "Your orders"}
+                meta={`${orders.data?.length ?? 0} ${locale === "ar" ? "طلب" : orders.data?.length === 1 ? "order" : "orders"}`}
+              />
               {orders.isLoading ? (
-                <p>Loading orders...</p>
+                <div
+                  className="account-detail-skeleton account-detail-skeleton--orders"
+                  aria-label={locale === "ar" ? "جارٍ تحميل الطلبات" : "Loading orders"}
+                >
+                  <span />
+                  <span />
+                  <span />
+                </div>
               ) : orders.isError ? (
-                <div className="border border-border px-8 py-14 text-center">
-                  <p className="font-serif text-2xl">Orders could not be loaded.</p>
-                  <Button
-                    variant="line"
-                    size="pill"
-                    className="mt-7"
-                    onClick={() => void orders.refetch()}
-                  >
-                    Try again
+                <div className="account-detail-state">
+                  <Package aria-hidden="true" />
+                  <h3>{locale === "ar" ? "تعذر تحميل الطلبات" : "Orders couldn't be loaded"}</h3>
+                  <p>
+                    {locale === "ar"
+                      ? "تحققي من اتصالك ثم حاولي مرة أخرى."
+                      : "Check your connection, then try again."}
+                  </p>
+                  <Button variant="line" size="pill" onClick={() => void orders.refetch()}>
+                    {locale === "ar" ? "حاولي مرة أخرى" : "Try again"}
                   </Button>
                 </div>
               ) : orders.data?.length ? (
-                <ul className="divide-y divide-border border-y border-border">
+                <ol className="account-orders__list">
                   {orders.data.map((order) => {
                     const status = getOrderStatusCopy(order.status, locale);
+                    const paymentNeeded = canCompletePayment(order);
                     return (
-                      <li
-                        key={order.id}
-                        className="grid gap-5 py-6 sm:grid-cols-[1fr_1.2fr_auto] sm:items-center"
-                      >
-                        <div>
-                          <p className="font-serif text-2xl">{order.orderNumber}</p>
-                          <p className="label-xs mt-2 text-taupe">
+                      <li key={order.id} className="account-orders__item">
+                        <div className="account-orders__index" aria-hidden="true">
+                          {String(orders.data.indexOf(order) + 1).padStart(2, "0")}
+                        </div>
+                        <div className="account-orders__identity">
+                          <small>{locale === "ar" ? "رقم الطلب" : "Order number"}</small>
+                          <h3>{order.orderNumber}</h3>
+                          <p>
                             {new Intl.DateTimeFormat(locale === "ar" ? "ar-EG" : "en-EG", {
                               dateStyle: "medium",
                               timeZone: "Africa/Cairo",
                             }).format(new Date(order.placedAt))}
                           </p>
                         </div>
-                        <div>
-                          <span className="label-xs text-gold">{status.label}</span>
-                          <p className="mt-1 text-xs text-muted-foreground">{status.description}</p>
-                          {expandedOrderId === order.id && (
-                            <OrderTrackingPanel orderId={order.id} locale={locale} />
+                        <div className="account-orders__status">
+                          <span>{status.label}</span>
+                          <p>{status.description}</p>
+                        </div>
+                        <div className="account-orders__actions">
+                          <strong>{formatPrice(order.grandTotal / 100)}</strong>
+                          {paymentNeeded ? (
+                            <button
+                              type="button"
+                              className="account-orders__pay-button"
+                              aria-expanded={expandedPaymentOrderId === order.id}
+                              onClick={() => {
+                                setExpandedOrderId(null);
+                                setExpandedPaymentOrderId((current) =>
+                                  current === order.id ? null : order.id,
+                                );
+                              }}
+                            >
+                              <CreditCard aria-hidden="true" />
+                              {expandedPaymentOrderId === order.id
+                                ? locale === "ar"
+                                  ? "إخفاء الدفع"
+                                  : "Hide payment"
+                                : locale === "ar"
+                                  ? "إكمال الدفع"
+                                  : "Complete payment"}
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              aria-expanded={expandedOrderId === order.id}
+                              onClick={() => {
+                                setExpandedPaymentOrderId(null);
+                                setExpandedOrderId((current) =>
+                                  current === order.id ? null : order.id,
+                                );
+                              }}
+                            >
+                              <Truck aria-hidden="true" />
+                              {expandedOrderId === order.id
+                                ? locale === "ar"
+                                  ? "إخفاء التتبع"
+                                  : "Hide tracking"
+                                : locale === "ar"
+                                  ? "تتبع الطلب"
+                                  : "Track order"}
+                            </button>
                           )}
                         </div>
-                        <div className="flex flex-wrap items-center justify-start gap-3 sm:justify-end">
-                          <span className="font-serif text-xl">
-                            {formatPrice(order.grandTotal / 100)}
-                          </span>
-                          <Button
-                            type="button"
-                            variant="line"
-                            size="pill"
-                            onClick={() =>
-                              setExpandedOrderId((current) =>
-                                current === order.id ? null : order.id,
-                              )
-                            }
-                          >
-                            <Truck className="size-4" />
-                            Tracking
-                          </Button>
-                        </div>
+                        {expandedPaymentOrderId === order.id && (
+                          <PaymentContinuation order={order} locale={locale} />
+                        )}
+                        {expandedOrderId === order.id && (
+                          <OrderTrackingPanel orderId={order.id} locale={locale} />
+                        )}
                       </li>
                     );
                   })}
-                </ul>
+                </ol>
               ) : (
-                <Empty icon={<Package />} text="No orders yet." />
+                <Empty
+                  icon={<Package />}
+                  text={locale === "ar" ? "لا توجد طلبات حتى الآن" : "No orders yet"}
+                  copy={
+                    locale === "ar"
+                      ? "عندما تطلبين شيئاً، ستجدين تفاصيله وحالة توصيله هنا."
+                      : "When you place an order, its details and delivery status will appear here."
+                  }
+                  action={locale === "ar" ? "اكتشفي المنتجات" : "Explore products"}
+                />
               )}
             </div>
           )}
           {tab === "wishlist" && (
-            <div>
-              <div className="flex items-end justify-between gap-4 border-b border-border pb-5">
-                <div>
-                  <p className="label-xs text-gold">Saved selection</p>
-                  <h2 className="mt-3 font-serif text-3xl">Your wishlist</h2>
-                </div>
-                <p className="text-sm text-muted-foreground">
-                  {wishlistProducts.data?.totalItems ?? wishlist.length} saved
-                </p>
-              </div>
+            <div className="account-detail account-wishlist">
+              <AccountSectionHeading
+                title={locale === "ar" ? "قائمة المفضلة" : "Your wishlist"}
+                meta={`${wishlistProducts.data?.totalItems ?? wishlist.length} ${locale === "ar" ? "محفوظ" : "saved"}`}
+                action={locale === "ar" ? "تسوقي المزيد" : "Discover more"}
+                actionTo="/shop"
+              />
               {wishlistProducts.isLoading ? (
-                <div className="mt-8 grid grid-cols-2 gap-5 sm:grid-cols-3">
-                  {[0, 1, 2].map((item) => (
-                    <div key={item} className="animate-pulse">
-                      <div className="aspect-[4/5] bg-stone" />
-                      <div className="mt-4 h-4 w-3/4 bg-stone" />
-                    </div>
-                  ))}
+                <div className="account-detail-skeleton account-detail-skeleton--products">
+                  <span />
+                  <span />
+                  <span />
+                  <span />
                 </div>
               ) : wishlistProducts.isError ? (
-                <div className="mt-8 border border-border px-8 py-14 text-center">
-                  <p role="alert" className="font-serif text-2xl">
-                    Your wishlist could not be loaded.
+                <div className="account-detail-state">
+                  <Heart aria-hidden="true" />
+                  <h3>{locale === "ar" ? "تعذر تحميل المفضلة" : "Wishlist couldn't be loaded"}</h3>
+                  <p role="alert">
+                    {locale === "ar"
+                      ? "اختياراتك ما زالت محفوظة. حاولي تحميلها مرة أخرى."
+                      : "Your saved selection is safe. Try loading it again."}
                   </p>
                   <Button
                     type="button"
                     variant="line"
                     size="pill"
-                    className="mt-7"
                     onClick={() => void wishlistProducts.refetch()}
                   >
-                    Try again
+                    {locale === "ar" ? "حاولي مرة أخرى" : "Try again"}
                   </Button>
                 </div>
               ) : wishlistProducts.data?.items.length ? (
-                <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-12 sm:grid-cols-3 xl:grid-cols-4">
+                <div className="account-wishlist__grid">
                   {wishlistProducts.data.items.map((item) => (
                     <ProductCard key={item.id} product={mapProduct(item.product, locale)} compact />
                   ))}
                 </div>
               ) : (
-                <Empty text="Your wishlist is empty." />
+                <Empty
+                  icon={<Heart />}
+                  text={locale === "ar" ? "قائمة المفضلة فارغة" : "Your wishlist is empty"}
+                  copy={
+                    locale === "ar"
+                      ? "اضغطي على رمز القلب بجانب أي منتج للاحتفاظ به هنا."
+                      : "Use the heart on any product to keep it close for later."
+                  }
+                  action={locale === "ar" ? "اكتشفي المجموعة" : "Discover the collection"}
+                />
               )}
             </div>
           )}
           {tab === "addresses" && (
-            <div>
-              <div className="grid gap-5 sm:grid-cols-2">
+            <div className="account-detail account-addresses">
+              <AccountSectionHeading
+                title={locale === "ar" ? "عناوينك" : "Your addresses"}
+                meta={`${addresses.data?.length ?? 0} ${locale === "ar" ? "عنوان" : addresses.data?.length === 1 ? "address" : "addresses"}`}
+              />
+              <div className="account-addresses__grid">
                 {addresses.data?.map((address) => {
                   const ready = isAddressDeliveryReady(address);
                   return (
-                    <article key={address.id} className="border border-border p-6">
-                      <div className="flex justify-between">
-                        <MapPin className="text-gold" />
-                        <span className="label-xs text-taupe">
-                          {address.isDefault ? "Default" : address.label}
+                    <article
+                      key={address.id}
+                      className="account-address-card"
+                      data-default={address.isDefault || undefined}
+                    >
+                      <header>
+                        <span className="account-address-card__icon">
+                          <MapPin aria-hidden="true" />
                         </span>
-                      </div>
-                      <p className="mt-5 font-serif text-xl">{address.receiverName}</p>
-                      <p className="mt-2 text-sm text-muted-foreground">
+                        <span className="account-address-card__label">
+                          {address.isDefault
+                            ? locale === "ar"
+                              ? "العنوان الأساسي"
+                              : "Default address"
+                            : address.label}
+                        </span>
+                      </header>
+                      <h3>{address.receiverName}</h3>
+                      <p>
                         {address.building} {address.street}, {address.area}, {address.city},{" "}
                         {address.governorate}
                       </p>
+                      <small>{address.phone}</small>
                       {!ready && (
-                        <p className="mt-4 border-s-2 border-destructive/50 bg-destructive/5 px-4 py-3 text-xs text-destructive">
-                          This address needs to be updated before checkout.
-                        </p>
+                        <div className="account-address-card__warning">
+                          {locale === "ar"
+                            ? "يحتاج هذا العنوان إلى تحديث قبل إتمام الطلب."
+                            : "Update this address before using it at checkout."}
+                        </div>
                       )}
-                      <div className="mt-5 flex gap-4">
+                      <footer>
                         {!address.isDefault && (
                           <button
                             type="button"
@@ -375,91 +519,148 @@ function Account() {
                                 client.invalidateQueries({ queryKey: ["account", "addresses"] }),
                               )
                             }
-                            className="label-xs inline-flex min-h-11 items-center text-gold"
                           >
-                            Make default
+                            {locale === "ar" ? "تعيين كأساسي" : "Make default"}
                           </button>
                         )}
                         <button
                           type="button"
-                          onClick={() => {
-                            if (!window.confirm("Delete this address? This cannot be undone."))
-                              return;
-                            void deleteAddress(address.id)
-                              .then(() =>
-                                client.invalidateQueries({ queryKey: ["account", "addresses"] }),
-                              )
-                              .catch((error) => toast.error(apiErrorMessage(error, locale)));
-                          }}
-                          aria-label="Delete address"
-                          className="grid size-11 place-items-center text-taupe transition-colors duration-150 hover:text-destructive"
+                          onClick={() => setAddressToDelete(address)}
+                          aria-label={
+                            locale === "ar"
+                              ? `حذف عنوان ${address.receiverName}`
+                              : `Delete ${address.receiverName}'s address`
+                          }
+                          className="account-address-card__delete"
                         >
-                          <Trash2 className="size-4" />
+                          <Trash2 aria-hidden="true" />
                         </button>
-                      </div>
+                      </footer>
                     </article>
                   );
                 })}
               </div>
-              <div className="mt-10 border-t border-border pt-8">
-                <h2 className="font-serif text-2xl sm:col-span-2">Add a delivery address</h2>
-                <p className="mb-7 mt-2 text-sm text-muted-foreground">
-                  Add enough detail for the courier to find you without calling twice.
-                </p>
-                <AddressForm
-                  initialName={name}
-                  initialPhone={profile.data?.phone ?? user.phone ?? ""}
-                  pending={addressMutation.isPending}
-                  submitLabel="Save address"
-                  onSubmit={(input) =>
-                    addressMutation
-                      .mutateAsync({
-                        ...input,
-                        isDefault: !addresses.data?.length,
-                      })
-                      .then(() => undefined)
-                  }
-                />
+              <div className="account-address-form">
+                <div className="account-address-form__intro">
+                  <span>+</span>
+                  <p>{locale === "ar" ? "عنوان جديد" : "New destination"}</p>
+                  <h2>{locale === "ar" ? "أضيفي عنوان توصيل" : "Add a delivery address"}</h2>
+                  <small>
+                    {locale === "ar"
+                      ? "أضيفي تفاصيل واضحة تساعد المندوب على الوصول إليك بسهولة."
+                      : "Add clear details so the courier can reach you without an extra call."}
+                  </small>
+                </div>
+                <div className="account-address-form__fields">
+                  <AddressForm
+                    initialName={name}
+                    initialPhone={profile.data?.phone ?? user.phone ?? ""}
+                    pending={addressMutation.isPending}
+                    submitLabel={locale === "ar" ? "حفظ العنوان" : "Save address"}
+                    onSubmit={(input) =>
+                      addressMutation
+                        .mutateAsync({
+                          ...input,
+                          isDefault: !addresses.data?.length,
+                        })
+                        .then(() => undefined)
+                    }
+                  />
+                </div>
               </div>
             </div>
           )}
           {tab === "settings" && (
-            <form
-              className="max-w-lg space-y-6"
-              onSubmit={(event) => {
-                event.preventDefault();
-                const data = new FormData(event.currentTarget);
-                profileMutation.mutate({
-                  firstName: data.get("firstName"),
-                  lastName: data.get("lastName"),
-                  phone: data.get("phone"),
-                });
-              }}
-            >
-              {[
-                ["firstName", "First name", profile.data?.firstName],
-                ["lastName", "Last name", profile.data?.lastName],
-                ["phone", "Phone", profile.data?.phone],
-              ].map(([id, label, value]) => (
-                <label key={id} className="label-xs block text-taupe">
-                  {label}
-                  <input
-                    name={id}
-                    type={id === "phone" ? "tel" : "text"}
-                    inputMode={id === "phone" ? "tel" : undefined}
-                    autoComplete={
-                      id === "phone" ? "tel" : id === "firstName" ? "given-name" : "family-name"
-                    }
-                    defaultValue={value}
-                    required
-                    className="mt-2 h-12 w-full border border-input bg-warm-white px-4 text-sm normal-case tracking-normal"
-                  />
-                </label>
-              ))}
-              <Button type="submit" variant="solid" size="pill" loading={profileMutation.isPending}>
-                Save changes
-              </Button>
-            </form>
+            <div className="account-detail account-settings">
+              <AccountSectionHeading
+                title={locale === "ar" ? "إعدادات الحساب" : "Account settings"}
+                meta={locale === "ar" ? "حساب خاص" : "Private account"}
+              />
+              <div className="account-settings__layout">
+                <aside className="account-settings__identity">
+                  <span aria-hidden="true">
+                    {name
+                      .split(" ")
+                      .slice(0, 2)
+                      .map((part) => part.charAt(0))
+                      .join("")
+                      .toUpperCase()}
+                  </span>
+                  <h3>{name}</h3>
+                  <p>{profile.data?.email ?? user.email}</p>
+                  <small>
+                    {locale === "ar"
+                      ? "يُستخدم رقم هاتفك لتحديثات الطلب والتوصيل."
+                      : "Your phone is used for order and delivery updates."}
+                  </small>
+                </aside>
+                <form
+                  className="account-settings__form"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    const data = new FormData(event.currentTarget);
+                    profileMutation.mutate({
+                      firstName: data.get("firstName"),
+                      lastName: data.get("lastName"),
+                      phone: data.get("phone"),
+                    });
+                  }}
+                >
+                  <div className="account-settings__fields">
+                    {[
+                      [
+                        "firstName",
+                        locale === "ar" ? "الاسم الأول" : "First name",
+                        profile.data?.firstName ?? user.firstName,
+                      ],
+                      [
+                        "lastName",
+                        locale === "ar" ? "اسم العائلة" : "Last name",
+                        profile.data?.lastName ?? user.lastName,
+                      ],
+                      [
+                        "phone",
+                        locale === "ar" ? "رقم الهاتف" : "Phone number",
+                        profile.data?.phone ?? user.phone,
+                      ],
+                    ].map(([id, label, value]) => (
+                      <label key={id}>
+                        <span>{label}</span>
+                        <input
+                          name={id}
+                          type={id === "phone" ? "tel" : "text"}
+                          inputMode={id === "phone" ? "tel" : undefined}
+                          autoComplete={
+                            id === "phone"
+                              ? "tel"
+                              : id === "firstName"
+                                ? "given-name"
+                                : "family-name"
+                          }
+                          defaultValue={value}
+                          required
+                        />
+                      </label>
+                    ))}
+                  </div>
+                  <div className="account-settings__footer">
+                    <p>
+                      {locale === "ar"
+                        ? "احفظي التغييرات لتحديث بيانات حسابك."
+                        : "Save to update these details across your account."}
+                    </p>
+                    <Button
+                      type="submit"
+                      variant="solid"
+                      size="pill"
+                      loading={profileMutation.isPending}
+                    >
+                      {locale === "ar" ? "حفظ التغييرات" : "Save changes"}
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </div>
           )}
         </section>
       </Reveal>
@@ -510,7 +711,528 @@ function Account() {
           </div>
         </DialogContent>
       </Dialog>
+      <Dialog
+        open={Boolean(addressToDelete)}
+        onOpenChange={(open) => {
+          if (!open && !deletingAddress) setAddressToDelete(null);
+        }}
+      >
+        <DialogContent
+          dir={locale === "ar" ? "rtl" : "ltr"}
+          showCloseButton={!deletingAddress}
+          className="account-confirm-dialog"
+        >
+          <p className="account-eyebrow">{locale === "ar" ? "دفتر العناوين" : "Address book"}</p>
+          <DialogHeader className="account-confirm-dialog__header">
+            <DialogTitle className="account-confirm-dialog__title">
+              {locale === "ar" ? "حذف هذا العنوان؟" : "Remove this address?"}
+            </DialogTitle>
+            <DialogDescription className="account-confirm-dialog__description">
+              {locale === "ar"
+                ? `سيتم حذف عنوان ${addressToDelete?.receiverName ?? ""} نهائياً من حسابك.`
+                : `${addressToDelete?.receiverName ?? "This address"} will be permanently removed from your account.`}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="account-confirm-dialog__actions">
+            <DialogClose asChild>
+              <Button type="button" variant="quiet" size="pill" disabled={deletingAddress}>
+                {locale === "ar" ? "إلغاء" : "Keep address"}
+              </Button>
+            </DialogClose>
+            <Button
+              type="button"
+              variant="solid"
+              size="pill"
+              loading={deletingAddress}
+              onClick={() => void handleDeleteAddress()}
+            >
+              {locale === "ar" ? "حذف العنوان" : "Remove address"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </main>
+  );
+}
+
+function Overview({
+  locale,
+  orders,
+  ordersLoading,
+  ordersError,
+  wishlistCount,
+  defaultAddress,
+  wishlistPreview,
+  wishlistLoading,
+  onRetryOrders,
+  onNavigate,
+}: {
+  locale: "ar" | "en";
+  orders: Awaited<ReturnType<typeof listOrders>>;
+  ordersLoading: boolean;
+  ordersError: boolean;
+  wishlistCount: number;
+  defaultAddress: AddressResponse | null;
+  wishlistPreview: ReturnType<typeof mapProduct>[];
+  wishlistLoading: boolean;
+  onRetryOrders: () => void;
+  onNavigate: (section: "orders" | "wishlist" | "addresses") => void;
+}) {
+  const ar = locale === "ar";
+
+  return (
+    <div className="account-overview">
+      <div className="account-overview__grid">
+        <section className="account-recent" aria-labelledby="recent-orders-title">
+          <AccountSectionHeading
+            title={ar ? "طلباتك الأخيرة" : "Recent orders"}
+            action={ar ? "عرض كل الطلبات" : "View all orders"}
+            onAction={() => onNavigate("orders")}
+          />
+
+          {ordersLoading ? (
+            <div
+              className="account-order-skeleton"
+              aria-label={ar ? "جارٍ تحميل الطلبات" : "Loading orders"}
+            >
+              <span />
+              <span />
+              <span />
+            </div>
+          ) : ordersError ? (
+            <div className="account-inline-state">
+              <p>{ar ? "تعذر تحميل الطلبات." : "We couldn't load your orders."}</p>
+              <button type="button" onClick={onRetryOrders}>
+                {ar ? "حاولي مرة أخرى" : "Try again"}
+              </button>
+            </div>
+          ) : orders.length ? (
+            <ol className="account-order-list">
+              {orders.map((order) => {
+                const status = getOrderStatusCopy(order.status, locale);
+                return (
+                  <li key={order.id}>
+                    <button type="button" onClick={() => onNavigate("orders")}>
+                      <span className="account-order-list__number">
+                        <small>{ar ? "طلب" : "Order"}</small>
+                        <strong>{order.orderNumber}</strong>
+                      </span>
+                      <span className="account-order-list__date">
+                        {new Intl.DateTimeFormat(ar ? "ar-EG" : "en-EG", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                          timeZone: "Africa/Cairo",
+                        }).format(new Date(order.placedAt))}
+                      </span>
+                      <span className="account-order-list__status" data-status={order.status}>
+                        {status.label}
+                      </span>
+                      <strong className="account-order-list__total">
+                        {formatPrice(order.grandTotal / 100)}
+                      </strong>
+                      <ArrowRight aria-hidden="true" />
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+          ) : (
+            <div className="account-empty-preview">
+              <Package aria-hidden="true" />
+              <div>
+                <strong>{ar ? "ابدئي أول طلب لك" : "Your first order starts here"}</strong>
+                <p>
+                  {ar
+                    ? "اكتشفي منتجات مختارة لروتينك."
+                    : "Discover products selected for your routine."}
+                </p>
+              </div>
+              <Button asChild variant="line" size="pill">
+                <Link to="/shop">{ar ? "تسوقي الآن" : "Browse products"}</Link>
+              </Button>
+            </div>
+          )}
+        </section>
+
+        <div className="account-overview__aside">
+          <section className="account-address-preview" aria-labelledby="account-address-title">
+            <AccountSectionHeading
+              title={ar ? "العنوان الأساسي" : "Default address"}
+              action={ar ? "إدارة العناوين" : "Manage"}
+              onAction={() => onNavigate("addresses")}
+              compact
+            />
+            {defaultAddress ? (
+              <div className="account-address-preview__body">
+                <span className="account-address-preview__pin">
+                  <MapPin aria-hidden="true" />
+                </span>
+                <div>
+                  <strong>{defaultAddress.receiverName}</strong>
+                  <p>
+                    {[
+                      defaultAddress.building,
+                      defaultAddress.street,
+                      defaultAddress.area,
+                      defaultAddress.city,
+                    ]
+                      .filter(Boolean)
+                      .join(", ")}
+                  </p>
+                  <small>{defaultAddress.phone}</small>
+                </div>
+              </div>
+            ) : (
+              <button
+                className="account-address-preview__empty"
+                type="button"
+                onClick={() => onNavigate("addresses")}
+              >
+                <MapPin aria-hidden="true" />
+                <span>
+                  <strong>{ar ? "أضيفي عنوان التوصيل" : "Add a delivery address"}</strong>
+                  <small>{ar ? "لتسريع إتمام الطلب" : "Make checkout faster next time"}</small>
+                </span>
+              </button>
+            )}
+          </section>
+
+          <section className="account-saved-preview" aria-labelledby="account-saved-title">
+            <AccountSectionHeading
+              title={ar ? "محفوظ لوقت لاحق" : "Saved for later"}
+              action={`${wishlistCount} ${ar ? "محفوظ" : "saved"}`}
+              onAction={() => onNavigate("wishlist")}
+              compact
+            />
+            {wishlistLoading ? (
+              <div className="account-saved-preview__skeleton">
+                <span />
+                <span />
+                <span />
+              </div>
+            ) : wishlistPreview.length ? (
+              <div className="account-saved-preview__items">
+                {wishlistPreview.map((product) => (
+                  <Link
+                    key={product.slug}
+                    to="/product/$slug"
+                    params={{ slug: product.slug }}
+                    aria-label={product.name}
+                  >
+                    <img src={product.image} alt="" loading="lazy" />
+                    <span>
+                      <strong>{product.name}</strong>
+                      <small>{formatPrice(product.price)}</small>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <button
+                className="account-saved-preview__empty"
+                type="button"
+                onClick={() => onNavigate("wishlist")}
+              >
+                <Heart aria-hidden="true" />
+                <span>
+                  {ar
+                    ? "احفظي المنتجات التي تريدين الرجوع إليها."
+                    : "Save products you want to come back to."}
+                </span>
+              </button>
+            )}
+          </section>
+        </div>
+      </div>
     </div>
+  );
+}
+
+function AccountSectionHeading({
+  eyebrow,
+  title,
+  action,
+  onAction,
+  actionTo,
+  meta,
+  compact = false,
+}: {
+  eyebrow?: string;
+  title: string;
+  action?: string;
+  onAction?: () => void;
+  actionTo?: "/shop";
+  meta?: string;
+  compact?: boolean;
+}) {
+  return (
+    <header className="account-section-heading" data-compact={compact || undefined}>
+      <div>
+        {eyebrow && <p>{eyebrow}</p>}
+        <h2>{title}</h2>
+      </div>
+      <div className="account-section-heading__aside">
+        {meta && <span>{meta}</span>}
+        {action && actionTo ? (
+          <Link to={actionTo}>
+            {action}
+            <ArrowRight aria-hidden="true" />
+          </Link>
+        ) : action && onAction ? (
+          <button type="button" onClick={onAction}>
+            {action}
+            <ArrowRight aria-hidden="true" />
+          </button>
+        ) : null}
+      </div>
+    </header>
+  );
+}
+
+function canCompletePayment(order: OrderSummary) {
+  return (
+    ["PENDING_PAYMENT", "AWAITING_PAYMENT", "PAYMENT_FAILED"].includes(order.status) &&
+    ["INSTAPAY", "VODAFONE_CASH"].includes(order.paymentMethod)
+  );
+}
+
+function PaymentContinuation({ order, locale }: { order: OrderSummary; locale: "ar" | "en" }) {
+  const ar = locale === "ar";
+  const queryClient = useQueryClient();
+  const [sender, setSender] = useState("");
+  const [reference, setReference] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState("");
+  const [copied, setCopied] = useState(false);
+  const payment = useQuery({
+    queryKey: ["account", "orders", order.id, "payment"],
+    queryFn: () => createPayment(order.id, order.paymentMethod),
+    retry: false,
+    staleTime: Number.POSITIVE_INFINITY,
+  });
+  const proof = useMutation({
+    mutationFn: () => {
+      if (!payment.data || !file) throw new Error("Payment proof is incomplete.");
+      return uploadPaymentProof(
+        payment.data.id,
+        file,
+        sender.trim(),
+        reference.trim(),
+        payment.data.amount,
+      );
+    },
+    onSuccess: (updated) => {
+      queryClient.setQueryData(["account", "orders", order.id, "payment"], updated);
+      void queryClient.invalidateQueries({ queryKey: ["account", "orders"] });
+    },
+  });
+
+  if (payment.isLoading) {
+    return (
+      <div className="account-payment account-payment--loading" role="status">
+        <LoaderCircle aria-hidden="true" />
+        <span>{ar ? "جارٍ تجهيز بيانات الدفع…" : "Preparing secure payment details…"}</span>
+      </div>
+    );
+  }
+
+  if (payment.isError || !payment.data) {
+    return (
+      <div className="account-payment account-payment--error" role="alert">
+        <div>
+          <strong>{ar ? "تعذر فتح الدفع" : "Payment could not be opened"}</strong>
+          <p>{apiErrorMessage(payment.error, locale)}</p>
+        </div>
+        <Button type="button" variant="line" size="pill" onClick={() => void payment.refetch()}>
+          {ar ? "حاولي مرة أخرى" : "Try again"}
+        </Button>
+      </div>
+    );
+  }
+
+  const data = payment.data;
+  const submitted = proof.isSuccess || ["UNDER_REVIEW", "APPROVED"].includes(data.status);
+  const instruction = data.instructions;
+  const destination =
+    instruction?.accountNumber ?? instruction?.phoneNumber ?? instruction?.notes ?? "";
+  const destinationLabel =
+    data.method === "INSTAPAY"
+      ? ar
+        ? "عنوان إنستاباي"
+        : "InstaPay address"
+      : ar
+        ? "رقم فودافون كاش"
+        : "Vodafone Cash number";
+
+  if (submitted) {
+    return (
+      <section className="account-payment account-payment--submitted" aria-live="polite">
+        <span className="account-payment__success-icon">
+          <CheckCircle2 aria-hidden="true" />
+        </span>
+        <div>
+          <p className="account-payment__eyebrow">
+            {ar ? "تم استلام إثبات الدفع" : "Payment proof received"}
+          </p>
+          <h4>{ar ? "الدفع قيد المراجعة" : "Your payment is under review"}</h4>
+          <p>
+            {ar
+              ? "سنتحقق من التحويل ونحدّث حالة الطلب تلقائياً. لا تعيدي إرسال الدفع."
+              : "We’ll verify the transfer and update this order automatically. Do not pay again."}
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="account-payment" aria-labelledby={`payment-title-${order.id}`}>
+      <header className="account-payment__header">
+        <div>
+          <p className="account-payment__eyebrow">{ar ? "إكمال الطلب" : "Complete your order"}</p>
+          <h4 id={`payment-title-${order.id}`}>
+            {ar ? "حوّلي المبلغ ثم أرسلي الإثبات" : "Transfer, then submit your proof"}
+          </h4>
+        </div>
+        <strong>{formatPrice(data.amount / 100)}</strong>
+      </header>
+
+      <div className="account-payment__steps">
+        <div>
+          <span>01</span>
+          <div>
+            <small>{ar ? "التحويل عبر" : "Transfer via"}</small>
+            <strong>{data.method === "INSTAPAY" ? "InstaPay" : "Vodafone Cash"}</strong>
+          </div>
+        </div>
+        <div>
+          <span>02</span>
+          <div>
+            <small>{destinationLabel}</small>
+            {destination ? (
+              <button
+                type="button"
+                className="account-payment__copy"
+                onClick={() => {
+                  void navigator.clipboard
+                    .writeText(destination)
+                    .then(() => {
+                      setCopied(true);
+                      window.setTimeout(() => setCopied(false), 1600);
+                    })
+                    .catch(() => toast.error(ar ? "تعذر النسخ" : "Could not copy the details"));
+                }}
+              >
+                <strong>{destination}</strong>
+                <Clipboard aria-hidden="true" />
+                <span aria-live="polite">{copied ? (ar ? "تم النسخ" : "Copied") : ""}</span>
+              </button>
+            ) : (
+              <p className="account-payment__missing">
+                {ar
+                  ? "بيانات التحويل غير متاحة. تواصلي معنا."
+                  : "Transfer details are unavailable. Contact us."}
+              </p>
+            )}
+          </div>
+        </div>
+        <div>
+          <span>03</span>
+          <div>
+            <small>{ar ? "مرجع الدفع" : "Payment reference"}</small>
+            <strong>{data.referenceNumber ?? order.orderNumber}</strong>
+          </div>
+        </div>
+      </div>
+
+      {data.expiresAt && (
+        <p className="account-payment__deadline">
+          {ar ? "أكملي التحويل قبل " : "Complete the transfer before "}
+          <strong>
+            {new Intl.DateTimeFormat(ar ? "ar-EG" : "en-EG", {
+              dateStyle: "medium",
+              timeStyle: "short",
+              timeZone: "Africa/Cairo",
+            }).format(new Date(data.expiresAt))}
+          </strong>
+        </p>
+      )}
+
+      {destination ? (
+        <form
+          className="account-payment__form"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (!proof.isPending) proof.mutate();
+          }}
+        >
+          <label>
+            <span>{ar ? "هاتف أو حساب المُرسل" : "Sender phone or handle"}</span>
+            <input
+              required
+              type="text"
+              autoComplete="tel"
+              value={sender}
+              onChange={(event) => setSender(event.target.value)}
+            />
+          </label>
+          <label>
+            <span>{ar ? "رقم عملية التحويل" : "Transfer transaction number"}</span>
+            <input
+              required
+              type="text"
+              autoComplete="off"
+              value={reference}
+              onChange={(event) => setReference(event.target.value)}
+            />
+          </label>
+          <label className="account-payment__file">
+            <span>{ar ? "صورة إثبات التحويل" : "Transfer screenshot"}</span>
+            <input
+              required
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={(event) => {
+                const selected = event.target.files?.[0] ?? null;
+                if (selected && selected.size > 5 * 1024 * 1024) {
+                  setFile(null);
+                  setFileError(
+                    ar ? "اختاري صورة أصغر من 5 ميجابايت." : "Choose an image smaller than 5 MB.",
+                  );
+                  event.target.value = "";
+                  return;
+                }
+                setFile(selected);
+                setFileError("");
+              }}
+            />
+            <small>
+              {ar ? "JPG أو PNG أو WebP، بحد أقصى 5 ميجابايت." : "JPG, PNG or WebP, up to 5 MB."}
+            </small>
+          </label>
+          {(fileError || proof.error) && (
+            <p className="account-payment__form-error" role="alert">
+              {fileError || apiErrorMessage(proof.error, locale)}
+            </p>
+          )}
+          <Button
+            type="submit"
+            variant="solid"
+            size="wide"
+            loading={proof.isPending}
+            disabled={!file || !sender.trim() || !reference.trim()}
+          >
+            <Upload aria-hidden="true" />
+            {ar ? "إرسال إثبات الدفع" : "Submit payment proof"}
+          </Button>
+        </form>
+      ) : (
+        <Button asChild variant="line" size="pill">
+          <Link to="/contact">{ar ? "تواصلي مع خدمة العملاء" : "Contact customer care"}</Link>
+        </Button>
+      )}
+    </section>
   );
 }
 
@@ -529,15 +1251,15 @@ function OrderTrackingPanel({ orderId, locale }: { orderId: string; locale: "ar"
 
   if (tracking.isLoading) {
     return (
-      <div className="mt-4 border border-border bg-ivory p-4 text-xs text-muted-foreground">
-        Loading tracking...
+      <div className="account-tracking account-tracking--loading">
+        {locale === "ar" ? "جارٍ تحميل التتبع…" : "Loading tracking…"}
       </div>
     );
   }
 
   if (tracking.isError) {
     return (
-      <div className="mt-4 border border-border bg-ivory p-4 text-xs text-destructive">
+      <div className="account-tracking account-tracking--error">
         {apiErrorMessage(tracking.error, locale)}
       </div>
     );
@@ -547,14 +1269,14 @@ function OrderTrackingPanel({ orderId, locale }: { orderId: string; locale: "ar"
   if (!data) return null;
 
   return (
-    <div className="mt-4 border border-border bg-ivory p-4 text-xs">
-      <div className="flex flex-wrap items-start justify-between gap-3">
+    <div className="account-tracking">
+      <div className="account-tracking__header">
         <div>
-          <p className="label-xs text-taupe">Delivery</p>
-          <p className="mt-1 font-medium">
+          <p>{locale === "ar" ? "التوصيل" : "Delivery"}</p>
+          <strong>
             {data.shipment ? data.shipment.status.replace(/_/g, " ") : "Preparing after payment"}
-          </p>
-          <p className="mt-1 text-muted-foreground">{trackingAddress(data)}</p>
+          </strong>
+          <small>{trackingAddress(data)}</small>
         </div>
         <Button
           type="button"
@@ -564,45 +1286,43 @@ function OrderTrackingPanel({ orderId, locale }: { orderId: string; locale: "ar"
           onClick={() => refresh.mutate()}
         >
           <RefreshCw className="size-4" />
-          Refresh
+          {locale === "ar" ? "تحديث" : "Refresh"}
         </Button>
       </div>
       {data.shipment ? (
-        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <div className="account-tracking__details">
           <div>
-            <p className="label-xs text-taupe">Carrier</p>
-            <p className="mt-1">{data.shipment.provider}</p>
+            <small>{locale === "ar" ? "شركة الشحن" : "Carrier"}</small>
+            <strong>{data.shipment.provider}</strong>
           </div>
           <div>
-            <p className="label-xs text-taupe">Tracking number</p>
-            <p className="mt-1">{data.shipment.trackingNumber}</p>
+            <small>{locale === "ar" ? "رقم التتبع" : "Tracking number"}</small>
+            <strong>{data.shipment.trackingNumber}</strong>
           </div>
-          <a
-            href={data.shipment.trackingUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 text-gold sm:col-span-2"
-          >
-            Open carrier tracking <ExternalLink className="size-4" />
+          <a href={data.shipment.trackingUrl} target="_blank" rel="noreferrer">
+            {locale === "ar" ? "فتح موقع شركة الشحن" : "Open carrier tracking"}
+            <ExternalLink aria-hidden="true" />
           </a>
         </div>
       ) : (
-        <p className="mt-4 text-muted-foreground">
-          Tracking appears here after payment approval and shipment booking.
+        <p className="account-tracking__empty">
+          {locale === "ar"
+            ? "سيظهر التتبع بعد اعتماد الدفع وحجز الشحنة."
+            : "Tracking appears after payment approval and shipment booking."}
         </p>
       )}
       {data.history.length > 0 && (
-        <ol className="mt-4 space-y-2 border-t border-border pt-4">
+        <ol className="account-tracking__history">
           {data.history.slice(0, 4).map((entry) => (
             <li key={`${entry.action}-${entry.createdAt}`}>
               <p>{entry.description}</p>
-              <p className="text-muted-foreground">
+              <small>
                 {new Intl.DateTimeFormat(locale === "ar" ? "ar-EG" : "en-EG", {
                   dateStyle: "medium",
                   timeStyle: "short",
                   timeZone: "Africa/Cairo",
                 }).format(new Date(entry.createdAt))}
-              </p>
+              </small>
             </li>
           ))}
         </ol>
@@ -621,13 +1341,24 @@ function isAddressDeliveryReady(address: AddressResponse) {
   return Boolean(address.bostaGovernorateId && address.bostaCityId && address.bostaZoneId);
 }
 
-function Empty({ icon, text }: { icon?: ReactNode; text: string }) {
+function Empty({
+  icon,
+  text,
+  copy,
+  action = "Browse products",
+}: {
+  icon?: ReactNode;
+  text: string;
+  copy?: string;
+  action?: string;
+}) {
   return (
-    <div className="border border-border px-8 py-20 text-center">
-      {icon && <span className="mx-auto grid size-10 place-items-center text-gold">{icon}</span>}
-      <p className="mt-4 font-serif text-2xl">{text}</p>
-      <Button asChild variant="line" size="pill" className="mt-7">
-        <Link to="/shop">Browse products</Link>
+    <div className="account-detail-state account-detail-state--empty">
+      {icon && <span>{icon}</span>}
+      <h3>{text}</h3>
+      {copy && <p>{copy}</p>}
+      <Button asChild variant="line" size="pill">
+        <Link to="/shop">{action}</Link>
       </Button>
     </div>
   );
