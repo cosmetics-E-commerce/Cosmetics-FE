@@ -108,7 +108,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "icon", href: "/bioreza-logo.png", type: "image/png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -124,7 +124,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@type": "Organization",
           name: "BIOREZA Cosmetics",
           url: (import.meta.env["VITE_SITE_URL"] as string | undefined) ?? "https://bioreza.com",
-          logo: `${(import.meta.env["VITE_SITE_URL"] as string | undefined) ?? "https://bioreza.com"}/favicon.png`,
+          logo: `${(import.meta.env["VITE_SITE_URL"] as string | undefined) ?? "https://bioreza.com"}/bioreza-logo.png`,
           contactPoint: {
             "@type": "ContactPoint",
             contactType: "customer support",
@@ -211,7 +211,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <MotionProvider>
         <StoreProvider initialLocale={locale === "ar" ? "ar" : "en"}>
-          <div className="flex min-h-dvh flex-col bg-background">
+          <div className="storefront-shell flex min-h-dvh flex-col bg-background">
             <a href="#main-content" className="skip-link">
               Skip to content
             </a>
@@ -225,7 +225,7 @@ function RootComponent() {
             <main
               id="main-content"
               tabIndex={-1}
-              className="flex-1 outline-none"
+              className="storefront-main flex-1 outline-none"
               style={{ paddingTop: isHome ? 0 : "var(--store-header-offset, 103px)" }}
             >
               <div ref={pageRef} key={pathname} className="motion-page">

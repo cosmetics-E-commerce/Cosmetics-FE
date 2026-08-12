@@ -11,7 +11,7 @@ export function Logo({
   return (
     <Link to="/" className={cn("brand-logo", `brand-logo--${size}`)} aria-label="BIOREZA home">
       <img
-        src="/favicon.png"
+        src="/bioreza-logo.png"
         alt=""
         width={64}
         height={64}

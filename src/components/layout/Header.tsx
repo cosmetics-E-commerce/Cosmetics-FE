@@ -2,6 +2,7 @@ import {
   memo,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -82,7 +83,12 @@ export function Header({
   const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu] = useState(false);
   const [megaMenu, setMegaMenu] = useState<MegaMenuValue | "">("");
+  const [navIndicator, setNavIndicator] = useState({ x: 0, width: 0, visible: false });
   const scrolledRef = useRef(false);
+  const primaryNavRef = useRef<HTMLElement>(null);
+  const hoveredNavIdRef = useRef<string | null>(null);
+  const focusedNavIdRef = useRef<string | null>(null);
+  const activeNavIdRef = useRef<string | null>(null);
   const copy = headerCopy[locale];
 
   const activeCategory = typeof search.category === "string" ? search.category : undefined;
@@ -101,6 +107,7 @@ export function Header({
                 ? "brands"
                 : "categories"
               : null;
+  activeNavIdRef.current = activeNavId;
   const transparentHeader = pathname === "/" && !scrolled;
   const visibleBrands = useMemo(
     () =>
@@ -109,6 +116,24 @@ export function Header({
         .sort((a, b) => a.name.localeCompare(b.name, locale)),
     [brands.data, locale],
   );
+
+  const moveNavIndicator = useCallback((id: string | null) => {
+    const primaryNav = primaryNavRef.current;
+    const label = id
+      ? primaryNav?.querySelector<HTMLElement>(`[data-nav-id="${id}"] [data-nav-label]`)
+      : null;
+    if (!primaryNav || !label || primaryNav.getBoundingClientRect().width === 0) {
+      setNavIndicator((current) => ({ ...current, visible: false }));
+      return;
+    }
+    const navBounds = primaryNav.getBoundingClientRect();
+    const labelBounds = label.getBoundingClientRect();
+    setNavIndicator({
+      x: labelBounds.left - navBounds.left,
+      width: labelBounds.width,
+      visible: true,
+    });
+  }, []);
 
   useEffect(() => {
     let observer: IntersectionObserver | undefined;
@@ -134,6 +159,20 @@ export function Header({
     setMenu(false);
   }, [pathname, activeBrand, activeCategory]);
 
+  useLayoutEffect(() => {
+    const primaryNav = primaryNavRef.current;
+    const sync = () => moveNavIndicator(activeNavId);
+    const frame = window.requestAnimationFrame(sync);
+    const observer =
+      primaryNav && typeof ResizeObserver !== "undefined" ? new ResizeObserver(sync) : null;
+    if (primaryNav) observer?.observe(primaryNav);
+    void document.fonts?.ready.then(sync);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      observer?.disconnect();
+    };
+  }, [activeNavId, moveNavIndicator]);
+
   useEffect(() => {
     const header = headerRef.current;
     if (!header || typeof ResizeObserver === "undefined") return;
@@ -158,6 +197,17 @@ export function Header({
   const accountTo = user ? ("/account" as const) : ("/sign-in" as const);
   const closeMegaMenu = useCallback(() => setMegaMenu(""), []);
   const closeMobileMenu = useCallback(() => setMenu(false), []);
+  const navInteractionProps = (id: string) => ({
+    "data-nav-id": id,
+    onPointerEnter: () => {
+      hoveredNavIdRef.current = id;
+      moveNavIndicator(id);
+    },
+    onFocus: () => {
+      focusedNavIdRef.current = id;
+      moveNavIndicator(id);
+    },
+  });
 
   return (
     <header
@@ -190,9 +240,41 @@ export function Header({
           </div>
 
           <nav
+            ref={primaryNavRef}
             aria-label="Primary"
             className="header-primary-nav hidden min-w-0 justify-self-center xl:block"
+            onPointerLeave={() => {
+              hoveredNavIdRef.current = null;
+              const focusedId = primaryNavRef.current
+                ?.querySelector<HTMLElement>(".nav-link:focus-visible")
+                ?.getAttribute("data-nav-id");
+              moveNavIndicator(focusedId || megaMenu || activeNavId);
+            }}
+            onBlurCapture={(event) => {
+              if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
+              focusedNavIdRef.current = null;
+              window.requestAnimationFrame(() =>
+                moveNavIndicator(hoveredNavIdRef.current || activeNavId),
+              );
+            }}
+            onKeyDownCapture={(event) => {
+              if (event.key !== "Escape") return;
+              hoveredNavIdRef.current = null;
+              focusedNavIdRef.current = null;
+              window.requestAnimationFrame(() => moveNavIndicator(activeNavIdRef.current));
+            }}
           >
+            <span
+              aria-hidden="true"
+              className="header-nav-indicator"
+              data-visible={navIndicator.visible || undefined}
+              style={
+                {
+                  "--nav-indicator-x": `${navIndicator.x}px`,
+                  "--nav-indicator-width": `${navIndicator.width}px`,
+                } as CSSProperties
+              }
+            />
             <NavigationMenuPrimitive.Root
               value={megaMenu}
               onValueChange={(value) => setMegaMenu(value as MegaMenuValue | "")}
@@ -205,7 +287,7 @@ export function Header({
                   <NavigationMenuPrimitive.Link asChild>
                     <Link
                       to={homeNavItem.to}
-                      data-nav-id={homeNavItem.id}
+                      {...navInteractionProps(homeNavItem.id)}
                       data-active={activeNavId === homeNavItem.id}
                       aria-current={activeNavId === homeNavItem.id ? "page" : undefined}
                       className="nav-link inline-flex min-h-11 w-full items-center justify-center px-3 text-center"
@@ -217,7 +299,7 @@ export function Header({
 
                 <NavigationMenuPrimitive.Item value="brands" className="header-nav-item">
                   <NavigationMenuPrimitive.Trigger
-                    data-nav-id="brands"
+                    {...navInteractionProps("brands")}
                     data-active={activeNavId === "brands"}
                     className="nav-link inline-flex min-h-11 w-full items-center justify-center gap-1.5 px-3 text-center"
                   >
@@ -236,7 +318,7 @@ export function Header({
 
                 <NavigationMenuPrimitive.Item value="categories" className="header-nav-item">
                   <NavigationMenuPrimitive.Trigger
-                    data-nav-id="categories"
+                    {...navInteractionProps("categories")}
                     data-active={activeNavId === "categories"}
                     className="nav-link inline-flex min-h-11 w-full items-center justify-center gap-1.5 px-3 text-center"
                   >
@@ -258,7 +340,7 @@ export function Header({
                     <NavigationMenuPrimitive.Link asChild>
                       <Link
                         to={item.to}
-                        data-nav-id={item.id}
+                        {...navInteractionProps(item.id)}
                         data-active={activeNavId === item.id}
                         aria-current={activeNavId === item.id ? "page" : undefined}
                         className="nav-link inline-flex min-h-11 w-full items-center justify-center px-3 text-center"

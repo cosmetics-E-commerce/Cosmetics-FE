@@ -9,7 +9,6 @@ import {
   BestSellers,
   BrandStory,
   BeautyDifference,
-  Newsletter,
 } from "@/components/home/Sections";
 import { BrandMarquee } from "@/components/home/BrandMarquee";
 import { loadBrands, loadCatalog, loadCategories } from "@/lib/catalog";
@@ -60,7 +59,6 @@ function Index() {
       <BestSellers initialProducts={products} />
       <BrandStory />
       <BeautyDifference />
-      <Newsletter />
     </>
   );
 }
