@@ -41,6 +41,31 @@ export const Route = createFileRoute("/checkout")({
   head: () => ({ meta: [{ title: "Checkout — BIOREZA" }] }),
   component: Checkout,
 });
+
+const checkoutPaymentOptions = [
+  {
+    value: "CASH_ON_DELIVERY",
+    title: "Cash on delivery",
+    copy: "Pay the courier when your order arrives.",
+    logo: null,
+    logoClassName: "",
+  },
+  {
+    value: "INSTAPAY",
+    title: "InstaPay",
+    copy: "Transfer, then upload your payment screenshot.",
+    logo: "/payment-methods/instapay-logo.png",
+    logoClassName: "sf-checkout-payment-logo--instapay",
+  },
+  {
+    value: "VODAFONE_CASH",
+    title: "Vodafone Cash",
+    copy: "Transfer, then upload your payment screenshot.",
+    logo: "/payment-methods/vodafone-icon.svg",
+    logoClassName: "sf-checkout-payment-logo--vodafone",
+  },
+] as const;
+
 function Checkout() {
   const { t } = useI18n();
   const {
@@ -593,33 +618,31 @@ function Checkout() {
                     copy="Manual transfers stay pending here until the admin approves them."
                   />
                   <div className="sf-checkout-payment-grid">
-                    {[
-                      [
-                        "CASH_ON_DELIVERY",
-                        "Cash on delivery",
-                        "Pay the courier when your order arrives.",
-                      ],
-                      ["INSTAPAY", "InstaPay", "Transfer, then upload your payment screenshot."],
-                      [
-                        "VODAFONE_CASH",
-                        "Vodafone Cash",
-                        "Transfer, then upload your payment screenshot.",
-                      ],
-                    ].map(([value, title, copy]) => (
+                    {checkoutPaymentOptions.map((option) => (
                       <label
-                        key={value}
+                        key={option.value}
                         className="sf-checkout-payment-option"
-                        data-active={method === value || undefined}
+                        data-active={method === option.value || undefined}
                       >
                         <span className="sf-checkout-payment-option__inner">
                           <input
                             type="radio"
-                            checked={method === value}
-                            onChange={() => setMethod(value ?? "CASH_ON_DELIVERY")}
+                            checked={method === option.value}
+                            onChange={() => setMethod(option.value)}
                           />
-                          <span>
-                            <strong>{title}</strong>
-                            <span>{copy}</span>
+                          <span className="sf-checkout-payment-option__body">
+                            {option.logo ? (
+                              <span
+                                className={`sf-checkout-payment-logo ${option.logoClassName}`}
+                                aria-hidden="true"
+                              >
+                                <img src={option.logo} alt="" width={48} height={32} />
+                              </span>
+                            ) : null}
+                            <span className="sf-checkout-payment-option__copy">
+                              <strong>{option.title}</strong>
+                              <span>{option.copy}</span>
+                            </span>
                           </span>
                         </span>
                       </label>

@@ -5,7 +5,9 @@ import {
   getPromotionPrices,
   listBrands,
   listCategories,
+  listProductsPage,
   listProducts,
+  type PaginationMeta,
 } from "@/lib/api";
 import { images, type Product } from "@/lib/products";
 import { trackCommerceEvent } from "@/lib/analytics";
@@ -100,6 +102,37 @@ export function useCatalog(
       return records.map((product) => applyPrices(mapProduct(product, locale), prices));
     },
     initialData,
+    staleTime: 60_000,
+  });
+}
+
+export function useCatalogPage(
+  params: Record<string, string | number | undefined> = {},
+  locale: Locale = "en",
+  initialData?: { items: Product[]; meta: PaginationMeta },
+) {
+  return useQuery({
+    queryKey: ["catalog-page", params, locale],
+    queryFn: async ({ signal }) => {
+      const records = await listProductsPage(params, signal);
+      if (
+        typeof window !== "undefined" &&
+        typeof params["search"] === "string" &&
+        params["search"].trim()
+      ) {
+        trackCommerceEvent("search_performed", {
+          searchTerm: params["search"].trim(),
+          resultCount: records.meta.total,
+        });
+      }
+      const prices = await promotionalPrices(records.items);
+      return {
+        items: records.items.map((product) => applyPrices(mapProduct(product, locale), prices)),
+        meta: records.meta,
+      };
+    },
+    initialData,
+    placeholderData: (previous) => previous,
     staleTime: 60_000,
   });
 }

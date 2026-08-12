@@ -219,6 +219,18 @@ export type ProductReviews = {
   summary: { average: number; count: number; distribution: Record<string, number> };
   meta: { page: number; totalPages: number; total: number };
 };
+export type PaginationMeta = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  hasNext: boolean;
+  hasPrev: boolean;
+};
+export type PaginatedResult<T> = {
+  items: T[];
+  meta: PaginationMeta;
+};
 
 type OrderSummaryApiResponse = Omit<OrderSummary, "grandTotal" | "placedAt"> & {
   grandTotal?: number;
@@ -324,7 +336,7 @@ function guestCartId() {
   return id;
 }
 
-export async function rawRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
+async function rawEnvelope<T>(path: string, options: RequestOptions = {}): Promise<Envelope<T>> {
   const headers = new Headers(options.headers);
   headers.set("Accept", "application/json");
   headers.set("Accept-Language", browserValue("bioreza.locale") ?? "en");
@@ -365,7 +377,7 @@ export async function rawRequest<T>(path: string, options: RequestOptions = {}):
     hasRefreshSession()
   ) {
     await refreshSession();
-    return rawRequest<T>(path, { ...options, retry: false });
+    return rawEnvelope<T>(path, { ...options, retry: false });
   }
 
   const payload = (await response.json().catch(() => null)) as Envelope<T> | ApiError | null;
@@ -378,7 +390,11 @@ export async function rawRequest<T>(path: string, options: RequestOptions = {}):
       details: problem?.details,
     } satisfies ApiError;
   }
-  return (payload as Envelope<T>).data;
+  return payload as Envelope<T>;
+}
+
+export async function rawRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  return (await rawEnvelope<T>(path, options)).data;
 }
 
 export function apiErrorMessage(error: unknown, locale: "en" | "ar" = "en") {
@@ -704,6 +720,47 @@ function normalizeList<T>(value: T[] | { items?: T[]; data?: T[] }) {
   return Array.isArray(value) ? value : (value.items ?? value.data ?? []);
 }
 
+function normalizePaginationMeta(
+  meta: unknown,
+  itemCount: number,
+  params: Record<string, string | number | undefined> = {},
+): PaginationMeta {
+  const source = meta && typeof meta === "object" ? (meta as Partial<PaginationMeta>) : {};
+  const page = Number(source.page ?? params["page"] ?? 1);
+  const limit = Number(source.limit ?? params["limit"] ?? itemCount);
+  const total = Number(source.total ?? itemCount);
+  const totalPages = Number(source.totalPages ?? Math.ceil(total / Math.max(limit, 1)));
+  const safePage = Number.isFinite(page) && page > 0 ? page : 1;
+  const safeLimit = Number.isFinite(limit) && limit > 0 ? limit : itemCount;
+  const safeTotal = Number.isFinite(total) && total >= 0 ? total : itemCount;
+  const safeTotalPages =
+    Number.isFinite(totalPages) && totalPages >= 0
+      ? totalPages
+      : Math.ceil(safeTotal / Math.max(safeLimit, 1));
+
+  return {
+    page: safePage,
+    limit: safeLimit,
+    total: safeTotal,
+    totalPages: safeTotalPages,
+    hasNext: source.hasNext ?? safePage < safeTotalPages,
+    hasPrev: source.hasPrev ?? safePage > 1,
+  };
+}
+
+function normalizePaginatedList<T>(
+  value: T[] | { items?: T[]; data?: T[]; meta?: unknown },
+  envelopeMeta: unknown,
+  params: Record<string, string | number | undefined> = {},
+): PaginatedResult<T> {
+  const items = normalizeList(value);
+  const nestedMeta = !Array.isArray(value) ? value.meta : undefined;
+  return {
+    items,
+    meta: normalizePaginationMeta(envelopeMeta ?? nestedMeta, items.length, params),
+  };
+}
+
 export async function listProducts(
   params: Record<string, string | number | undefined> = {},
   signal?: AbortSignal,
@@ -719,6 +776,24 @@ export async function listProducts(
     ...(signal ? { signal } : {}),
   });
   return normalizeList(result);
+}
+
+export async function listProductsPage(
+  params: Record<string, string | number | undefined> = {},
+  signal?: AbortSignal,
+) {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(
+    ([key, value]) => value !== undefined && value !== "" && query.set(key, String(value)),
+  );
+  const result = await rawEnvelope<
+    | PublicProductResponse[]
+    | { items?: PublicProductResponse[]; data?: PublicProductResponse[]; meta?: unknown }
+  >(`/products${query.size ? `?${query}` : ""}`, {
+    auth: false,
+    ...(signal ? { signal } : {}),
+  });
+  return normalizePaginatedList(result.data, result.meta, params);
 }
 
 export async function getProduct(slug: string) {

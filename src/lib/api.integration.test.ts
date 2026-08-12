@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   clearSession,
   createSupportRequest,
+  listProductsPage,
   listProductReviews,
   normalizeProductReviews,
   refreshSession,
@@ -105,6 +106,48 @@ describe("customer-care API", () => {
         locale: "en",
       }),
     ).rejects.toMatchObject({ code: "INVALID", message: "Check the request" });
+  });
+});
+
+describe("catalog pagination API", () => {
+  it("keeps product pagination metadata from the server", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          success: true,
+          data: [
+            {
+              id: "product-id",
+              slug: "stress-product-0001",
+              nameEn: "Stress Product",
+            },
+          ],
+          meta: {
+            page: 2,
+            limit: 24,
+            total: 1000,
+            totalPages: 42,
+            hasNext: true,
+            hasPrev: true,
+          },
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(listProductsPage({ page: 2, limit: 24 })).resolves.toMatchObject({
+      items: [{ id: "product-id", slug: "stress-product-0001" }],
+      meta: {
+        page: 2,
+        limit: 24,
+        total: 1000,
+        totalPages: 42,
+        hasNext: true,
+        hasPrev: true,
+      },
+    });
+    expect(String(fetchMock.mock.calls[0]?.[0])).toContain("/products?page=2&limit=24");
   });
 });
 

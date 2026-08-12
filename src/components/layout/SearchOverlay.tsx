@@ -9,7 +9,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Search, X } from "lucide-react";
+import { Search, TrendingUp, X } from "lucide-react";
 import {
   Dialog,
   DialogClose,
@@ -38,6 +38,19 @@ const copy = {
     clear: "Clear search",
     browse: "Browse the collection",
     categories: "Browse by category",
+    recent: "Recently searched",
+    trending: "Trending searches",
+    recentTerms: ["glass skin", "ceramide cream", "daily skincare", "body oil"],
+    trendingTerms: [
+      "serum",
+      "moisturizer",
+      "sunscreen",
+      "cleanser",
+      "fragrance",
+      "makeup",
+      "skincare",
+      "l'oreal",
+    ],
     selected: "Selected from the collection",
     results: (count: number) => `${count} ${count === 1 ? "result" : "results"}`,
     all: (query: string) => `View every result for “${query}”`,
@@ -58,6 +71,10 @@ const copy = {
     clear: "مسح البحث",
     browse: "تصفح المجموعة",
     categories: "تصفحي حسب الفئة",
+    recent: "عمليات بحث حديثة",
+    trending: "الأكثر بحثًا",
+    recentTerms: ["جلاس سكين", "كريم سيراميد", "روتين يومي", "زيت للجسم"],
+    trendingTerms: ["سيروم", "مرطب", "واقي شمس", "غسول", "عطر", "مكياج", "عناية بالبشرة", "لوريال"],
     selected: "مختارات من المجموعة",
     results: (count: number) => `${count} ${count === 1 ? "نتيجة" : "نتائج"}`,
     all: (query: string) => `عرض كل نتائج «${query}»`,
@@ -79,6 +96,7 @@ export function SearchOverlay() {
   const deferred = useDebouncedValue(trimmed, 140);
   const results = useCatalog(deferred ? { search: deferred, limit: 6 } : { limit: 4 }, locale);
   const categories = useCategories();
+  const visibleCategories = (categories.data ?? []).slice(0, 9);
   const waitingForQuery = Boolean(trimmed) && trimmed !== deferred;
   const searching = waitingForQuery || (results.isFetching && Boolean(deferred));
 
@@ -93,6 +111,11 @@ export function SearchOverlay() {
     close();
     void navigate({ to: "/shop", search: { search: trimmed } });
   }, [close, navigate, trimmed]);
+
+  const pickSuggestion = useCallback((term: string) => {
+    setQuery(term);
+    window.requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }));
+  }, []);
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -204,7 +227,7 @@ export function SearchOverlay() {
                   {labels.categories}
                 </p>
                 <ul>
-                  {(categories.data ?? []).map((category) => (
+                  {visibleCategories.map((category) => (
                     <li key={category.id}>
                       <Link to="/shop" search={{ category: category.slug }} onClick={close}>
                         <span>{locale === "ar" ? category.nameAr : category.nameEn}</span>
@@ -226,6 +249,22 @@ export function SearchOverlay() {
               }
               aria-label={deferred ? labels.results(results.data?.length ?? 0) : labels.selected}
             >
+              {!deferred && (
+                <div className="search-suggestions" aria-label={labels.trending}>
+                  <SearchSuggestionGroup
+                    title={labels.recent}
+                    terms={labels.recentTerms}
+                    onPick={pickSuggestion}
+                  />
+                  <SearchSuggestionGroup
+                    title={labels.trending}
+                    terms={labels.trendingTerms}
+                    onPick={pickSuggestion}
+                    trending
+                  />
+                </div>
+              )}
+
               <div
                 className="search-results-stage"
                 key={waitingForQuery ? "waiting" : deferred || "selected"}
@@ -275,6 +314,41 @@ export function SearchOverlay() {
         </div>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function SearchSuggestionGroup({
+  title,
+  terms,
+  onPick,
+  trending = false,
+}: {
+  title: string;
+  terms: readonly string[];
+  onPick: (term: string) => void;
+  trending?: boolean;
+}) {
+  const headingId = useId();
+
+  return (
+    <section className="search-suggestion-group" aria-labelledby={headingId}>
+      <p id={headingId} className="search-section-label">
+        {title}
+      </p>
+      <div className="search-suggestion-grid">
+        {terms.map((term) => (
+          <button
+            key={term}
+            type="button"
+            className="search-suggestion-chip"
+            onClick={() => onPick(term)}
+          >
+            {trending && <TrendingUp strokeWidth={1.6} aria-hidden="true" />}
+            <span>{term}</span>
+          </button>
+        ))}
+      </div>
+    </section>
   );
 }
 
