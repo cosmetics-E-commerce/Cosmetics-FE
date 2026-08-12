@@ -6,6 +6,7 @@ import {
   listShippingAreas,
   listShippingCitiesByGovernorate,
   listShippingGovernorates,
+  type AddressResponse,
   type CreateAddressInput,
   type ShippingArea,
   type ShippingCity,
@@ -41,6 +42,7 @@ export function AddressForm({
   pending = false,
   initialName = "",
   initialPhone = "",
+  initialAddress,
   submitLabel = "Save and use this address",
   onCancel,
 }: {
@@ -48,15 +50,18 @@ export function AddressForm({
   pending?: boolean;
   initialName?: string;
   initialPhone?: string;
+  initialAddress?: AddressResponse | undefined;
   submitLabel?: string;
   onCancel?: () => void;
 }) {
   const formRef = useRef<HTMLFormElement>(null);
   const submitting = useRef(false);
   const [errors, setErrors] = useState<Partial<Record<AddressField, string>>>({});
-  const [selectedGovernorateId, setSelectedGovernorateId] = useState("");
-  const [selectedCityId, setSelectedCityId] = useState("");
-  const [selectedAreaId, setSelectedAreaId] = useState("");
+  const [selectedGovernorateId, setSelectedGovernorateId] = useState(
+    initialAddress?.bostaGovernorateId ?? "",
+  );
+  const [selectedCityId, setSelectedCityId] = useState(initialAddress?.bostaCityId ?? "");
+  const [selectedAreaId, setSelectedAreaId] = useState(initialAddress?.bostaZoneId ?? "");
 
   const governorates = useQuery({
     queryKey: ["shipping", "locations", "governorates"],
@@ -134,7 +139,7 @@ export function AddressForm({
         bostaGovernorateId: selectedGovernorate!.id,
         bostaCityId: selectedCity!.id,
         bostaZoneId: selectedArea!.id,
-        isDefault: false,
+        isDefault: initialAddress?.isDefault ?? false,
       });
     } finally {
       submitting.current = false;
@@ -160,7 +165,8 @@ export function AddressForm({
           autoComplete={options.autoComplete}
           inputMode={options.type === "tel" ? "tel" : undefined}
           defaultValue={
-            name === "receiverName" ? initialName : name === "phone" ? initialPhone : ""
+            initialAddress?.[name] ??
+            (name === "receiverName" ? initialName : name === "phone" ? initialPhone : "")
           }
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${name}-error` : undefined}
@@ -250,6 +256,7 @@ export function AddressForm({
         <input
           name="floor"
           autoComplete="address-line2"
+          defaultValue={initialAddress?.floor ?? ""}
           className="mt-2 h-12 w-full min-w-0 max-w-full border border-input bg-warm-white px-4 text-sm normal-case tracking-normal"
         />
       </label>
@@ -258,6 +265,7 @@ export function AddressForm({
         <input
           name="apartment"
           autoComplete="address-line3"
+          defaultValue={initialAddress?.apartment ?? ""}
           className="mt-2 h-12 w-full min-w-0 max-w-full border border-input bg-warm-white px-4 text-sm normal-case tracking-normal"
         />
       </label>
@@ -265,6 +273,7 @@ export function AddressForm({
         Nearby landmark <span className="normal-case tracking-normal">(optional)</span>
         <input
           name="landmark"
+          defaultValue={initialAddress?.landmark ?? ""}
           className="mt-2 h-12 w-full min-w-0 max-w-full border border-input bg-warm-white px-4 text-sm normal-case tracking-normal"
         />
       </label>
@@ -272,6 +281,7 @@ export function AddressForm({
         Delivery instructions <span className="normal-case tracking-normal">(optional)</span>
         <textarea
           name="deliveryInstructions"
+          defaultValue={initialAddress?.deliveryInstructions ?? ""}
           maxLength={1000}
           placeholder="For example: call on arrival or leave with reception"
           className="mt-2 min-h-24 w-full min-w-0 max-w-full border border-input bg-warm-white p-4 text-sm normal-case tracking-normal"

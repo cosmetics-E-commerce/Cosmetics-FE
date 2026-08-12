@@ -11,18 +11,20 @@ import {
   BeautyDifference,
   Newsletter,
 } from "@/components/home/Sections";
-import { loadCatalog, loadCategories } from "@/lib/catalog";
+import { BrandMarquee } from "@/components/home/BrandMarquee";
+import { loadBrands, loadCatalog, loadCategories } from "@/lib/catalog";
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
-    const [products, categories] = await Promise.all([
+    const [products, categories, brands] = await Promise.all([
       loadCatalog(
         { limit: 8, sortBy: "createdAt", sortOrder: "desc" },
         context.locale === "ar" ? "ar" : "en",
       ),
       loadCategories(),
+      loadBrands(),
     ]);
-    return { products, categories };
+    return { products, categories, brands };
   },
   head: () => ({
     meta: [
@@ -45,10 +47,11 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { products, categories } = Route.useLoaderData();
+  const { products, categories, brands } = Route.useLoaderData();
   return (
     <>
       <Hero />
+      <BrandMarquee initialBrands={brands} />
       <Benefits />
       <CategoryGrid initialCategories={categories} />
       <Featured initialProducts={products.slice(0, 5)} />

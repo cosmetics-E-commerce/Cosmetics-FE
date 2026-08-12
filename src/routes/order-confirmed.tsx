@@ -1,10 +1,16 @@
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check } from "lucide-react";
+import { CheckoutStepper } from "@/components/checkout/CheckoutStepper";
 import { Button } from "@/components/ui/button";
-import { Reveal } from "@/components/motion/Primitives";
+import { readCheckoutSuccess, type CheckoutSuccessSnapshot } from "@/lib/checkout-flow";
+import { paymentMethodName, type PaymentMethod } from "@/lib/checkout-presentation";
+import { formatPrice } from "@/lib/products";
 import { getOrderStatusCopy } from "@/lib/i18n";
 import { useStore } from "@/lib/store";
+
 type Search = { order?: string; status?: string; payment?: string };
+
 export const Route = createFileRoute("/order-confirmed")({
   validateSearch: (raw: Record<string, unknown>): Search => ({
     ...(typeof raw["order"] === "string" ? { order: raw["order"] } : {}),
@@ -14,58 +20,117 @@ export const Route = createFileRoute("/order-confirmed")({
   head: () => ({ meta: [{ title: "Order received — BIOREZA" }] }),
   component: Confirmed,
 });
+
 function Confirmed() {
   const search = Route.useSearch();
   const { locale } = useStore();
+  const [snapshot, setSnapshot] = useState<CheckoutSuccessSnapshot | null>(null);
   const underReview = search.status === "PAYMENT_REVIEW";
   const statusCopy = getOrderStatusCopy(search.status ?? "CONFIRMED", locale);
+  const ar = locale === "ar";
+
+  useEffect(() => {
+    setSnapshot(readCheckoutSuccess(search.order));
+  }, [search.order]);
+
   return (
-    <Reveal
-      stagger
-      staggerMs={45}
-      distance={20}
-      className="mx-auto max-w-2xl px-5 py-28 text-center md:px-10"
-    >
-      <span className="mx-auto grid size-16 place-items-center rounded-full border border-gold text-gold">
-        <Check className="size-6" />
-      </span>
-      <p className="label-xs mt-10 text-gold">Order {search.order ?? "received"}</p>
-      <h1 className="display mt-6 text-[clamp(2.2rem,4.4vw,3.4rem)]">
-        {underReview ? "Proof received." : "Thank you."}
-      </h1>
-      <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-muted-foreground">
-        {underReview
-          ? "Your transfer is awaiting human verification. You can follow its status from your account."
-          : "Your order is confirmed. The team will prepare it for delivery using the current order status shown in your account."}
-      </p>
-      <div className="rule-gold my-10" />
-      <dl className="grid gap-6 text-start sm:grid-cols-3">
+    <div className="order-success">
+      <header className="order-success__topline">
+        <p>{ar ? "تم استلام طلبك" : "Order received"}</p>
+        <span>{search.order ?? (ar ? "تم التسجيل" : "Recorded")}</span>
+      </header>
+
+      <CheckoutStepper current="confirmation" furthest="confirmation" locale={locale} />
+
+      <section className="order-success__hero" aria-labelledby="confirmation-title">
+        <span className="order-success__mark" aria-hidden="true">
+          <Check />
+        </span>
+        <p>
+          {underReview
+            ? ar
+              ? "تم استلام إثبات الدفع"
+              : "Proof received"
+            : ar
+              ? "تم تأكيد الطلب"
+              : "Order confirmed"}
+        </p>
+        <h1 id="confirmation-title">
+          {underReview
+            ? ar
+              ? "سنراجع التحويل الآن."
+              : "We'll review the transfer now."
+            : ar
+              ? "شكراً لاختيارك بيوريزا."
+              : "Thank you for choosing BIOREZA."}
+        </h1>
         <div>
-          <dt className="label-xs text-taupe">Payment</dt>
-          <dd className="mt-2 text-sm">{search.payment?.replaceAll("_", " ") ?? "Recorded"}</dd>
+          {underReview
+            ? ar
+              ? "تم حفظ طلبك وإثبات التحويل بأمان. يمكنك متابعة آخر حالة من حسابك."
+              : "Your order and transfer proof are safely recorded. Follow the latest status from your account."
+            : ar
+              ? "سيبدأ الفريق في تجهيز طلبك للتوصيل. ستجدين آخر حالة دائماً في حسابك."
+              : "The team will begin preparing your order for delivery. Its latest status is always available in your account."}
         </div>
-        <div>
-          <dt className="label-xs text-taupe">Status</dt>
-          <dd className="mt-2 text-sm">{statusCopy.label}</dd>
-          <dd className="mt-1 text-xs text-muted-foreground">{statusCopy.description}</dd>
-        </div>
-        <div>
-          <dt className="label-xs text-taupe">Support</dt>
-          <dd className="mt-2 text-sm">Order number required</dd>
-        </div>
-      </dl>
-      <div className="mt-14 flex flex-wrap justify-center gap-4">
+      </section>
+
+      <section
+        className="order-success__details"
+        aria-label={ar ? "تفاصيل الطلب" : "Order details"}
+      >
+        <article>
+          <p>{ar ? "الحالة" : "Status"}</p>
+          <strong>{statusCopy.label}</strong>
+          <small>{statusCopy.description}</small>
+        </article>
+        <article>
+          <p>{ar ? "الدفع" : "Payment"}</p>
+          <strong>{displayPayment(snapshot?.paymentMethod ?? search.payment, locale)}</strong>
+          {snapshot && <small>{formatPrice(snapshot.amount)}</small>}
+        </article>
+        <article>
+          <p>{ar ? "التوصيل" : "Delivery"}</p>
+          <strong>{snapshot?.recipient ?? (ar ? "العنوان المحفوظ" : "Saved destination")}</strong>
+          <small>
+            {snapshot?.destination ??
+              (ar ? "راجعي الطلب في حسابك" : "Review the order in your account")}
+          </small>
+        </article>
+        <article>
+          <p>{ar ? "الموعد المتوقع" : "Estimated arrival"}</p>
+          <strong>
+            {snapshot?.deliveryEstimate ?? (ar ? "يُحدّث عند الشحن" : "Updated at dispatch")}
+          </strong>
+          <small>
+            {ar
+              ? "قد تتأثر العطلات ومواعيد المندوب."
+              : "Courier timing and holidays may affect arrival."}
+          </small>
+        </article>
+      </section>
+
+      <div className="order-success__actions">
         <Button asChild variant="solid" size="pill">
           <Link to="/account" search={{ section: "orders" }}>
-            Track Order
+            {ar ? "متابعة الطلب" : "Track this order"}
           </Link>
         </Button>
         <Button asChild variant="quiet" size="pill">
-          <Link to="/account" search={{ section: "orders" }}>
-            View my order
-          </Link>
+          <Link to="/shop">{ar ? "متابعة التسوق" : "Continue shopping"}</Link>
         </Button>
       </div>
-    </Reveal>
+    </div>
   );
+}
+
+function displayPayment(method: string | undefined, locale: "en" | "ar") {
+  if (method === "CASH_ON_DELIVERY" || method === "INSTAPAY" || method === "VODAFONE_CASH") {
+    return paymentMethodName(method as PaymentMethod, locale);
+  }
+  if (!method) return locale === "ar" ? "تم التسجيل" : "Recorded";
+  return method
+    .replaceAll("_", " ")
+    .toLowerCase()
+    .replace(/^./, (letter) => letter.toUpperCase());
 }

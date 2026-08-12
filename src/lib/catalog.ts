@@ -85,8 +85,8 @@ export function useCatalog(
 ) {
   return useQuery({
     queryKey: ["catalog", params, locale],
-    queryFn: async () => {
-      const records = await listProducts(params);
+    queryFn: async ({ signal }) => {
+      const records = await listProducts(params, signal);
       if (
         typeof window !== "undefined" &&
         typeof params["search"] === "string" &&
