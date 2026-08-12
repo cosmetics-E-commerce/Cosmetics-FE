@@ -122,7 +122,6 @@ export type Payment = {
   status: string;
   amount: number;
   referenceNumber?: string | null;
-  instructions?: PaymentInstruction | null;
 };
 
 export type PaymentInstruction = {
@@ -871,8 +870,6 @@ export const updateProfile = (body: Record<string, unknown>) =>
 export const listAddresses = () => rawRequest<AddressResponse[]>("/users/addresses");
 export const createAddress = (body: CreateAddressInput) =>
   rawRequest<AddressResponse>("/users/addresses", { method: "POST", body });
-export const updateAddress = (id: string, body: Partial<CreateAddressInput>) =>
-  rawRequest<AddressResponse>(`/users/addresses/${id}`, { method: "PATCH", body });
 export const deleteAddress = (id: string) =>
   rawRequest(`/users/addresses/${id}`, { method: "DELETE" });
 export const setDefaultAddress = (id: string) =>

@@ -1,17 +1,23 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Check, Clipboard, FileCheck2, LoaderCircle, LockKeyhole, Upload } from "lucide-react";
-import { CheckoutStepper } from "@/components/checkout/CheckoutStepper";
-import { CheckoutSummary } from "@/components/checkout/CheckoutSummary";
-import { PolishedImage } from "@/components/ui/polished-image";
 import {
-  DeliveryStep,
-  PaymentStep,
-  ReviewStep,
-  type GiftOption,
-} from "@/components/checkout/CheckoutSteps";
+  CheckCircle2,
+  Clipboard,
+  CreditCard,
+  LoaderCircle,
+  MapPin,
+  PackageCheck,
+  Plus,
+  ReceiptText,
+  ShieldCheck,
+  ShoppingBag,
+  Upload,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PolishedImage } from "@/components/ui/polished-image";
+import { AddressForm } from "@/components/forms/AddressForm";
+import { StatePanel } from "@/components/feedback/StatePanel";
 import {
   apiErrorCode,
   apiErrorMessage,
@@ -21,62 +27,22 @@ import {
   getShippingRate,
   listAddresses,
   listPaymentInstructions,
-  updateAddress,
-  uploadPaymentProof,
   type AddressResponse,
+  uploadPaymentProof,
   type CheckoutResult,
-  type CreateAddressInput,
   type Payment,
 } from "@/lib/api";
-import {
-  checkoutStepIndex,
-  isAddressDeliveryReady,
-  parseCheckoutStep,
-  saveCheckoutSuccess,
-  type CheckoutRouteStep,
-  type CheckoutStep,
-} from "@/lib/checkout-flow";
-import {
-  formatDeliveryEstimate,
-  paymentMethods,
-  paymentMethodName,
-  type PaymentMethod,
-} from "@/lib/checkout-presentation";
 import { formatPrice } from "@/lib/products";
-import { useStore, type CartLine } from "@/lib/store";
+import { useStore } from "@/lib/store";
 import { trackCommerceEvent } from "@/lib/analytics";
-
-type CheckoutSearch = { step?: CheckoutRouteStep };
-
+import { Reveal } from "@/components/motion/Primitives";
+import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/checkout")({
-  validateSearch: (raw: Record<string, unknown>): CheckoutSearch => {
-    const step = parseCheckoutStep(raw["step"]);
-    return step ? { step } : {};
-  },
   head: () => ({ meta: [{ title: "Checkout — BIOREZA" }] }),
   component: Checkout,
 });
-
-type Draft = {
-  addressId?: string;
-  method?: PaymentMethod;
-  notes?: string;
-  giftVariantIds?: string[];
-  furthestStep?: CheckoutRouteStep;
-};
-
-type CompletedCheckoutSnapshot = {
-  address: AddressResponse;
-  method: PaymentMethod;
-  notes: string;
-  lines: CartLine[];
-  subtotal: number;
-  discountTotal: number;
-  estimatedTotal: number;
-  shippingFee: number;
-};
-
 function Checkout() {
+  const { t } = useI18n();
   const {
     user,
     authHydrated,
@@ -88,119 +54,87 @@ function Checkout() {
     giftOptions,
     locale,
   } = useStore();
-  const search = Route.useSearch();
   const navigate = useNavigate();
   const client = useQueryClient();
-  const requestedStep = search.step ?? "delivery";
+  const addresses = useQuery({
+    queryKey: ["account", "addresses"],
+    queryFn: listAddresses,
+    enabled: Boolean(user),
+  });
+  const instructions = useQuery({
+    queryKey: ["payment-instructions"],
+    queryFn: listPaymentInstructions,
+    enabled: Boolean(user),
+  });
   const [addressId, setAddressId] = useState("");
-  const [method, setMethod] = useState<PaymentMethod>("CASH_ON_DELIVERY");
+  const [method, setMethod] = useState("CASH_ON_DELIVERY");
   const [notes, setNotes] = useState("");
   const [giftVariantIds, setGiftVariantIds] = useState<string[]>([]);
-  const [furthestStep, setFurthestStep] = useState<CheckoutRouteStep>("delivery");
   const [result, setResult] = useState<CheckoutResult | null>(null);
   const [payment, setPayment] = useState<Payment | null>(null);
-  const [postOrderStep, setPostOrderStep] = useState<CheckoutStep>("confirmation");
-  const [completedCheckout, setCompletedCheckout] = useState<CompletedCheckoutSnapshot | null>(
-    null,
-  );
-  const [addingAddress, setAddingAddress] = useState(false);
-  const [editingAddress, setEditingAddress] = useState<AddressResponse | null>(null);
+  const [proofSubmitted, setProofSubmitted] = useState(false);
+  const [showAddressForm, setShowAddressForm] = useState(false);
   const [addressStatus, setAddressStatus] = useState("");
-  const [deliveryError, setDeliveryError] = useState("");
   const [draftLoaded, setDraftLoaded] = useState(false);
-  const stepHeadingRef = useRef<HTMLHeadingElement>(null);
-  const previousStep = useRef(requestedStep);
+  const [activeStep, setActiveStep] = useState(1);
+  const [completedSteps, setCompletedSteps] = useState<Set<number>>(() => new Set());
   const initialLineCount = useRef(lines.length);
   const checkoutIdempotencyKey = useRef<string | null>(null);
   const paymentIdempotencyKey = useRef<string | null>(null);
   const placingOrder = useRef(false);
   const preparingPayment = useRef(false);
-
-  const addresses = useQuery({
-    queryKey: ["account", "addresses"],
-    queryFn: listAddresses,
-    enabled: Boolean(user),
-    staleTime: 2 * 60 * 1000,
-  });
-  const instructions = useQuery({
-    queryKey: ["payment-instructions"],
-    queryFn: listPaymentInstructions,
-    enabled: Boolean(user && requestedStep === "payment"),
-    staleTime: 5 * 60 * 1000,
-  });
-
   const idempotencyKey = (ref: { current: string | null }) => {
     ref.current ??= crypto.randomUUID();
     return ref.current;
   };
-
   const paymentSetup = useMutation({
     mutationFn: ({ orderId, paymentMethod }: { orderId: string; paymentMethod: string }) =>
       createPayment(orderId, paymentMethod, idempotencyKey(paymentIdempotencyKey)),
     onSuccess: setPayment,
   });
-
-  const startPaymentSetup = useCallback(
-    (orderId: string, paymentMethod: string) => {
-      if (preparingPayment.current) return;
-      preparingPayment.current = true;
-      paymentSetup.mutate(
-        { orderId, paymentMethod },
-        {
-          onSettled: () => {
-            preparingPayment.current = false;
-          },
+  const startPaymentSetup = (orderId: string, paymentMethod: string) => {
+    if (preparingPayment.current) return;
+    preparingPayment.current = true;
+    paymentSetup.mutate(
+      { orderId, paymentMethod },
+      {
+        onSettled: () => {
+          preparingPayment.current = false;
         },
-      );
-    },
-    [paymentSetup],
-  );
-
+      },
+    );
+  };
   const addressMutation = useMutation({
-    mutationFn: ({ input, editingId }: { input: CreateAddressInput; editingId?: string }) =>
-      editingId ? updateAddress(editingId, input) : createAddress(input),
-    onSuccess: (address, variables) => {
+    mutationFn: createAddress,
+    onSuccess: (address) => {
       client.setQueryData<Awaited<ReturnType<typeof listAddresses>>>(
         ["account", "addresses"],
-        (current = []) =>
-          variables.editingId
-            ? current.map((item) => (item.id === address.id ? address : item))
-            : [...current, address],
+        (current = []) => [...current, address],
       );
       setAddressId(address.id);
-      setEditingAddress(null);
-      setAddingAddress(false);
-      setDeliveryError("");
-      setAddressStatus(
-        locale === "ar"
-          ? "تم حفظ العنوان واختياره لهذا الطلب."
-          : "Address saved and selected for this order.",
-      );
+      setShowAddressForm(false);
+      setAddressStatus("Address saved and selected for this order.");
     },
   });
-
   useEffect(() => {
     trackCommerceEvent("checkout_started", {
       metadata: { lineCount: initialLineCount.current },
     });
   }, []);
-
   useEffect(() => {
     try {
       const saved = window.sessionStorage.getItem("bioreza.checkout-draft");
       if (saved) {
-        const draft = JSON.parse(saved) as Draft;
+        const draft = JSON.parse(saved) as {
+          addressId?: string;
+          method?: string;
+          notes?: string;
+        };
         if (draft.addressId) setAddressId(draft.addressId);
-        if (
-          draft.method === "CASH_ON_DELIVERY" ||
-          draft.method === "INSTAPAY" ||
-          draft.method === "VODAFONE_CASH"
-        ) {
-          setMethod(draft.method);
+        if (["CASH_ON_DELIVERY", "INSTAPAY", "VODAFONE_CASH"].includes(draft.method ?? "")) {
+          setMethod(draft.method!);
         }
         if (typeof draft.notes === "string") setNotes(draft.notes);
-        if (Array.isArray(draft.giftVariantIds)) setGiftVariantIds(draft.giftVariantIds);
-        if (draft.furthestStep) setFurthestStep(draft.furthestStep);
       }
     } catch {
       window.sessionStorage.removeItem("bioreza.checkout-draft");
@@ -208,22 +142,15 @@ function Checkout() {
       setDraftLoaded(true);
     }
   }, []);
-
   useEffect(() => {
     if (!draftLoaded || result) return;
     window.sessionStorage.setItem(
       "bioreza.checkout-draft",
-      JSON.stringify({ addressId, method, notes, giftVariantIds, furthestStep } satisfies Draft),
+      JSON.stringify({ addressId, method, notes }),
     );
-  }, [addressId, draftLoaded, furthestStep, giftVariantIds, method, notes, result]);
-
+  }, [addressId, draftLoaded, method, notes, result]);
   const selectedAddressRecord = selectedUsableAddress(addresses.data, addressId);
   const selectedAddress = selectedAddressRecord?.id ?? "";
-
-  useEffect(() => {
-    if (selectedAddress && selectedAddress !== addressId) setAddressId(selectedAddress);
-  }, [addressId, selectedAddress]);
-
   const cartSignature = lines.map((line) => `${line.variantId}:${line.qty}`).join("|");
   const shippingRate = useQuery({
     queryKey: ["shipping", "rate", selectedAddress, cartSignature],
@@ -234,83 +161,36 @@ function Checkout() {
   });
   const shippingFee = shippingRate.data ? shippingRate.data.shippingCost / 100 : 0;
   const checkoutPreviewTotal = estimatedTotal + shippingFee;
-  const selectableGifts = giftOptions.filter((gift) => gift.customerChooses) as GiftOption[];
+  const selectableGifts = giftOptions.filter((gift) => gift.customerChooses);
   const requiredGiftPromotions = new Set(selectableGifts.map((gift) => gift.promotionId));
   const selectedGiftPromotions = new Set(
     selectableGifts
       .filter((gift) => giftVariantIds.includes(gift.variantId))
       .map((gift) => gift.promotionId),
   );
+  const requiresGift = requiredGiftPromotions.size > 0;
   const giftReady = [...requiredGiftPromotions].every((id) => selectedGiftPromotions.has(id));
-  const canPlaceOrder = Boolean(selectedAddress && method && giftReady && shippingRate.isSuccess);
-  const currentStep = result ? postOrderStep : requestedStep;
-
-  const goToStep = useCallback(
-    (step: CheckoutRouteStep, replace = false) => {
-      setFurthestStep((current) =>
-        checkoutStepIndex(step) > checkoutStepIndex(current) ? step : current,
-      );
-      void navigate({
-        to: "/checkout",
-        search: step === "delivery" ? {} : { step },
-        replace,
-      });
-    },
-    [navigate],
-  );
-
-  useEffect(() => {
-    if (addresses.isLoading || !draftLoaded || result) return;
-    if ((requestedStep === "payment" || requestedStep === "review") && !selectedAddressRecord) {
-      goToStep("delivery", true);
-      return;
+  const canPlaceOrder = Boolean(selectedAddress) && giftReady && shippingRate.isSuccess;
+  const canSubmitCurrentStep = activeStep === 4 && canPlaceOrder;
+  const manualPaymentSelected = isManualPayment(method);
+  const completeStep = (step: number, nextStep: number) => {
+    setCompletedSteps((current) => {
+      const next = new Set(current);
+      next.add(step);
+      return next;
+    });
+    setActiveStep(nextStep);
+  };
+  const openCheckoutStep = (step: number) => {
+    if (
+      step === 1 ||
+      step === activeStep ||
+      completedSteps.has(step) ||
+      completedSteps.has(step - 1)
+    ) {
+      setActiveStep(step);
     }
-    if (requestedStep === "review" && !method) goToStep("payment", true);
-  }, [
-    addresses.isLoading,
-    draftLoaded,
-    goToStep,
-    method,
-    requestedStep,
-    result,
-    selectedAddressRecord,
-  ]);
-
-  useEffect(() => {
-    if (previousStep.current === requestedStep || result) return;
-    previousStep.current = requestedStep;
-    requestAnimationFrame(() => {
-      document.getElementById("checkout-flow")?.scrollIntoView({ block: "start" });
-      stepHeadingRef.current?.focus({ preventScroll: true });
-    });
-  }, [requestedStep, result]);
-
-  useEffect(() => {
-    if ((!addingAddress && !editingAddress) || result) return;
-    requestAnimationFrame(() => {
-      document.getElementById("checkout-flow")?.scrollIntoView({ block: "start" });
-      document.getElementById("delivery-editor-title")?.focus({ preventScroll: true });
-    });
-  }, [addingAddress, editingAddress, result]);
-
-  const rememberOrder = useCallback(
-    (order: CheckoutResult) => {
-      if (!selectedAddressRecord) return;
-      const backendAmount = order.order.grandTotal ?? order.order.total;
-      saveCheckoutSuccess({
-        orderNumber: order.order.orderNumber,
-        amount: backendAmount === undefined ? checkoutPreviewTotal : backendAmount / 100,
-        paymentMethod: method,
-        recipient: selectedAddressRecord.receiverName,
-        destination: formatAddress(selectedAddressRecord),
-        deliveryEstimate: shippingRate.data
-          ? formatDeliveryEstimate(shippingRate.data, locale)
-          : "Confirmed after dispatch",
-      });
-    },
-    [checkoutPreviewTotal, locale, method, selectedAddressRecord, shippingRate.data],
-  );
-
+  };
   const place = useMutation({
     mutationFn: () =>
       checkout(
@@ -322,20 +202,6 @@ function Checkout() {
       ),
     onSuccess: (order) => {
       trackCommerceEvent("purchase_completed", { orderId: order.order.id });
-      rememberOrder(order);
-      if (selectedAddressRecord) {
-        setCompletedCheckout({
-          address: selectedAddressRecord,
-          method,
-          notes,
-          lines: lines.map((line) => ({ ...line, issues: [...line.issues] })),
-          subtotal,
-          discountTotal,
-          estimatedTotal,
-          shippingFee,
-        });
-      }
-      setPostOrderStep("confirmation");
       setResult(order);
       window.sessionStorage.removeItem("bioreza.checkout-draft");
       void client.invalidateQueries({ queryKey: ["cart"] });
@@ -360,9 +226,8 @@ function Checkout() {
       }
     },
   });
-
   const submitOrder = () => {
-    if (!canPlaceOrder || placingOrder.current || place.isPending) return;
+    if (!canSubmitCurrentStep || placingOrder.current) return;
     placingOrder.current = true;
     place.mutate(undefined, {
       onSettled: () => {
@@ -370,272 +235,562 @@ function Checkout() {
       },
     });
   };
-
-  if (!authHydrated) return <CheckoutLoading locale={locale} />;
-  if (!user) {
+  useEffect(() => {
+    if (!proofSubmitted) return;
+    setCompletedSteps((current) => new Set([...current, 1, 2, 3]));
+  }, [proofSubmitted]);
+  if (!authHydrated) return <Loading />;
+  if (!user)
     return (
-      <CheckoutGate
-        title={locale === "ar" ? "يلزم تسجيل الدخول" : "An account is required"}
-        copy={
-          locale === "ar"
-            ? "يستخدم إتمام الطلب عناوينك المحفوظة ويربط مراجعة الدفع بطلبك."
-            : "Checkout uses your saved delivery addresses and keeps payment review connected to your order."
-        }
+      <Gate
+        title="An account is required"
+        copy="Checkout uses your saved delivery address and keeps payment review connected to your order."
         to="/sign-in"
-        action={locale === "ar" ? "تسجيل الدخول لإتمام الطلب" : "Sign in to checkout"}
+        action="Sign in to checkout"
         returnTo="/checkout"
       />
     );
-  }
-  if (!lines.length && !result) {
+  if (!lines.length && !result)
     return (
-      <CheckoutGate
-        title={locale === "ar" ? "حقيبتك فارغة" : "Your bag is empty"}
-        copy={
-          locale === "ar"
-            ? "أضيفي منتجاً متاحاً واحداً على الأقل قبل إتمام الطلب."
-            : "Add at least one available product before checkout."
-        }
+      <Gate
+        title="Your bag is empty"
+        copy="Add at least one available product before checkout."
         to="/shop"
-        action={locale === "ar" ? "تصفح المنتجات" : "Browse products"}
+        action="Browse products"
       />
     );
-  }
-
   return (
-    <div className="luxury-checkout">
-      <header className="luxury-checkout__header">
-        <div>
-          <p>{locale === "ar" ? "إتمام طلب آمن" : "Secure checkout"}</p>
-          <h1>{locale === "ar" ? "تفاصيل قليلة. طلب واضح." : "A few details. One clear order."}</h1>
-        </div>
-        {!result && (
-          <Link to="/cart" className="luxury-checkout__bag-link">
-            {locale === "ar" ? "العودة إلى الحقيبة" : "Return to bag"}
-          </Link>
-        )}
-      </header>
-
-      <CheckoutStepper
-        current={currentStep}
-        locale={locale}
-        furthest={result ? "confirmation" : furthestStep}
-        completedThrough={result ? "confirmation" : currentStep}
-        allowConfirmationNavigation={Boolean(result)}
-        onNavigate={(step: CheckoutStep) => {
-          if (!result) {
-            if (step === "confirmation") return;
-            if ((step === "payment" || step === "review") && !selectedAddressRecord) {
-              setDeliveryError(
-                locale === "ar"
-                  ? "اختاري عنوان توصيل صالحاً قبل الانتقال إلى الخطوة التالية."
-                  : "Choose a delivery-ready address before moving to the next step.",
-              );
-              goToStep("delivery");
-              return;
-            }
-            goToStep(step);
-            return;
-          }
-
-          setPostOrderStep(step);
-          requestAnimationFrame(() => {
-            document.getElementById("checkout-post-order")?.scrollIntoView({ block: "start" });
-          });
-        }}
+    <div className="sf-checkout-page">
+      <Reveal stagger staggerMs={45} distance={18} className="sf-checkout-hero">
+        <p className="sf-checkout-eyebrow">{t("checkout.eyebrow")}</p>
+        <h1 className="display">{t("checkout.title")}</h1>
+        <p className="sf-checkout-intro">
+          {locale === "ar"
+            ? "راجعي الحقيبة، اختاري عنوان التوصيل، ثم أكملي الدفع من تجربة واحدة واضحة."
+            : "Review your bag, choose delivery, and complete payment from one calm checkout flow."}
+        </p>
+      </Reveal>
+      <CheckoutSteps
+        current={result && manualPaymentSelected ? 4 : activeStep}
+        completed={completedSteps}
+        manualPending={proofSubmitted || Boolean(result && payment)}
+        onSelect={openCheckoutStep}
       />
-
-      {result ? (
-        <div id="checkout-post-order" className="checkout-post-order">
-          {postOrderStep === "delivery" && completedCheckout ? (
-            <CompletedDeliveryView snapshot={completedCheckout} order={result} locale={locale} />
-          ) : postOrderStep === "payment" && completedCheckout ? (
-            <CompletedPaymentView snapshot={completedCheckout} order={result} locale={locale} />
-          ) : postOrderStep === "review" && completedCheckout ? (
-            <CompletedReviewView snapshot={completedCheckout} order={result} locale={locale} />
-          ) : payment ? (
-            <PaymentProof payment={payment} order={result} locale={locale} />
-          ) : (
-            <PaymentSetup
-              locale={locale}
-              pending={paymentSetup.isPending}
-              error={paymentSetup.error}
-              retry={() => startPaymentSetup(result.order.id, method)}
-            />
-          )}
-        </div>
+      {result && payment ? (
+        <Proof
+          payment={payment}
+          order={result}
+          submitted={proofSubmitted}
+          onSubmitted={() => setProofSubmitted(true)}
+        />
+      ) : result && manualPaymentSelected ? (
+        <PaymentSetup
+          pending={paymentSetup.isPending}
+          error={paymentSetup.error}
+          retry={() => startPaymentSetup(result.order.id, method)}
+        />
       ) : (
-        <div className="checkout-layout">
-          <CheckoutSummary
-            lines={lines}
-            subtotal={subtotal}
-            discountTotal={discountTotal}
-            estimatedTotal={estimatedTotal}
-            promotions={appliedPromotions}
-            shippingFee={shippingFee}
-            shippingRate={shippingRate.data}
-            shippingPending={shippingRate.isLoading || shippingRate.isFetching}
-            shippingError={shippingRate.error}
-            onRetryShipping={() => void shippingRate.refetch()}
-            locale={locale}
-          />
+        <div className="sf-checkout-shell">
+          <div className="sf-checkout-main">
+            {activeStep === 1 && (
+              <Reveal key="checkout-bag" distance={14} className="sf-checkout-step-panel">
+                <section className="sf-checkout-card sf-checkout-card--bag">
+                  <CheckoutCardHeader
+                    icon={<ShoppingBag />}
+                    eyebrow="Step 1"
+                    title="Bag"
+                    copy={`${lines.length} ${lines.length === 1 ? "item" : "items"} ready for checkout`}
+                  />
+                  <ul className="sf-checkout-bag-list">
+                    {lines.map((line) => (
+                      <li key={line.variantId} className="sf-checkout-bag-item">
+                        <PolishedImage
+                          src={line.image}
+                          alt=""
+                          loading="lazy"
+                          wrapperClassName="sf-checkout-bag-item__image"
+                          className="size-full object-cover"
+                        />
+                        <span className="min-w-0">
+                          <span className="sf-checkout-bag-item__name">{line.name}</span>
+                          <span className="sf-checkout-bag-item__meta">
+                            {line.size} · Qty {line.qty}
+                          </span>
+                        </span>
+                        <strong>{formatPrice(line.price * line.qty)}</strong>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="sf-checkout-step-actions">
+                    <Button asChild variant="quiet" size="pill">
+                      <Link to="/cart">Edit bag</Link>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="solid"
+                      size="pill"
+                      className="sf-checkout-black-button"
+                      onClick={() => completeStep(1, 2)}
+                    >
+                      Continue to Delivery
+                    </Button>
+                  </div>
+                </section>
+              </Reveal>
+            )}
 
-          <section
-            id="checkout-flow"
-            className="checkout-flow"
-            aria-label={locale === "ar" ? "خطوات إتمام الطلب" : "Checkout details"}
-          >
-            <div className="checkout-step-stage" key={requestedStep}>
-              {requestedStep === "delivery" && (
-                <DeliveryStep
-                  locale={locale}
-                  addresses={addresses.data}
-                  addressesLoading={addresses.isLoading}
-                  addressesError={addresses.isError}
-                  onRetryAddresses={() => void addresses.refetch()}
-                  selectedId={selectedAddress}
-                  onSelect={(address) => {
-                    setAddressId(address.id);
-                    setDeliveryError("");
-                    setAddressStatus(
-                      locale === "ar"
-                        ? `تم اختيار ${address.receiverName} للتوصيل.`
-                        : `${address.receiverName} selected for delivery.`,
-                    );
-                  }}
-                  addressStatus={addressStatus}
-                  editingAddress={editingAddress}
-                  addingAddress={addingAddress}
-                  onEditAddress={(address) => {
-                    setEditingAddress(address);
-                    setAddingAddress(false);
-                  }}
-                  onAddAddress={() => {
-                    setEditingAddress(null);
-                    setAddingAddress(true);
-                  }}
-                  onCancelAddress={() => {
-                    setEditingAddress(null);
-                    setAddingAddress(false);
-                  }}
-                  onSaveAddress={(input, editingId) =>
-                    addressMutation
-                      .mutateAsync({
-                        input: {
-                          ...input,
-                          isDefault: editingId
-                            ? Boolean(editingAddress?.isDefault)
-                            : !addresses.data?.length,
-                        },
-                        ...(editingId ? { editingId } : {}),
-                      })
-                      .then(() => undefined)
-                  }
-                  addressMutationPending={addressMutation.isPending}
-                  addressMutationError={
-                    addressMutation.error ? apiErrorMessage(addressMutation.error, locale) : ""
-                  }
-                  userName={`${user.firstName} ${user.lastName}`.trim()}
-                  userPhone={user.phone ?? ""}
-                  notes={notes}
-                  onNotesChange={setNotes}
-                  deliveryPending={Boolean(
-                    selectedAddress && (shippingRate.isLoading || shippingRate.isFetching),
+            {activeStep === 2 && (
+              <Reveal key="checkout-delivery" distance={14} className="sf-checkout-step-panel">
+                <section className="sf-checkout-card">
+                  <CheckoutCardHeader
+                    icon={<MapPin />}
+                    eyebrow="Step 2"
+                    title="Delivery"
+                    copy="Select the address we should ship to."
+                  />
+                  {addresses.isLoading ? (
+                    <div className="sf-checkout-skeletons" aria-label="Loading delivery addresses">
+                      <div />
+                      <div />
+                    </div>
+                  ) : addresses.isError ? (
+                    <StatePanel
+                      kind="error"
+                      title="Addresses did not load"
+                      description="Your checkout details are still here. Try loading your saved addresses again."
+                      action={() => void addresses.refetch()}
+                      actionLabel="Try again"
+                      className="py-10"
+                    />
+                  ) : (
+                    <div>
+                      {Boolean(addresses.data?.length) && (
+                        <div
+                          className="sf-checkout-address-list"
+                          role="radiogroup"
+                          aria-label="Delivery address"
+                        >
+                          {addresses.data?.map((address) => {
+                            const ready = isAddressDeliveryReady(address);
+                            return (
+                              <label
+                                key={address.id}
+                                className="sf-checkout-choice"
+                                data-active={selectedAddress === address.id || undefined}
+                                data-disabled={!ready || undefined}
+                              >
+                                <input
+                                  type="radio"
+                                  name="delivery-address"
+                                  checked={selectedAddress === address.id}
+                                  disabled={!ready}
+                                  onChange={() => {
+                                    if (!ready) return;
+                                    setAddressId(address.id);
+                                    setAddressStatus(
+                                      `${address.receiverName} selected for delivery.`,
+                                    );
+                                  }}
+                                />
+                                <span>
+                                  <strong>{address.receiverName}</strong>
+                                  <span className="sf-checkout-choice__copy">
+                                    {address.building} {address.street}, {address.area},{" "}
+                                    {address.city}, {address.governorate}
+                                  </span>
+                                  <span className="sf-checkout-choice__meta">{address.phone}</span>
+                                  {!ready && (
+                                    <span className="sf-checkout-choice__warning">
+                                      This address needs to be updated before it can be used for
+                                      delivery.
+                                    </span>
+                                  )}
+                                </span>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      )}
+                      <p className="sr-only" role="status" aria-live="polite">
+                        {addressStatus}
+                      </p>
+                      {!addresses.data?.length && (
+                        <div className="sf-checkout-note">
+                          Add a delivery address here. Your bag and checkout choices will stay in
+                          place.
+                        </div>
+                      )}
+                      {(showAddressForm || !addresses.data?.length) && (
+                        <div className={addresses.data?.length ? "sf-checkout-inline-form" : ""}>
+                          <h3>Delivery details</h3>
+                          <AddressForm
+                            initialName={`${user.firstName} ${user.lastName}`.trim()}
+                            initialPhone={user.phone ?? ""}
+                            pending={addressMutation.isPending}
+                            {...(addresses.data?.length
+                              ? { onCancel: () => setShowAddressForm(false) }
+                              : {})}
+                            onSubmit={(input) =>
+                              addressMutation
+                                .mutateAsync({
+                                  ...input,
+                                  isDefault: !addresses.data?.length,
+                                })
+                                .then(() => undefined)
+                            }
+                          />
+                          {addressMutation.error && (
+                            <p role="alert" className="mt-4 text-sm text-destructive">
+                              {apiErrorMessage(addressMutation.error, locale)}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                      {Boolean(addresses.data?.length) && !showAddressForm && (
+                        <Button
+                          type="button"
+                          variant="solid"
+                          size="pill"
+                          className="sf-checkout-black-button mt-5"
+                          onClick={() => setShowAddressForm(true)}
+                        >
+                          <Plus /> {selectedAddress ? "Add another address" : "Add updated address"}
+                        </Button>
+                      )}
+                      {selectedAddress && shippingRate.isSuccess && (
+                        <p className="sf-checkout-auto-note" role="status">
+                          Delivery is ready. Review your order before payment.
+                        </p>
+                      )}
+                      <div className="sf-checkout-step-actions">
+                        <Button
+                          type="button"
+                          variant="quiet"
+                          size="pill"
+                          onClick={() => setActiveStep(1)}
+                        >
+                          Back to bag
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="solid"
+                          size="pill"
+                          className="sf-checkout-black-button"
+                          disabled={!selectedAddress || !shippingRate.isSuccess}
+                          onClick={() => completeStep(2, 3)}
+                        >
+                          Continue to Review
+                        </Button>
+                      </div>
+                    </div>
                   )}
-                  deliveryError={
-                    deliveryError ||
-                    (shippingRate.error ? apiErrorMessage(shippingRate.error, locale) : "")
-                  }
-                  onRetryDelivery={() => {
-                    setDeliveryError("");
-                    void shippingRate.refetch();
-                  }}
-                  onContinue={() => {
-                    if (!selectedAddressRecord) {
-                      setDeliveryError(
-                        locale === "ar"
-                          ? "اختاري عنوان توصيل صالحاً للمتابعة."
-                          : "Choose a delivery-ready address to continue.",
-                      );
-                      return;
-                    }
-                    if (!shippingRate.isSuccess) {
-                      setDeliveryError(
-                        locale === "ar"
-                          ? "نحتاج لتأكيد سعر التوصيل قبل المتابعة."
-                          : "We need to confirm the delivery price before continuing.",
-                      );
-                      return;
-                    }
-                    setDeliveryError("");
-                    goToStep("payment");
-                  }}
-                  headingRef={stepHeadingRef}
-                />
-              )}
+                </section>
+              </Reveal>
+            )}
 
-              {requestedStep === "payment" && (
-                <PaymentStep
-                  locale={locale}
-                  method={method}
-                  onMethodChange={setMethod}
-                  instructions={instructions.data}
-                  instructionsPending={instructions.isLoading || instructions.isFetching}
-                  instructionsError={instructions.isError}
-                  onRetryInstructions={() => void instructions.refetch()}
-                  onBack={() => goToStep("delivery")}
-                  onContinue={() => goToStep("review")}
-                  headingRef={stepHeadingRef}
-                />
-              )}
+            {activeStep === 3 && (
+              <Reveal key="checkout-review" distance={14} className="sf-checkout-step-panel">
+                <section className="sf-checkout-card">
+                  <CheckoutCardHeader
+                    icon={<PackageCheck />}
+                    eyebrow="Step 3"
+                    title="Review"
+                    copy="Check the final details before choosing a payment method."
+                  />
+                  <div className="sf-checkout-review-grid">
+                    <div>
+                      <span>Delivery to</span>
+                      <strong>{selectedAddressRecord?.receiverName ?? "Select an address"}</strong>
+                      <p>
+                        {selectedAddressRecord
+                          ? `${selectedAddressRecord.building} ${selectedAddressRecord.street}, ${selectedAddressRecord.area}, ${selectedAddressRecord.city}, ${selectedAddressRecord.governorate}`
+                          : "Choose where this order should be shipped."}
+                      </p>
+                    </div>
+                    <div>
+                      <span>Estimated total</span>
+                      <strong>{formatPrice(checkoutPreviewTotal)}</strong>
+                      <p>
+                        {shippingRate.data
+                          ? `${shippingRate.data.provider} · ${shippingRate.data.estimatedDays} days`
+                          : "Shipping is calculated after selecting an address."}
+                      </p>
+                    </div>
+                  </div>
+                  {requiresGift && (
+                    <div className="sf-checkout-review-gift">
+                      <CheckoutCardHeader
+                        icon={<PackageCheck />}
+                        eyebrow="Gift"
+                        title="Complimentary gift"
+                        copy="Choose the gift attached to your promotion."
+                      />
+                      <div className="grid gap-3">
+                        {selectableGifts.map((gift) => (
+                          <label
+                            key={gift.variantId}
+                            className="sf-checkout-choice"
+                            data-active={giftVariantIds.includes(gift.variantId) || undefined}
+                          >
+                            <input
+                              type="radio"
+                              name={`gift-${gift.promotionId}`}
+                              checked={giftVariantIds.includes(gift.variantId)}
+                              onChange={() =>
+                                setGiftVariantIds((current) => [
+                                  ...current.filter((variantId) => {
+                                    const option = selectableGifts.find(
+                                      (candidate) => candidate.variantId === variantId,
+                                    );
+                                    return option?.promotionId !== gift.promotionId;
+                                  }),
+                                  gift.variantId,
+                                ])
+                              }
+                            />{" "}
+                            <span>
+                              <strong>Promotional gift</strong>
+                              <span className="sf-checkout-choice__copy">
+                                Quantity {gift.quantity}
+                              </span>
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  <div className="sf-checkout-step-actions">
+                    <Button
+                      type="button"
+                      variant="quiet"
+                      size="pill"
+                      onClick={() => setActiveStep(2)}
+                    >
+                      Back to Delivery
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="solid"
+                      size="pill"
+                      className="sf-checkout-black-button"
+                      disabled={!canPlaceOrder}
+                      onClick={() => completeStep(3, 4)}
+                    >
+                      Continue to Payment
+                    </Button>
+                  </div>
+                </section>
+              </Reveal>
+            )}
 
-              {requestedStep === "review" && selectedAddressRecord && (
-                <ReviewStep
-                  locale={locale}
-                  address={selectedAddressRecord}
-                  method={method}
-                  notes={notes}
-                  lines={lines}
-                  selectableGifts={selectableGifts}
-                  selectedGiftIds={giftVariantIds}
-                  onGiftChange={(gift) =>
-                    setGiftVariantIds((current) => [
-                      ...current.filter((variantId) => {
-                        const option = selectableGifts.find(
-                          (candidate) => candidate.variantId === variantId,
-                        );
-                        return option?.promotionId !== gift.promotionId;
-                      }),
-                      gift.variantId,
-                    ])
-                  }
-                  onEditDelivery={() => goToStep("delivery")}
-                  onEditPayment={() => goToStep("payment")}
-                  onBack={() => goToStep("payment")}
-                  canPlaceOrder={canPlaceOrder}
-                  placingOrder={place.isPending}
-                  placeError={place.error ? apiErrorMessage(place.error, locale) : ""}
-                  blockingMessage={
-                    !giftReady
-                      ? locale === "ar"
-                        ? "اختاري هديتك المجانية قبل إنشاء الطلب."
-                        : "Choose your complimentary gift before placing the order."
-                      : !shippingRate.isSuccess
-                        ? locale === "ar"
-                          ? "نؤكد تكلفة التوصيل قبل إنشاء الطلب."
-                          : "We're confirming delivery before the order can be placed."
-                        : ""
-                  }
-                  onPlaceOrder={submitOrder}
-                  headingRef={stepHeadingRef}
-                />
-              )}
+            {activeStep === 4 && (
+              <Reveal key="checkout-payment" distance={14} className="sf-checkout-step-panel">
+                <section className="sf-checkout-card">
+                  <CheckoutCardHeader
+                    icon={<CreditCard />}
+                    eyebrow="Step 4"
+                    title="Payment"
+                    copy="Manual transfers stay pending here until the admin approves them."
+                  />
+                  <div className="sf-checkout-payment-grid">
+                    {[
+                      [
+                        "CASH_ON_DELIVERY",
+                        "Cash on delivery",
+                        "Pay the courier when your order arrives.",
+                      ],
+                      ["INSTAPAY", "InstaPay", "Transfer, then upload your payment screenshot."],
+                      [
+                        "VODAFONE_CASH",
+                        "Vodafone Cash",
+                        "Transfer, then upload your payment screenshot.",
+                      ],
+                    ].map(([value, title, copy]) => (
+                      <label
+                        key={value}
+                        className="sf-checkout-payment-option"
+                        data-active={method === value || undefined}
+                      >
+                        <span className="sf-checkout-payment-option__inner">
+                          <input
+                            type="radio"
+                            checked={method === value}
+                            onChange={() => setMethod(value ?? "CASH_ON_DELIVERY")}
+                          />
+                          <span>
+                            <strong>{title}</strong>
+                            <span>{copy}</span>
+                          </span>
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                  {instructions.data?.find((item) => item.method === method) && (
+                    <Instruction data={instructions.data.find((item) => item.method === method)!} />
+                  )}
+                  <label className="sf-checkout-notes">
+                    <span>Order notes</span>
+                    <textarea
+                      value={notes}
+                      onChange={(event) => setNotes(event.target.value)}
+                      className="min-h-24 w-full border border-input bg-white p-4 text-sm normal-case tracking-normal"
+                      maxLength={500}
+                      placeholder="Optional delivery instructions"
+                    />
+                  </label>
+                  <div className="sf-checkout-step-actions">
+                    <Button
+                      type="button"
+                      variant="quiet"
+                      size="pill"
+                      onClick={() => setActiveStep(requiresGift ? 3 : 2)}
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="solid"
+                      size="pill"
+                      className="sf-checkout-black-button"
+                      disabled={!canSubmitCurrentStep}
+                      loading={place.isPending}
+                      onClick={submitOrder}
+                    >
+                      {manualPaymentSelected
+                        ? "Create order and upload proof"
+                        : t("checkout.place")}
+                    </Button>
+                  </div>
+                </section>
+              </Reveal>
+            )}
+          </div>
+          <aside className="sf-checkout-summary">
+            <div className="sf-checkout-summary__top">
+              <span className="sf-checkout-summary__icon">
+                <ReceiptText />
+              </span>
+              <div>
+                <p className="sf-checkout-eyebrow">{t("checkout.summary")}</p>
+                <h2>{formatPrice(checkoutPreviewTotal)}</h2>
+              </div>
             </div>
-          </section>
+            <div className="sf-checkout-summary-row">
+              <span>Subtotal</span>
+              <strong>{formatPrice(subtotal)}</strong>
+            </div>
+            {appliedPromotions.map((promotion) => (
+              <div key={promotion.id} className="sf-checkout-summary-row text-gold">
+                <span>{promotion.title}</span>
+                <span>-{formatPrice(promotion.discountAmount / 100)}</span>
+              </div>
+            ))}
+            {discountTotal > 0 && (
+              <div className="sf-checkout-summary-row">
+                <span>After promotions</span>
+                <strong>{formatPrice(estimatedTotal)}</strong>
+              </div>
+            )}
+            <div className="sf-checkout-summary-row">
+              <span>Shipping</span>
+              <strong>
+                {shippingRate.isLoading || shippingRate.isFetching
+                  ? "Calculating..."
+                  : shippingRate.data
+                    ? formatPrice(shippingFee)
+                    : "—"}
+              </strong>
+            </div>
+            {shippingRate.data && (
+              <p className="sf-checkout-summary__hint">
+                {shippingRate.data.provider} · estimated {shippingRate.data.estimatedDays} day
+                {shippingRate.data.estimatedDays === 1 ? "" : "s"}
+              </p>
+            )}
+            {shippingRate.error && (
+              <div role="alert" className="sf-checkout-summary__error">
+                {apiErrorMessage(shippingRate.error, locale)}
+                <button
+                  type="button"
+                  className="ms-2 underline underline-offset-4"
+                  onClick={() => void shippingRate.refetch()}
+                >
+                  Try again
+                </button>
+              </div>
+            )}
+            <div className="sf-checkout-summary-total">
+              <span>Total</span>
+              <strong>{formatPrice(checkoutPreviewTotal)}</strong>
+            </div>
+            <p className="sf-checkout-summary__hint">
+              The backend recalculates products, stock, promotions and shipping before creating the
+              order.
+            </p>
+            {place.error && (
+              <p role="alert" className="sf-checkout-summary__error">
+                {apiErrorMessage(place.error, locale)}
+              </p>
+            )}
+            <Button
+              variant="solid"
+              size="wide"
+              className="sf-checkout-black-button mt-7"
+              disabled={!canSubmitCurrentStep}
+              loading={place.isPending}
+              onClick={submitOrder}
+            >
+              {t("checkout.place")}
+            </Button>
+            {!selectedAddress && (
+              <p className="sf-checkout-summary__hint">
+                Add or select a verified delivery address to continue.
+              </p>
+            )}
+            {selectedAddress && !shippingRate.isSuccess && (
+              <p className="sf-checkout-summary__hint">
+                Wait for the delivery price before placing the order.
+              </p>
+            )}
+            {requiresGift && !giftReady && (
+              <p className="sf-checkout-summary__hint">
+                Choose your complimentary gift to continue.
+              </p>
+            )}
+            <div className="sf-checkout-secure">
+              <ShieldCheck />
+              <span>Secure checkout. Payment status is reviewed by the admin team.</span>
+            </div>
+          </aside>
+        </div>
+      )}
+      {!result && (
+        <div className="mobile-primary-bar fixed inset-x-0 bottom-0 z-30 border-t border-border bg-white px-4 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.18)] lg:hidden">
+          <div className="mx-auto flex max-w-lg items-center gap-3">
+            <div className="min-w-0 flex-1">
+              <p className="label-xs text-taupe">{t("checkout.beforeDelivery")}</p>
+              <p className="font-serif text-xl">{formatPrice(checkoutPreviewTotal)}</p>
+            </div>
+            <Button
+              type="button"
+              variant="solid"
+              size="pill"
+              className="sf-checkout-black-button h-12 shrink-0 px-6"
+              disabled={!canSubmitCurrentStep}
+              loading={place.isPending}
+              onClick={submitOrder}
+            >
+              {t("checkout.place")}
+            </Button>
+          </div>
         </div>
       )}
     </div>
   );
+}
+
+function isAddressDeliveryReady(address: AddressResponse) {
+  return Boolean(address.bostaGovernorateId && address.bostaCityId && address.bostaZoneId);
 }
 
 function selectedUsableAddress(addresses: AddressResponse[] | undefined, selectedId: string) {
@@ -648,585 +803,351 @@ function selectedUsableAddress(addresses: AddressResponse[] | undefined, selecte
   );
 }
 
-function formatAddress(address: AddressResponse) {
-  return `${address.building} ${address.street}, ${address.area}, ${address.city}, ${address.governorate}`;
+function isManualPayment(method: string) {
+  return method === "INSTAPAY" || method === "VODAFONE_CASH";
 }
 
-function completedOrderTotal(snapshot: CompletedCheckoutSnapshot, order: CheckoutResult) {
-  const backendTotal = order.order.grandTotal ?? order.order.total;
-  return backendTotal === undefined
-    ? snapshot.estimatedTotal + snapshot.shippingFee
-    : backendTotal / 100;
-}
-
-function CompletedDeliveryView({
-  snapshot,
-  order,
-  locale,
+function CheckoutCardHeader({
+  icon,
+  eyebrow,
+  title,
+  copy,
 }: {
-  snapshot: CompletedCheckoutSnapshot;
-  order: CheckoutResult;
-  locale: "en" | "ar";
+  icon: ReactNode;
+  eyebrow: string;
+  title: string;
+  copy: string;
 }) {
-  const ar = locale === "ar";
-
   return (
-    <section className="checkout-completed-view" aria-labelledby="completed-delivery-title">
-      <header className="checkout-completed-view__header">
-        <span aria-hidden="true">01</span>
-        <div>
-          <p>{ar ? "تفاصيل الطلب المحفوظ" : "Secured order detail"}</p>
-          <h2 id="completed-delivery-title">
-            {ar ? "عنوان التوصيل لهذا الطلب." : "Delivery for this order."}
-          </h2>
-          <div>
-            {ar
-              ? "تم إنشاء الطلب، لذلك نعرض التفاصيل المحفوظة بدون تغيير الطلب الحالي."
-              : "The order is already created, so these are the locked details used for this purchase."}
-          </div>
-        </div>
-      </header>
-
-      <div className="checkout-completed-view__facts">
-        <article>
-          <p>{ar ? "المستلم" : "Recipient"}</p>
-          <strong>{snapshot.address.receiverName}</strong>
-          <span>{snapshot.address.phone}</span>
-        </article>
-        <article className="checkout-completed-view__fact--wide">
-          <p>{ar ? "وجهة التوصيل" : "Delivery destination"}</p>
-          <strong>{formatAddress(snapshot.address)}</strong>
-          {snapshot.notes && (
-            <span>
-              {ar ? "ملاحظة" : "Note"}: {snapshot.notes}
-            </span>
-          )}
-        </article>
-        <article>
-          <p>{ar ? "مرجع الطلب" : "Order reference"}</p>
-          <strong>{order.order.orderNumber}</strong>
-          <span>{ar ? "تم تأمينه" : "Order secured"}</span>
-        </article>
-      </div>
-    </section>
+    <header className="sf-checkout-card__header">
+      <span className="sf-checkout-card__icon">{icon}</span>
+      <span>
+        <span className="sf-checkout-eyebrow">{eyebrow}</span>
+        <h2>{title}</h2>
+        <p>{copy}</p>
+      </span>
+    </header>
   );
 }
 
-function CompletedReviewView({
-  snapshot,
-  order,
-  locale,
+function CheckoutSteps({
+  current,
+  completed,
+  manualPending,
+  onSelect,
 }: {
-  snapshot: CompletedCheckoutSnapshot;
-  order: CheckoutResult;
-  locale: "en" | "ar";
+  current: number;
+  completed: Set<number>;
+  manualPending: boolean;
+  onSelect: (step: number) => void;
 }) {
-  const ar = locale === "ar";
-  const total = completedOrderTotal(snapshot, order);
-
+  const steps = [
+    { number: 1, label: "Bag" },
+    { number: 2, label: "Delivery", sub: "Select address" },
+    { number: 3, label: "Review" },
+    { number: 4, label: "Payment", sub: manualPending ? "Pending" : undefined },
+    { number: 5, label: "Confirmed" },
+  ];
   return (
-    <section className="checkout-completed-view" aria-labelledby="completed-review-title">
-      <header className="checkout-completed-view__header">
-        <span aria-hidden="true">03</span>
-        <div>
-          <p>{ar ? "نسخة الطلب المؤكدة" : "Confirmed order snapshot"}</p>
-          <h2 id="completed-review-title">{ar ? "مراجعة طلبك." : "Review your secured order."}</h2>
-          <div>
-            {ar
-              ? "تبقى هذه النسخة مستقلة عن الحقيبة بعد إنشاء الطلب."
-              : "This snapshot stays available even though purchased items have left your bag."}
-          </div>
-        </div>
-      </header>
-
-      <div className="checkout-completed-view__summary">
-        <dl>
-          <div>
-            <dt>{ar ? "مرجع الطلب" : "Order reference"}</dt>
-            <dd>{order.order.orderNumber}</dd>
-          </div>
-          <div>
-            <dt>{ar ? "التوصيل إلى" : "Delivering to"}</dt>
-            <dd>{snapshot.address.receiverName}</dd>
-          </div>
-          <div>
-            <dt>{ar ? "طريقة الدفع" : "Payment method"}</dt>
-            <dd>{paymentMethodName(snapshot.method, locale)}</dd>
-          </div>
-          <div>
-            <dt>{ar ? "الإجمالي النهائي" : "Final total"}</dt>
-            <dd>{formatPrice(total)}</dd>
-          </div>
-        </dl>
-      </div>
-
-      <div className="checkout-review-products checkout-completed-view__products">
-        <header>
-          <p>{ar ? "المنتجات المؤكدة" : "Confirmed products"}</p>
-          <span>
-            {snapshot.lines.reduce((count, line) => count + line.qty, 0)} {ar ? "قطعة" : "items"}
-          </span>
-        </header>
-        <ul>
-          {snapshot.lines.map((line) => (
-            <li key={line.variantId}>
-              <PolishedImage
-                src={line.image}
-                alt=""
-                loading="lazy"
-                width={56}
-                height={68}
-                sizes="56px"
-                wrapperClassName="checkout-review-products__image"
-                className="size-full object-cover"
-              />
-              <span>
-                <strong>{line.name}</strong>
-                <small>
-                  {line.size} · {ar ? "الكمية" : "Qty"} {line.qty}
-                </small>
+    <ol className="sf-checkout-steps" aria-label="Checkout progress">
+      {steps.map((step) => {
+        const state =
+          step.number === current ? "active" : completed.has(step.number) ? "complete" : "next";
+        const canOpen =
+          step.number === 1 ||
+          step.number === current ||
+          completed.has(step.number) ||
+          completed.has(step.number - 1);
+        return (
+          <li
+            key={step.number}
+            data-state={state}
+            aria-current={state === "active" ? "step" : undefined}
+          >
+            <button type="button" disabled={!canOpen} onClick={() => onSelect(step.number)}>
+              <span className="sf-checkout-step__dot">
+                {state === "complete" ? <CheckCircle2 /> : step.number}
               </span>
-              <b>{formatPrice(line.price * line.qty)}</b>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
+              <span>
+                <strong>{step.label}</strong>
+                {step.sub && <small>{step.sub}</small>}
+              </span>
+            </button>
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 
-function CompletedPaymentView({
-  snapshot,
-  order,
-  locale,
-}: {
-  snapshot: CompletedCheckoutSnapshot;
-  order: CheckoutResult;
-  locale: "en" | "ar";
-}) {
-  const ar = locale === "ar";
-  const selectedMethod = paymentMethods.find((candidate) => candidate.value === snapshot.method)!;
-
-  return (
-    <section className="checkout-completed-view" aria-labelledby="completed-payment-title">
-      <header className="checkout-completed-view__header">
-        <span aria-hidden="true">02</span>
-        <div>
-          <p>{ar ? "طريقة الدفع المحفوظة" : "Secured payment method"}</p>
-          <h2 id="completed-payment-title">
-            {ar ? "الدفع لهذا الطلب." : "Payment for this order."}
-          </h2>
-          <div>
-            {ar
-              ? "تم تثبيت طريقة الدفع عند إنشاء الطلب. يمكنك مراجعتها هنا، ثم العودة إلى التأكيد لإرسال الإثبات."
-              : "This method was locked when the order was created. Review it here, then return to Confirmation to send your proof."}
-          </div>
-        </div>
-      </header>
-
-      <div className="checkout-completed-payment">
-        <div className="checkout-completed-payment__method">
-          <span className="checkout-completed-payment__icon">
-            <img src={selectedMethod.icon} alt="" />
-          </span>
-          <span>
-            <small>{ar ? "طريقة الدفع المختارة" : "Selected payment method"}</small>
-            <strong>{ar ? selectedMethod.titleAr : selectedMethod.title}</strong>
-            <p>{ar ? selectedMethod.descriptionAr : selectedMethod.description}</p>
-          </span>
-          <span className="checkout-completed-payment__locked">
-            <LockKeyhole aria-hidden="true" />
-            {ar ? "محفوظة" : "Secured"}
-          </span>
-        </div>
-
-        <dl>
-          <div>
-            <dt>{ar ? "مرجع الطلب" : "Order reference"}</dt>
-            <dd>{order.order.orderNumber}</dd>
-          </div>
-          <div>
-            <dt>{ar ? "المبلغ" : "Amount"}</dt>
-            <dd>{formatPrice(completedOrderTotal(snapshot, order))}</dd>
-          </div>
-          <div>
-            <dt>{ar ? "الحالة" : "Status"}</dt>
-            <dd>{ar ? "بانتظار إثبات التحويل" : "Awaiting transfer proof"}</dd>
-          </div>
-        </dl>
-
-        <p className="checkout-completed-payment__notice">
-          <LockKeyhole aria-hidden="true" />
-          <span>
-            {ar
-              ? "لا يمكن تغيير طريقة الدفع بعد إنشاء الطلب، لأن رقم الطلب ومراجعة التحويل مرتبطان بها."
-              : "Payment method cannot change after order creation because the order and transfer review are already linked to it."}
-          </span>
-        </p>
-      </div>
-    </section>
-  );
-}
-
-function PaymentProof({
+function Proof({
   payment,
   order,
-  locale,
+  submitted,
+  onSubmitted,
 }: {
   payment: Payment;
   order: CheckoutResult;
-  locale: "en" | "ar";
+  submitted: boolean;
+  onSubmitted: () => void;
 }) {
-  const navigate = useNavigate();
   const submittingProof = useRef(false);
   const [file, setFile] = useState<File | null>(null);
   const [sender, setSender] = useState("");
   const [reference, setReference] = useState("");
   const [fileError, setFileError] = useState("");
-  const [errors, setErrors] = useState<Partial<Record<"sender" | "reference" | "file", string>>>(
-    {},
-  );
-  const senderRef = useRef<HTMLInputElement>(null);
-  const referenceRef = useRef<HTMLInputElement>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
-  const ar = locale === "ar";
-  const instruction = payment.instructions;
-  const legacyDestination =
-    order.paymentInstructions?.instapayAddress ??
-    order.paymentInstructions?.vodafoneCashNumber ??
-    "";
-  const destination = instruction?.accountNumber ?? instruction?.phoneNumber ?? legacyDestination;
-  const recipient = instruction?.receiverName ?? instruction?.accountName;
-  const transferNote = instruction?.notes ?? order.paymentInstructions?.transferNote;
-  const methodLabel = paymentMethodName(payment.method as PaymentMethod, locale);
   const mutation = useMutation({
     mutationFn: () => {
       if (!file) throw new Error("Choose a payment screenshot.");
       return uploadPaymentProof(payment.id, file, sender, reference, payment.amount);
     },
-    onSuccess: () =>
-      void navigate({
-        to: "/order-confirmed",
-        search: {
-          order: order.order.orderNumber,
-          status: "PAYMENT_REVIEW",
-          payment: payment.method,
-        },
-      }),
+    onSuccess: onSubmitted,
   });
-
-  return (
-    <section className="checkout-proof" aria-labelledby="proof-title">
-      <header>
-        <span>
-          <Check aria-hidden="true" />
+  if (submitted) {
+    return (
+      <section className="sf-checkout-pending" aria-live="polite">
+        <span className="sf-checkout-pending__icon">
+          <LoaderCircle />
         </span>
-        <div>
-          <p>
-            {ar ? "تم تثبيت الطلب" : "Order secured"} · {order.order.orderNumber}
-          </p>
-          <h2 id="proof-title">{ar ? "طلبك محفوظ." : "Your order is secured."}</h2>
+        <p className="sf-checkout-eyebrow">Step 4 · Payment</p>
+        <h2>Payment pending</h2>
+        <p>
+          Your transfer proof was received. Stay here while the status remains pending; once the
+          admin approves the payment, this order can move to Step 5: Confirmed.
+        </p>
+        <dl>
           <div>
-            {ar
-              ? "حوّلي المبلغ بدقة، ثم أرسلي الإيصال لنبدأ المراجعة."
-              : "Transfer the exact amount, then send the receipt to begin review."}
+            <dt>Order</dt>
+            <dd>{order.order.orderNumber}</dd>
           </div>
+          <div>
+            <dt>Payment</dt>
+            <dd>{payment.method.replaceAll("_", " ")}</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>Pending</dd>
+          </div>
+        </dl>
+        <div className="sf-checkout-pending__actions">
+          <Button asChild variant="solid" size="pill" className="sf-checkout-black-button">
+            <Link to="/account" search={{ section: "orders" }}>
+              Track Order
+            </Link>
+          </Button>
+          <Button asChild variant="quiet" size="pill">
+            <Link to="/account" search={{ section: "orders" }}>
+              View my order
+            </Link>
+          </Button>
         </div>
-        <div className="checkout-proof__status">
-          <span>{ar ? "حالة الدفع" : "Payment status"}</span>
-          <strong>{ar ? "بانتظار الإثبات" : "Awaiting proof"}</strong>
-          <i aria-hidden="true" />
-        </div>
-      </header>
-
-      <div className="checkout-proof__grid">
-        <aside
-          className="checkout-proof__instruction"
-          aria-label={ar ? "بيانات التحويل" : "Transfer details"}
-        >
-          <div className="checkout-proof__method">
-            <p>{ar ? "التحويل عبر" : "Transfer via"}</p>
-            <strong>{methodLabel}</strong>
+      </section>
+    );
+  }
+  return (
+    <div className="sf-checkout-proof">
+      <div className="sf-checkout-card">
+        <CheckoutCardHeader
+          icon={<CheckCircle2 />}
+          eyebrow="Step 4 · Payment"
+          title="Transfer details"
+          copy={`Order ${order.order.orderNumber} is created and waiting for proof.`}
+        />
+        <p className="sf-checkout-proof__amount">
+          Transfer exactly {formatPrice(payment.amount / 100)} and keep the transaction reference.
+        </p>
+        {order.paymentInstructions && (
+          <div className="sf-checkout-transfer-box">
+            <Copy
+              value={
+                order.paymentInstructions.instapayAddress ??
+                order.paymentInstructions.vodafoneCashNumber ??
+                ""
+              }
+            />
+            <p>{order.paymentInstructions.transferNote}</p>
           </div>
-
-          <div className="checkout-proof__amount">
-            <span>{ar ? "المبلغ المطلوب" : "Exact amount"}</span>
-            <strong>{formatPrice(payment.amount / 100)}</strong>
-            <small>{ar ? "حوّلي هذا المبلغ بالضبط" : "Transfer this amount exactly"}</small>
-          </div>
-
-          <dl className="checkout-proof__details">
-            {destination && (
-              <div>
-                <dt>{ar ? "إرسال إلى" : "Send to"}</dt>
-                <dd>
-                  <CopyValue value={destination} locale={locale} />
-                </dd>
-              </div>
-            )}
-            {recipient && (
-              <div>
-                <dt>{ar ? "اسم المستلم" : "Recipient"}</dt>
-                <dd>{recipient}</dd>
-              </div>
-            )}
-            <div>
-              <dt>{ar ? "مرجع الطلب" : "Order reference"}</dt>
-              <dd>
-                <CopyValue value={order.order.orderNumber} locale={locale} />
-              </dd>
-            </div>
-          </dl>
-
-          {transferNote && <p className="checkout-proof__note">{transferNote}</p>}
-          <div className="checkout-proof__secure-note">
-            <LockKeyhole aria-hidden="true" />
-            <span>
-              {ar
-                ? "لن نطلب رمزك السري أو كلمة مرورك."
-                : "We will never ask for your PIN or password."}
-            </span>
-          </div>
-        </aside>
-
-        <form
-          id="payment-proof-form"
-          aria-labelledby="proof-form-title"
-          noValidate
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (submittingProof.current || mutation.isPending) return;
-            const nextErrors: typeof errors = {};
-            if (sender.trim().length < 3) {
-              nextErrors.sender = ar
-                ? "أدخلي رقم الهاتف أو حساب InstaPay الذي تم التحويل منه."
-                : "Enter the phone number or InstaPay handle you sent from.";
-            }
-            if (reference.trim().length < 4) {
-              nextErrors.reference = ar
-                ? "أدخلي رقم العملية الموجود في الإيصال."
-                : "Enter the transaction reference shown on your receipt.";
-            }
-            if (!file) {
-              nextErrors.file = ar
-                ? "أضيفي لقطة واضحة لإيصال التحويل."
-                : "Add a clear screenshot of the transfer receipt.";
-            }
-            setErrors(nextErrors);
-            if (nextErrors.sender) senderRef.current?.focus();
-            else if (nextErrors.reference) referenceRef.current?.focus();
-            else if (nextErrors.file) fileRef.current?.focus();
-            if (Object.keys(nextErrors).length) return;
-            submittingProof.current = true;
-            mutation.mutate(undefined, {
-              onSettled: () => {
-                submittingProof.current = false;
-              },
-            });
-          }}
-        >
-          <div className="checkout-proof__form-heading">
-            <p>{ar ? "الخطوة الأخيرة" : "Final step"}</p>
-            <h3 id="proof-form-title">{ar ? "أرسلي إيصال التحويل." : "Send the receipt."}</h3>
-            <span>
-              {ar
-                ? "صورة واضحة ورقما العملية والمرسل يكفيان للمراجعة."
-                : "A clear receipt, sender, and transaction reference are all we need."}
-            </span>
-          </div>
-          <div className="checkout-proof__field-grid">
-            <label>
-              <span>{ar ? "هاتف أو حساب المرسل" : "Sender phone or handle"}</span>
-              <input
-                ref={senderRef}
-                type="text"
-                inputMode="text"
-                autoComplete="off"
-                placeholder={ar ? "مثال: 01012345678" : "e.g. 01012345678 or your handle"}
-                value={sender}
-                aria-invalid={Boolean(errors.sender)}
-                aria-describedby={errors.sender ? "proof-sender-error" : undefined}
-                onChange={(event) => {
-                  setSender(event.target.value);
-                  if (errors.sender) setErrors((current) => ({ ...current, sender: "" }));
-                }}
-              />
-              {errors.sender && (
-                <small id="proof-sender-error" className="checkout-proof__field-error">
-                  {errors.sender}
-                </small>
-              )}
-            </label>
-            <label>
-              <span>{ar ? "رقم العملية" : "Transaction reference"}</span>
-              <input
-                ref={referenceRef}
-                autoComplete="off"
-                placeholder={
-                  ar ? "الرقم الموجود في إيصال التحويل" : "Shown on your transfer receipt"
-                }
-                value={reference}
-                aria-invalid={Boolean(errors.reference)}
-                aria-describedby={errors.reference ? "proof-reference-error" : undefined}
-                onChange={(event) => {
-                  setReference(event.target.value);
-                  if (errors.reference) setErrors((current) => ({ ...current, reference: "" }));
-                }}
-              />
-              {errors.reference && (
-                <small id="proof-reference-error" className="checkout-proof__field-error">
-                  {errors.reference}
-                </small>
-              )}
-            </label>
-          </div>
-          <label className="checkout-proof__file" data-selected={Boolean(file) || undefined}>
+        )}
+      </div>
+      <form
+        className="sf-checkout-card"
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (submittingProof.current) return;
+          submittingProof.current = true;
+          mutation.mutate(undefined, {
+            onSettled: () => {
+              submittingProof.current = false;
+            },
+          });
+        }}
+      >
+        <CheckoutCardHeader
+          icon={<Upload />}
+          eyebrow="Keep this page"
+          title="Submit transfer proof"
+          copy="After upload, the payment stays pending until admin approval."
+        />
+        <div className="sf-checkout-form-stack">
+          <label>
+            <span>Sender phone or handle</span>
             <input
-              ref={fileRef}
+              required
+              type="tel"
+              autoComplete="tel"
+              value={sender}
+              onChange={(event) => setSender(event.target.value)}
+              className="mt-2 h-12 w-full border border-input px-4 text-sm normal-case tracking-normal"
+            />
+          </label>
+          <label>
+            <span>Transaction reference</span>
+            <input
+              required
+              autoComplete="off"
+              value={reference}
+              onChange={(event) => setReference(event.target.value)}
+              className="mt-2 h-12 w-full border border-input px-4 text-sm normal-case tracking-normal"
+            />
+          </label>
+          <label>
+            <span>Payment screenshot</span>
+            <input
+              required
               type="file"
               accept="image/jpeg,image/png,image/webp"
               onChange={(event) => {
                 const selected = event.target.files?.[0] ?? null;
-                if (selected && selected.size > 5 * 1024 * 1024) {
+                if (selected && selected.size > 8 * 1024 * 1024) {
                   setFile(null);
-                  setFileError(
-                    ar
-                      ? "اختاري صورة بحجم 5 ميجابايت أو أقل."
-                      : "Choose an image that is 5 MB or smaller.",
-                  );
+                  setFileError("Choose an image smaller than 8 MB.");
                   event.target.value = "";
                   return;
                 }
                 setFile(selected);
                 setFileError("");
-                if (selected && errors.file) setErrors((current) => ({ ...current, file: "" }));
               }}
-              aria-invalid={Boolean(errors.file || fileError)}
-              aria-describedby={errors.file ? "proof-file-error" : "proof-help"}
+              aria-describedby="proof-help"
+              className="mt-2 block w-full border border-input p-3 text-sm normal-case tracking-normal"
             />
-            <span className="checkout-proof__file-icon" aria-hidden="true">
-              {file ? <FileCheck2 /> : <Upload />}
-            </span>
-            <span className="checkout-proof__file-copy">
-              <strong>
-                {file ? file.name : ar ? "أضيفي لقطة الإيصال" : "Add receipt screenshot"}
-              </strong>
-              <small id="proof-help">
-                {file
-                  ? `${(file.size / 1024 / 1024).toFixed(1)} MB · ${ar ? "اضغطي للاستبدال" : "Click to replace"}`
-                  : `JPG, PNG or WebP · ${ar ? "حتى 5 ميجابايت" : "up to 5 MB"}`}
-              </small>
+            <span
+              id="proof-help"
+              className="mt-2 block text-xs normal-case tracking-normal text-muted-foreground"
+            >
+              JPG, PNG or WebP, up to 8 MB.
             </span>
           </label>
-          {errors.file && (
-            <small id="proof-file-error" className="checkout-proof__field-error">
-              {errors.file}
-            </small>
-          )}
-          {fileError && (
-            <p className="checkout-inline-error" role="alert">
-              {fileError}
-            </p>
-          )}
-          {mutation.error && (
-            <p className="checkout-inline-error" role="alert">
-              {apiErrorMessage(mutation.error, locale)}
-            </p>
-          )}
-          <button className="checkout-primary-action" type="submit" disabled={mutation.isPending}>
-            <Upload aria-hidden="true" />
-            {mutation.isPending
-              ? ar
-                ? "جارٍ إرسال الإثبات…"
-                : "Submitting proof…"
-              : ar
-                ? "إرسال للمراجعة"
-                : "Submit for review"}
-          </button>
-        </form>
-      </div>
-    </section>
+        </div>
+        {fileError && (
+          <p role="alert" className="mt-4 text-sm text-destructive">
+            {fileError}
+          </p>
+        )}
+        {mutation.error && (
+          <p className="mt-5 text-sm text-destructive">{apiErrorMessage(mutation.error)}</p>
+        )}
+        <Button
+          type="submit"
+          variant="solid"
+          size="wide"
+          className="sf-checkout-black-button mt-7"
+          disabled={!file || !sender.trim() || !reference.trim()}
+          loading={mutation.isPending}
+        >
+          <Upload />
+          Submit for review
+        </Button>
+      </form>
+    </div>
   );
 }
-
-function CopyValue({ value, locale }: { value: string; locale: "en" | "ar" }) {
+function Instruction({
+  data,
+}: {
+  data: {
+    accountName: string;
+    accountNumber: string | null;
+    phoneNumber: string | null;
+    notes: string | null;
+  };
+}) {
+  return (
+    <div className="mt-5 border border-gold/30 bg-ivory p-5 text-sm">
+      <p className="font-medium">Transfer to {data.accountName}</p>
+      <Copy value={data.accountNumber ?? data.phoneNumber ?? data.notes ?? ""} />
+    </div>
+  );
+}
+function Copy({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
   if (!value) return null;
   return (
     <button
       type="button"
-      className="checkout-copy-value"
       onClick={() =>
         void navigator.clipboard.writeText(value).then(() => {
           setCopied(true);
           window.setTimeout(() => setCopied(false), 1400);
         })
       }
+      className="mt-3 inline-flex min-h-11 items-center gap-2 text-gold transition-colors duration-150 hover:text-foreground"
     >
-      <strong>{value}</strong>
-      <Clipboard aria-hidden="true" />
-      <span aria-live="polite">
-        {copied ? (locale === "ar" ? "تم النسخ" : "Copied") : locale === "ar" ? "نسخ" : "Copy"}
+      {value}
+      <Clipboard className="size-4" />
+      <span className="label-xs" aria-live="polite">
+        {copied ? "Copied" : "Copy"}
       </span>
     </button>
   );
 }
-
 function PaymentSetup({
-  locale,
   pending,
   error,
   retry,
 }: {
-  locale: "en" | "ar";
   pending: boolean;
   error: unknown;
   retry: () => void;
 }) {
-  const ar = locale === "ar";
   return (
-    <section className="checkout-payment-setup" aria-live="polite">
+    <div className="sf-checkout-pending" aria-live="polite">
       {pending ? (
         <>
-          <span className="checkout-processing-line" aria-hidden="true">
-            <i />
+          <span className="sf-checkout-pending__icon">
+            <LoaderCircle />
           </span>
-          <p>{ar ? "تم تثبيت الطلب" : "Your order is secured"}</p>
-          <h2>{ar ? "نجهّز بيانات التحويل." : "Preparing transfer details."}</h2>
-          <div>
-            {ar
-              ? "أبقي هذه الصفحة مفتوحة. لن يتم إنشاء طلب ثانٍ."
-              : "Keep this page open. No duplicate order will be created."}
-          </div>
+          <p className="sf-checkout-eyebrow">Step 4 · Payment</p>
+          <h2>Preparing transfer details</h2>
+          <p>Your order is safely created. Please keep this page open.</p>
         </>
       ) : (
         <>
-          <p>{ar ? "الطلب محفوظ" : "Order safely created"}</p>
-          <h2>{ar ? "تعذر تجهيز بيانات التحويل." : "Transfer setup needs another try."}</h2>
-          <div role="alert">{apiErrorMessage(error, locale)}</div>
-          <button type="button" className="checkout-primary-action" onClick={retry}>
-            {ar ? "إعادة تجهيز الدفع" : "Retry payment setup"}
-          </button>
+          <p className="sf-checkout-eyebrow">Payment setup</p>
+          <h2>Your order is safely created</h2>
+          <p role="alert">{apiErrorMessage(error)}</p>
+          <p>Retrying will not create another order.</p>
+          <Button
+            type="button"
+            variant="solid"
+            size="pill"
+            className="sf-checkout-black-button mt-7"
+            onClick={retry}
+          >
+            Retry payment setup
+          </Button>
         </>
       )}
-    </section>
-  );
-}
-
-function CheckoutLoading({ locale }: { locale: "en" | "ar" }) {
-  return (
-    <div
-      className="checkout-loading"
-      aria-label={locale === "ar" ? "جارٍ تحميل إتمام الطلب" : "Loading checkout"}
-    >
-      <span />
-      <span />
-      <span />
     </div>
   );
 }
-
-function CheckoutGate({
+function Loading() {
+  return (
+    <div className="grid min-h-[60vh] place-items-center">
+      <LoaderCircle className="animate-spin text-gold" />
+    </div>
+  );
+}
+function Gate({
   title,
   copy,
   to,
@@ -1240,11 +1161,10 @@ function CheckoutGate({
   returnTo?: "/checkout";
 }) {
   return (
-    <div className="checkout-gate">
-      <p>Secure checkout</p>
-      <h1>{title}</h1>
-      <div>{copy}</div>
-      <Button asChild variant="solid" size="pill">
+    <div className="mx-auto max-w-xl px-5 py-28 text-center">
+      <h1 className="font-serif text-4xl">{title}</h1>
+      <p className="mt-5 text-muted-foreground">{copy}</p>
+      <Button asChild variant="solid" size="pill" className="mt-8">
         {to === "/sign-in" ? (
           <Link to="/sign-in" search={{ returnTo }}>
             {action}
