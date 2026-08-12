@@ -82,6 +82,7 @@ export function Header() {
   const scrolledRef = useRef(false);
   const primaryNavRef = useRef<HTMLElement>(null);
   const hoveredNavIdRef = useRef<string | null>(null);
+  const activeNavIdRef = useRef<string | null>(null);
   const copy = headerCopy[locale];
 
   const activeCategory = typeof search.category === "string" ? search.category : undefined;
@@ -100,6 +101,7 @@ export function Header() {
                 ? "brands"
                 : "categories"
               : null;
+  activeNavIdRef.current = activeNavId;
   const transparentHeader = pathname === "/" && !scrolled;
   const visibleBrands = useMemo(
     () =>
@@ -236,6 +238,11 @@ export function Header() {
               window.requestAnimationFrame(() =>
                 moveNavIndicator(hoveredNavIdRef.current || activeNavId),
               );
+            }}
+            onKeyDownCapture={(event) => {
+              if (event.key !== "Escape") return;
+              hoveredNavIdRef.current = null;
+              window.requestAnimationFrame(() => moveNavIndicator(activeNavIdRef.current));
             }}
           >
             <NavigationMenuPrimitive.Root
