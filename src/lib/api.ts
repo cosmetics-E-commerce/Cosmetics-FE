@@ -121,7 +121,11 @@ export type Payment = {
   method: string;
   status: string;
   amount: number;
+  currency?: string;
   referenceNumber?: string | null;
+  expiresAt?: string | null;
+  rejectionReason?: string | null;
+  instructions?: PaymentInstruction | null;
 };
 
 export type PaymentInstruction = {

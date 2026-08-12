@@ -1018,9 +1018,9 @@ function Proof({
               accept="image/jpeg,image/png,image/webp"
               onChange={(event) => {
                 const selected = event.target.files?.[0] ?? null;
-                if (selected && selected.size > 8 * 1024 * 1024) {
+                if (selected && selected.size > 5 * 1024 * 1024) {
                   setFile(null);
-                  setFileError("Choose an image smaller than 8 MB.");
+                  setFileError("Choose an image smaller than 5 MB.");
                   event.target.value = "";
                   return;
                 }
@@ -1034,7 +1034,7 @@ function Proof({
               id="proof-help"
               className="mt-2 block text-xs normal-case tracking-normal text-muted-foreground"
             >
-              JPG, PNG or WebP, up to 8 MB.
+              JPG, PNG or WebP, up to 5 MB.
             </span>
           </label>
         </div>
