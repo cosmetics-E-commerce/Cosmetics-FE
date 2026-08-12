@@ -1,8 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
 import { images } from "@/lib/products";
 import { useStore } from "@/lib/store";
-import { ImageReveal, ParallaxMedia, Reveal } from "@/components/motion/Primitives";
 
 export const Route = createFileRoute("/journal")({
   head: () => ({
@@ -10,68 +8,160 @@ export const Route = createFileRoute("/journal")({
       { title: "About BIOREZA Cosmetics" },
       {
         name: "description",
-        content: "BIOREZA's approach to curated beauty, transparent ingredients and customer care.",
+        content: "BIOREZA's approach to curated beauty, transparent information and customer care.",
       },
-      { property: "og:title", content: "The Journal — BIOREZA Cosmetics" },
+      { property: "og:title", content: "About BIOREZA Cosmetics" },
       {
         property: "og:description",
-        content: "Rituals, ingredient science and editorial stories from BIOREZA.",
+        content: "A clearer way to discover and shop beauty products.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: JournalPage,
+  component: AboutPage,
 });
 
-function JournalPage() {
+const principles = {
+  en: [
+    {
+      title: "Clear details",
+      body: "Ingredients, directions, price, and availability shown before you buy.",
+    },
+    {
+      title: "Real feedback",
+      body: "Verified customer reviews stay connected to the products they describe.",
+    },
+    {
+      title: "Human support",
+      body: "Our customer-care team is available when you need a straight answer.",
+    },
+  ],
+  ar: [
+    {
+      title: "تفاصيل واضحة",
+      body: "المكونات وطريقة الاستخدام والسعر والتوفر ظاهرة قبل الشراء.",
+    },
+    {
+      title: "آراء حقيقية",
+      body: "تظل مراجعات العملاء الموثقة مرتبطة بالمنتجات التي تصفها.",
+    },
+    {
+      title: "دعم بشري",
+      body: "فريق خدمة العملاء متاح عندما تحتاجين إلى إجابة واضحة.",
+    },
+  ],
+};
+
+function AboutPage() {
   const { locale } = useStore();
   const ar = locale === "ar";
-  return (
-    <div>
-      <Reveal
-        as="section"
-        stagger
-        staggerMs={45}
-        className="mx-auto max-w-[1560px] px-5 py-16 md:px-10"
-      >
-        <p className="label-xs text-gold">{ar ? "عن بيوريزا" : "About BIOREZA"}</p>
-        <h1 className="display mt-5 max-w-3xl text-[clamp(2.4rem,5vw,4rem)]">
-          {ar
-            ? "جمال قائم على معلومات واضحة واختيارات مدروسة."
-            : "Beauty grounded in clear information and considered choices."}
-        </h1>
-        <p className="mt-8 max-w-xl text-[0.95rem] leading-relaxed text-muted-foreground">
-          {ar
-            ? "نقدم منتجات تجميل مختارة مع عرض المكونات وطريقة الاستخدام والمخزون والمراجعات الموثقة بوضوح. لا ننشر ادعاءات مختبرية أو تحريرية لا يدعمها سجل منتج حقيقي."
-            : "We curate beauty products while making ingredients, directions, stock, and verified-customer reviews clear. We do not publish laboratory claims or editorial stories without a real, reviewable product record behind them."}
-        </p>
-      </Reveal>
+  const copy = ar
+    ? {
+        eyebrow: "عن بيوريزا",
+        title: "اختيارات جمال أوضح.",
+        intro: "نساعدك على فهم منتجات الجمال ومقارنتها واختيار ما يناسبك بثقة.",
+        primaryCta: "تصفحي المنتجات",
+        principlesTitle: "لا غموض. لا ضغط.",
+        principlesBody: "كل منتج يجب أن يمنحك المعلومات التي تحتاجينها لاتخاذ قرارك بنفسك.",
+        selectionTitle: "نختار لسبب واضح.",
+        selectionBody:
+          "بيوريزا متجر متعدد العلامات، لذلك لا ندفعك نحو اسم واحد. ننظم المنتجات حسب احتياجك ونوضح الفروق المهمة بينها.",
+        closingTitle: "اعثري على ما يناسب روتينك.",
+        closingBody: "تصفحي المجموعة وقارني التفاصيل قبل أن تقرري.",
+      }
+    : {
+        eyebrow: "About BIOREZA",
+        title: "Beauty, clearly chosen.",
+        intro: "We make beauty products easier to understand, compare, and choose with confidence.",
+        primaryCta: "Shop beauty",
+        principlesTitle: "No mystery. No pressure.",
+        principlesBody:
+          "Every product should give you enough information to make your own decision.",
+        selectionTitle: "Selected with a reason.",
+        selectionBody:
+          "BIOREZA is a multi-brand store, so we are not here to push one label. We organize products around your needs and explain the differences that matter.",
+        closingTitle: "Find what fits your routine.",
+        closingBody: "Browse the collection and compare the details before you decide.",
+      };
 
-      <section className="img-zoom mx-auto max-w-[1560px] px-5 md:px-10">
-        <ImageReveal direction="left" className="aspect-[21/9] w-full">
-          <ParallaxMedia className="size-full" strength={24}>
-            <img
-              src={images.collection}
-              alt="The BIOREZA collection on warm marble"
-              loading="lazy"
-              decoding="async"
-              draggable={false}
-              className="size-full object-cover"
-            />
-          </ParallaxMedia>
-        </ImageReveal>
+  return (
+    <div className="sf-about-page">
+      <section className="sf-about-hero" aria-labelledby="about-title">
+        <div className="sf-about-hero__copy">
+          <p className="sf-about-eyebrow">{copy.eyebrow}</p>
+          <h1 id="about-title">{copy.title}</h1>
+          <p className="sf-about-hero__intro">{copy.intro}</p>
+          <Link className="sf-about-primary-link" to="/shop">
+            {copy.primaryCta}
+          </Link>
+        </div>
+
+        <div className="sf-about-hero__media">
+          <img
+            src={images.heroSlide3}
+            alt={ar ? "امرأة تحمل منتج عناية بالبشرة" : "Woman holding a skincare product"}
+            fetchPriority="high"
+            decoding="async"
+            draggable={false}
+          />
+        </div>
       </section>
 
-      <section className="mx-auto max-w-[1560px] px-5 py-24 md:px-10">
-        <Reveal className="mt-24 border-t border-border pt-16 text-center">
-          <h2 className="display text-[clamp(1.9rem,3.2vw,2.8rem)]">
-            {ar ? "ابدئي اختيارك." : "Begin your selection."}
-          </h2>
-          <Button asChild variant="solid" size="pill" className="mt-8">
-            <Link to="/shop">{ar ? "تصفحي المجموعة" : "Discover the collection"}</Link>
-          </Button>
-        </Reveal>
+      <section className="sf-about-principles" aria-labelledby="principles-title">
+        <div className="sf-about-principles__intro">
+          <h2 id="principles-title">{copy.principlesTitle}</h2>
+          <p>{copy.principlesBody}</p>
+        </div>
+
+        <dl className="sf-about-principles__list">
+          {principles[locale].map((principle) => (
+            <div key={principle.title}>
+              <dt>{principle.title}</dt>
+              <dd>{principle.body}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <section className="sf-about-selection" aria-labelledby="selection-title">
+        <div className="sf-about-selection__media">
+          <img
+            src={images.heroSlide1}
+            alt={ar ? "روتين عناية بسيط بالبشرة" : "A simple skincare routine"}
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+          />
+        </div>
+
+        <div className="sf-about-selection__copy">
+          <h2 id="selection-title">{copy.selectionTitle}</h2>
+          <p>{copy.selectionBody}</p>
+        </div>
+      </section>
+
+      <section
+        className="sf-about-product-view"
+        aria-label={ar ? "مجموعة بيوريزا" : "BIOREZA collection"}
+      >
+        <img
+          src={images.collection}
+          alt={ar ? "مجموعة مختارة من مستحضرات العناية" : "A curated skincare collection"}
+          loading="lazy"
+          decoding="async"
+          draggable={false}
+        />
+      </section>
+
+      <section className="sf-about-closing" aria-labelledby="about-closing-title">
+        <div>
+          <h2 id="about-closing-title">{copy.closingTitle}</h2>
+          <p>{copy.closingBody}</p>
+        </div>
+        <Link className="sf-about-primary-link" to="/shop">
+          {copy.primaryCta}
+        </Link>
       </section>
     </div>
   );

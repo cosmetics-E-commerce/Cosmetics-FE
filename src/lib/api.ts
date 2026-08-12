@@ -7,10 +7,15 @@ import type {
   PublicBrandListItemResponse,
   PublicCategoryResponse,
   PublicProductResponse,
+  CustomerReviewLibraryResponse,
+  ReviewEligibilityResponse,
+  ReviewResponse,
   RegistrationOtpChallenge,
   RegistrationVerificationResult,
   ResendRegistrationOtpResult,
   UserProfileResponse,
+  SharedWishlistResponse,
+  WishlistCollectionResponse,
   WishlistResponse,
 } from "../../vendor/cosmetics-contracts/index.js";
 
@@ -21,10 +26,15 @@ export type {
   PublicBrandListItemResponse,
   PublicCategoryResponse,
   PublicProductResponse,
+  CustomerReviewLibraryResponse,
+  ReviewEligibilityResponse,
+  ReviewResponse,
   RegistrationOtpChallenge,
   RegistrationVerificationResult,
   ResendRegistrationOtpResult,
   UserProfileResponse,
+  SharedWishlistResponse,
+  WishlistCollectionResponse,
   WishlistResponse,
 };
 
@@ -205,15 +215,7 @@ export type OrderTracking = {
   history: Array<{ action: string; description: string; createdAt: string }>;
 };
 
-export type ProductReview = {
-  id: string;
-  productId: string;
-  rating: number;
-  title: string | null;
-  body: string | null;
-  createdAt: string;
-  author: { firstName: string; lastInitial: string; verifiedPurchase: boolean };
-};
+export type ProductReview = ReviewResponse;
 export type ProductReviews = {
   items: ProductReview[];
   summary: { average: number; count: number; distribution: Record<string, number> };
@@ -824,19 +826,31 @@ export const subscribeNewsletter = (email: string, locale: "en" | "ar") =>
     body: { email, locale, consent: true },
   });
 
-export const createSupportRequest = (body: {
-  name: string;
-  email: string;
-  orderNumber?: string;
-  subject: string;
-  message: string;
-  locale: "en" | "ar";
-}) =>
-  rawRequest<{ id: string; status: string; createdAt: string }>("/store/support/requests", {
+export const createSupportRequest = (
+  body: {
+    name: string;
+    email: string;
+    orderNumber?: string;
+    subject: string;
+    message: string;
+    locale: "en" | "ar";
+  },
+  attachment?: File,
+) => {
+  const form = new FormData();
+  form.set("name", body.name);
+  form.set("email", body.email);
+  if (body.orderNumber) form.set("orderNumber", body.orderNumber);
+  form.set("subject", body.subject);
+  form.set("message", body.message);
+  form.set("locale", body.locale);
+  if (attachment) form.set("attachment", attachment);
+  return rawRequest<{ id: string; status: string; createdAt: string }>("/store/support/requests", {
     method: "POST",
     auth: false,
-    body,
+    body: form,
   });
+};
 
 function summarizeReviews(items: ProductReview[]) {
   const distribution: Record<string, number> = { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0 };
@@ -897,6 +911,15 @@ export const createProductReview = (
   body: { rating: number; title?: string; body?: string },
 ) => rawRequest<ProductReview>(`/products/${productId}/reviews`, { method: "POST", body });
 
+export const getReviewEligibility = (productId: string) =>
+  rawRequest<ReviewEligibilityResponse>(`/reviews/eligibility/${productId}`);
+export const listMyReviews = () =>
+  rawRequest<CustomerReviewLibraryResponse>("/reviews/mine");
+export const updateMyReview = (
+  reviewId: string,
+  body: { rating?: number; title?: string; body?: string },
+) => rawRequest<ProductReview>(`/reviews/mine/${reviewId}`, { method: "PATCH", body });
+
 export const getCart = () => rawRequest<CommerceCartResponse>("/cart");
 export const mergeGuestCart = () =>
   rawRequest<CommerceCartResponse>("/cart/merge", { method: "POST", body: {} });
@@ -942,6 +965,32 @@ export const addWishlist = (productId: string) =>
   rawRequest<WishlistResponse>("/wishlist/items", { method: "POST", body: { productId } });
 export const removeWishlist = (productId: string) =>
   rawRequest<WishlistResponse>(`/wishlist/items/${productId}`, { method: "DELETE" });
+export const createWishlistCollection = (body: { name: string; isPrivate: boolean }) =>
+  rawRequest<WishlistResponse>("/wishlist/collections", { method: "POST", body });
+export const updateWishlistCollection = (
+  collectionId: string,
+  body: { name?: string; isPrivate?: boolean },
+) =>
+  rawRequest<WishlistResponse>(`/wishlist/collections/${collectionId}`, {
+    method: "PATCH",
+    body,
+  });
+export const deleteWishlistCollection = (collectionId: string) =>
+  rawRequest<WishlistResponse>(`/wishlist/collections/${collectionId}`, { method: "DELETE" });
+export const addWishlistToCollection = (collectionId: string, productId: string) =>
+  rawRequest<WishlistResponse>(`/wishlist/collections/${collectionId}/items`, {
+    method: "POST",
+    body: { productId },
+  });
+export const removeWishlistFromCollection = (collectionId: string, productId: string) =>
+  rawRequest<WishlistResponse>(
+    `/wishlist/collections/${collectionId}/items/${productId}`,
+    { method: "DELETE" },
+  );
+export const getWishlistShareToken = (collectionId: string) =>
+  rawRequest<{ shareToken: string }>(`/wishlist/collections/${collectionId}/share`);
+export const getSharedWishlist = (shareToken: string) =>
+  rawRequest<SharedWishlistResponse>(`/shared-wishlists/${shareToken}`, { auth: false });
 
 export const getProfile = () => rawRequest<UserProfileResponse>("/users/me");
 export const updateProfile = (body: Record<string, unknown>) =>

@@ -27,7 +27,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AddressForm } from "@/components/forms/AddressForm";
-import { ProductCard } from "@/components/shop/ProductCard";
+import { ReviewLibrary } from "@/components/account/ReviewLibrary";
+import { WishlistStudio } from "@/components/account/WishlistStudio";
 import {
   apiErrorMessage,
   createAddress,
@@ -36,6 +37,7 @@ import {
   getOrderTracking,
   getProfile,
   getWishlist,
+  listMyReviews,
   listAddresses,
   listOrders,
   refreshOrderTracking,
@@ -56,6 +58,7 @@ export const Route = createFileRoute("/account")({
     section:
       raw["section"] === "orders" ||
       raw["section"] === "wishlist" ||
+      raw["section"] === "reviews" ||
       raw["section"] === "addresses" ||
       raw["section"] === "settings"
         ? raw["section"]
@@ -68,6 +71,7 @@ const tabs = [
   { label: { en: "Overview", ar: "نظرة عامة" }, value: "overview" },
   { label: { en: "Orders", ar: "الطلبات" }, value: "orders" },
   { label: { en: "Wishlist", ar: "المفضلة" }, value: "wishlist" },
+  { label: { en: "Reviews", ar: "مراجعاتي" }, value: "reviews" },
   { label: { en: "Addresses", ar: "العناوين" }, value: "addresses" },
   { label: { en: "Settings", ar: "الإعدادات" }, value: "settings" },
 ] as const;
@@ -101,6 +105,11 @@ function Account() {
   const wishlistProducts = useQuery({
     queryKey: ["wishlist"],
     queryFn: getWishlist,
+    enabled: Boolean(user),
+  });
+  const myReviews = useQuery({
+    queryKey: ["account", "reviews"],
+    queryFn: listMyReviews,
     enabled: Boolean(user),
   });
   const addressMutation = useMutation({
@@ -205,14 +214,11 @@ function Account() {
     <main className="sf-account-page account-page">
       <Reveal stagger distance={20} className="account-hero">
         <div className="account-hero__copy">
-          <p className="account-eyebrow">
-            {locale === "ar" ? "حسابك في بيوريزا" : "Your BIOREZA account"}
-          </p>
-          <h1>{locale === "ar" ? `مرحباً بعودتك، ${firstName}` : `Welcome back, ${firstName}.`}</h1>
+          <h1>{locale === "ar" ? `مرحباً، ${firstName}` : `Hello, ${firstName}.`}</h1>
           <p className="account-hero__intro">
             {locale === "ar"
-              ? "تابعي طلباتك واحتفظي بمفضلاتك وحدّثي تفاصيل التوصيل من مكان واحد."
-              : "Track orders, revisit saved pieces, and keep your delivery details up to date."}
+              ? "طلباتك والمنتجات المحفوظة وتفاصيل التوصيل في مكان واحد."
+              : "Your orders, saved products, and delivery details in one place."}
           </p>
         </div>
         <dl
@@ -220,7 +226,7 @@ function Account() {
           aria-label={locale === "ar" ? "ملخص الحساب" : "Account registry"}
         >
           <div>
-            <dt>{locale === "ar" ? "تفاصيل الحساب" : "Account details"}</dt>
+            <dt>{locale === "ar" ? "تم تسجيل الدخول باسم" : "Signed in as"}</dt>
             <dd>{name}</dd>
             <small>{profile.data?.email ?? user.email ?? user.phone}</small>
           </div>
@@ -419,12 +425,6 @@ function Account() {
           )}
           {tab === "wishlist" && (
             <div className="account-detail account-wishlist">
-              <AccountSectionHeading
-                title={locale === "ar" ? "قائمة المفضلة" : "Your wishlist"}
-                meta={`${wishlistProducts.data?.totalItems ?? wishlist.length} ${locale === "ar" ? "محفوظ" : "saved"}`}
-                action={locale === "ar" ? "تسوقي المزيد" : "Discover more"}
-                actionTo="/shop"
-              />
               {wishlistProducts.isLoading ? (
                 <div className="account-detail-skeleton account-detail-skeleton--products">
                   <span />
@@ -450,12 +450,8 @@ function Account() {
                     {locale === "ar" ? "حاولي مرة أخرى" : "Try again"}
                   </Button>
                 </div>
-              ) : wishlistProducts.data?.items.length ? (
-                <div className="account-wishlist__grid">
-                  {wishlistProducts.data.items.map((item) => (
-                    <ProductCard key={item.id} product={mapProduct(item.product, locale)} compact />
-                  ))}
-                </div>
+              ) : wishlistProducts.data ? (
+                <WishlistStudio data={wishlistProducts.data} locale={locale} />
               ) : (
                 <Empty
                   icon={<Heart />}
@@ -468,6 +464,22 @@ function Account() {
                   action={locale === "ar" ? "اكتشفي المجموعة" : "Discover the collection"}
                 />
               )}
+            </div>
+          )}
+          {tab === "reviews" && (
+            <div className="account-detail account-reviews">
+              {myReviews.isLoading ? (
+                <div className="account-detail-skeleton account-detail-skeleton--orders"><span /><span /><span /></div>
+              ) : myReviews.isError ? (
+                <div className="account-detail-state">
+                  <RefreshCw aria-hidden="true" />
+                  <h3>{locale === "ar" ? "تعذر تحميل المراجعات" : "Reviews could not be loaded"}</h3>
+                  <p>{locale === "ar" ? "حاولي مرة أخرى." : "Try loading your review history again."}</p>
+                  <Button variant="line" size="pill" onClick={() => void myReviews.refetch()}>{locale === "ar" ? "إعادة المحاولة" : "Try again"}</Button>
+                </div>
+              ) : myReviews.data ? (
+                <ReviewLibrary data={myReviews.data} locale={locale} />
+              ) : null}
             </div>
           )}
           {tab === "addresses" && (

@@ -1,9 +1,6 @@
 import { z } from "zod";
-export declare const ingredientSourceSchema: z.ZodEnum<
-  ["CURATED", "COSING", "PUBCHEM", "OPEN_BEAUTY_FACTS", "ADMIN", "IMPORT"]
->;
-export declare const ingredientInputSchema: z.ZodObject<
-  {
+export declare const ingredientSourceSchema: z.ZodEnum<["CURATED", "COSING", "PUBCHEM", "OPEN_BEAUTY_FACTS", "ADMIN", "IMPORT"]>;
+export declare const ingredientInputSchema: z.ZodObject<{
     inciName: z.ZodString;
     commonName: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     slug: z.ZodOptional<z.ZodString>;
@@ -25,21 +22,15 @@ export declare const ingredientInputSchema: z.ZodObject<
     regulatoryNotes: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     restrictions: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     safetyNotes: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-    source: z.ZodOptional<
-      z.ZodEnum<["CURATED", "COSING", "PUBCHEM", "OPEN_BEAUTY_FACTS", "ADMIN", "IMPORT"]>
-    >;
+    source: z.ZodOptional<z.ZodEnum<["CURATED", "COSING", "PUBCHEM", "OPEN_BEAUTY_FACTS", "ADMIN", "IMPORT"]>>;
     sourceUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     externalId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     isActive: z.ZodOptional<z.ZodBoolean>;
     isFeatured: z.ZodOptional<z.ZodBoolean>;
-  },
-  "strict",
-  z.ZodTypeAny,
-  {
+}, "strict", z.ZodTypeAny, {
     inciName: string;
     isActive?: boolean | undefined;
-    source?:
-      "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
+    source?: "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
     commonName?: string | null | undefined;
     slug?: string | undefined;
     descriptionEn?: string | null | undefined;
@@ -63,12 +54,10 @@ export declare const ingredientInputSchema: z.ZodObject<
     sourceUrl?: string | null | undefined;
     externalId?: string | null | undefined;
     isFeatured?: boolean | undefined;
-  },
-  {
+}, {
     inciName: string;
     isActive?: boolean | undefined;
-    source?:
-      "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
+    source?: "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
     commonName?: string | null | undefined;
     slug?: string | undefined;
     descriptionEn?: string | null | undefined;
@@ -92,10 +81,8 @@ export declare const ingredientInputSchema: z.ZodObject<
     sourceUrl?: string | null | undefined;
     externalId?: string | null | undefined;
     isFeatured?: boolean | undefined;
-  }
->;
-export declare const createIngredientSchema: z.ZodObject<
-  {
+}>;
+export declare const createIngredientSchema: z.ZodObject<{
     inciName: z.ZodString;
     commonName: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     slug: z.ZodOptional<z.ZodString>;
@@ -117,21 +104,15 @@ export declare const createIngredientSchema: z.ZodObject<
     regulatoryNotes: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     restrictions: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     safetyNotes: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-    source: z.ZodOptional<
-      z.ZodEnum<["CURATED", "COSING", "PUBCHEM", "OPEN_BEAUTY_FACTS", "ADMIN", "IMPORT"]>
-    >;
+    source: z.ZodOptional<z.ZodEnum<["CURATED", "COSING", "PUBCHEM", "OPEN_BEAUTY_FACTS", "ADMIN", "IMPORT"]>>;
     sourceUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     externalId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     isActive: z.ZodOptional<z.ZodBoolean>;
     isFeatured: z.ZodOptional<z.ZodBoolean>;
-  },
-  "strict",
-  z.ZodTypeAny,
-  {
+}, "strict", z.ZodTypeAny, {
     inciName: string;
     isActive?: boolean | undefined;
-    source?:
-      "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
+    source?: "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
     commonName?: string | null | undefined;
     slug?: string | undefined;
     descriptionEn?: string | null | undefined;
@@ -155,12 +136,10 @@ export declare const createIngredientSchema: z.ZodObject<
     sourceUrl?: string | null | undefined;
     externalId?: string | null | undefined;
     isFeatured?: boolean | undefined;
-  },
-  {
+}, {
     inciName: string;
     isActive?: boolean | undefined;
-    source?:
-      "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
+    source?: "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
     commonName?: string | null | undefined;
     slug?: string | undefined;
     descriptionEn?: string | null | undefined;
@@ -184,10 +163,8 @@ export declare const createIngredientSchema: z.ZodObject<
     sourceUrl?: string | null | undefined;
     externalId?: string | null | undefined;
     isFeatured?: boolean | undefined;
-  }
->;
-export declare const updateIngredientSchema: z.ZodObject<
-  {
+}>;
+export declare const updateIngredientSchema: z.ZodObject<{
     inciName: z.ZodOptional<z.ZodString>;
     commonName: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
     slug: z.ZodOptional<z.ZodOptional<z.ZodString>>;
@@ -198,49 +175,25 @@ export declare const updateIngredientSchema: z.ZodObject<
     casNumber: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
     ecNumber: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
     pubchemCid: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodNumber>>>;
-    functions: z.ZodOptional<
-      z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>
-    >;
-    benefits: z.ZodOptional<
-      z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>
-    >;
-    concerns: z.ZodOptional<
-      z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>
-    >;
-    goodFor: z.ZodOptional<
-      z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>
-    >;
-    avoidIf: z.ZodOptional<
-      z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>
-    >;
-    skinTypes: z.ZodOptional<
-      z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>
-    >;
-    skinConcerns: z.ZodOptional<
-      z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>
-    >;
-    aliases: z.ZodOptional<
-      z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>
-    >;
+    functions: z.ZodOptional<z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>>;
+    benefits: z.ZodOptional<z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>>;
+    concerns: z.ZodOptional<z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>>;
+    goodFor: z.ZodOptional<z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>>;
+    avoidIf: z.ZodOptional<z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>>;
+    skinTypes: z.ZodOptional<z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>>;
+    skinConcerns: z.ZodOptional<z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>>;
+    aliases: z.ZodOptional<z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>>;
     regulatoryNotes: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
     restrictions: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
     safetyNotes: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
-    source: z.ZodOptional<
-      z.ZodOptional<
-        z.ZodEnum<["CURATED", "COSING", "PUBCHEM", "OPEN_BEAUTY_FACTS", "ADMIN", "IMPORT"]>
-      >
-    >;
+    source: z.ZodOptional<z.ZodOptional<z.ZodEnum<["CURATED", "COSING", "PUBCHEM", "OPEN_BEAUTY_FACTS", "ADMIN", "IMPORT"]>>>;
     sourceUrl: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
     externalId: z.ZodOptional<z.ZodOptional<z.ZodNullable<z.ZodString>>>;
     isActive: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
     isFeatured: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
-  },
-  "strict",
-  z.ZodTypeAny,
-  {
+}, "strict", z.ZodTypeAny, {
     isActive?: boolean | undefined;
-    source?:
-      "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
+    source?: "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
     inciName?: string | undefined;
     commonName?: string | null | undefined;
     slug?: string | undefined;
@@ -265,11 +218,9 @@ export declare const updateIngredientSchema: z.ZodObject<
     sourceUrl?: string | null | undefined;
     externalId?: string | null | undefined;
     isFeatured?: boolean | undefined;
-  },
-  {
+}, {
     isActive?: boolean | undefined;
-    source?:
-      "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
+    source?: "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
     inciName?: string | undefined;
     commonName?: string | null | undefined;
     slug?: string | undefined;
@@ -294,78 +245,60 @@ export declare const updateIngredientSchema: z.ZodObject<
     sourceUrl?: string | null | undefined;
     externalId?: string | null | undefined;
     isFeatured?: boolean | undefined;
-  }
->;
+}>;
 export type CreateIngredientInput = z.infer<typeof createIngredientSchema>;
 export type UpdateIngredientInput = z.infer<typeof updateIngredientSchema>;
-export declare const ingredientQuerySchema: z.ZodObject<
-  {
+export declare const ingredientQuerySchema: z.ZodObject<{
     page: z.ZodDefault<z.ZodNumber>;
     limit: z.ZodDefault<z.ZodNumber>;
     sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
-  } & {
+} & {
     search: z.ZodOptional<z.ZodString>;
     status: z.ZodDefault<z.ZodEnum<["active", "inactive", "all"]>>;
-    source: z.ZodOptional<
-      z.ZodEnum<["CURATED", "COSING", "PUBCHEM", "OPEN_BEAUTY_FACTS", "ADMIN", "IMPORT"]>
-    >;
+    source: z.ZodOptional<z.ZodEnum<["CURATED", "COSING", "PUBCHEM", "OPEN_BEAUTY_FACTS", "ADMIN", "IMPORT"]>>;
     featured: z.ZodOptional<z.ZodBoolean>;
     sortBy: z.ZodDefault<z.ZodEnum<["inciName", "commonName", "createdAt", "updatedAt"]>>;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
+}, "strip", z.ZodTypeAny, {
     status: "active" | "inactive" | "all";
     page: number;
     limit: number;
     sortBy: "createdAt" | "updatedAt" | "inciName" | "commonName";
     sortOrder: "asc" | "desc";
     search?: string | undefined;
-    source?:
-      "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
+    source?: "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
     featured?: boolean | undefined;
-  },
-  {
+}, {
     status?: "active" | "inactive" | "all" | undefined;
     page?: number | undefined;
     limit?: number | undefined;
     sortBy?: "createdAt" | "updatedAt" | "inciName" | "commonName" | undefined;
     sortOrder?: "asc" | "desc" | undefined;
     search?: string | undefined;
-    source?:
-      "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
+    source?: "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
     featured?: boolean | undefined;
-  }
->;
+}>;
 export type IngredientQuery = z.infer<typeof ingredientQuerySchema>;
-export declare const productIngredientInputSchema: z.ZodObject<
-  {
+export declare const productIngredientInputSchema: z.ZodObject<{
     ingredientId: z.ZodString;
     position: z.ZodOptional<z.ZodNumber>;
     concentration: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     concentrationUnit: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     notes: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
+}, "strip", z.ZodTypeAny, {
     ingredientId: string;
     notes?: string | null | undefined;
     position?: number | undefined;
     concentration?: string | null | undefined;
     concentrationUnit?: string | null | undefined;
-  },
-  {
+}, {
     ingredientId: string;
     notes?: string | null | undefined;
     position?: number | undefined;
     concentration?: string | null | undefined;
     concentrationUnit?: string | null | undefined;
-  }
->;
+}>;
 export type ProductIngredientInput = z.infer<typeof productIngredientInputSchema>;
-export declare const ingredientSummarySchema: z.ZodObject<
-  {
+export declare const ingredientSummarySchema: z.ZodObject<{
     id: z.ZodString;
     inciName: z.ZodString;
     commonName: z.ZodNullable<z.ZodString>;
@@ -386,10 +319,7 @@ export declare const ingredientSummarySchema: z.ZodObject<
     regulatoryNotes: z.ZodNullable<z.ZodString>;
     restrictions: z.ZodNullable<z.ZodString>;
     safetyNotes: z.ZodNullable<z.ZodString>;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
+}, "strip", z.ZodTypeAny, {
     id: string;
     notes: string | null;
     inciName: string;
@@ -410,8 +340,7 @@ export declare const ingredientSummarySchema: z.ZodObject<
     position: number;
     concentration: string | null;
     concentrationUnit: string | null;
-  },
-  {
+}, {
     id: string;
     notes: string | null;
     inciName: string;
@@ -432,35 +361,30 @@ export declare const ingredientSummarySchema: z.ZodObject<
     position: number;
     concentration: string | null;
     concentrationUnit: string | null;
-  }
->;
+}>;
 export type IngredientSummaryResponse = z.infer<typeof ingredientSummarySchema>;
-export declare const ingredientResponseSchema: z.ZodObject<
-  Omit<
-    {
-      id: z.ZodString;
-      inciName: z.ZodString;
-      commonName: z.ZodNullable<z.ZodString>;
-      slug: z.ZodString;
-      position: z.ZodNumber;
-      concentration: z.ZodNullable<z.ZodString>;
-      concentrationUnit: z.ZodNullable<z.ZodString>;
-      notes: z.ZodNullable<z.ZodString>;
-      shortDescriptionEn: z.ZodNullable<z.ZodString>;
-      shortDescriptionAr: z.ZodNullable<z.ZodString>;
-      functions: z.ZodArray<z.ZodString, "many">;
-      benefits: z.ZodArray<z.ZodString, "many">;
-      concerns: z.ZodArray<z.ZodString, "many">;
-      goodFor: z.ZodArray<z.ZodString, "many">;
-      avoidIf: z.ZodArray<z.ZodString, "many">;
-      skinTypes: z.ZodArray<z.ZodString, "many">;
-      skinConcerns: z.ZodArray<z.ZodString, "many">;
-      regulatoryNotes: z.ZodNullable<z.ZodString>;
-      restrictions: z.ZodNullable<z.ZodString>;
-      safetyNotes: z.ZodNullable<z.ZodString>;
-    },
-    "notes" | "position" | "concentration" | "concentrationUnit"
-  > & {
+export declare const ingredientResponseSchema: z.ZodObject<Omit<{
+    id: z.ZodString;
+    inciName: z.ZodString;
+    commonName: z.ZodNullable<z.ZodString>;
+    slug: z.ZodString;
+    position: z.ZodNumber;
+    concentration: z.ZodNullable<z.ZodString>;
+    concentrationUnit: z.ZodNullable<z.ZodString>;
+    notes: z.ZodNullable<z.ZodString>;
+    shortDescriptionEn: z.ZodNullable<z.ZodString>;
+    shortDescriptionAr: z.ZodNullable<z.ZodString>;
+    functions: z.ZodArray<z.ZodString, "many">;
+    benefits: z.ZodArray<z.ZodString, "many">;
+    concerns: z.ZodArray<z.ZodString, "many">;
+    goodFor: z.ZodArray<z.ZodString, "many">;
+    avoidIf: z.ZodArray<z.ZodString, "many">;
+    skinTypes: z.ZodArray<z.ZodString, "many">;
+    skinConcerns: z.ZodArray<z.ZodString, "many">;
+    regulatoryNotes: z.ZodNullable<z.ZodString>;
+    restrictions: z.ZodNullable<z.ZodString>;
+    safetyNotes: z.ZodNullable<z.ZodString>;
+}, "notes" | "position" | "concentration" | "concentrationUnit"> & {
     descriptionEn: z.ZodNullable<z.ZodString>;
     descriptionAr: z.ZodNullable<z.ZodString>;
     casNumber: z.ZodNullable<z.ZodString>;
@@ -475,10 +399,7 @@ export declare const ingredientResponseSchema: z.ZodObject<
     productCount: z.ZodNumber;
     createdAt: z.ZodDate;
     updatedAt: z.ZodDate;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
+}, "strip", z.ZodTypeAny, {
     id: string;
     createdAt: Date;
     updatedAt: Date;
@@ -509,8 +430,7 @@ export declare const ingredientResponseSchema: z.ZodObject<
     externalId: string | null;
     isFeatured: boolean;
     productCount: number;
-  },
-  {
+}, {
     id: string;
     createdAt: Date;
     updatedAt: Date;
@@ -541,39 +461,25 @@ export declare const ingredientResponseSchema: z.ZodObject<
     externalId: string | null;
     isFeatured: boolean;
     productCount: number;
-  }
->;
+}>;
 export type IngredientResponse = z.infer<typeof ingredientResponseSchema>;
-export declare const parseIngredientListSchema: z.ZodObject<
-  {
+export declare const parseIngredientListSchema: z.ZodObject<{
     raw: z.ZodString;
-  },
-  "strict",
-  z.ZodTypeAny,
-  {
+}, "strict", z.ZodTypeAny, {
     raw: string;
-  },
-  {
+}, {
     raw: string;
-  }
->;
+}>;
 export type ParseIngredientListInput = z.infer<typeof parseIngredientListSchema>;
 export declare const barcodeSchema: z.ZodString;
-export declare const ingredientExternalQuerySchema: z.ZodObject<
-  {
+export declare const ingredientExternalQuerySchema: z.ZodObject<{
     query: z.ZodString;
-  },
-  "strict",
-  z.ZodTypeAny,
-  {
+}, "strict", z.ZodTypeAny, {
     query: string;
-  },
-  {
+}, {
     query: string;
-  }
->;
-export declare const ingredientImportRowSchema: z.ZodObject<
-  {
+}>;
+export declare const ingredientImportRowSchema: z.ZodObject<{
     inciName: z.ZodString;
     commonName: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     slug: z.ZodOptional<z.ZodString>;
@@ -594,23 +500,17 @@ export declare const ingredientImportRowSchema: z.ZodObject<
     regulatoryNotes: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     restrictions: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     safetyNotes: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-    source: z.ZodOptional<
-      z.ZodEnum<["CURATED", "COSING", "PUBCHEM", "OPEN_BEAUTY_FACTS", "ADMIN", "IMPORT"]>
-    >;
+    source: z.ZodOptional<z.ZodEnum<["CURATED", "COSING", "PUBCHEM", "OPEN_BEAUTY_FACTS", "ADMIN", "IMPORT"]>>;
     sourceUrl: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     externalId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     isActive: z.ZodOptional<z.ZodBoolean>;
     isFeatured: z.ZodOptional<z.ZodBoolean>;
-  } & {
+} & {
     aliases: z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
-  },
-  "strict",
-  z.ZodTypeAny,
-  {
+}, "strict", z.ZodTypeAny, {
     inciName: string;
     isActive?: boolean | undefined;
-    source?:
-      "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
+    source?: "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
     commonName?: string | null | undefined;
     slug?: string | undefined;
     descriptionEn?: string | null | undefined;
@@ -634,12 +534,10 @@ export declare const ingredientImportRowSchema: z.ZodObject<
     sourceUrl?: string | null | undefined;
     externalId?: string | null | undefined;
     isFeatured?: boolean | undefined;
-  },
-  {
+}, {
     inciName: string;
     isActive?: boolean | undefined;
-    source?:
-      "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
+    source?: "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
     commonName?: string | null | undefined;
     slug?: string | undefined;
     descriptionEn?: string | null | undefined;
@@ -663,7 +561,6 @@ export declare const ingredientImportRowSchema: z.ZodObject<
     sourceUrl?: string | null | undefined;
     externalId?: string | null | undefined;
     isFeatured?: boolean | undefined;
-  }
->;
+}>;
 export type IngredientImportRow = z.infer<typeof ingredientImportRowSchema>;
 //# sourceMappingURL=ingredient.schema.d.ts.map
