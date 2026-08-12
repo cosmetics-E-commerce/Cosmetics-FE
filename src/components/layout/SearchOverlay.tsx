@@ -91,6 +91,7 @@ export function SearchOverlay() {
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const statusId = useId();
+  const [anchorStyle, setAnchorStyle] = useState<CSSProperties>();
   const [query, setQuery] = useState("");
   const trimmed = query.trim();
   const deferred = useDebouncedValue(trimmed, 140);
@@ -100,9 +101,84 @@ export function SearchOverlay() {
   const waitingForQuery = Boolean(trimmed) && trimmed !== deferred;
   const searching = waitingForQuery || (results.isFetching && Boolean(deferred));
 
+  const updateAnchorPosition = useCallback(() => {
+    if (typeof window === "undefined") return;
+
+    const viewportPadding = 12;
+    const panelWidth = Math.min(520, window.innerWidth - viewportPadding * 2);
+    const anchor = openerRef.current;
+    const rect = anchor?.getBoundingClientRect();
+    const top = rect ? rect.bottom + 12 : 76;
+    const fallbackLeft = window.innerWidth - panelWidth - viewportPadding;
+    const preferredLeft = rect ? rect.left + rect.width / 2 - panelWidth + 44 : fallbackLeft;
+    const left = Math.min(
+      Math.max(viewportPadding, preferredLeft),
+      window.innerWidth - panelWidth - viewportPadding,
+    );
+    const arrowLeft = rect
+      ? Math.min(Math.max(rect.left + rect.width / 2 - left, 24), panelWidth - 24)
+      : panelWidth - 44;
+
+    setAnchorStyle({
+      "--search-anchor-top": `${Math.max(viewportPadding, top)}px`,
+      "--search-anchor-left": `${left}px`,
+      "--search-anchor-arrow-left": `${arrowLeft}px`,
+      "--search-panel-width": `${panelWidth}px`,
+    } as CSSProperties);
+  }, []);
+
   useEffect(() => {
     if (!searchOpen) setQuery("");
   }, [searchOpen]);
+
+  useEffect(() => {
+    if (!searchOpen || typeof window === "undefined") return;
+
+    const { body, documentElement } = document;
+    const scrollY = window.scrollY;
+    const scrollbarGap = window.innerWidth - documentElement.clientWidth;
+    const previousDocumentOverflow = documentElement.style.overflow;
+    const previousBodyOverflow = body.style.overflow;
+    const previousBodyPosition = body.style.position;
+    const previousBodyTop = body.style.top;
+    const previousBodyWidth = body.style.width;
+    const previousBodyPaddingRight = body.style.paddingRight;
+
+    documentElement.style.overflow = "hidden";
+    body.style.overflow = "hidden";
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.width = "100%";
+    if (scrollbarGap > 0) {
+      body.style.paddingRight = `${scrollbarGap}px`;
+    }
+
+    return () => {
+      documentElement.style.overflow = previousDocumentOverflow;
+      body.style.overflow = previousBodyOverflow;
+      body.style.position = previousBodyPosition;
+      body.style.top = previousBodyTop;
+      body.style.width = previousBodyWidth;
+      body.style.paddingRight = previousBodyPaddingRight;
+      window.scrollTo(0, scrollY);
+    };
+  }, [searchOpen]);
+
+  useEffect(() => {
+    if (!searchOpen) {
+      setAnchorStyle(undefined);
+      return;
+    }
+
+    updateAnchorPosition();
+    const syncPosition = () => updateAnchorPosition();
+    window.addEventListener("resize", syncPosition);
+    window.addEventListener("scroll", syncPosition, true);
+    return () => {
+      window.removeEventListener("resize", syncPosition);
+      window.removeEventListener("scroll", syncPosition, true);
+    };
+  }, [searchOpen, updateAnchorPosition]);
 
   const close = useCallback(() => setSearchOpen(false), [setSearchOpen]);
 
@@ -134,12 +210,14 @@ export function SearchOverlay() {
         showCloseButton={false}
         overlayClassName="search-overlay__backdrop"
         className="search-overlay"
+        style={anchorStyle}
         onOpenAutoFocus={(event) => {
           event.preventDefault();
           if (document.activeElement instanceof HTMLElement) {
             openerRef.current = document.activeElement;
           }
-          inputRef.current?.focus({ preventScroll: true });
+          updateAnchorPosition();
+          window.requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }));
         }}
         onCloseAutoFocus={(event) => {
           event.preventDefault();

@@ -1,16 +1,20 @@
-import { useState, type ReactNode } from "react";
+import { useState, type CSSProperties, type ReactNode } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowRight,
+  CalendarDays,
   CheckCircle2,
   Clipboard,
   CreditCard,
   ExternalLink,
   Heart,
+  Home,
   LoaderCircle,
+  LogOut,
   MapPin,
   Package,
+  PackageCheck,
   RefreshCw,
   Trash2,
   Truck,
@@ -39,6 +43,7 @@ import {
   listAddresses,
   listOrders,
   refreshOrderTracking,
+  requestPhoneChangeOtp,
   setDefaultAddress,
   updateProfile,
   uploadPaymentProof,
@@ -83,6 +88,12 @@ function Account() {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState<AddressResponse | null>(null);
   const [deletingAddress, setDeletingAddress] = useState(false);
+  const [phoneOtpStage, setPhoneOtpStage] = useState<{
+    phone: string;
+    maskedEmail: string;
+    ttlSeconds: number;
+  } | null>(null);
+  const [phoneOtp, setPhoneOtp] = useState("");
   const profile = useQuery({
     queryKey: ["account", "profile"],
     queryFn: getProfile,
@@ -114,9 +125,15 @@ function Account() {
   const profileMutation = useMutation({
     mutationFn: updateProfile,
     onSuccess: () => {
-      toast("Profile updated");
+      toast(locale === "ar" ? "تم تحديث الحساب" : "Profile updated");
+      setPhoneOtpStage(null);
+      setPhoneOtp("");
       void client.invalidateQueries({ queryKey: ["account", "profile"] });
     },
+    onError: (error) => toast.error(apiErrorMessage(error, locale)),
+  });
+  const phoneOtpMutation = useMutation({
+    mutationFn: requestPhoneChangeOtp,
     onError: (error) => toast.error(apiErrorMessage(error, locale)),
   });
   if (!authHydrated)
@@ -127,22 +144,27 @@ function Account() {
     );
   if (!user)
     return (
-      <div className="mx-auto max-w-xl px-5 py-28 text-center">
-        <h1 className="font-serif text-4xl">Your private account</h1>
-        <p className="mt-5 text-muted-foreground">
-          Sign in to view orders, addresses and saved products.
-        </p>
-        <Button asChild variant="solid" size="pill" className="mt-8">
-          <Link to="/sign-in" search={{ returnTo: undefined }}>
-            Sign in
-          </Link>
-        </Button>
-      </div>
+      <main className="sf-account-page account-page account-page--guest">
+        <section className="account-guest-card">
+          <span className="account-profile-avatar account-profile-avatar--hero">
+            <AccountGirlAvatar name="BIOREZA" />
+          </span>
+          <p className="account-eyebrow">Your BIOREZA account</p>
+          <h1>Your private account</h1>
+          <p>Sign in to view orders, addresses and saved products.</p>
+          <Button asChild variant="solid" size="pill">
+            <Link to="/sign-in" search={{ returnTo: undefined }}>
+              Sign in
+            </Link>
+          </Button>
+        </section>
+      </main>
     );
   const name = profile.data
     ? `${profile.data.firstName} ${profile.data.lastName}`
     : `${user.firstName} ${user.lastName}`;
   const firstName = profile.data?.firstName || user.firstName;
+  const currentPhone = profile.data?.phone ?? user.phone;
   const recentOrders = [...(orders.data ?? [])]
     .sort((left, right) => Date.parse(right.placedAt) - Date.parse(left.placedAt))
     .slice(0, 3);
@@ -219,8 +241,13 @@ function Account() {
           className="account-hero__registry"
           aria-label={locale === "ar" ? "ملخص الحساب" : "Account registry"}
         >
-          <div>
-            <dt>{locale === "ar" ? "تفاصيل الحساب" : "Account details"}</dt>
+          <div className="account-hero__person">
+            <dt>
+              <span className="account-profile-avatar account-profile-avatar--hero">
+                <AccountGirlAvatar name={name} />
+              </span>
+              <span>{locale === "ar" ? "تفاصيل الحساب" : "Account details"}</span>
+            </dt>
             <dd>{name}</dd>
             <small>{profile.data?.email ?? user.email ?? user.phone}</small>
           </div>
@@ -276,7 +303,8 @@ function Account() {
                 onClick={() => setSignOutOpen(true)}
                 className="account-nav__button account-nav__button--signout"
               >
-                {signOutCopy.trigger}
+                <LogOut aria-hidden="true" strokeWidth={1.7} />
+                <span>{signOutCopy.trigger}</span>
               </button>
             </li>
           </ul>
@@ -374,6 +402,7 @@ function Account() {
                           ) : (
                             <button
                               type="button"
+                              className="account-orders__track-button"
                               aria-expanded={expandedOrderId === order.id}
                               onClick={() => {
                                 setExpandedPaymentOrderId(null);
@@ -599,10 +628,50 @@ function Account() {
                   onSubmit={(event) => {
                     event.preventDefault();
                     const data = new FormData(event.currentTarget);
-                    profileMutation.mutate({
+                    const nextPhone = String(data.get("phone") ?? "").trim();
+                    const phoneChanged = nextPhone !== currentPhone;
+                    const payload = {
                       firstName: data.get("firstName"),
                       lastName: data.get("lastName"),
-                      phone: data.get("phone"),
+                      phone: nextPhone,
+                    };
+
+                    if (!phoneChanged) {
+                      setPhoneOtpStage(null);
+                      setPhoneOtp("");
+                      profileMutation.mutate(payload);
+                      return;
+                    }
+
+                    if (!phoneOtpStage || phoneOtpStage.phone !== nextPhone) {
+                      void phoneOtpMutation.mutateAsync().then((challenge) => {
+                        setPhoneOtp("");
+                        setPhoneOtpStage({
+                          phone: nextPhone,
+                          maskedEmail: challenge.maskedEmail,
+                          ttlSeconds: challenge.ttlSeconds,
+                        });
+                        toast(
+                          locale === "ar"
+                            ? `أرسلنا كود التحقق إلى ${challenge.maskedEmail}`
+                            : `Verification code sent to ${challenge.maskedEmail}`,
+                        );
+                      });
+                      return;
+                    }
+
+                    if (!/^[0-9]{6}$/.test(phoneOtp)) {
+                      toast.error(
+                        locale === "ar"
+                          ? "أدخل كود التحقق المكون من 6 أرقام."
+                          : "Enter the 6-digit verification code.",
+                      );
+                      return;
+                    }
+
+                    profileMutation.mutate({
+                      ...payload,
+                      phoneChangeOtp: phoneOtp,
                     });
                   }}
                 >
@@ -618,11 +687,7 @@ function Account() {
                         locale === "ar" ? "اسم العائلة" : "Last name",
                         profile.data?.lastName ?? user.lastName,
                       ],
-                      [
-                        "phone",
-                        locale === "ar" ? "رقم الهاتف" : "Phone number",
-                        profile.data?.phone ?? user.phone,
-                      ],
+                      ["phone", locale === "ar" ? "رقم الهاتف" : "Phone number", currentPhone],
                     ].map(([id, label, value]) => (
                       <label key={id}>
                         <span>{label}</span>
@@ -643,6 +708,77 @@ function Account() {
                       </label>
                     ))}
                   </div>
+                  <div
+                    className={`account-phone-verification${
+                      phoneOtpStage ? " account-phone-verification--active" : ""
+                    }`}
+                  >
+                    <div>
+                      <p>
+                        {phoneOtpStage
+                          ? locale === "ar"
+                            ? "تحقق من بريدك الإلكتروني"
+                            : "Email verification required"
+                          : locale === "ar"
+                            ? "تغيير رقم الهاتف محمي"
+                            : "Phone changes are protected"}
+                      </p>
+                      <small>
+                        {phoneOtpStage
+                          ? locale === "ar"
+                            ? `أدخل الكود المرسل إلى ${phoneOtpStage.maskedEmail} لتحديث رقم الهاتف.`
+                            : `Enter the code sent to ${phoneOtpStage.maskedEmail} to update your phone.`
+                          : locale === "ar"
+                            ? "إذا غيّرت رقم الهاتف سنرسل كود تحقق إلى بريدك الإلكتروني أولاً."
+                            : "If you change your phone, we will email a verification code before saving it."}
+                      </small>
+                    </div>
+                    {phoneOtpStage && (
+                      <label>
+                        <span>{locale === "ar" ? "كود التحقق" : "Verification code"}</span>
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          autoComplete="one-time-code"
+                          pattern="[0-9]{6}"
+                          maxLength={6}
+                          value={phoneOtp}
+                          onChange={(event) =>
+                            setPhoneOtp(event.currentTarget.value.replace(/\D/g, "").slice(0, 6))
+                          }
+                          placeholder="000000"
+                        />
+                      </label>
+                    )}
+                    {phoneOtpStage && (
+                      <button
+                        type="button"
+                        className="account-phone-verification__resend"
+                        disabled={phoneOtpMutation.isPending}
+                        onClick={() => {
+                          void phoneOtpMutation.mutateAsync().then((challenge) => {
+                            setPhoneOtp("");
+                            setPhoneOtpStage((current) =>
+                              current
+                                ? {
+                                    ...current,
+                                    maskedEmail: challenge.maskedEmail,
+                                    ttlSeconds: challenge.ttlSeconds,
+                                  }
+                                : null,
+                            );
+                            toast(
+                              locale === "ar"
+                                ? "تم إرسال كود جديد"
+                                : "A new verification code was sent",
+                            );
+                          });
+                        }}
+                      >
+                        {locale === "ar" ? "إرسال كود جديد" : "Resend code"}
+                      </button>
+                    )}
+                  </div>
                   <div className="account-settings__footer">
                     <p>
                       {locale === "ar"
@@ -653,9 +789,15 @@ function Account() {
                       type="submit"
                       variant="solid"
                       size="pill"
-                      loading={profileMutation.isPending}
+                      loading={profileMutation.isPending || phoneOtpMutation.isPending}
                     >
-                      {locale === "ar" ? "حفظ التغييرات" : "Save changes"}
+                      {phoneOtpStage
+                        ? locale === "ar"
+                          ? "تحقق واحفظ"
+                          : "Verify and save"
+                        : locale === "ar"
+                          ? "حفظ التغييرات"
+                          : "Save changes"}
                     </Button>
                   </div>
                 </form>
@@ -856,6 +998,18 @@ function Overview({
         </section>
 
         <div className="account-overview__aside">
+          {orders[0] && (
+            <section className="account-tracking-preview" aria-labelledby="account-tracking-title">
+              <AccountSectionHeading
+                title={ar ? "تتبع آخر طلب" : "Latest tracking"}
+                action={ar ? "كل الطلبات" : "All orders"}
+                onAction={() => onNavigate("orders")}
+                compact
+              />
+              <OrderTrackingPanel orderId={orders[0].id} locale={locale} compact />
+            </section>
+          )}
+
           <section className="account-address-preview" aria-labelledby="account-address-title">
             <AccountSectionHeading
               title={ar ? "العنوان الأساسي" : "Default address"}
@@ -1236,7 +1390,65 @@ function PaymentContinuation({ order, locale }: { order: OrderSummary; locale: "
   );
 }
 
-function OrderTrackingPanel({ orderId, locale }: { orderId: string; locale: "ar" | "en" }) {
+function AccountGirlAvatar({ name }: { name: string }) {
+  const initials =
+    name
+      .split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part.charAt(0))
+      .join("")
+      .toUpperCase() || "BR";
+
+  return (
+    <svg viewBox="0 0 112 112" focusable="false" aria-hidden="true">
+      <defs>
+        <linearGradient id="account-avatar-skin" x1="28" x2="86" y1="16" y2="96">
+          <stop stopColor="#f8ddc7" />
+          <stop offset="1" stopColor="#c88f65" />
+        </linearGradient>
+        <linearGradient id="account-avatar-hair" x1="20" x2="90" y1="10" y2="96">
+          <stop stopColor="#6d4229" />
+          <stop offset="1" stopColor="#241511" />
+        </linearGradient>
+      </defs>
+      <circle cx="56" cy="56" r="54" fill="#fff" />
+      <path
+        d="M24 53c0-22 13-38 33-38 21 0 34 16 34 38 0 14-4 25-12 33l9 17H24l10-17c-7-8-10-19-10-33Z"
+        fill="url(#account-avatar-hair)"
+      />
+      <path
+        d="M35 50c8 2 20-2 29-12 6 8 13 12 22 12-2 21-14 36-26 36-13 0-23-15-25-36Z"
+        fill="url(#account-avatar-skin)"
+      />
+      <path d="M38 88c7 8 33 8 42 0l10 15H27l11-15Z" fill="#f7efe5" />
+      <circle cx="46" cy="57" r="2.5" fill="#2c1d17" />
+      <circle cx="69" cy="57" r="2.5" fill="#2c1d17" />
+      <path d="M50 72c4 4 11 4 15 0" fill="none" stroke="#7d4b36" strokeWidth="3" />
+      <text
+        x="56"
+        y="106"
+        textAnchor="middle"
+        fontFamily="Arial, sans-serif"
+        fontSize="11"
+        fontWeight="800"
+        fill="#8a5a2c"
+      >
+        {initials.slice(0, 2)}
+      </text>
+    </svg>
+  );
+}
+
+function OrderTrackingPanel({
+  orderId,
+  locale,
+  compact = false,
+}: {
+  orderId: string;
+  locale: "ar" | "en";
+  compact?: boolean;
+}) {
   const queryClient = useQueryClient();
   const tracking = useQuery({
     queryKey: ["account", "orders", orderId, "tracking"],
@@ -1251,7 +1463,10 @@ function OrderTrackingPanel({ orderId, locale }: { orderId: string; locale: "ar"
 
   if (tracking.isLoading) {
     return (
-      <div className="account-tracking account-tracking--loading">
+      <div
+        className="account-tracking account-tracking--loading"
+        data-compact={compact || undefined}
+      >
         {locale === "ar" ? "جارٍ تحميل التتبع…" : "Loading tracking…"}
       </div>
     );
@@ -1259,7 +1474,7 @@ function OrderTrackingPanel({ orderId, locale }: { orderId: string; locale: "ar"
 
   if (tracking.isError) {
     return (
-      <div className="account-tracking account-tracking--error">
+      <div className="account-tracking account-tracking--error" data-compact={compact || undefined}>
         {apiErrorMessage(tracking.error, locale)}
       </div>
     );
@@ -1267,12 +1482,18 @@ function OrderTrackingPanel({ orderId, locale }: { orderId: string; locale: "ar"
 
   const data = refresh.data ?? tracking.data;
   if (!data) return null;
+  const steps = trackingSteps(data, locale);
+  const activeIndex = Math.max(
+    0,
+    steps.findIndex((step) => step.state === "active"),
+  );
+  const carrier = data.shipment?.provider ?? "BOSTA";
 
   return (
-    <div className="account-tracking">
+    <div className="account-tracking" data-compact={compact || undefined}>
       <div className="account-tracking__header">
         <div>
-          <p>{locale === "ar" ? "التوصيل" : "Delivery"}</p>
+          <p>{locale === "ar" ? "تتبع الشحنة" : "Order tracking"}</p>
           <strong>
             {data.shipment ? data.shipment.status.replace(/_/g, " ") : "Preparing after payment"}
           </strong>
@@ -1289,6 +1510,32 @@ function OrderTrackingPanel({ orderId, locale }: { orderId: string; locale: "ar"
           {locale === "ar" ? "تحديث" : "Refresh"}
         </Button>
       </div>
+
+      <div className="account-tracking__carrier">
+        <span>{carrier}</span>
+        <strong>
+          {data.shipment?.trackingNumber ??
+            (locale === "ar" ? "لم يتم الحجز بعد" : "Not booked yet")}
+        </strong>
+      </div>
+
+      <ol
+        className="account-tracking__timeline"
+        style={
+          {
+            "--tracking-progress": `${(activeIndex / Math.max(steps.length - 1, 1)) * 100}%`,
+          } as CSSProperties
+        }
+      >
+        {steps.map((step) => (
+          <li key={step.id} data-state={step.state}>
+            <span className="account-tracking__step-icon">{step.icon}</span>
+            <strong>{step.label}</strong>
+            <small>{step.detail}</small>
+          </li>
+        ))}
+      </ol>
+
       {data.shipment ? (
         <div className="account-tracking__details">
           <div>
@@ -1329,6 +1576,79 @@ function OrderTrackingPanel({ orderId, locale }: { orderId: string; locale: "ar"
       )}
     </div>
   );
+}
+
+function trackingSteps(data: OrderTracking, locale: "ar" | "en") {
+  const ar = locale === "ar";
+  const status = `${data.shipment?.status ?? data.orderStatus ?? ""}`.toUpperCase();
+  const isDelivered = status.includes("DELIVER");
+  const isOut = status.includes("OUT") || status.includes("DELIVERY");
+  const isBooked = Boolean(data.shipment);
+  const isTransit =
+    isBooked &&
+    !isDelivered &&
+    (status.includes("TRANSIT") ||
+      status.includes("PICK") ||
+      status.includes("SENT") ||
+      status.includes("BOOK") ||
+      status.includes("CREATED"));
+  const active = isDelivered ? 4 : isOut ? 3 : isTransit ? 2 : isBooked ? 1 : 0;
+  const placedDate =
+    data.history[0]?.createdAt || data.shipment?.createdAt || data.estimatedDeliveryDate || null;
+
+  return [
+    {
+      id: "placed",
+      label: ar ? "تم الطلب" : "Order placed",
+      detail: placedDate ? formatTrackingDate(placedDate, locale) : "-",
+      icon: <Package aria-hidden="true" />,
+    },
+    {
+      id: "booked",
+      label: ar ? "حجز Bosta" : "Bosta booked",
+      detail: isBooked ? (data.shipment?.provider ?? "BOSTA") : "-",
+      icon: <PackageCheck aria-hidden="true" />,
+    },
+    {
+      id: "transit",
+      label: ar ? "في الطريق" : "In transit",
+      detail: isTransit || isOut || isDelivered ? (data.shipment?.status ?? "-") : "-",
+      icon: <Truck aria-hidden="true" />,
+    },
+    {
+      id: "out",
+      label: ar ? "خارج للتوصيل" : "Out for delivery",
+      detail:
+        isOut || isDelivered
+          ? data.shipment?.estimatedDelivery
+            ? formatTrackingDate(data.shipment.estimatedDelivery, locale)
+            : (data.shipment?.status ?? "-")
+          : "-",
+      icon: <CalendarDays aria-hidden="true" />,
+    },
+    {
+      id: "delivered",
+      label: ar ? "تم التسليم" : "Delivered",
+      detail: isDelivered
+        ? data.shipment?.updatedAt
+          ? formatTrackingDate(data.shipment.updatedAt, locale)
+          : (data.shipment?.status ?? "-")
+        : "-",
+      icon: <Home aria-hidden="true" />,
+    },
+  ].map((step, index) => ({
+    ...step,
+    state: index < active ? "complete" : index === active ? "active" : "idle",
+  }));
+}
+
+function formatTrackingDate(value: string, locale: "ar" | "en") {
+  return new Intl.DateTimeFormat(locale === "ar" ? "ar-EG" : "en-EG", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "Africa/Cairo",
+  }).format(new Date(value));
 }
 
 function trackingAddress(data: OrderTracking) {

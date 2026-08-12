@@ -10,14 +10,16 @@ import {
   type RefObject,
   type ReactNode,
 } from "react";
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import {
   ChevronDown,
   ChevronRight,
   Droplets,
   Grid2X2,
   Heart,
+  LogOut,
   Menu,
+  MapPin,
   PackageCheck,
   Search,
   ShoppingBag,
@@ -125,8 +127,10 @@ export function Header({
   scrollSentinelRef: RefObject<HTMLSpanElement | null>;
 }) {
   const { t } = useI18n();
+  const navigate = useNavigate();
   const headerRef = useRef<HTMLElement>(null);
-  const { count, setCartOpen, setSearchOpen, wishlist, user, locale, setLocale } = useStore();
+  const { count, setCartOpen, setSearchOpen, wishlist, user, locale, setLocale, signOut } =
+    useStore();
   const { pathname, search } = useLocation();
   const categories = useCategories();
   const brands = useBrands();
@@ -245,6 +249,15 @@ export function Header({
   }, []);
 
   const accountTo = user ? ("/account" as const) : ("/sign-in" as const);
+  const accountName = user ? `${user.firstName} ${user.lastName}`.trim() : "";
+  const accountInitials =
+    accountName
+      .split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part.charAt(0))
+      .join("")
+      .toUpperCase() || "BR";
   const closeMegaMenu = useCallback(() => setMegaMenu(""), []);
   const closeMobileMenu = useCallback(() => setMenu(false), []);
   const navInteractionProps = (id: string) => ({
@@ -433,14 +446,56 @@ export function Header({
 
             <span className="header-actions__divider" aria-hidden="true" />
 
-            <Link
-              to={accountTo}
-              search={user ? { section: undefined } : { returnTo: undefined }}
-              aria-label={t("nav.account")}
-              className="header-action hidden h-11 w-11 place-items-center sm:grid"
-            >
-              <User strokeWidth={1.25} className="size-[18px]" aria-hidden="true" />
-            </Link>
+            {user ? (
+              <div className="header-account-menu hidden sm:block">
+                <Link
+                  to="/account"
+                  search={{ section: undefined }}
+                  aria-label={t("nav.account")}
+                  className="header-action header-account-trigger grid h-11 w-11 place-items-center"
+                >
+                  <span className="header-account-avatar" aria-hidden="true">
+                    <HeaderAccountAvatar initials={accountInitials} />
+                  </span>
+                </Link>
+                <div className="header-account-dropdown" role="menu">
+                  <div className="header-account-dropdown__head">
+                    <HeaderAccountAvatar initials={accountInitials} />
+                    <div>
+                      <strong>{accountName || t("nav.account")}</strong>
+                      <small>{user.email ?? user.phone ?? "BIOREZA"}</small>
+                    </div>
+                  </div>
+                  <Link to="/account" search={{ section: undefined }} role="menuitem">
+                    <User strokeWidth={1.35} aria-hidden="true" />
+                    {locale === "ar" ? "الملف الشخصي" : "Profile"}
+                  </Link>
+                  <Link to="/account" search={{ section: "addresses" }} role="menuitem">
+                    <MapPin strokeWidth={1.35} aria-hidden="true" />
+                    {locale === "ar" ? "العناوين" : "Addresses"}
+                  </Link>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      void signOut().then(() => navigate({ to: "/" }));
+                    }}
+                  >
+                    <LogOut strokeWidth={1.35} aria-hidden="true" />
+                    {locale === "ar" ? "تسجيل الخروج" : "Sign out"}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <Link
+                to={accountTo}
+                search={{ returnTo: undefined }}
+                aria-label={t("nav.account")}
+                className="header-action hidden h-11 w-11 place-items-center sm:grid"
+              >
+                <User strokeWidth={1.25} className="size-[18px]" aria-hidden="true" />
+              </Link>
+            )}
             <Link
               to={accountTo}
               search={user ? { section: "wishlist" } : { returnTo: undefined }}
@@ -615,6 +670,39 @@ export function Header({
   );
 }
 
+function HeaderAccountAvatar({ initials }: { initials: string }) {
+  return (
+    <svg viewBox="0 0 48 48" focusable="false" aria-hidden="true">
+      <defs>
+        <linearGradient id="header-avatar-gold" x1="10" x2="39" y1="6" y2="42">
+          <stop stopColor="#f6ddb5" />
+          <stop offset="1" stopColor="#9b642d" />
+        </linearGradient>
+      </defs>
+      <circle cx="24" cy="24" r="23" fill="#fff" />
+      <path
+        d="M14.5 23.2c0-7 4.2-12.4 10.2-12.4 6.6 0 10.8 5.4 10.8 12.4 0 4.4-1.6 8.1-4.1 10.3l3.8 6.4H12.7l4-6.5c-1.4-2.1-2.2-5.3-2.2-10.2Z"
+        fill="url(#header-avatar-gold)"
+      />
+      <path
+        d="M18 25.8c2.2.5 4.7-.2 6.6-2.1 2.8 2.7 6.1 3 8.7 2.2-.7 4.8-3.9 8.3-7.7 8.3-3.7 0-6.8-3.4-7.6-8.4Z"
+        fill="#fff7ec"
+      />
+      <text
+        x="24"
+        y="42"
+        textAnchor="middle"
+        fontSize="8"
+        fontWeight="800"
+        fill="#4d351f"
+        fontFamily="Arial, sans-serif"
+      >
+        {initials.slice(0, 2)}
+      </text>
+    </svg>
+  );
+}
+
 type BrandGroup = [letter: string, brands: PublicBrandListItemResponse[]];
 
 /** Columns are derived from the catalogue size so the panel never opens wider —
@@ -674,7 +762,7 @@ const BrandsMegaMenu = memo(function BrandsMegaMenu({
 
   return (
     <div
-      className="header-mega-panel"
+      className="header-mega-panel header-mega-panel--brands"
       dir={locale === "ar" ? "rtl" : "ltr"}
       style={{ "--mega-columns": columnGroups.length || 1 } as CSSProperties}
     >
