@@ -82,6 +82,7 @@ export function Header() {
   const scrolledRef = useRef(false);
   const primaryNavRef = useRef<HTMLElement>(null);
   const hoveredNavIdRef = useRef<string | null>(null);
+  const focusedNavIdRef = useRef<string | null>(null);
   const activeNavIdRef = useRef<string | null>(null);
   const copy = headerCopy[locale];
 
@@ -187,7 +188,10 @@ export function Header() {
       hoveredNavIdRef.current = id;
       moveNavIndicator(id);
     },
-    onFocus: () => moveNavIndicator(id),
+    onFocus: () => {
+      focusedNavIdRef.current = id;
+      moveNavIndicator(id);
+    },
   });
 
   const accountTo = user ? ("/account" as const) : ("/sign-in" as const);
@@ -233,8 +237,18 @@ export function Header() {
                 ?.getAttribute("data-nav-id");
               moveNavIndicator(focusedId || megaMenu || activeNavId);
             }}
+            onFocusCapture={(event) => {
+              const focusedId = (event.target as HTMLElement)
+                .closest<HTMLElement>(".nav-link")
+                ?.getAttribute("data-nav-id");
+              if (!focusedId) return;
+              focusedNavIdRef.current = focusedId;
+              moveNavIndicator(focusedId);
+              window.requestAnimationFrame(() => moveNavIndicator(focusedId));
+            }}
             onBlurCapture={(event) => {
               if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
+              focusedNavIdRef.current = null;
               window.requestAnimationFrame(() =>
                 moveNavIndicator(hoveredNavIdRef.current || activeNavId),
               );
@@ -242,6 +256,7 @@ export function Header() {
             onKeyDownCapture={(event) => {
               if (event.key !== "Escape") return;
               hoveredNavIdRef.current = null;
+              focusedNavIdRef.current = null;
               window.requestAnimationFrame(() => moveNavIndicator(activeNavIdRef.current));
             }}
           >
@@ -251,7 +266,7 @@ export function Header() {
                 const next = value as MegaMenuValue | "";
                 setMegaMenu(next);
                 hoveredNavIdRef.current = next || null;
-                moveNavIndicator(next || activeNavId);
+                moveNavIndicator(next || focusedNavIdRef.current || activeNavId);
               }}
               delayDuration={70}
               skipDelayDuration={120}
