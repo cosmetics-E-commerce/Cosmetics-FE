@@ -11,9 +11,25 @@ import {
   type ReactNode,
 } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
-import { ChevronDown, Heart, Menu, Search, ShoppingBag, User, X } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronRight,
+  Droplets,
+  Grid2X2,
+  Heart,
+  Menu,
+  PackageCheck,
+  Search,
+  ShoppingBag,
+  Sparkles,
+  Star,
+  Tags,
+  User,
+  X,
+} from "lucide-react";
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
 import { Logo } from "@/components/brand/Logo";
+import promoProductImage from "@/assets/product-serum.jpg";
 import {
   Accordion,
   AccordionContent,
@@ -45,6 +61,23 @@ const headerCopy = {
     viewAllBrands: "View all brands",
     categoryDirectory: "Shop by category",
     viewAllProducts: "View all products",
+    allCategories: "All Categories",
+    faceCare: "Face Care",
+    bodyCare: "Body Care",
+    skinConcerns: "Skin Concerns",
+    featuredBrands: "Featured Brands",
+    promoTitle: "Skincare That Cares",
+    promoText: "Discover products that love your skin.",
+    shopNow: "Shop Now",
+    chooseCategory: "Choose a category",
+    categoryHighlights: "Featured paths",
+    categoryChildren: "Subcategories",
+    browseCategory: "All products",
+    categoryNew: "New arrivals",
+    categoryBest: "Best sellers",
+    categoryOffers: "Current offers",
+    categoryLow: "Price: low to high",
+    categoryHigh: "Price: high to low",
     brandsEmpty: "Available brands will appear here soon.",
     categoriesEmpty: "Available categories will appear here soon.",
     wishlist: "Wishlist",
@@ -58,6 +91,23 @@ const headerCopy = {
     viewAllBrands: "عرض كل العلامات",
     categoryDirectory: "تسوقي حسب الفئة",
     viewAllProducts: "عرض كل المنتجات",
+    allCategories: "كل الفئات",
+    faceCare: "العناية بالوجه",
+    bodyCare: "العناية بالجسم",
+    skinConcerns: "مشاكل البشرة",
+    featuredBrands: "علامات مميزة",
+    promoTitle: "عناية بالبشرة تهتم بك",
+    promoText: "اكتشفي منتجات تمنح بشرتك عناية يومية هادئة.",
+    shopNow: "تسوقي الآن",
+    chooseCategory: "اختاري الفئة",
+    categoryHighlights: "مسارات مميزة",
+    categoryChildren: "الفئات الفرعية",
+    browseCategory: "كل المنتجات",
+    categoryNew: "وصل حديثاً",
+    categoryBest: "الأكثر مبيعاً",
+    categoryOffers: "العروض الحالية",
+    categoryLow: "السعر: من الأقل للأعلى",
+    categoryHigh: "السعر: من الأعلى للأقل",
     brandsEmpty: "ستظهر العلامات المتاحة هنا قريباً.",
     categoriesEmpty: "ستظهر الفئات المتاحة هنا قريباً.",
     wishlist: "المفضلة",
@@ -327,6 +377,7 @@ export function Header({
                   </NavigationMenuPrimitive.Trigger>
                   <NavigationMenuPrimitive.Content className="header-mega-content">
                     <CategoriesMegaMenu
+                      brands={visibleBrands}
                       categories={categories.data ?? []}
                       loading={categories.isLoading}
                       locale={locale}
@@ -481,21 +532,11 @@ export function Header({
                 <li>
                   <MobileCatalogGroup id="categories" label={t("nav.categories")}>
                     {categories.data?.length ? (
-                      <ul className="mobile-nav__sublist">
-                        {categories.data.map((category) => (
-                          <li key={category.id}>
-                            <Link
-                              to="/shop"
-                              search={{ category: category.slug }}
-                              onClick={closeMobileMenu}
-                              className="mobile-nav__sublink"
-                            >
-                              <span>{locale === "ar" ? category.nameAr : category.nameEn}</span>
-                              <small>{category.productCount}</small>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
+                      <MobileCategoryAccordion
+                        categories={categories.data}
+                        locale={locale}
+                        onNavigate={closeMobileMenu}
+                      />
                     ) : (
                       <p className="mobile-nav__empty">{copy.categoriesEmpty}</p>
                     )}
@@ -705,27 +746,59 @@ const BrandsMegaMenu = memo(function BrandsMegaMenu({
 });
 
 const CategoriesMegaMenu = memo(function CategoriesMegaMenu({
+  brands,
   categories,
   loading,
   locale,
   onNavigate,
 }: {
+  brands: PublicBrandListItemResponse[];
   categories: PublicCategoryResponse[];
   loading: boolean;
   locale: "ar" | "en";
   onNavigate: () => void;
 }) {
   const copy = headerCopy[locale];
-  const columns = Math.min(4, Math.max(2, categories.length));
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const categoryTree = useMemo(() => buildCategoryTree(categories), [categories]);
+  const parentCategories = categoryTree.roots;
+
+  useEffect(() => {
+    if (!parentCategories.length) {
+      setSelectedCategoryId(null);
+      return;
+    }
+    setSelectedCategoryId((current) =>
+      current && parentCategories.some((category) => category.id === current)
+        ? current
+        : (parentCategories[0]?.id ?? null),
+    );
+  }, [parentCategories]);
+
+  const selectedCategory =
+    parentCategories.find((category) => category.id === selectedCategoryId) ?? parentCategories[0];
+  const childCategories = selectedCategory
+    ? (categoryTree.children.get(selectedCategory.id) ?? [])
+    : [];
+  const selectedName = selectedCategory
+    ? locale === "ar"
+      ? selectedCategory.nameAr
+      : selectedCategory.nameEn
+    : copy.chooseCategory;
+  const shopGroups = useMemo(
+    () => buildCategoryShopGroups(locale, selectedCategory),
+    [locale, selectedCategory],
+  );
+  const featuredBrands = brands.slice(0, 4);
+  const visibleParentCategories = parentCategories.slice(0, 8);
 
   return (
-    <div
-      className="header-mega-panel"
-      dir={locale === "ar" ? "rtl" : "ltr"}
-      style={{ "--mega-columns": columns } as CSSProperties}
-    >
-      <div className="header-mega-heading">
-        <p className="header-mega-eyebrow">{copy.categoryDirectory}</p>
+    <div className="header-mega-panel category-mega" dir={locale === "ar" ? "rtl" : "ltr"}>
+      <div className="category-mega__toolbar">
+        <span className="category-mega__all-pill">
+          <Menu className="size-4" aria-hidden="true" />
+          {copy.allCategories}
+        </span>
         <Link to="/shop" onClick={onNavigate} className="header-mega-all">
           {copy.viewAllProducts}
           <ChevronDown className="size-3 -rotate-90 rtl:rotate-90" aria-hidden="true" />
@@ -733,29 +806,283 @@ const CategoriesMegaMenu = memo(function CategoriesMegaMenu({
       </div>
 
       {loading ? (
-        <MegaMenuSkeleton rows={4} />
+        <MegaMenuSkeleton rows={5} />
       ) : categories.length ? (
-        <ul className="category-directory">
-          {categories.map((category) => (
-            <li key={category.id}>
-              <Link
-                to="/shop"
-                search={{ category: category.slug }}
-                onClick={onNavigate}
-                className="category-directory__link"
-              >
-                <span>{locale === "ar" ? category.nameAr : category.nameEn}</span>
-                <small>{copy.products(category.productCount)}</small>
+        <div className="category-mega__market">
+          <nav className="category-mega__rail" aria-label={copy.chooseCategory}>
+            {visibleParentCategories.map((category, index) => {
+              const label = locale === "ar" ? category.nameAr : category.nameEn;
+              const Icon = categoryIcon(category.slug, index);
+              return (
+                <Link
+                  key={category.id}
+                  to="/shop"
+                  search={{ category: category.slug }}
+                  onClick={onNavigate}
+                  onPointerEnter={() => setSelectedCategoryId(category.id)}
+                  onFocus={() => setSelectedCategoryId(category.id)}
+                  className="category-mega__parent"
+                  data-active={selectedCategory?.id === category.id || undefined}
+                >
+                  <span className="category-mega__icon" aria-hidden="true">
+                    <Icon className="size-4" strokeWidth={1.45} />
+                  </span>
+                  <span className="category-mega__parent-copy">
+                    <strong>{label}</strong>
+                    <small>{copy.products(category.productCount)}</small>
+                  </span>
+                  <ChevronRight
+                    className="category-mega__chevron size-4 rtl:rotate-180"
+                    aria-hidden="true"
+                  />
+                </Link>
+              );
+            })}
+            {parentCategories.length > visibleParentCategories.length && (
+              <Link to="/shop" onClick={onNavigate} className="category-mega__rail-all">
+                <Grid2X2 className="size-4" aria-hidden="true" />
+                {copy.viewAllProducts}
               </Link>
-            </li>
-          ))}
-        </ul>
+            )}
+          </nav>
+
+          <section className="category-mega__columns" aria-live="polite">
+            {childCategories.length ? (
+              <div className="category-mega__column category-mega__column--wide">
+                <h3>{selectedName}</h3>
+                <div className="category-mega__column-links">
+                  {childCategories.slice(0, 8).map((child) => (
+                    <Link
+                      key={child.id}
+                      to="/shop"
+                      search={{ category: child.slug }}
+                      onClick={onNavigate}
+                    >
+                      {locale === "ar" ? child.nameAr : child.nameEn}
+                    </Link>
+                  ))}
+                  {selectedCategory && (
+                    <Link
+                      to="/shop"
+                      search={{ category: selectedCategory.slug }}
+                      onClick={onNavigate}
+                    >
+                      {copy.browseCategory}
+                    </Link>
+                  )}
+                </div>
+              </div>
+            ) : (
+              shopGroups.map((group) => (
+                <div className="category-mega__column" key={group.title}>
+                  <h3>{group.title}</h3>
+                  <div className="category-mega__column-links">
+                    {group.links.map((link) => (
+                      <Link key={link.label} to="/shop" search={link.search} onClick={onNavigate}>
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              ))
+            )}
+          </section>
+
+          <aside className="category-mega__brands" aria-label={copy.featuredBrands}>
+            <h3>{copy.featuredBrands}</h3>
+            <div className="category-mega__brand-list">
+              {featuredBrands.length ? (
+                featuredBrands.map((brand) => (
+                  <Link
+                    key={brand.id}
+                    to="/shop"
+                    search={{ brand: brand.slug }}
+                    onClick={onNavigate}
+                    className="category-mega__brand"
+                  >
+                    {brand.name}
+                  </Link>
+                ))
+              ) : (
+                <span>{copy.brandsEmpty}</span>
+              )}
+            </div>
+            <Link to="/shop" onClick={onNavigate} className="category-mega__brands-all">
+              {copy.viewAllBrands}
+            </Link>
+          </aside>
+
+          <aside className="category-mega__promo">
+            <div>
+              <p>{copy.categoryDirectory}</p>
+              <h3>{copy.promoTitle}</h3>
+              <span>{copy.promoText}</span>
+              <Link to="/shop" onClick={onNavigate}>
+                {copy.shopNow}
+              </Link>
+            </div>
+            <img src={promoProductImage} alt="" aria-hidden="true" />
+          </aside>
+        </div>
       ) : (
         <p className="header-mega-empty">{copy.categoriesEmpty}</p>
       )}
     </div>
   );
 });
+
+function buildCategoryTree(categories: PublicCategoryResponse[]) {
+  const children = new Map<string, PublicCategoryResponse[]>();
+  const knownIds = new Set(categories.map((category) => category.id));
+  const sorted = [...categories].sort(
+    (left, right) =>
+      left.sortOrder - right.sortOrder || left.nameEn.localeCompare(right.nameEn, "en"),
+  );
+  const roots: PublicCategoryResponse[] = [];
+
+  for (const category of sorted) {
+    if (category.parentId && knownIds.has(category.parentId)) {
+      children.set(category.parentId, [...(children.get(category.parentId) ?? []), category]);
+    } else {
+      roots.push(category);
+    }
+  }
+
+  return { roots, children };
+}
+
+function buildCategoryShopGroups(locale: "ar" | "en", category?: PublicCategoryResponse) {
+  const baseSearch = category?.slug ? { category: category.slug } : {};
+  const english = [
+    {
+      title: "Face Care",
+      links: ["Cleansers", "Moisturizers", "Serums", "Toners", "Face Masks", "Sunscreen"],
+    },
+    {
+      title: "Body Care",
+      links: ["Body Lotions", "Body Wash", "Body Scrubs", "Hand Care", "Foot Care", "Body Oils"],
+    },
+    {
+      title: "Skin Concerns",
+      links: ["Acne & Blemishes", "Anti-Aging", "Brightening", "Hydrating", "Sensitive Skin"],
+    },
+  ];
+  const arabic = [
+    {
+      title: "العناية بالوجه",
+      links: ["غسول", "مرطب", "سيروم", "تونر", "ماسك", "واقي شمس"],
+    },
+    {
+      title: "العناية بالجسم",
+      links: ["لوشن الجسم", "غسول الجسم", "سكراب", "عناية اليد", "عناية القدم", "زيوت الجسم"],
+    },
+    {
+      title: "مشاكل البشرة",
+      links: ["حب الشباب", "علامات التقدم", "تفتيح", "ترطيب", "بشرة حساسة"],
+    },
+  ];
+
+  return (locale === "ar" ? arabic : english).map((group) => ({
+    title: group.title,
+    links: group.links.map((label) => ({
+      label,
+      search: { ...baseSearch, search: label },
+    })),
+  }));
+}
+
+function categoryIcon(slug: string, index: number) {
+  const normalized = slug.toLowerCase();
+  if (normalized.includes("body") || normalized.includes("bath")) return Droplets;
+  if (normalized.includes("hair") || normalized.includes("care")) return PackageCheck;
+  if (normalized.includes("skin")) return Sparkles;
+  if (normalized.includes("make")) return Star;
+  if (normalized.includes("fragrance") || normalized.includes("perfume")) return Tags;
+  return [Grid2X2, Sparkles, Star, Tags, Droplets, PackageCheck][index % 6] ?? Grid2X2;
+}
+
+function MobileCategoryAccordion({
+  categories,
+  locale,
+  onNavigate,
+}: {
+  categories: PublicCategoryResponse[];
+  locale: "ar" | "en";
+  onNavigate: () => void;
+}) {
+  const copy = headerCopy[locale];
+  const categoryTree = useMemo(() => buildCategoryTree(categories), [categories]);
+
+  return (
+    <Accordion type="single" collapsible className="mobile-category-nav">
+      {categoryTree.roots.map((category, index) => {
+        const label = locale === "ar" ? category.nameAr : category.nameEn;
+        const children = categoryTree.children.get(category.id) ?? [];
+        const Icon = categoryIcon(category.slug, index);
+
+        return (
+          <AccordionItem
+            key={category.id}
+            value={category.id}
+            className="mobile-category-nav__item"
+          >
+            <AccordionTrigger className="mobile-category-nav__trigger">
+              <span className="mobile-category-nav__icon" aria-hidden="true">
+                <Icon className="size-4" strokeWidth={1.45} />
+              </span>
+              <span>
+                <strong>{label}</strong>
+                <small>{copy.products(category.productCount)}</small>
+              </span>
+            </AccordionTrigger>
+            <AccordionContent className="mobile-category-nav__content">
+              <Link
+                to="/shop"
+                search={{ category: category.slug }}
+                onClick={onNavigate}
+                className="mobile-nav__sublink mobile-category-nav__all"
+              >
+                <span>{copy.browseCategory}</span>
+                <ChevronRight className="size-4 rtl:rotate-180" aria-hidden="true" />
+              </Link>
+              {children.length ? (
+                <ul className="mobile-nav__sublist mobile-category-nav__children">
+                  {children.map((child) => (
+                    <li key={child.id}>
+                      <Link
+                        to="/shop"
+                        search={{ category: child.slug }}
+                        onClick={onNavigate}
+                        className="mobile-nav__sublink"
+                      >
+                        <span>{locale === "ar" ? child.nameAr : child.nameEn}</span>
+                        <small>{child.productCount}</small>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className="mobile-category-nav__quick">
+                  <Link
+                    to="/shop"
+                    search={{ category: category.slug, sort: "newest" }}
+                    onClick={onNavigate}
+                    className="mobile-nav__sublink"
+                  >
+                    <span>{copy.categoryNew}</span>
+                  </Link>
+                  <Link to="/offers" onClick={onNavigate} className="mobile-nav__sublink">
+                    <span>{copy.categoryOffers}</span>
+                  </Link>
+                </div>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+        );
+      })}
+    </Accordion>
+  );
+}
 
 function MegaMenuSkeleton({ rows }: { rows: number }) {
   return (

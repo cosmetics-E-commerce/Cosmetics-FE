@@ -62,17 +62,17 @@ const servicePillars = [
 const paymentMethods = [
   {
     label: "InstaPay",
-    src: "/payment-methods/instapay.png",
+    src: "/payment-methods/instapay-clean.png",
     className: "payment-method-logo--instapay",
     width: 512,
     height: 512,
   },
   {
     label: "Vodafone Cash",
-    src: "/payment-methods/vodafone-svgrepo-com.svg",
+    src: "/payment-methods/vodafone-icon.svg",
     className: "payment-method-logo--vodafone",
-    width: 800,
-    height: 800,
+    width: 504,
+    height: 380,
   },
   {
     label: "Cash on delivery",

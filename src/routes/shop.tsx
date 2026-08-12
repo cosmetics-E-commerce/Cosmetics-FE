@@ -5,7 +5,7 @@ import { ProductCard } from "@/components/shop/ProductCard";
 import { Reveal } from "@/components/brand/Reveal";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { useBrands, useCatalog, useCategories } from "@/lib/catalog";
+import { useBrands, useCatalogPage, useCategories } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
 
@@ -16,7 +16,10 @@ type Search = {
   sort?: string | undefined;
   search?: string | undefined;
   view?: "compact" | "grid" | "list" | undefined;
+  page?: number | undefined;
 };
+
+const PAGE_SIZE = 24;
 
 const subscribeToHydration = () => () => undefined;
 
@@ -30,6 +33,7 @@ export const Route = createFileRoute("/shop")({
     ...(raw["view"] === "compact" || raw["view"] === "grid" || raw["view"] === "list"
       ? { view: raw["view"] }
       : {}),
+    ...(toPage(raw["page"]) ? { page: toPage(raw["page"]) } : {}),
   }),
   head: () => ({
     meta: [
@@ -47,6 +51,7 @@ function Shop() {
   const { t } = useI18n();
   const [filters, setFilters] = useState(false);
   const view = search.view ?? "compact";
+  const page = search.page ?? 1;
   const hydrated = useSyncExternalStore(
     subscribeToHydration,
     () => true,
@@ -58,9 +63,10 @@ function Shop() {
       : search.sort === "price-desc"
         ? { sortBy: "basePrice", sortOrder: "desc" }
         : { sortBy: "createdAt", sortOrder: "desc" };
-  const catalog = useCatalog(
+  const catalog = useCatalogPage(
     {
-      limit: 100,
+      page,
+      limit: PAGE_SIZE,
       brandSlug: search.brand?.toLowerCase(),
       categorySlug: search.category?.toLowerCase(),
       search: search.search ?? search.concern,
@@ -102,7 +108,22 @@ function Shop() {
         count: category.productCount,
       })),
   ];
-  const productCount = hydrated ? (catalog.data?.length ?? 0) : 0;
+  const products = catalog.data?.items ?? [];
+  const meta = catalog.data?.meta;
+  const productCount = hydrated ? (meta?.total ?? products.length) : 0;
+  const pageStart = meta && meta.total > 0 ? (meta.page - 1) * meta.limit + 1 : 0;
+  const pageEnd = meta ? Math.min(meta.page * meta.limit, meta.total) : products.length;
+  const goToPage = (nextPage: number) =>
+    navigate({
+      search: {
+        ...search,
+        page: nextPage > 1 ? nextPage : undefined,
+      },
+    });
+  const resetPageSearch = (next: Search): Search => ({
+    ...next,
+    page: undefined,
+  });
   const shopHeadline =
     locale === "ar"
       ? "تسوّقي منتجات تجميل نظيفة وعالية الجودة"
@@ -115,7 +136,7 @@ function Shop() {
           <button
             type="button"
             onClick={() => {
-              navigate({ search: { ...search, category: undefined } });
+              navigate({ search: resetPageSearch({ ...search, category: undefined }) });
               setFilters(false);
             }}
             className="sf-shop-filter-panel__option"
@@ -131,7 +152,7 @@ function Shop() {
               <button
                 type="button"
                 onClick={() => {
-                  navigate({ search: { ...search, category: category.slug } });
+                  navigate({ search: resetPageSearch({ ...search, category: category.slug }) });
                   setFilters(false);
                 }}
                 className="sf-shop-filter-panel__option"
@@ -161,7 +182,7 @@ function Shop() {
                   <button
                     type="button"
                     onClick={() => {
-                      navigate({ search: { ...search, brand: brand.slug } });
+                      navigate({ search: resetPageSearch({ ...search, brand: brand.slug }) });
                       setFilters(false);
                     }}
                     className="sf-shop-filter-panel__option"
@@ -206,7 +227,9 @@ function Shop() {
                   role="tab"
                   aria-selected={selected}
                   className="sf-shop-tab"
-                  onClick={() => navigate({ search: { ...search, category: category.slug } })}
+                  onClick={() =>
+                    navigate({ search: resetPageSearch({ ...search, category: category.slug }) })
+                  }
                 >
                   {category.label}
                   {category.count ? <span>({category.count})</span> : null}
@@ -224,11 +247,20 @@ function Shop() {
           <h2 id="shop-products-title">
             {productCount} {t("common.products")}
           </h2>
+          {meta && meta.total > 0 && (
+            <p className="sf-shop-page-count">
+              {locale === "ar"
+                ? `عرض ${pageStart}-${pageEnd} من ${meta.total}`
+                : `Showing ${pageStart}-${pageEnd} of ${meta.total}`}
+            </p>
+          )}
           <select
             aria-label={locale === "ar" ? "ترتيب المنتجات" : "Sort products"}
             value={search.sort ?? ""}
             onChange={(event) =>
-              navigate({ search: { ...search, sort: event.target.value || undefined } })
+              navigate({
+                search: resetPageSearch({ ...search, sort: event.target.value || undefined }),
+              })
             }
             className="sf-shop-sort"
           >
@@ -243,7 +275,9 @@ function Shop() {
               <button
                 key={filter.key}
                 type="button"
-                onClick={() => navigate({ search: { ...search, [filter.key]: undefined } })}
+                onClick={() =>
+                  navigate({ search: resetPageSearch({ ...search, [filter.key]: undefined }) })
+                }
                 aria-label={`Remove ${filter.label} filter`}
               >
                 {filter.label}
@@ -264,7 +298,7 @@ function Shop() {
             actionLabel={t("common.tryAgain")}
           />
         )}
-        {hydrated && !catalog.isLoading && !catalog.error && catalog.data?.length === 0 && (
+        {hydrated && !catalog.isLoading && !catalog.error && products.length === 0 && (
           <State
             title={t("shop.emptyTitle")}
             copy={t("shop.emptyCopy")}
@@ -273,25 +307,35 @@ function Shop() {
           />
         )}
         {hydrated && catalog.data && (
-          <div
-            className={`sf-shop-products ${
-              view === "list"
-                ? "sf-shop-products--list"
-                : view === "grid"
-                  ? "sf-shop-products--grid"
-                  : "sf-shop-products--compact"
-            }`}
-          >
-            {catalog.data.map((product, index) => (
-              <Reveal key={product.slug} delay={(index % 4) * 35}>
-                <ProductCard
-                  product={product}
-                  compact={view === "compact"}
-                  layout={view === "list" ? "list" : "grid"}
-                />
-              </Reveal>
-            ))}
-          </div>
+          <>
+            <div
+              className={`sf-shop-products ${
+                view === "list"
+                  ? "sf-shop-products--list"
+                  : view === "grid"
+                    ? "sf-shop-products--grid"
+                    : "sf-shop-products--compact"
+              }`}
+            >
+              {products.map((product, index) => (
+                <Reveal key={product.slug} delay={(index % 4) * 35}>
+                  <ProductCard
+                    product={product}
+                    compact={view === "compact"}
+                    layout={view === "list" ? "list" : "grid"}
+                  />
+                </Reveal>
+              ))}
+            </div>
+            {meta && meta.totalPages > 1 && (
+              <ShopPagination
+                page={meta.page}
+                totalPages={meta.totalPages}
+                onPageChange={goToPage}
+                locale={locale}
+              />
+            )}
+          </>
         )}
       </section>
       <Sheet open={filters} onOpenChange={setFilters}>
@@ -322,7 +366,9 @@ function Shop() {
                 aria-label={locale === "ar" ? "ترتيب المنتجات" : "Sort products"}
                 value={search.sort ?? ""}
                 onChange={(event) =>
-                  navigate({ search: { ...search, sort: event.target.value || undefined } })
+                  navigate({
+                    search: resetPageSearch({ ...search, sort: event.target.value || undefined }),
+                  })
                 }
                 className="sf-shop-filter-panel__select"
               >
@@ -373,6 +419,66 @@ function Shop() {
     </div>
   );
 }
+
+function toPage(value: unknown) {
+  const page = typeof value === "string" ? Number.parseInt(value, 10) : Number(value);
+  return Number.isFinite(page) && page > 1 ? page : undefined;
+}
+
+function visiblePages(page: number, totalPages: number) {
+  const pages = new Set(
+    [1, totalPages, page - 1, page, page + 1].filter((p) => p >= 1 && p <= totalPages),
+  );
+  return [...pages].sort((a, b) => a - b);
+}
+
+function ShopPagination({
+  page,
+  totalPages,
+  onPageChange,
+  locale,
+}: {
+  page: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  locale: "ar" | "en";
+}) {
+  const pages = visiblePages(page, totalPages);
+  let previous = 0;
+
+  return (
+    <nav
+      className="sf-shop-pagination"
+      aria-label={locale === "ar" ? "صفحات المنتجات" : "Product pages"}
+    >
+      <button type="button" onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
+        {locale === "ar" ? "السابق" : "Previous"}
+      </button>
+      <ol>
+        {pages.map((item) => {
+          const gap = item - previous > 1;
+          previous = item;
+          return (
+            <li key={item}>
+              {gap && <span className="sf-shop-pagination__ellipsis">...</span>}
+              <button
+                type="button"
+                onClick={() => onPageChange(item)}
+                aria-current={item === page ? "page" : undefined}
+              >
+                {item}
+              </button>
+            </li>
+          );
+        })}
+      </ol>
+      <button type="button" onClick={() => onPageChange(page + 1)} disabled={page >= totalPages}>
+        {locale === "ar" ? "التالي" : "Next"}
+      </button>
+    </nav>
+  );
+}
+
 function State({
   title,
   copy,

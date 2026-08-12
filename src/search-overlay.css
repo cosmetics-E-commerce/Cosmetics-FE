@@ -20,12 +20,12 @@
   --search-line-strong: #b9aa96;
   --search-wash: #f8f5ef;
   --search-accent: #8b6128;
-  top: max(16px, env(safe-area-inset-top));
+  top: max(18px, env(safe-area-inset-top));
   left: 50%;
   display: block;
-  width: min(calc(100vw - 32px), 1180px);
-  max-width: 1180px;
-  max-height: calc(100dvh - max(32px, env(safe-area-inset-top)));
+  width: min(calc(100vw - 40px), 1080px);
+  max-width: 1080px;
+  max-height: calc(100dvh - max(36px, env(safe-area-inset-top)));
   padding: 0;
   translate: none !important;
   transform: translateX(-50%);
@@ -60,10 +60,10 @@
 }
 
 .search-overlay-content {
-  max-height: calc(100dvh - max(32px, env(safe-area-inset-top)));
+  max-height: calc(100dvh - max(36px, env(safe-area-inset-top)));
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: clamp(24px, 3.1vw, 42px) clamp(24px, 3.5vw, 48px) clamp(28px, 3.4vw, 46px);
+  padding: clamp(24px, 3vw, 40px) clamp(24px, 3.4vw, 46px) clamp(28px, 3.2vw, 42px);
   scrollbar-color: var(--search-line-strong) transparent;
   scrollbar-gutter: stable;
 }
@@ -91,10 +91,10 @@
 }
 
 .search-overlay__heading h2 {
-  max-width: 20ch;
+  max-width: 19ch;
   margin-top: 10px;
   font-family: var(--font-serif);
-  font-size: clamp(2rem, 3.1vw, 2.8rem);
+  font-size: clamp(2.15rem, 3.9vw, 3.95rem);
   font-weight: 600;
   letter-spacing: -0.032em;
   line-height: 1.02;
@@ -109,8 +109,8 @@
 
 .search-overlay__close {
   display: grid;
-  width: 46px;
-  height: 46px;
+  width: 50px;
+  height: 50px;
   flex: none;
   place-items: center;
   border: 1px solid var(--search-line);
@@ -148,12 +148,12 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 17px;
-  margin-top: clamp(25px, 3vw, 34px);
+  gap: 18px;
+  margin-top: clamp(26px, 3.1vw, 36px);
   overflow: hidden;
   border: 1px solid var(--search-line-strong);
   background: rgba(255, 253, 250, 0.82);
-  padding: 7px 7px 7px 20px;
+  padding: 8px 8px 8px 22px;
   transition:
     border-color 200ms ease,
     background-color 200ms ease,
@@ -193,8 +193,8 @@
 .search-command__icon {
   position: relative;
   z-index: 1;
-  width: 19px;
-  height: 19px;
+  width: 22px;
+  height: 22px;
   color: var(--search-muted);
   transition:
     color 200ms ease,
@@ -211,12 +211,12 @@
   z-index: 1;
   width: 100%;
   min-width: 0;
-  height: 58px;
+  height: 62px;
   border: 0;
   background: transparent;
   color: var(--search-ink);
   font-family: var(--font-sans);
-  font-size: clamp(1.05rem, 1.75vw, 1.42rem);
+  font-size: clamp(1.1rem, 1.85vw, 1.55rem);
   font-weight: 510;
   letter-spacing: -0.025em;
   outline: none;
@@ -254,8 +254,8 @@
   position: relative;
   z-index: 1;
   display: grid;
-  width: 50px;
-  height: 50px;
+  width: 54px;
+  height: 54px;
   place-items: center;
   background: #ebe2d3;
   color: var(--search-ink);
@@ -365,16 +365,16 @@
 .search-overlay__body {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  min-height: 282px;
+  min-height: 292px;
 }
 
 .search-overlay__body:has(.search-discovery) {
-  grid-template-columns: minmax(210px, 0.27fr) minmax(0, 0.73fr);
+  grid-template-columns: minmax(208px, 0.28fr) minmax(0, 0.72fr);
 }
 
 .search-discovery {
   border-inline-end: 1px solid var(--search-line);
-  padding: 27px 28px 8px 0;
+  padding: 25px 26px 6px 0;
 }
 
 [dir="rtl"] .search-discovery {
@@ -413,7 +413,7 @@
 
 .search-discovery li a {
   display: flex;
-  min-height: 43px;
+  min-height: 41px;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
@@ -496,11 +496,69 @@
 
 .search-products {
   min-width: 0;
-  padding-top: 25px;
+  padding-top: 24px;
 }
 
 .search-products--with-discovery {
-  padding-inline-start: 30px;
+  padding-inline-start: 28px;
+}
+
+.search-suggestions {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 24px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--search-line);
+}
+
+.search-suggestion-group {
+  min-width: 0;
+}
+
+.search-suggestion-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 11px;
+}
+
+.search-suggestion-chip {
+  display: inline-flex;
+  min-height: 35px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid color-mix(in srgb, var(--search-line) 78%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--search-wash) 64%, white);
+  padding: 0 13px;
+  color: var(--search-ink);
+  font-size: 0.72rem;
+  font-weight: 620;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 160ms ease,
+    box-shadow 220ms ease;
+}
+
+[dir="rtl"] .search-suggestion-chip {
+  font-family: var(--font-arabic);
+  letter-spacing: 0;
+}
+
+.search-suggestion-chip svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  color: var(--search-accent);
+}
+
+.search-suggestion-chip:focus-visible {
+  outline: 1px solid var(--search-accent);
+  outline-offset: 3px;
 }
 
 .search-results-stage {
@@ -824,6 +882,14 @@
     color: #5e401b;
   }
 
+  .search-suggestion-chip:hover {
+    border-color: color-mix(in srgb, var(--search-accent) 52%, var(--search-line));
+    background: #fff9ef;
+    color: #5e401b;
+    box-shadow: 0 10px 28px rgba(71, 47, 19, 0.06);
+    transform: translateY(-1px);
+  }
+
   .search-command__submit:hover .search-direction > span,
   .search-discovery__all:hover .search-direction > span,
   .search-view-all:hover .search-direction > span,
@@ -919,6 +985,10 @@
   .search-products--with-discovery {
     padding-inline-start: 0;
   }
+
+  .search-suggestions {
+    margin-bottom: 20px;
+  }
 }
 
 @media (max-width: 600px) {
@@ -996,6 +1066,16 @@
 
   .search-products {
     padding-top: 16px;
+  }
+
+  .search-suggestion-grid {
+    gap: 8px;
+  }
+
+  .search-suggestion-chip {
+    min-height: 33px;
+    padding-inline: 11px;
+    font-size: 0.68rem;
   }
 
   .search-product-grid,
