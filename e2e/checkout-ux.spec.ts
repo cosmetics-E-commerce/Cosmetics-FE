@@ -166,7 +166,7 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
   if (testInfo.project.name === "mobile") {
     await page.getByRole("button", { name: "Open menu" }).click();
     await page.getByRole("button", { name: "العربية" }).click();
-    await page.getByRole("button", { name: "Close menu" }).click();
+    await page.getByRole("button", { name: "إغلاق القائمة" }).click();
   } else {
     await page.getByRole("button", { name: "التبديل إلى العربية" }).click();
   }
