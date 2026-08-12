@@ -188,6 +188,7 @@ function RootComponent() {
   const { queryClient, locale } = Route.useRouteContext();
   const { pathname } = useLocation();
   const pageRef = useRef<HTMLDivElement>(null);
+  const headerScrollSentinelRef = useRef<HTMLSpanElement>(null);
   const isFirstRender = useRef(true);
   const isHome = pathname === "/";
 
@@ -214,7 +215,12 @@ function RootComponent() {
             <a href="#main-content" className="skip-link">
               Skip to content
             </a>
-            <Header />
+            <span
+              ref={headerScrollSentinelRef}
+              className="header-scroll-sentinel"
+              aria-hidden="true"
+            />
+            <Header scrollSentinelRef={headerScrollSentinelRef} />
             {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
             <main
               id="main-content"

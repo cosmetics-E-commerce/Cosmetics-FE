@@ -1,15 +1,71 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  clearSession,
   createSupportRequest,
   listProductReviews,
   normalizeProductReviews,
+  refreshSession,
   register,
+  resolveApiBase,
   resendRegistrationOtp,
   subscribeNewsletter,
   verifyRegistrationEmail,
 } from "./api";
 
-afterEach(() => vi.unstubAllGlobals());
+beforeEach(() => window.localStorage.clear());
+afterEach(() => {
+  clearSession();
+  vi.unstubAllGlobals();
+});
+
+describe("client session transport", () => {
+  it("keeps the API and storefront on the same site during local development", () => {
+    expect(
+      resolveApiBase("http://127.0.0.1:3000/api/v1", {
+        hostname: "localhost",
+        protocol: "http:",
+      }),
+    ).toBe("http://localhost:3000/api/v1");
+    expect(
+      resolveApiBase("http://127.0.0.1:3000/api/v1", {
+        hostname: "192.168.1.20",
+        protocol: "http:",
+      }),
+    ).toBe("http://192.168.1.20:3000/api/v1");
+    expect(
+      resolveApiBase("https://api.bioreza.com/api/v1", {
+        hostname: "bioreza.com",
+        protocol: "https:",
+      }),
+    ).toBe("https://api.bioreza.com/api/v1");
+  });
+
+  it("does not destroy a valid refresh marker during a temporary outage", async () => {
+    window.localStorage.setItem("bioreza.csrf", "still-valid");
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("offline")));
+
+    await expect(refreshSession()).rejects.toMatchObject({ code: "NETWORK_ERROR" });
+    expect(window.localStorage.getItem("bioreza.csrf")).toBe("still-valid");
+  });
+
+  it("clears a terminally invalid refresh session", async () => {
+    window.localStorage.setItem("bioreza.csrf", "expired");
+    vi.stubGlobal(
+      "fetch",
+      vi
+        .fn()
+        .mockResolvedValue(
+          new Response(
+            JSON.stringify({ code: "INVALID_REFRESH_TOKEN", message: "Refresh expired" }),
+            { status: 401, headers: { "Content-Type": "application/json" } },
+          ),
+        ),
+    );
+
+    await expect(refreshSession()).rejects.toMatchObject({ code: "INVALID_REFRESH_TOKEN" });
+    expect(window.localStorage.getItem("bioreza.csrf")).toBeNull();
+  });
+});
 
 describe("customer-care API", () => {
   it("posts explicit newsletter consent", async () => {

@@ -35,9 +35,12 @@ export function GlobalBannerSlot({ position }: { position: StoreBanner["position
     refetchInterval: 60_000,
     retry: 1,
   });
-  const banners = (query.data?.banners ?? []).filter((banner) => banner.position === position);
+  const banners = useMemo(
+    () => (query.data?.banners ?? []).filter((banner) => banner.position === position),
+    [position, query.data?.banners],
+  );
   const strategy = query.data?.strategy ?? "HIGHEST_PRIORITY";
-  const ids = banners.map(({ id }) => id).join("|");
+  const ids = useMemo(() => banners.map(({ id }) => id).join("|"), [banners]);
   useEffect(() => setActive(0), [ids]);
   useEffect(() => {
     if (reducedMotion || !["ROTATE", "SEQUENCE"].includes(strategy) || banners.length < 2) return;
@@ -76,13 +79,17 @@ export function GlobalBannerSlot({ position }: { position: StoreBanner["position
 function useDevice(): Device {
   const [device, setDevice] = useState<Device>("desktop");
   useEffect(() => {
+    const mobile = window.matchMedia("(max-width: 639px)");
+    const tablet = window.matchMedia("(min-width: 640px) and (max-width: 1023px)");
     const update = () =>
-      setDevice(
-        window.innerWidth < 640 ? "mobile" : window.innerWidth < 1024 ? "tablet" : "desktop",
-      );
+      setDevice(mobile.matches ? "mobile" : tablet.matches ? "tablet" : "desktop");
     update();
-    window.addEventListener("resize", update, { passive: true });
-    return () => window.removeEventListener("resize", update);
+    mobile.addEventListener("change", update);
+    tablet.addEventListener("change", update);
+    return () => {
+      mobile.removeEventListener("change", update);
+      tablet.removeEventListener("change", update);
+    };
   }, []);
   return device;
 }

@@ -1,11 +1,12 @@
 import {
+  memo,
   useCallback,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState,
   type CSSProperties,
+  type RefObject,
   type ReactNode,
 } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
@@ -67,23 +68,21 @@ const headerCopy = {
 
 type MegaMenuValue = "brands" | "categories";
 
-export function Header() {
+export function Header({
+  scrollSentinelRef,
+}: {
+  scrollSentinelRef: RefObject<HTMLSpanElement | null>;
+}) {
   const { t } = useI18n();
   const headerRef = useRef<HTMLElement>(null);
-  const { count, cartFeedbackKey, setCartOpen, setSearchOpen, wishlist, user, locale, setLocale } =
-    useStore();
+  const { count, setCartOpen, setSearchOpen, wishlist, user, locale, setLocale } = useStore();
   const { pathname, search } = useLocation();
   const categories = useCategories();
   const brands = useBrands();
   const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu] = useState(false);
   const [megaMenu, setMegaMenu] = useState<MegaMenuValue | "">("");
-  const [navIndicator, setNavIndicator] = useState({ x: 0, width: 0, visible: false });
   const scrolledRef = useRef(false);
-  const primaryNavRef = useRef<HTMLElement>(null);
-  const hoveredNavIdRef = useRef<string | null>(null);
-  const focusedNavIdRef = useRef<string | null>(null);
-  const activeNavIdRef = useRef<string | null>(null);
   const copy = headerCopy[locale];
 
   const activeCategory = typeof search.category === "string" ? search.category : undefined;
@@ -102,7 +101,6 @@ export function Header() {
                 ? "brands"
                 : "categories"
               : null;
-  activeNavIdRef.current = activeNavId;
   const transparentHeader = pathname === "/" && !scrolled;
   const visibleBrands = useMemo(
     () =>
@@ -112,54 +110,29 @@ export function Header() {
     [brands.data, locale],
   );
 
-  const moveNavIndicator = useCallback((id: string | null) => {
-    const primaryNav = primaryNavRef.current;
-    const label = id
-      ? primaryNav?.querySelector<HTMLElement>(`[data-nav-id="${id}"] [data-nav-label]`)
-      : null;
-    if (!primaryNav || !label || primaryNav.getBoundingClientRect().width === 0) {
-      setNavIndicator((current) => ({ ...current, visible: false }));
-      return;
-    }
-    const navBounds = primaryNav.getBoundingClientRect();
-    const labelBounds = label.getBoundingClientRect();
-    setNavIndicator({
-      x: labelBounds.left - navBounds.left,
-      width: labelBounds.width,
-      visible: true,
-    });
-  }, []);
-
   useEffect(() => {
-    const onScroll = () => {
-      const next = window.scrollY > 24;
-      if (next === scrolledRef.current) return;
-      scrolledRef.current = next;
-      setScrolled(next);
+    let observer: IntersectionObserver | undefined;
+    const frame = window.requestAnimationFrame(() => {
+      const sentinel = scrollSentinelRef.current;
+      if (!sentinel || typeof IntersectionObserver === "undefined") return;
+      observer = new IntersectionObserver(([entry]) => {
+        const next = !entry?.isIntersecting;
+        if (next === scrolledRef.current) return;
+        scrolledRef.current = next;
+        setScrolled(next);
+      });
+      observer.observe(sentinel);
+    });
+    return () => {
+      window.cancelAnimationFrame(frame);
+      observer?.disconnect();
     };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [scrollSentinelRef]);
 
   useEffect(() => {
     setMegaMenu("");
     setMenu(false);
   }, [pathname, activeBrand, activeCategory]);
-
-  useLayoutEffect(() => {
-    const primaryNav = primaryNavRef.current;
-    const sync = () => moveNavIndicator(activeNavId);
-    const frame = window.requestAnimationFrame(sync);
-    const observer =
-      primaryNav && typeof ResizeObserver !== "undefined" ? new ResizeObserver(sync) : null;
-    if (primaryNav) observer?.observe(primaryNav);
-    void document.fonts?.ready.then(sync);
-    return () => {
-      window.cancelAnimationFrame(frame);
-      observer?.disconnect();
-    };
-  }, [activeNavId, moveNavIndicator]);
 
   useEffect(() => {
     const header = headerRef.current;
@@ -182,19 +155,9 @@ export function Header() {
     };
   }, []);
 
-  const navInteractionProps = (id: string) => ({
-    "data-nav-id": id,
-    onPointerEnter: () => {
-      hoveredNavIdRef.current = id;
-      moveNavIndicator(id);
-    },
-    onFocus: () => {
-      focusedNavIdRef.current = id;
-      moveNavIndicator(id);
-    },
-  });
-
   const accountTo = user ? ("/account" as const) : ("/sign-in" as const);
+  const closeMegaMenu = useCallback(() => setMegaMenu(""), []);
+  const closeMobileMenu = useCallback(() => setMenu(false), []);
 
   return (
     <header
@@ -207,7 +170,7 @@ export function Header() {
 
       <div className="store-header__bar">
         <div className="store-header__inner">
-          <div className="flex shrink-0 items-center justify-self-start">
+          <div className="header-brand-slot flex shrink-0 items-center justify-self-start">
             <button
               type="button"
               onClick={() => setMenu(true)}
@@ -222,52 +185,17 @@ export function Header() {
             </div>
           </div>
 
-          <div className="justify-self-center xl:hidden">
+          <div className="header-mobile-logo justify-self-center xl:hidden">
             <Logo />
           </div>
 
           <nav
-            ref={primaryNavRef}
             aria-label="Primary"
             className="header-primary-nav hidden min-w-0 justify-self-center xl:block"
-            onPointerLeave={() => {
-              hoveredNavIdRef.current = null;
-              const focusedId = primaryNavRef.current
-                ?.querySelector<HTMLElement>(".nav-link:focus-visible")
-                ?.getAttribute("data-nav-id");
-              moveNavIndicator(focusedId || megaMenu || activeNavId);
-            }}
-            onFocusCapture={(event) => {
-              const focusedId = (event.target as HTMLElement)
-                .closest<HTMLElement>(".nav-link")
-                ?.getAttribute("data-nav-id");
-              if (!focusedId) return;
-              focusedNavIdRef.current = focusedId;
-              moveNavIndicator(focusedId);
-              window.requestAnimationFrame(() => moveNavIndicator(focusedId));
-            }}
-            onBlurCapture={(event) => {
-              if (event.currentTarget.contains(event.relatedTarget as Node | null)) return;
-              focusedNavIdRef.current = null;
-              window.requestAnimationFrame(() =>
-                moveNavIndicator(hoveredNavIdRef.current || activeNavId),
-              );
-            }}
-            onKeyDownCapture={(event) => {
-              if (event.key !== "Escape") return;
-              hoveredNavIdRef.current = null;
-              focusedNavIdRef.current = null;
-              window.requestAnimationFrame(() => moveNavIndicator(activeNavIdRef.current));
-            }}
           >
             <NavigationMenuPrimitive.Root
               value={megaMenu}
-              onValueChange={(value) => {
-                const next = value as MegaMenuValue | "";
-                setMegaMenu(next);
-                hoveredNavIdRef.current = next || null;
-                moveNavIndicator(next || focusedNavIdRef.current || activeNavId);
-              }}
+              onValueChange={(value) => setMegaMenu(value as MegaMenuValue | "")}
               delayDuration={70}
               skipDelayDuration={120}
               className="header-navigation-menu"
@@ -277,7 +205,7 @@ export function Header() {
                   <NavigationMenuPrimitive.Link asChild>
                     <Link
                       to={homeNavItem.to}
-                      {...navInteractionProps(homeNavItem.id)}
+                      data-nav-id={homeNavItem.id}
                       data-active={activeNavId === homeNavItem.id}
                       aria-current={activeNavId === homeNavItem.id ? "page" : undefined}
                       className="nav-link inline-flex min-h-11 w-full items-center justify-center px-3 text-center"
@@ -289,7 +217,7 @@ export function Header() {
 
                 <NavigationMenuPrimitive.Item value="brands" className="header-nav-item">
                   <NavigationMenuPrimitive.Trigger
-                    {...navInteractionProps("brands")}
+                    data-nav-id="brands"
                     data-active={activeNavId === "brands"}
                     className="nav-link inline-flex min-h-11 w-full items-center justify-center gap-1.5 px-3 text-center"
                   >
@@ -301,14 +229,14 @@ export function Header() {
                       brands={visibleBrands}
                       loading={brands.isLoading}
                       locale={locale}
-                      onNavigate={() => setMegaMenu("")}
+                      onNavigate={closeMegaMenu}
                     />
                   </NavigationMenuPrimitive.Content>
                 </NavigationMenuPrimitive.Item>
 
                 <NavigationMenuPrimitive.Item value="categories" className="header-nav-item">
                   <NavigationMenuPrimitive.Trigger
-                    {...navInteractionProps("categories")}
+                    data-nav-id="categories"
                     data-active={activeNavId === "categories"}
                     className="nav-link inline-flex min-h-11 w-full items-center justify-center gap-1.5 px-3 text-center"
                   >
@@ -320,7 +248,7 @@ export function Header() {
                       categories={categories.data ?? []}
                       loading={categories.isLoading}
                       locale={locale}
-                      onNavigate={() => setMegaMenu("")}
+                      onNavigate={closeMegaMenu}
                     />
                   </NavigationMenuPrimitive.Content>
                 </NavigationMenuPrimitive.Item>
@@ -330,7 +258,7 @@ export function Header() {
                     <NavigationMenuPrimitive.Link asChild>
                       <Link
                         to={item.to}
-                        {...navInteractionProps(item.id)}
+                        data-nav-id={item.id}
                         data-active={activeNavId === item.id}
                         aria-current={activeNavId === item.id ? "page" : undefined}
                         className="nav-link inline-flex min-h-11 w-full items-center justify-center px-3 text-center"
@@ -346,17 +274,6 @@ export function Header() {
                 <NavigationMenuPrimitive.Viewport className="header-mega-viewport" />
               </div>
             </NavigationMenuPrimitive.Root>
-            <span
-              className="header-nav-indicator"
-              data-visible={navIndicator.visible || undefined}
-              aria-hidden="true"
-              style={
-                {
-                  "--nav-indicator-x": `${navIndicator.x}px`,
-                  "--nav-indicator-width": `${navIndicator.width}px`,
-                } as CSSProperties
-              }
-            />
           </nav>
 
           <div className="header-actions justify-self-end">
@@ -406,9 +323,7 @@ export function Header() {
               aria-label={`${t("nav.bag")}, ${count}`}
               className="header-action relative grid h-11 w-11 place-items-center"
             >
-              <span key={cartFeedbackKey} className={cartFeedbackKey ? "bag-feedback" : undefined}>
-                <ShoppingBag strokeWidth={1.25} className="size-[18px]" aria-hidden="true" />
-              </span>
+              <ShoppingBag strokeWidth={1.25} className="size-[18px]" aria-hidden="true" />
               {count > 0 && (
                 <span key={count} className="count-change header-badge" aria-hidden="true">
                   {count}
@@ -432,7 +347,7 @@ export function Header() {
             <Logo size="sm" tagline={false} />
             <button
               type="button"
-              onClick={() => setMenu(false)}
+              onClick={closeMobileMenu}
               aria-label={copy.close}
               className="header-action grid h-11 w-11 place-items-center"
             >
@@ -446,7 +361,7 @@ export function Header() {
                 <li>
                   <Link
                     to={homeNavItem.to}
-                    onClick={() => setMenu(false)}
+                    onClick={closeMobileMenu}
                     aria-current={activeNavId === homeNavItem.id ? "page" : undefined}
                     className="mobile-nav__link"
                   >
@@ -463,7 +378,7 @@ export function Header() {
                             <Link
                               to="/shop"
                               search={{ brand: brand.slug }}
-                              onClick={() => setMenu(false)}
+                              onClick={closeMobileMenu}
                               className="mobile-nav__sublink"
                             >
                               <span>{brand.name}</span>
@@ -475,11 +390,7 @@ export function Header() {
                     ) : (
                       <p className="mobile-nav__empty">{copy.brandsEmpty}</p>
                     )}
-                    <Link
-                      to="/shop"
-                      onClick={() => setMenu(false)}
-                      className="mobile-nav__subaction"
-                    >
+                    <Link to="/shop" onClick={closeMobileMenu} className="mobile-nav__subaction">
                       {copy.viewAllBrands}
                     </Link>
                   </MobileCatalogGroup>
@@ -494,7 +405,7 @@ export function Header() {
                             <Link
                               to="/shop"
                               search={{ category: category.slug }}
-                              onClick={() => setMenu(false)}
+                              onClick={closeMobileMenu}
                               className="mobile-nav__sublink"
                             >
                               <span>{locale === "ar" ? category.nameAr : category.nameEn}</span>
@@ -506,11 +417,7 @@ export function Header() {
                     ) : (
                       <p className="mobile-nav__empty">{copy.categoriesEmpty}</p>
                     )}
-                    <Link
-                      to="/shop"
-                      onClick={() => setMenu(false)}
-                      className="mobile-nav__subaction"
-                    >
+                    <Link to="/shop" onClick={closeMobileMenu} className="mobile-nav__subaction">
                       {copy.viewAllProducts}
                     </Link>
                   </MobileCatalogGroup>
@@ -520,7 +427,7 @@ export function Header() {
                   <li key={item.id}>
                     <Link
                       to={item.to}
-                      onClick={() => setMenu(false)}
+                      onClick={closeMobileMenu}
                       aria-current={activeNavId === item.id ? "page" : undefined}
                       className="mobile-nav__link"
                     >
@@ -537,7 +444,7 @@ export function Header() {
                   <Link
                     to={accountTo}
                     search={user ? { section: undefined } : { returnTo: undefined }}
-                    onClick={() => setMenu(false)}
+                    onClick={closeMobileMenu}
                     className="mobile-nav__utility-link"
                   >
                     <User strokeWidth={1.25} className="size-4" aria-hidden="true" />
@@ -548,7 +455,7 @@ export function Header() {
                   <Link
                     to={accountTo}
                     search={user ? { section: "wishlist" } : { returnTo: undefined }}
-                    onClick={() => setMenu(false)}
+                    onClick={closeMobileMenu}
                     className="mobile-nav__utility-link"
                   >
                     <Heart strokeWidth={1.25} className="size-4" aria-hidden="true" />
@@ -556,11 +463,7 @@ export function Header() {
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    to="/cart"
-                    onClick={() => setMenu(false)}
-                    className="mobile-nav__utility-link"
-                  >
+                  <Link to="/cart" onClick={closeMobileMenu} className="mobile-nav__utility-link">
                     <ShoppingBag strokeWidth={1.25} className="size-4" aria-hidden="true" />
                     {t("nav.bag")}
                   </Link>
@@ -597,7 +500,7 @@ function directoryColumns(entries: number, groups: number) {
   return Math.min(4, Math.max(2, Math.ceil(entries / 5)), Math.max(1, groups));
 }
 
-function BrandsMegaMenu({
+const BrandsMegaMenu = memo(function BrandsMegaMenu({
   brands,
   loading,
   locale,
@@ -717,9 +620,9 @@ function BrandsMegaMenu({
       )}
     </div>
   );
-}
+});
 
-function CategoriesMegaMenu({
+const CategoriesMegaMenu = memo(function CategoriesMegaMenu({
   categories,
   loading,
   locale,
@@ -770,7 +673,7 @@ function CategoriesMegaMenu({
       )}
     </div>
   );
-}
+});
 
 function MegaMenuSkeleton({ rows }: { rows: number }) {
   return (

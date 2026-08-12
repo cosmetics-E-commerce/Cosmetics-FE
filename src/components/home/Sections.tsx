@@ -17,7 +17,14 @@ import {
   Sparkles,
   Truck,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import { toast } from "sonner";
 
 import { ProductCard } from "@/components/shop/ProductCard";
@@ -30,6 +37,7 @@ import {
   Reveal,
   TextReveal,
 } from "@/components/motion/Primitives";
+import { useMotionPreferences } from "@/components/motion/motion-context";
 import { apiErrorMessage, subscribeNewsletter, type PublicCategoryResponse } from "@/lib/api";
 import { useCatalog, useCategories } from "@/lib/catalog";
 import { useI18n } from "@/lib/i18n";
@@ -522,7 +530,10 @@ export function CollectionFeature() {
 
 export function Concerns() {
   const { locale } = useStore();
+  const { finePointer, reducedMotion } = useMotionPreferences();
   const ar = locale === "ar";
+  const sectionRef = useRef<HTMLElement>(null);
+  const pointerFrameRef = useRef<number | null>(null);
   const arabicConcerns: Record<string, string> = {
     Hydration: "الترطيب",
     Brightening: "الإشراقة",
@@ -531,23 +542,92 @@ export function Concerns() {
     "Night Repair": "العناية الليلية",
     "Oily Skin": "البشرة الدهنية",
   };
+  const concernIds: Record<string, string> = {
+    Hydration: "hydration",
+    Brightening: "brightening",
+    "Sensitive Skin": "sensitive-skin",
+    "Anti-Aging": "anti-aging",
+    "Night Repair": "night-repair",
+    "Oily Skin": "oily-skin",
+  };
+  const headlineLines = ar
+    ? ["روتين يبدأ", "من بشرتك."]
+    : ["A ritual that", "begins with", "your skin."];
+
+  const handlePointerMove = useCallback(
+    (event: ReactPointerEvent<HTMLElement>) => {
+      if (!finePointer || reducedMotion || pointerFrameRef.current !== null) return;
+      const clientX = event.clientX;
+      const clientY = event.clientY;
+      pointerFrameRef.current = window.requestAnimationFrame(() => {
+        const section = sectionRef.current;
+        if (section) {
+          const bounds = section.getBoundingClientRect();
+          section.style.setProperty("--concern-pointer-x", `${clientX - bounds.left}px`);
+          section.style.setProperty("--concern-pointer-y", `${clientY - bounds.top}px`);
+        }
+        pointerFrameRef.current = null;
+      });
+    },
+    [finePointer, reducedMotion],
+  );
+
+  useEffect(
+    () => () => {
+      if (pointerFrameRef.current !== null) {
+        window.cancelAnimationFrame(pointerFrameRef.current);
+      }
+    },
+    [],
+  );
 
   return (
-    <section className="sf-concerns">
+    <section ref={sectionRef} className="sf-concerns" onPointerMove={handlePointerMove}>
+      <div className="sf-concerns__atmosphere" aria-hidden="true">
+        {concerns.map((concern) => (
+          <span
+            key={concern.name}
+            data-concern={concernIds[concern.name]}
+            style={{ "--concern-color": concern.token } as CSSProperties}
+          />
+        ))}
+      </div>
       <div className="sf-shell sf-concerns__layout">
-        <Reveal className="sf-section-intro">
-          <p className="sf-kicker">{ar ? "تسوقي حسب احتياجك" : "Shop by concern"}</p>
-          <h2 className="sf-display sf-section-title">
-            {ar ? "روتين يبدأ من بشرتك." : "A ritual that begins with your skin."}
-          </h2>
+        <Reveal className="sf-section-intro sf-concerns__intro" duration={760} distance={22}>
+          <p className="sf-kicker sf-concerns__kicker">
+            <span>{ar ? "تسوقي حسب احتياجك" : "Shop by concern"}</span>
+          </p>
+          <TextReveal
+            className="sf-display sf-section-title sf-concerns__title"
+            lines={headlineLines}
+            delay={90}
+            staggerMs={105}
+          />
         </Reveal>
-        <Reveal as="ul" stagger className="sf-concern-list">
+        <Reveal
+          as="ul"
+          stagger
+          staggerMs={72}
+          delay={150}
+          duration={700}
+          distance={18}
+          className="sf-concern-list"
+        >
           {concerns.map((concern) => (
-            <li key={concern.name}>
+            <li
+              key={concern.name}
+              data-concern={concernIds[concern.name]}
+              style={{ "--concern-color": concern.token } as CSSProperties}
+            >
               <Link to="/shop" search={{ concern: concern.name }}>
-                <i style={{ backgroundColor: concern.token }} aria-hidden="true" />
-                <span>{ar ? arabicConcerns[concern.name] : concern.name}</span>
-                <ArrowRight aria-hidden="true" />
+                <span className="sf-concern-list__dot" aria-hidden="true" />
+                <span className="sf-concern-list__label">
+                  {ar ? arabicConcerns[concern.name] : concern.name}
+                </span>
+                <span className="sf-concern-list__arrow" aria-hidden="true">
+                  <ArrowRight className="sf-concern-list__arrow-primary" />
+                  <ArrowRight className="sf-concern-list__arrow-echo" />
+                </span>
               </Link>
             </li>
           ))}

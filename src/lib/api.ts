@@ -231,15 +231,47 @@ type RequestOptions = Omit<RequestInit, "body"> & {
 };
 
 const configuredApiBase = (import.meta.env["VITE_API_BASE_URL"] as string | undefined)?.trim();
-const browserApiHost = typeof window === "undefined" ? "localhost" : window.location.hostname;
-const browserApiProtocol = typeof window === "undefined" ? "http:" : window.location.protocol;
-const API_BASE = configuredApiBase
-  ? configuredApiBase.replace(/\/+$/, "")
-  : `${browserApiProtocol}//${browserApiHost}:3000/api/v1`;
+const API_BASE = resolveApiBase(
+  configuredApiBase,
+  typeof window === "undefined" ? undefined : window.location,
+);
 const CSRF_KEY = "bioreza.csrf";
 const CART_KEY = "bioreza.guest-cart";
+const REFRESH_LOCK_KEY = "bioreza.auth-refresh-lock";
+const REFRESH_LOCK_NAME = "bioreza-auth-refresh";
+const REFRESH_LEASE_MS = 30_000;
 let accessToken: string | null = null;
 let refreshPromise: Promise<AuthSession> | null = null;
+let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+
+export function resolveApiBase(
+  configured: string | undefined,
+  location?: Pick<Location, "hostname" | "protocol">,
+) {
+  const host = location?.hostname || "localhost";
+  const protocol = location?.protocol || "http:";
+  if (!configured) return `${protocol}//${host}:3000/api/v1`;
+
+  const normalized = configured.replace(/\/+$/, "");
+  if (!location) return normalized;
+
+  try {
+    const url = new URL(normalized);
+    if (isLoopbackHost(url.hostname) && url.hostname !== host) {
+      // A localhost/127.0.0.1 mismatch is cross-site even though both reach this
+      // machine. SameSite refresh cookies then disappear on reload. Keep the
+      // configured port/path, but use the hostname that served the storefront.
+      url.hostname = host;
+    }
+    return url.toString().replace(/\/+$/, "");
+  } catch {
+    return normalized;
+  }
+}
+
+function isLoopbackHost(hostname: string) {
+  return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "[::1]";
+}
 
 function browserValue(key: string) {
   if (typeof window === "undefined") return null;
@@ -265,10 +297,13 @@ function setBrowserValue(key: string, value: string | null) {
 export function rememberSession(session: AuthSession) {
   accessToken = session.tokens.accessToken;
   setBrowserValue(CSRF_KEY, session.csrfToken);
+  scheduleSessionRefresh(session.tokens.expiresIn);
 }
 
 export function clearSession() {
   accessToken = null;
+  if (refreshTimer) clearTimeout(refreshTimer);
+  refreshTimer = null;
   setBrowserValue(CSRF_KEY, null);
 }
 
@@ -310,7 +345,8 @@ export async function rawRequest<T>(path: string, options: RequestOptions = {}):
   let response: Response;
   try {
     response = await fetch(`${API_BASE}${path}`, requestInit);
-  } catch {
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") throw error;
     throw {
       statusCode: 0,
       code: "NETWORK_ERROR",
@@ -489,20 +525,22 @@ export function apiRetryAfter(error: unknown) {
 
 export function refreshSession() {
   if (!refreshPromise) {
-    const csrf = browserValue(CSRF_KEY);
-    refreshPromise = rawRequest<AuthSession>("/auth/refresh", {
-      method: "POST",
-      auth: false,
-      retry: false,
-      body: {},
-      headers: csrf ? { "X-CSRF-Token": csrf } : {},
+    refreshPromise = withBrowserRefreshLock(() => {
+      const csrf = browserValue(CSRF_KEY);
+      return rawRequest<AuthSession>("/auth/refresh", {
+        method: "POST",
+        auth: false,
+        retry: false,
+        body: {},
+        headers: csrf ? { "X-CSRF-Token": csrf } : {},
+      });
     })
       .then((session) => {
         rememberSession(session);
         return session;
       })
       .catch((error) => {
-        clearSession();
+        if (isTerminalRefreshFailure(error)) clearSession();
         throw error;
       })
       .finally(() => {
@@ -510,6 +548,83 @@ export function refreshSession() {
       });
   }
   return refreshPromise;
+}
+
+function scheduleSessionRefresh(expiresIn: number) {
+  if (typeof window === "undefined" || !Number.isFinite(expiresIn) || expiresIn <= 0) return;
+  if (refreshTimer) clearTimeout(refreshTimer);
+  const delay = Math.max(30_000, (expiresIn - 60) * 1_000);
+  refreshTimer = setTimeout(() => {
+    refreshTimer = null;
+    void refreshSession().catch((error) => {
+      if (!isTerminalRefreshFailure(error) && hasRefreshSession()) {
+        refreshTimer = setTimeout(() => {
+          refreshTimer = null;
+          void refreshSession().catch(() => undefined);
+        }, 30_000);
+      }
+    });
+  }, delay);
+}
+
+function isTerminalRefreshFailure(error: unknown) {
+  const problem = error as ApiError | undefined;
+  return (
+    problem?.statusCode === 401 ||
+    problem?.code === "INVALID_REFRESH_TOKEN" ||
+    problem?.code === "INVALID_CSRF_TOKEN"
+  );
+}
+
+async function withBrowserRefreshLock<T>(task: () => Promise<T>): Promise<T> {
+  if (typeof navigator === "undefined") return task();
+  if (navigator.locks?.request) {
+    return navigator.locks.request(REFRESH_LOCK_NAME, task);
+  }
+  return withStorageRefreshLease(task);
+}
+
+async function withStorageRefreshLease<T>(task: () => Promise<T>): Promise<T> {
+  if (typeof window === "undefined" || !window.localStorage) return task();
+  const owner = crypto.randomUUID();
+
+  for (;;) {
+    const now = Date.now();
+    const current = readRefreshLease();
+    if (!current || current.expiresAt <= now) {
+      setBrowserValue(
+        REFRESH_LOCK_KEY,
+        JSON.stringify({ owner, expiresAt: now + REFRESH_LEASE_MS }),
+      );
+      // Let simultaneous contenders settle before accepting ownership.
+      await wait(40);
+      if (readRefreshLease()?.owner === owner) {
+        try {
+          return await task();
+        } finally {
+          if (readRefreshLease()?.owner === owner) setBrowserValue(REFRESH_LOCK_KEY, null);
+        }
+      }
+    }
+    await wait(80 + Math.floor(Math.random() * 70));
+  }
+}
+
+function readRefreshLease(): { owner: string; expiresAt: number } | null {
+  const raw = browserValue(REFRESH_LOCK_KEY);
+  if (!raw) return null;
+  try {
+    const value = JSON.parse(raw) as { owner?: unknown; expiresAt?: unknown };
+    return typeof value.owner === "string" && typeof value.expiresAt === "number"
+      ? { owner: value.owner, expiresAt: value.expiresAt }
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function wait(milliseconds: number) {
+  return new Promise<void>((resolve) => setTimeout(resolve, milliseconds));
 }
 
 export async function login(identifier: string, password: string) {
@@ -585,14 +700,20 @@ function normalizeList<T>(value: T[] | { items?: T[]; data?: T[] }) {
   return Array.isArray(value) ? value : (value.items ?? value.data ?? []);
 }
 
-export async function listProducts(params: Record<string, string | number | undefined> = {}) {
+export async function listProducts(
+  params: Record<string, string | number | undefined> = {},
+  signal?: AbortSignal,
+) {
   const query = new URLSearchParams();
   Object.entries(params).forEach(
     ([key, value]) => value !== undefined && value !== "" && query.set(key, String(value)),
   );
   const result = await rawRequest<
     PublicProductResponse[] | { items?: PublicProductResponse[]; data?: PublicProductResponse[] }
-  >(`/products${query.size ? `?${query}` : ""}`, { auth: false });
+  >(`/products${query.size ? `?${query}` : ""}`, {
+    auth: false,
+    ...(signal ? { signal } : {}),
+  });
   return normalizeList(result);
 }
 
