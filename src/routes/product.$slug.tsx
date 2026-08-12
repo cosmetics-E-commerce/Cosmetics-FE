@@ -500,7 +500,7 @@ function ProductPage() {
                   aria-pressed={wished}
                   aria-label={wished ? labels.wishRemove : labels.wishAdd}
                 >
-                  <Heart className={wished ? "pop fill-gold text-gold" : ""} />
+                  <Heart className={wished ? "pop" : ""} />
                 </button>
               )}
             </div>

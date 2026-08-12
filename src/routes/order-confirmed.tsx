@@ -57,11 +57,13 @@ function Confirmed() {
       <div className="mt-14 flex flex-wrap justify-center gap-4">
         <Button asChild variant="solid" size="pill">
           <Link to="/account" search={{ section: "orders" }}>
-            Track this order
+            Track Order
           </Link>
         </Button>
         <Button asChild variant="quiet" size="pill">
-          <Link to="/shop">Continue shopping</Link>
+          <Link to="/account" search={{ section: "orders" }}>
+            View my order
+          </Link>
         </Button>
       </div>
     </Reveal>

@@ -1,7 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, Clipboard, LoaderCircle, Plus, Upload } from "lucide-react";
+import {
+  CheckCircle2,
+  Clipboard,
+  CreditCard,
+  LoaderCircle,
+  MapPin,
+  PackageCheck,
+  Plus,
+  ReceiptText,
+  ShieldCheck,
+  ShoppingBag,
+  Upload,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PolishedImage } from "@/components/ui/polished-image";
 import { AddressForm } from "@/components/forms/AddressForm";
@@ -60,9 +72,12 @@ function Checkout() {
   const [giftVariantIds, setGiftVariantIds] = useState<string[]>([]);
   const [result, setResult] = useState<CheckoutResult | null>(null);
   const [payment, setPayment] = useState<Payment | null>(null);
+  const [proofSubmitted, setProofSubmitted] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [addressStatus, setAddressStatus] = useState("");
   const [draftLoaded, setDraftLoaded] = useState(false);
+  const [activeStep, setActiveStep] = useState(1);
+  const [completedSteps, setCompletedSteps] = useState<Set<number>>(() => new Set());
   const initialLineCount = useRef(lines.length);
   const checkoutIdempotencyKey = useRef<string | null>(null);
   const paymentIdempotencyKey = useRef<string | null>(null);
@@ -156,6 +171,26 @@ function Checkout() {
   const requiresGift = requiredGiftPromotions.size > 0;
   const giftReady = [...requiredGiftPromotions].every((id) => selectedGiftPromotions.has(id));
   const canPlaceOrder = Boolean(selectedAddress) && giftReady && shippingRate.isSuccess;
+  const canSubmitCurrentStep = activeStep === 4 && canPlaceOrder;
+  const manualPaymentSelected = isManualPayment(method);
+  const completeStep = (step: number, nextStep: number) => {
+    setCompletedSteps((current) => {
+      const next = new Set(current);
+      next.add(step);
+      return next;
+    });
+    setActiveStep(nextStep);
+  };
+  const openCheckoutStep = (step: number) => {
+    if (
+      step === 1 ||
+      step === activeStep ||
+      completedSteps.has(step) ||
+      completedSteps.has(step - 1)
+    ) {
+      setActiveStep(step);
+    }
+  };
   const place = useMutation({
     mutationFn: () =>
       checkout(
@@ -192,7 +227,7 @@ function Checkout() {
     },
   });
   const submitOrder = () => {
-    if (!canPlaceOrder || placingOrder.current) return;
+    if (!canSubmitCurrentStep || placingOrder.current) return;
     placingOrder.current = true;
     place.mutate(undefined, {
       onSettled: () => {
@@ -200,6 +235,10 @@ function Checkout() {
       },
     });
   };
+  useEffect(() => {
+    if (!proofSubmitted) return;
+    setCompletedSteps((current) => new Set([...current, 1, 2, 3]));
+  }, [proofSubmitted]);
   if (!authHydrated) return <Loading />;
   if (!user)
     return (
@@ -221,335 +260,512 @@ function Checkout() {
       />
     );
   return (
-    <div className="sf-checkout-page mx-auto max-w-[1400px] px-5 pb-32 pt-14 md:px-10 lg:py-20">
-      <Reveal stagger staggerMs={45} distance={20}>
-        <p className="label-xs text-gold">{t("checkout.eyebrow")}</p>
-        <h1 className="display mt-5 text-[clamp(2.2rem,4.4vw,3.4rem)]">{t("checkout.title")}</h1>
-        <ol
-          aria-label="Checkout progress"
-          className="mt-8 flex max-w-xl items-center gap-3 text-xs text-taupe"
-        >
-          <li className="text-foreground">{t("checkout.bag")}</li>
-          <li aria-hidden="true" className="h-px flex-1 bg-border" />
-          <li aria-current="step" className="text-gold">
-            {t("checkout.deliveryPayment")}
-          </li>
-          <li aria-hidden="true" className="h-px flex-1 bg-border" />
-          <li>{t("checkout.confirmation")}</li>
-        </ol>
+    <div className="sf-checkout-page">
+      <Reveal stagger staggerMs={45} distance={18} className="sf-checkout-hero">
+        <p className="sf-checkout-eyebrow">{t("checkout.eyebrow")}</p>
+        <h1 className="display">{t("checkout.title")}</h1>
+        <p className="sf-checkout-intro">
+          {locale === "ar"
+            ? "راجعي الحقيبة، اختاري عنوان التوصيل، ثم أكملي الدفع من تجربة واحدة واضحة."
+            : "Review your bag, choose delivery, and complete payment from one calm checkout flow."}
+        </p>
       </Reveal>
+      <CheckoutSteps
+        current={result && manualPaymentSelected ? 4 : activeStep}
+        completed={completedSteps}
+        manualPending={proofSubmitted || Boolean(result && payment)}
+        onSelect={openCheckoutStep}
+      />
       {result && payment ? (
-        <Proof payment={payment} order={result} />
-      ) : result && (method === "INSTAPAY" || method === "VODAFONE_CASH") ? (
+        <Proof
+          payment={payment}
+          order={result}
+          submitted={proofSubmitted}
+          onSubmitted={() => setProofSubmitted(true)}
+        />
+      ) : result && manualPaymentSelected ? (
         <PaymentSetup
           pending={paymentSetup.isPending}
           error={paymentSetup.error}
           retry={() => startPaymentSetup(result.order.id, method)}
         />
       ) : (
-        <div className="mt-14 grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_380px]">
-          <div className="min-w-0 space-y-12">
-            <section className="checkout-section">
-              <h2 className="label-sm">{t("checkout.address")}</h2>
-              <div className="rule-gold my-6" />
-              {addresses.isLoading ? (
-                <div className="space-y-3" aria-label="Loading delivery addresses">
-                  <div className="h-24 animate-pulse bg-stone" />
-                  <div className="h-24 animate-pulse bg-stone" />
-                </div>
-              ) : addresses.isError ? (
-                <StatePanel
-                  kind="error"
-                  title="Addresses did not load"
-                  description="Your checkout details are still here. Try loading your saved addresses again."
-                  action={() => void addresses.refetch()}
-                  actionLabel="Try again"
-                  className="py-10"
-                />
-              ) : (
-                <div>
-                  {Boolean(addresses.data?.length) && (
-                    <div className="grid gap-3" role="radiogroup" aria-label="Delivery address">
-                      {addresses.data?.map((address) => {
-                        const ready = isAddressDeliveryReady(address);
-                        return (
+        <div className="sf-checkout-shell">
+          <div className="sf-checkout-main">
+            {activeStep === 1 && (
+              <Reveal key="checkout-bag" distance={14} className="sf-checkout-step-panel">
+                <section className="sf-checkout-card sf-checkout-card--bag">
+                  <CheckoutCardHeader
+                    icon={<ShoppingBag />}
+                    eyebrow="Step 1"
+                    title="Bag"
+                    copy={`${lines.length} ${lines.length === 1 ? "item" : "items"} ready for checkout`}
+                  />
+                  <ul className="sf-checkout-bag-list">
+                    {lines.map((line) => (
+                      <li key={line.variantId} className="sf-checkout-bag-item">
+                        <PolishedImage
+                          src={line.image}
+                          alt=""
+                          loading="lazy"
+                          wrapperClassName="sf-checkout-bag-item__image"
+                          className="size-full object-cover"
+                        />
+                        <span className="min-w-0">
+                          <span className="sf-checkout-bag-item__name">{line.name}</span>
+                          <span className="sf-checkout-bag-item__meta">
+                            {line.size} · Qty {line.qty}
+                          </span>
+                        </span>
+                        <strong>{formatPrice(line.price * line.qty)}</strong>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="sf-checkout-step-actions">
+                    <Button asChild variant="quiet" size="pill">
+                      <Link to="/cart">Edit bag</Link>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="solid"
+                      size="pill"
+                      className="sf-checkout-black-button"
+                      onClick={() => completeStep(1, 2)}
+                    >
+                      Continue to Delivery
+                    </Button>
+                  </div>
+                </section>
+              </Reveal>
+            )}
+
+            {activeStep === 2 && (
+              <Reveal key="checkout-delivery" distance={14} className="sf-checkout-step-panel">
+                <section className="sf-checkout-card">
+                  <CheckoutCardHeader
+                    icon={<MapPin />}
+                    eyebrow="Step 2"
+                    title="Delivery"
+                    copy="Select the address we should ship to."
+                  />
+                  {addresses.isLoading ? (
+                    <div className="sf-checkout-skeletons" aria-label="Loading delivery addresses">
+                      <div />
+                      <div />
+                    </div>
+                  ) : addresses.isError ? (
+                    <StatePanel
+                      kind="error"
+                      title="Addresses did not load"
+                      description="Your checkout details are still here. Try loading your saved addresses again."
+                      action={() => void addresses.refetch()}
+                      actionLabel="Try again"
+                      className="py-10"
+                    />
+                  ) : (
+                    <div>
+                      {Boolean(addresses.data?.length) && (
+                        <div
+                          className="sf-checkout-address-list"
+                          role="radiogroup"
+                          aria-label="Delivery address"
+                        >
+                          {addresses.data?.map((address) => {
+                            const ready = isAddressDeliveryReady(address);
+                            return (
+                              <label
+                                key={address.id}
+                                className="sf-checkout-choice"
+                                data-active={selectedAddress === address.id || undefined}
+                                data-disabled={!ready || undefined}
+                              >
+                                <input
+                                  type="radio"
+                                  name="delivery-address"
+                                  checked={selectedAddress === address.id}
+                                  disabled={!ready}
+                                  onChange={() => {
+                                    if (!ready) return;
+                                    setAddressId(address.id);
+                                    setAddressStatus(
+                                      `${address.receiverName} selected for delivery.`,
+                                    );
+                                  }}
+                                />
+                                <span>
+                                  <strong>{address.receiverName}</strong>
+                                  <span className="sf-checkout-choice__copy">
+                                    {address.building} {address.street}, {address.area},{" "}
+                                    {address.city}, {address.governorate}
+                                  </span>
+                                  <span className="sf-checkout-choice__meta">{address.phone}</span>
+                                  {!ready && (
+                                    <span className="sf-checkout-choice__warning">
+                                      This address needs to be updated before it can be used for
+                                      delivery.
+                                    </span>
+                                  )}
+                                </span>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      )}
+                      <p className="sr-only" role="status" aria-live="polite">
+                        {addressStatus}
+                      </p>
+                      {!addresses.data?.length && (
+                        <div className="sf-checkout-note">
+                          Add a delivery address here. Your bag and checkout choices will stay in
+                          place.
+                        </div>
+                      )}
+                      {(showAddressForm || !addresses.data?.length) && (
+                        <div className={addresses.data?.length ? "sf-checkout-inline-form" : ""}>
+                          <h3>Delivery details</h3>
+                          <AddressForm
+                            initialName={`${user.firstName} ${user.lastName}`.trim()}
+                            initialPhone={user.phone ?? ""}
+                            pending={addressMutation.isPending}
+                            {...(addresses.data?.length
+                              ? { onCancel: () => setShowAddressForm(false) }
+                              : {})}
+                            onSubmit={(input) =>
+                              addressMutation
+                                .mutateAsync({
+                                  ...input,
+                                  isDefault: !addresses.data?.length,
+                                })
+                                .then(() => undefined)
+                            }
+                          />
+                          {addressMutation.error && (
+                            <p role="alert" className="mt-4 text-sm text-destructive">
+                              {apiErrorMessage(addressMutation.error, locale)}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                      {Boolean(addresses.data?.length) && !showAddressForm && (
+                        <Button
+                          type="button"
+                          variant="solid"
+                          size="pill"
+                          className="sf-checkout-black-button mt-5"
+                          onClick={() => setShowAddressForm(true)}
+                        >
+                          <Plus /> {selectedAddress ? "Add another address" : "Add updated address"}
+                        </Button>
+                      )}
+                      {selectedAddress && shippingRate.isSuccess && (
+                        <p className="sf-checkout-auto-note" role="status">
+                          Delivery is ready. Review your order before payment.
+                        </p>
+                      )}
+                      <div className="sf-checkout-step-actions">
+                        <Button
+                          type="button"
+                          variant="quiet"
+                          size="pill"
+                          onClick={() => setActiveStep(1)}
+                        >
+                          Back to bag
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="solid"
+                          size="pill"
+                          className="sf-checkout-black-button"
+                          disabled={!selectedAddress || !shippingRate.isSuccess}
+                          onClick={() => completeStep(2, 3)}
+                        >
+                          Continue to Review
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </section>
+              </Reveal>
+            )}
+
+            {activeStep === 3 && (
+              <Reveal key="checkout-review" distance={14} className="sf-checkout-step-panel">
+                <section className="sf-checkout-card">
+                  <CheckoutCardHeader
+                    icon={<PackageCheck />}
+                    eyebrow="Step 3"
+                    title="Review"
+                    copy="Check the final details before choosing a payment method."
+                  />
+                  <div className="sf-checkout-review-grid">
+                    <div>
+                      <span>Delivery to</span>
+                      <strong>{selectedAddressRecord?.receiverName ?? "Select an address"}</strong>
+                      <p>
+                        {selectedAddressRecord
+                          ? `${selectedAddressRecord.building} ${selectedAddressRecord.street}, ${selectedAddressRecord.area}, ${selectedAddressRecord.city}, ${selectedAddressRecord.governorate}`
+                          : "Choose where this order should be shipped."}
+                      </p>
+                    </div>
+                    <div>
+                      <span>Estimated total</span>
+                      <strong>{formatPrice(checkoutPreviewTotal)}</strong>
+                      <p>
+                        {shippingRate.data
+                          ? `${shippingRate.data.provider} · ${shippingRate.data.estimatedDays} days`
+                          : "Shipping is calculated after selecting an address."}
+                      </p>
+                    </div>
+                  </div>
+                  {requiresGift && (
+                    <div className="sf-checkout-review-gift">
+                      <CheckoutCardHeader
+                        icon={<PackageCheck />}
+                        eyebrow="Gift"
+                        title="Complimentary gift"
+                        copy="Choose the gift attached to your promotion."
+                      />
+                      <div className="grid gap-3">
+                        {selectableGifts.map((gift) => (
                           <label
-                            key={address.id}
-                            className={`choice-card flex gap-4 border p-5 ${ready ? "cursor-pointer" : "cursor-not-allowed opacity-70"} ${selectedAddress === address.id ? "border-gold bg-ivory" : "border-border"}`}
+                            key={gift.variantId}
+                            className="sf-checkout-choice"
+                            data-active={giftVariantIds.includes(gift.variantId) || undefined}
                           >
                             <input
                               type="radio"
-                              name="delivery-address"
-                              checked={selectedAddress === address.id}
-                              disabled={!ready}
-                              onChange={() => {
-                                if (!ready) return;
-                                setAddressId(address.id);
-                                setAddressStatus(`${address.receiverName} selected for delivery.`);
-                              }}
-                            />
+                              name={`gift-${gift.promotionId}`}
+                              checked={giftVariantIds.includes(gift.variantId)}
+                              onChange={() =>
+                                setGiftVariantIds((current) => [
+                                  ...current.filter((variantId) => {
+                                    const option = selectableGifts.find(
+                                      (candidate) => candidate.variantId === variantId,
+                                    );
+                                    return option?.promotionId !== gift.promotionId;
+                                  }),
+                                  gift.variantId,
+                                ])
+                              }
+                            />{" "}
                             <span>
-                              <strong className="font-serif text-xl">{address.receiverName}</strong>
-                              <span className="mt-1 block text-sm text-muted-foreground">
-                                {address.building} {address.street}, {address.area}, {address.city},{" "}
-                                {address.governorate}
+                              <strong>Promotional gift</strong>
+                              <span className="sf-checkout-choice__copy">
+                                Quantity {gift.quantity}
                               </span>
-                              <span className="mt-1 block text-xs text-taupe">{address.phone}</span>
-                              {!ready && (
-                                <span className="mt-3 block text-xs text-destructive">
-                                  This address needs to be updated before it can be used for
-                                  delivery.
-                                </span>
-                              )}
                             </span>
                           </label>
-                        );
-                      })}
+                        ))}
+                      </div>
                     </div>
                   )}
-                  <p className="sr-only" role="status" aria-live="polite">
-                    {addressStatus}
-                  </p>
-                  {!addresses.data?.length && (
-                    <div className="mb-6 border-s-2 border-gold bg-ivory px-5 py-4 text-sm">
-                      Add a delivery address here. Your bag and checkout choices will stay in place.
-                    </div>
-                  )}
-                  {(showAddressForm || !addresses.data?.length) && (
-                    <div
-                      className={addresses.data?.length ? "mt-7 border-t border-border pt-7" : ""}
-                    >
-                      <h3 className="mb-5 font-serif text-2xl">Delivery details</h3>
-                      <AddressForm
-                        initialName={`${user.firstName} ${user.lastName}`.trim()}
-                        initialPhone={user.phone ?? ""}
-                        pending={addressMutation.isPending}
-                        {...(addresses.data?.length
-                          ? { onCancel: () => setShowAddressForm(false) }
-                          : {})}
-                        onSubmit={(input) =>
-                          addressMutation
-                            .mutateAsync({
-                              ...input,
-                              isDefault: !addresses.data?.length,
-                            })
-                            .then(() => undefined)
-                        }
-                      />
-                      {addressMutation.error && (
-                        <p role="alert" className="mt-4 text-sm text-destructive">
-                          {apiErrorMessage(addressMutation.error, locale)}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                  {Boolean(addresses.data?.length) && !showAddressForm && (
+                  <div className="sf-checkout-step-actions">
                     <Button
                       type="button"
                       variant="quiet"
                       size="pill"
-                      className="mt-5"
-                      onClick={() => setShowAddressForm(true)}
+                      onClick={() => setActiveStep(2)}
                     >
-                      <Plus /> {selectedAddress ? "Add another address" : "Add updated address"}
+                      Back to Delivery
                     </Button>
-                  )}
-                </div>
-              )}
-            </section>
-            {requiresGift && (
-              <section className="checkout-section">
-                <h2 className="label-sm">Choose your complimentary gift</h2>
-                <div className="rule-gold my-6" />
-                <div className="grid gap-3">
-                  {selectableGifts.map((gift) => (
-                    <label
-                      key={gift.variantId}
-                      className={`cursor-pointer border p-5 ${giftVariantIds.includes(gift.variantId) ? "border-gold" : "border-border"}`}
+                    <Button
+                      type="button"
+                      variant="solid"
+                      size="pill"
+                      className="sf-checkout-black-button"
+                      disabled={!canPlaceOrder}
+                      onClick={() => completeStep(3, 4)}
                     >
-                      <input
-                        type="radio"
-                        name={`gift-${gift.promotionId}`}
-                        checked={giftVariantIds.includes(gift.variantId)}
-                        onChange={() =>
-                          setGiftVariantIds((current) => [
-                            ...current.filter((variantId) => {
-                              const option = selectableGifts.find(
-                                (candidate) => candidate.variantId === variantId,
-                              );
-                              return option?.promotionId !== gift.promotionId;
-                            }),
-                            gift.variantId,
-                          ])
-                        }
-                      />{" "}
-                      <span className="ms-3">Promotional gift · quantity {gift.quantity}</span>
-                    </label>
-                  ))}
-                </div>
-              </section>
+                      Continue to Payment
+                    </Button>
+                  </div>
+                </section>
+              </Reveal>
             )}
-            <section className="checkout-section">
-              <h2 className="label-sm">{t("checkout.payment")}</h2>
-              <div className="rule-gold my-6" />
-              <div className="grid gap-3">
-                {[
-                  [
-                    "CASH_ON_DELIVERY",
-                    "Cash on delivery",
-                    "Pay the courier when your order arrives.",
-                  ],
-                  ["INSTAPAY", "InstaPay", "Transfer, then upload your payment screenshot."],
-                  [
-                    "VODAFONE_CASH",
-                    "Vodafone Cash",
-                    "Transfer, then upload your payment screenshot.",
-                  ],
-                ].map(([value, title, copy]) => (
-                  <label
-                    key={value}
-                    className={`cursor-pointer border p-5 ${method === value ? "border-gold" : "border-border"}`}
-                  >
-                    <span className="flex gap-3">
-                      <input
-                        type="radio"
-                        checked={method === value}
-                        onChange={() => setMethod(value ?? "CASH_ON_DELIVERY")}
-                      />
-                      <span>
-                        <strong>{title}</strong>
-                        <span className="mt-1 block text-sm text-muted-foreground">{copy}</span>
-                      </span>
-                    </span>
-                  </label>
-                ))}
-              </div>
-              {instructions.data?.find((item) => item.method === method) && (
-                <Instruction data={instructions.data.find((item) => item.method === method)!} />
-              )}
-            </section>
-            <label className="label-xs block text-taupe">
-              Order notes
-              <textarea
-                value={notes}
-                onChange={(event) => setNotes(event.target.value)}
-                className="mt-2 min-h-28 w-full border border-input bg-warm-white p-4 text-sm normal-case tracking-normal"
-                maxLength={500}
-                placeholder="Optional delivery instructions"
-              />
-            </label>
-          </div>
-          <aside className="h-fit border border-border bg-ivory p-8 lg:sticky lg:top-32">
-            <h2 className="label-sm">{t("checkout.summary")}</h2>
-            <ul className="my-6 space-y-4">
-              {lines.map((line) => (
-                <li key={line.variantId} className="flex gap-3">
-                  <PolishedImage
-                    src={line.image}
-                    alt=""
-                    loading="lazy"
-                    wrapperClassName="h-16 w-12 shrink-0"
-                    className="size-full object-cover"
+
+            {activeStep === 4 && (
+              <Reveal key="checkout-payment" distance={14} className="sf-checkout-step-panel">
+                <section className="sf-checkout-card">
+                  <CheckoutCardHeader
+                    icon={<CreditCard />}
+                    eyebrow="Step 4"
+                    title="Payment"
+                    copy="Manual transfers stay pending here until the admin approves them."
                   />
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate font-serif">{line.name}</span>
-                    <span className="text-xs text-taupe">
-                      {line.size} · {line.qty}
-                    </span>
-                  </span>
-                  <span className="text-sm">{formatPrice(line.price * line.qty)}</span>
-                </li>
-              ))}
-            </ul>
-            <div className="flex items-baseline justify-between border-t border-border pt-5">
+                  <div className="sf-checkout-payment-grid">
+                    {[
+                      [
+                        "CASH_ON_DELIVERY",
+                        "Cash on delivery",
+                        "Pay the courier when your order arrives.",
+                      ],
+                      ["INSTAPAY", "InstaPay", "Transfer, then upload your payment screenshot."],
+                      [
+                        "VODAFONE_CASH",
+                        "Vodafone Cash",
+                        "Transfer, then upload your payment screenshot.",
+                      ],
+                    ].map(([value, title, copy]) => (
+                      <label
+                        key={value}
+                        className="sf-checkout-payment-option"
+                        data-active={method === value || undefined}
+                      >
+                        <span className="sf-checkout-payment-option__inner">
+                          <input
+                            type="radio"
+                            checked={method === value}
+                            onChange={() => setMethod(value ?? "CASH_ON_DELIVERY")}
+                          />
+                          <span>
+                            <strong>{title}</strong>
+                            <span>{copy}</span>
+                          </span>
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                  {instructions.data?.find((item) => item.method === method) && (
+                    <Instruction data={instructions.data.find((item) => item.method === method)!} />
+                  )}
+                  <label className="sf-checkout-notes">
+                    <span>Order notes</span>
+                    <textarea
+                      value={notes}
+                      onChange={(event) => setNotes(event.target.value)}
+                      className="min-h-24 w-full border border-input bg-white p-4 text-sm normal-case tracking-normal"
+                      maxLength={500}
+                      placeholder="Optional delivery instructions"
+                    />
+                  </label>
+                  <div className="sf-checkout-step-actions">
+                    <Button
+                      type="button"
+                      variant="quiet"
+                      size="pill"
+                      onClick={() => setActiveStep(requiresGift ? 3 : 2)}
+                    >
+                      Back
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="solid"
+                      size="pill"
+                      className="sf-checkout-black-button"
+                      disabled={!canSubmitCurrentStep}
+                      loading={place.isPending}
+                      onClick={submitOrder}
+                    >
+                      {manualPaymentSelected
+                        ? "Create order and upload proof"
+                        : t("checkout.place")}
+                    </Button>
+                  </div>
+                </section>
+              </Reveal>
+            )}
+          </div>
+          <aside className="sf-checkout-summary">
+            <div className="sf-checkout-summary__top">
+              <span className="sf-checkout-summary__icon">
+                <ReceiptText />
+              </span>
+              <div>
+                <p className="sf-checkout-eyebrow">{t("checkout.summary")}</p>
+                <h2>{formatPrice(checkoutPreviewTotal)}</h2>
+              </div>
+            </div>
+            <div className="sf-checkout-summary-row">
               <span>Subtotal</span>
-              <span className="font-serif text-3xl">{formatPrice(subtotal)}</span>
+              <strong>{formatPrice(subtotal)}</strong>
             </div>
             {appliedPromotions.map((promotion) => (
-              <div key={promotion.id} className="mt-3 flex justify-between text-sm text-gold">
+              <div key={promotion.id} className="sf-checkout-summary-row text-gold">
                 <span>{promotion.title}</span>
                 <span>-{formatPrice(promotion.discountAmount / 100)}</span>
               </div>
             ))}
             {discountTotal > 0 && (
-              <div className="mt-5 flex items-baseline justify-between border-t border-border pt-5">
+              <div className="sf-checkout-summary-row">
                 <span>After promotions</span>
-                <span className="font-serif text-2xl">{formatPrice(estimatedTotal)}</span>
+                <strong>{formatPrice(estimatedTotal)}</strong>
               </div>
             )}
-            <div className="mt-5 border-t border-border pt-5">
-              <div className="flex items-baseline justify-between">
-                <span>Shipping</span>
-                <span className="font-serif text-2xl">
-                  {shippingRate.isLoading || shippingRate.isFetching
-                    ? "Calculating..."
-                    : shippingRate.data
-                      ? formatPrice(shippingFee)
-                      : "—"}
-                </span>
+            <div className="sf-checkout-summary-row">
+              <span>Shipping</span>
+              <strong>
+                {shippingRate.isLoading || shippingRate.isFetching
+                  ? "Calculating..."
+                  : shippingRate.data
+                    ? formatPrice(shippingFee)
+                    : "—"}
+              </strong>
+            </div>
+            {shippingRate.data && (
+              <p className="sf-checkout-summary__hint">
+                {shippingRate.data.provider} · estimated {shippingRate.data.estimatedDays} day
+                {shippingRate.data.estimatedDays === 1 ? "" : "s"}
+              </p>
+            )}
+            {shippingRate.error && (
+              <div role="alert" className="sf-checkout-summary__error">
+                {apiErrorMessage(shippingRate.error, locale)}
+                <button
+                  type="button"
+                  className="ms-2 underline underline-offset-4"
+                  onClick={() => void shippingRate.refetch()}
+                >
+                  Try again
+                </button>
               </div>
-              {shippingRate.data && (
-                <p className="mt-2 text-xs text-muted-foreground">
-                  {shippingRate.data.provider} · estimated {shippingRate.data.estimatedDays} day
-                  {shippingRate.data.estimatedDays === 1 ? "" : "s"}
-                </p>
-              )}
-              {shippingRate.error && (
-                <div role="alert" className="mt-3 text-xs text-destructive">
-                  {apiErrorMessage(shippingRate.error, locale)}
-                  <button
-                    type="button"
-                    className="ms-2 text-gold underline underline-offset-4"
-                    onClick={() => void shippingRate.refetch()}
-                  >
-                    Try again
-                  </button>
-                </div>
-              )}
-            </div>
-            <div className="mt-5 flex items-baseline justify-between border-t border-border pt-5">
+            )}
+            <div className="sf-checkout-summary-total">
               <span>Total</span>
-              <span className="font-serif text-3xl">{formatPrice(checkoutPreviewTotal)}</span>
+              <strong>{formatPrice(checkoutPreviewTotal)}</strong>
             </div>
-            <p className="mt-3 text-xs text-muted-foreground">
+            <p className="sf-checkout-summary__hint">
               The backend recalculates products, stock, promotions and shipping before creating the
               order.
             </p>
             {place.error && (
-              <p role="alert" className="mt-5 text-sm text-destructive">
+              <p role="alert" className="sf-checkout-summary__error">
                 {apiErrorMessage(place.error, locale)}
               </p>
             )}
             <Button
               variant="solid"
               size="wide"
-              className="mt-8"
-              disabled={!canPlaceOrder}
+              className="sf-checkout-black-button mt-7"
+              disabled={!canSubmitCurrentStep}
               loading={place.isPending}
               onClick={submitOrder}
             >
               {t("checkout.place")}
             </Button>
             {!selectedAddress && (
-              <p className="mt-3 text-xs text-muted-foreground">
+              <p className="sf-checkout-summary__hint">
                 Add or select a verified delivery address to continue.
               </p>
             )}
             {selectedAddress && !shippingRate.isSuccess && (
-              <p className="mt-3 text-xs text-muted-foreground">
+              <p className="sf-checkout-summary__hint">
                 Wait for the delivery price before placing the order.
               </p>
             )}
             {requiresGift && !giftReady && (
-              <p className="mt-3 text-xs text-muted-foreground">
+              <p className="sf-checkout-summary__hint">
                 Choose your complimentary gift to continue.
               </p>
             )}
+            <div className="sf-checkout-secure">
+              <ShieldCheck />
+              <span>Secure checkout. Payment status is reviewed by the admin team.</span>
+            </div>
           </aside>
         </div>
       )}
       {!result && (
-        <div className="mobile-primary-bar fixed inset-x-0 bottom-0 z-30 border-t border-border bg-warm-white px-4 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.4)] lg:hidden">
+        <div className="mobile-primary-bar fixed inset-x-0 bottom-0 z-30 border-t border-border bg-white px-4 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.18)] lg:hidden">
           <div className="mx-auto flex max-w-lg items-center gap-3">
             <div className="min-w-0 flex-1">
               <p className="label-xs text-taupe">{t("checkout.beforeDelivery")}</p>
@@ -559,8 +775,8 @@ function Checkout() {
               type="button"
               variant="solid"
               size="pill"
-              className="h-12 shrink-0 px-6"
-              disabled={!canPlaceOrder}
+              className="sf-checkout-black-button h-12 shrink-0 px-6"
+              disabled={!canSubmitCurrentStep}
               loading={place.isPending}
               onClick={submitOrder}
             >
@@ -587,8 +803,94 @@ function selectedUsableAddress(addresses: AddressResponse[] | undefined, selecte
   );
 }
 
-function Proof({ payment, order }: { payment: Payment; order: CheckoutResult }) {
-  const navigate = useNavigate();
+function isManualPayment(method: string) {
+  return method === "INSTAPAY" || method === "VODAFONE_CASH";
+}
+
+function CheckoutCardHeader({
+  icon,
+  eyebrow,
+  title,
+  copy,
+}: {
+  icon: ReactNode;
+  eyebrow: string;
+  title: string;
+  copy: string;
+}) {
+  return (
+    <header className="sf-checkout-card__header">
+      <span className="sf-checkout-card__icon">{icon}</span>
+      <span>
+        <span className="sf-checkout-eyebrow">{eyebrow}</span>
+        <h2>{title}</h2>
+        <p>{copy}</p>
+      </span>
+    </header>
+  );
+}
+
+function CheckoutSteps({
+  current,
+  completed,
+  manualPending,
+  onSelect,
+}: {
+  current: number;
+  completed: Set<number>;
+  manualPending: boolean;
+  onSelect: (step: number) => void;
+}) {
+  const steps = [
+    { number: 1, label: "Bag" },
+    { number: 2, label: "Delivery", sub: "Select address" },
+    { number: 3, label: "Review" },
+    { number: 4, label: "Payment", sub: manualPending ? "Pending" : undefined },
+    { number: 5, label: "Confirmed" },
+  ];
+  return (
+    <ol className="sf-checkout-steps" aria-label="Checkout progress">
+      {steps.map((step) => {
+        const state =
+          step.number === current ? "active" : completed.has(step.number) ? "complete" : "next";
+        const canOpen =
+          step.number === 1 ||
+          step.number === current ||
+          completed.has(step.number) ||
+          completed.has(step.number - 1);
+        return (
+          <li
+            key={step.number}
+            data-state={state}
+            aria-current={state === "active" ? "step" : undefined}
+          >
+            <button type="button" disabled={!canOpen} onClick={() => onSelect(step.number)}>
+              <span className="sf-checkout-step__dot">
+                {state === "complete" ? <CheckCircle2 /> : step.number}
+              </span>
+              <span>
+                <strong>{step.label}</strong>
+                {step.sub && <small>{step.sub}</small>}
+              </span>
+            </button>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
+function Proof({
+  payment,
+  order,
+  submitted,
+  onSubmitted,
+}: {
+  payment: Payment;
+  order: CheckoutResult;
+  submitted: boolean;
+  onSubmitted: () => void;
+}) {
   const submittingProof = useRef(false);
   const [file, setFile] = useState<File | null>(null);
   const [sender, setSender] = useState("");
@@ -599,27 +901,63 @@ function Proof({ payment, order }: { payment: Payment; order: CheckoutResult }) 
       if (!file) throw new Error("Choose a payment screenshot.");
       return uploadPaymentProof(payment.id, file, sender, reference, payment.amount);
     },
-    onSuccess: () =>
-      void navigate({
-        to: "/order-confirmed",
-        search: {
-          order: order.order.orderNumber,
-          status: "PAYMENT_REVIEW",
-          payment: payment.method,
-        },
-      }),
+    onSuccess: onSubmitted,
   });
+  if (submitted) {
+    return (
+      <section className="sf-checkout-pending" aria-live="polite">
+        <span className="sf-checkout-pending__icon">
+          <LoaderCircle />
+        </span>
+        <p className="sf-checkout-eyebrow">Step 4 · Payment</p>
+        <h2>Payment pending</h2>
+        <p>
+          Your transfer proof was received. Stay here while the status remains pending; once the
+          admin approves the payment, this order can move to Step 5: Confirmed.
+        </p>
+        <dl>
+          <div>
+            <dt>Order</dt>
+            <dd>{order.order.orderNumber}</dd>
+          </div>
+          <div>
+            <dt>Payment</dt>
+            <dd>{payment.method.replaceAll("_", " ")}</dd>
+          </div>
+          <div>
+            <dt>Status</dt>
+            <dd>Pending</dd>
+          </div>
+        </dl>
+        <div className="sf-checkout-pending__actions">
+          <Button asChild variant="solid" size="pill" className="sf-checkout-black-button">
+            <Link to="/account" search={{ section: "orders" }}>
+              Track Order
+            </Link>
+          </Button>
+          <Button asChild variant="quiet" size="pill">
+            <Link to="/account" search={{ section: "orders" }}>
+              View my order
+            </Link>
+          </Button>
+        </div>
+      </section>
+    );
+  }
   return (
-    <div className="mt-14 grid gap-10 lg:grid-cols-2">
-      <div className="border border-gold/40 bg-ivory p-8">
-        <CheckCircle2 className="text-gold" />
-        <p className="label-xs mt-6 text-gold">Order created</p>
-        <h2 className="mt-3 font-serif text-3xl">{order.order.orderNumber}</h2>
-        <p className="mt-3 text-sm text-muted-foreground">
+    <div className="sf-checkout-proof">
+      <div className="sf-checkout-card">
+        <CheckoutCardHeader
+          icon={<CheckCircle2 />}
+          eyebrow="Step 4 · Payment"
+          title="Transfer details"
+          copy={`Order ${order.order.orderNumber} is created and waiting for proof.`}
+        />
+        <p className="sf-checkout-proof__amount">
           Transfer exactly {formatPrice(payment.amount / 100)} and keep the transaction reference.
         </p>
         {order.paymentInstructions && (
-          <div className="mt-6 space-y-2 text-sm">
+          <div className="sf-checkout-transfer-box">
             <Copy
               value={
                 order.paymentInstructions.instapayAddress ??
@@ -632,7 +970,7 @@ function Proof({ payment, order }: { payment: Payment; order: CheckoutResult }) 
         )}
       </div>
       <form
-        className="border border-border p-8"
+        className="sf-checkout-card"
         onSubmit={(event) => {
           event.preventDefault();
           if (submittingProof.current) return;
@@ -644,10 +982,15 @@ function Proof({ payment, order }: { payment: Payment; order: CheckoutResult }) 
           });
         }}
       >
-        <p className="label-sm">Submit transfer proof</p>
-        <div className="mt-6 space-y-5">
-          <label className="label-xs block text-taupe">
-            Sender phone or handle
+        <CheckoutCardHeader
+          icon={<Upload />}
+          eyebrow="Keep this page"
+          title="Submit transfer proof"
+          copy="After upload, the payment stays pending until admin approval."
+        />
+        <div className="sf-checkout-form-stack">
+          <label>
+            <span>Sender phone or handle</span>
             <input
               required
               type="tel"
@@ -657,8 +1000,8 @@ function Proof({ payment, order }: { payment: Payment; order: CheckoutResult }) 
               className="mt-2 h-12 w-full border border-input px-4 text-sm normal-case tracking-normal"
             />
           </label>
-          <label className="label-xs block text-taupe">
-            Transaction reference
+          <label>
+            <span>Transaction reference</span>
             <input
               required
               autoComplete="off"
@@ -667,8 +1010,8 @@ function Proof({ payment, order }: { payment: Payment; order: CheckoutResult }) 
               className="mt-2 h-12 w-full border border-input px-4 text-sm normal-case tracking-normal"
             />
           </label>
-          <label className="label-xs block text-taupe">
-            Payment screenshot
+          <label>
+            <span>Payment screenshot</span>
             <input
               required
               type="file"
@@ -707,7 +1050,7 @@ function Proof({ payment, order }: { payment: Payment; order: CheckoutResult }) 
           type="submit"
           variant="solid"
           size="wide"
-          className="mt-7"
+          className="sf-checkout-black-button mt-7"
           disabled={!file || !sender.trim() || !reference.trim()}
           loading={mutation.isPending}
         >
@@ -767,25 +1110,29 @@ function PaymentSetup({
   retry: () => void;
 }) {
   return (
-    <div className="mx-auto mt-14 max-w-xl border border-border p-8 text-center" aria-live="polite">
+    <div className="sf-checkout-pending" aria-live="polite">
       {pending ? (
         <>
-          <LoaderCircle className="mx-auto animate-spin text-gold" />
-          <h2 className="mt-5 font-serif text-3xl">Preparing transfer details</h2>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Your order is safely created. Please keep this page open.
-          </p>
+          <span className="sf-checkout-pending__icon">
+            <LoaderCircle />
+          </span>
+          <p className="sf-checkout-eyebrow">Step 4 · Payment</p>
+          <h2>Preparing transfer details</h2>
+          <p>Your order is safely created. Please keep this page open.</p>
         </>
       ) : (
         <>
-          <h2 className="font-serif text-3xl">Your order is safely created</h2>
-          <p role="alert" className="mt-3 text-sm text-muted-foreground">
-            {apiErrorMessage(error)}
-          </p>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Retrying will not create another order.
-          </p>
-          <Button type="button" variant="solid" size="pill" className="mt-7" onClick={retry}>
+          <p className="sf-checkout-eyebrow">Payment setup</p>
+          <h2>Your order is safely created</h2>
+          <p role="alert">{apiErrorMessage(error)}</p>
+          <p>Retrying will not create another order.</p>
+          <Button
+            type="button"
+            variant="solid"
+            size="pill"
+            className="sf-checkout-black-button mt-7"
+            onClick={retry}
+          >
             Retry payment setup
           </Button>
         </>

@@ -1,6 +1,6 @@
 import { useState, useSyncExternalStore } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Grid2X2, Grid3X3, List, SlidersHorizontal, X } from "lucide-react";
+import { Check, Grid2X2, Grid3X3, List, SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { Reveal } from "@/components/brand/Reveal";
 import { Button } from "@/components/ui/button";
@@ -108,9 +108,9 @@ function Shop() {
       ? "تسوّقي منتجات تجميل نظيفة وعالية الجودة"
       : "Shop environment friendly quality goods";
   const FilterList = (
-    <div>
-      <p className="label-xs text-taupe">{t("shop.category")}</p>
-      <ul className="mt-5 space-y-3">
+    <div className="sf-shop-filter-panel__group">
+      <p className="sf-shop-filter-panel__eyebrow">{t("shop.category")}</p>
+      <ul className="sf-shop-filter-panel__list">
         <li>
           <button
             type="button"
@@ -118,9 +118,11 @@ function Shop() {
               navigate({ search: { ...search, category: undefined } });
               setFilters(false);
             }}
-            className={`inline-flex min-h-11 items-center ${!search.category ? "text-gold" : "hover:text-gold"}`}
+            className="sf-shop-filter-panel__option"
+            data-active={!search.category || undefined}
           >
-            {t("shop.all")}
+            <span>{t("shop.all")}</span>
+            {!search.category && <Check className="size-4" aria-hidden="true" />}
           </button>
         </li>
         {hydrated &&
@@ -132,18 +134,26 @@ function Shop() {
                   navigate({ search: { ...search, category: category.slug } });
                   setFilters(false);
                 }}
-                className={`inline-flex min-h-11 items-center ${search.category === category.slug ? "text-gold" : "hover:text-gold"}`}
+                className="sf-shop-filter-panel__option"
+                data-active={search.category === category.slug || undefined}
               >
-                {locale === "ar" ? category.nameAr : category.nameEn}{" "}
-                <span className="text-xs text-taupe">({category.productCount})</span>
+                <span>{locale === "ar" ? category.nameAr : category.nameEn}</span>
+                <span className="sf-shop-filter-panel__meta">
+                  {category.productCount}
+                  {search.category === category.slug && (
+                    <Check className="size-4" aria-hidden="true" />
+                  )}
+                </span>
               </button>
             </li>
           ))}
       </ul>
       {brands.data && brands.data.length > 0 && (
-        <div className="mt-10 border-t border-border pt-8">
-          <p className="label-xs text-taupe">{locale === "ar" ? "العلامة التجارية" : "Brand"}</p>
-          <ul className="mt-5 space-y-2">
+        <div className="sf-shop-filter-panel__group sf-shop-filter-panel__group--divided">
+          <p className="sf-shop-filter-panel__eyebrow">
+            {locale === "ar" ? "العلامة التجارية" : "Brand"}
+          </p>
+          <ul className="sf-shop-filter-panel__list">
             {brands.data
               .filter((brand) => brand.productCount > 0)
               .map((brand) => (
@@ -154,9 +164,16 @@ function Shop() {
                       navigate({ search: { ...search, brand: brand.slug } });
                       setFilters(false);
                     }}
-                    className={`inline-flex min-h-11 items-center ${search.brand === brand.slug ? "text-gold" : "hover:text-gold"}`}
+                    className="sf-shop-filter-panel__option"
+                    data-active={search.brand === brand.slug || undefined}
                   >
-                    {brand.name} <span className="text-xs text-taupe">({brand.productCount})</span>
+                    <span>{brand.name}</span>
+                    <span className="sf-shop-filter-panel__meta">
+                      {brand.productCount}
+                      {search.brand === brand.slug && (
+                        <Check className="size-4" aria-hidden="true" />
+                      )}
+                    </span>
                   </button>
                 </li>
               ))}
@@ -278,26 +295,27 @@ function Shop() {
         )}
       </section>
       <Sheet open={filters} onOpenChange={setFilters}>
-        <SheetContent
-          side="bottom"
-          showCloseButton={false}
-          className="max-h-[80dvh] overscroll-contain bg-warm-white p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]"
-        >
-          <SheetTitle className="flex items-center justify-between">
-            {t("shop.filters")}{" "}
+        <SheetContent side="right" showCloseButton={false} className="sf-shop-filter-drawer">
+          <div className="sf-shop-filter-panel__header">
+            <div>
+              <p className="sf-shop-filter-panel__eyebrow">
+                {locale === "ar" ? "تخصيص النتائج" : "Refine results"}
+              </p>
+              <SheetTitle className="sf-shop-filter-panel__title">{t("shop.filters")}</SheetTitle>
+            </div>
             <button
               type="button"
               onClick={() => setFilters(false)}
               aria-label={locale === "ar" ? "إغلاق الفلاتر" : "Close filters"}
-              className="grid size-11 place-items-center"
+              className="sf-shop-filter-panel__close"
             >
               <X aria-hidden="true" />
             </button>
-          </SheetTitle>
-          <div className="grid gap-8 py-8 md:grid-cols-[1fr_1fr]">
+          </div>
+          <div className="sf-shop-filter-panel__body">
             {FilterList}
-            <div>
-              <p className="label-xs text-taupe">
+            <div className="sf-shop-filter-panel__group sf-shop-filter-panel__group--divided">
+              <p className="sf-shop-filter-panel__eyebrow">
                 {locale === "ar" ? "العرض والترتيب" : "View and sort"}
               </p>
               <select
@@ -306,7 +324,7 @@ function Shop() {
                 onChange={(event) =>
                   navigate({ search: { ...search, sort: event.target.value || undefined } })
                 }
-                className="mt-5 min-h-12 w-full border border-border bg-white px-4"
+                className="sf-shop-filter-panel__select"
               >
                 <option value="">{t("shop.sortNewest")}</option>
                 <option value="price-asc">{t("shop.sortLow")}</option>
@@ -315,7 +333,7 @@ function Shop() {
               <div
                 role="group"
                 aria-label="Product view"
-                className="mt-5 grid grid-cols-3 border border-border"
+                className="sf-shop-filter-panel__view-toggle"
               >
                 {[
                   { value: "compact" as const, label: "Compact grid", Icon: Grid3X3 },
@@ -329,17 +347,26 @@ function Shop() {
                     aria-pressed={view === value}
                     title={label}
                     onClick={() => navigate({ search: { ...search, view: value } })}
-                    className={`grid min-h-12 place-items-center transition-colors ${
-                      view === value
-                        ? "bg-ink text-warm-white"
-                        : "text-taupe hover:bg-ivory hover:text-foreground"
-                    }`}
+                    className="sf-shop-filter-panel__view-button"
+                    data-active={view === value || undefined}
                   >
                     <Icon className="size-4" strokeWidth={1.25} />
                   </button>
                 ))}
               </div>
             </div>
+          </div>
+          <div className="sf-shop-filter-panel__footer">
+            <button type="button" onClick={clearFilters} className="sf-shop-filter-panel__clear">
+              {t("common.clearAll")}
+            </button>
+            <button
+              type="button"
+              onClick={() => setFilters(false)}
+              className="sf-shop-filter-panel__apply"
+            >
+              {locale === "ar" ? "عرض النتائج" : "Show results"}
+            </button>
           </div>
         </SheetContent>
       </Sheet>
