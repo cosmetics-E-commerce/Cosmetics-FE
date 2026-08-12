@@ -39,7 +39,7 @@ function IngredientDetails({ ingredient }: { ingredient: IngredientInfo }) {
           <ul className="space-y-1.5">
             {ingredient.benefits.map((item) => (
               <li key={item} className="flex gap-2 text-xs leading-relaxed text-foreground/75">
-                <Check className="mt-0.5 size-3.5 shrink-0 text-emerald-700" />
+                <Check className="mt-0.5 size-3.5 shrink-0 text-[var(--color-success)]" />
                 {item}
               </li>
             ))}
@@ -47,13 +47,13 @@ function IngredientDetails({ ingredient }: { ingredient: IngredientInfo }) {
         </section>
       )}
       {ingredient.concerns.length > 0 && (
-        <section className="border-s-2 border-amber-400 bg-amber-50/70 p-3">
-          <h4 className="mb-2 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-amber-900">
+        <section className="border-s-2 border-[var(--color-warning-border)] bg-[var(--color-warning-soft)] p-3">
+          <h4 className="mb-2 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--color-warning)]">
             <AlertTriangle className="size-3.5" /> Potential concerns
           </h4>
           <ul className="space-y-1.5">
             {ingredient.concerns.map((item) => (
-              <li key={item} className="text-xs leading-relaxed text-amber-950/75">
+              <li key={item} className="text-xs leading-relaxed text-[var(--color-text-secondary)]">
                 {item}
               </li>
             ))}

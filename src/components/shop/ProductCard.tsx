@@ -86,12 +86,12 @@ export function ProductCard({
           </button>
         )}
         {outOfStock && (
-          <span className="sf-product-card__badge absolute start-3 top-3 bg-red-50 text-red-700">
+          <span className="sf-product-card__badge sf-product-card__badge--stock absolute start-3 top-3">
             Out of stock
           </span>
         )}
         {lowStock && (
-          <span className="sf-product-card__badge absolute start-3 top-3 bg-amber-50 text-amber-800">
+          <span className="sf-product-card__badge sf-product-card__badge--low absolute start-3 top-3">
             Low stock
           </span>
         )}

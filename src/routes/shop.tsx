@@ -91,6 +91,22 @@ function Shop() {
         ...(search.view ? { view: search.view } : {}),
       },
     });
+  const categoryTabs = [
+    { id: "all", slug: undefined, label: t("shop.all"), count: undefined },
+    ...(categories.data ?? [])
+      .filter((category) => category.productCount > 0)
+      .map((category) => ({
+        id: category.id,
+        slug: category.slug,
+        label: locale === "ar" ? category.nameAr : category.nameEn,
+        count: category.productCount,
+      })),
+  ];
+  const productCount = hydrated ? (catalog.data?.length ?? 0) : 0;
+  const shopHeadline =
+    locale === "ar"
+      ? "تسوّقي منتجات تجميل نظيفة وعالية الجودة"
+      : "Shop environment friendly quality goods";
   const FilterList = (
     <div>
       <p className="label-xs text-taupe">{t("shop.category")}</p>
@@ -150,139 +166,117 @@ function Shop() {
     </div>
   );
   return (
-    <div className="sf-shop-page mx-auto max-w-[1560px] px-5 py-14 md:px-10 lg:py-20">
-      <nav aria-label="Breadcrumb" className="label-xs text-taupe">
-        <Link to="/">{t("common.home")}</Link> / {t("common.shop")}
+    <div className="sf-shop-page sf-shop-page--minimal">
+      <nav aria-label="Breadcrumb" className="sf-shop-breadcrumb">
+        <Link to="/">{t("common.home")}</Link>
+        <span aria-hidden="true">/</span>
+        <span>{t("common.shop")}</span>
       </nav>
-      <Reveal className="mt-8 max-w-2xl">
-        <p className="label-xs text-gold">{t("shop.eyebrow")}</p>
-        <h1 className="display mt-5 text-[clamp(2.4rem,5vw,4rem)]">{t("shop.title")}</h1>
-        <p className="mt-6 text-muted-foreground">{t("shop.intro")}</p>
+      <Reveal className="sf-shop-hero">
+        <h1>{shopHeadline}</h1>
       </Reveal>
-      <div className="mt-14 grid gap-12 lg:grid-cols-[240px_1fr]">
-        <aside className="hidden border-e border-border pe-8 lg:block">{FilterList}</aside>
-        <section>
-          <div className="catalog-toolbar flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
-            <p className="label-xs text-taupe">
-              {hydrated ? (catalog.data?.length ?? 0) : 0} {t("common.products")}
-            </p>
-            <div className="flex items-center gap-4">
-              <button
-                type="button"
-                onClick={() => setFilters(true)}
-                className="label-xs inline-flex min-h-11 items-center gap-2 lg:hidden"
-              >
-                <SlidersHorizontal className="size-4" /> {t("shop.filters")}
-                {activeFilters.length > 0 && (
-                  <span className="grid size-5 place-items-center rounded-full bg-ink text-[10px] text-warm-white">
-                    {activeFilters.length}
-                  </span>
-                )}
-              </button>
-              <div
-                role="group"
-                aria-label="Product view"
-                className="hidden items-center border border-border sm:flex"
-              >
-                {[
-                  { value: "compact" as const, label: "Compact grid", Icon: Grid3X3 },
-                  { value: "grid" as const, label: "Grid view", Icon: Grid2X2 },
-                  { value: "list" as const, label: "List view", Icon: List },
-                ].map(({ value, label, Icon }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    aria-label={label}
-                    aria-pressed={view === value}
-                    title={label}
-                    onClick={() => navigate({ search: { ...search, view: value } })}
-                    className={`grid size-11 place-items-center transition-colors ${
-                      view === value
-                        ? "bg-ink text-warm-white"
-                        : "text-taupe hover:bg-ivory hover:text-foreground"
-                    }`}
-                  >
-                    <Icon className="size-4" strokeWidth={1.25} />
-                  </button>
-                ))}
-              </div>
-              <select
-                aria-label={locale === "ar" ? "ترتيب المنتجات" : "Sort products"}
-                value={search.sort ?? ""}
-                onChange={(event) =>
-                  navigate({ search: { ...search, sort: event.target.value || undefined } })
-                }
-                className="editorial-select label-xs min-h-11 border-b border-border bg-transparent"
-              >
-                <option value="">{t("shop.sortNewest")}</option>
-                <option value="price-asc">{t("shop.sortLow")}</option>
-                <option value="price-desc">{t("shop.sortHigh")}</option>
-              </select>
-            </div>
-          </div>
-          {activeFilters.length > 0 && (
-            <div className="mt-5 flex flex-wrap items-center gap-2" aria-label="Active filters">
-              {activeFilters.map((filter) => (
+      <section className="sf-shop-catalog" aria-labelledby="shop-products-title">
+        <div className="sf-shop-filterbar">
+          <div className="sf-shop-tabs" role="tablist" aria-label={t("shop.category")}>
+            {categoryTabs.map((category) => {
+              const selected =
+                search.category === category.slug || (!search.category && !category.slug);
+
+              return (
                 <button
-                  key={filter.key}
+                  key={category.id}
                   type="button"
-                  onClick={() => navigate({ search: { ...search, [filter.key]: undefined } })}
-                  className="label-xs inline-flex min-h-11 items-center gap-2 border border-border bg-ivory px-3 text-taupe transition-colors hover:border-gold hover:text-gold"
-                  aria-label={`Remove ${filter.label} filter`}
+                  role="tab"
+                  aria-selected={selected}
+                  className="sf-shop-tab"
+                  onClick={() => navigate({ search: { ...search, category: category.slug } })}
                 >
-                  {filter.label}
-                  <X className="size-3" aria-hidden="true" />
+                  {category.label}
+                  {category.count ? <span>({category.count})</span> : null}
                 </button>
-              ))}
+              );
+            })}
+          </div>
+          <button type="button" onClick={() => setFilters(true)} className="sf-shop-filter-button">
+            <SlidersHorizontal className="size-4" aria-hidden="true" />
+            {t("shop.filters")}
+            {activeFilters.length > 0 && <span>{activeFilters.length}</span>}
+          </button>
+        </div>
+        <div className="sf-shop-meta">
+          <h2 id="shop-products-title">
+            {productCount} {t("common.products")}
+          </h2>
+          <select
+            aria-label={locale === "ar" ? "ترتيب المنتجات" : "Sort products"}
+            value={search.sort ?? ""}
+            onChange={(event) =>
+              navigate({ search: { ...search, sort: event.target.value || undefined } })
+            }
+            className="sf-shop-sort"
+          >
+            <option value="">{t("shop.sortNewest")}</option>
+            <option value="price-asc">{t("shop.sortLow")}</option>
+            <option value="price-desc">{t("shop.sortHigh")}</option>
+          </select>
+        </div>
+        {activeFilters.length > 0 && (
+          <div className="sf-shop-active-filters" aria-label="Active filters">
+            {activeFilters.map((filter) => (
               <button
+                key={filter.key}
                 type="button"
-                onClick={clearFilters}
-                className="label-xs min-h-11 px-3 text-gold hover:underline"
+                onClick={() => navigate({ search: { ...search, [filter.key]: undefined } })}
+                aria-label={`Remove ${filter.label} filter`}
               >
-                {t("common.clearAll")}
+                {filter.label}
+                <X className="size-3" aria-hidden="true" />
               </button>
-            </div>
-          )}
-          {(!hydrated || catalog.isLoading) && <ProductGridSkeleton view={view} />}
-          {hydrated && catalog.error && (
-            <State
-              title={t("shop.errorTitle")}
-              copy={t("shop.errorCopy")}
-              action={() => void catalog.refetch()}
-              actionLabel={t("common.tryAgain")}
-            />
-          )}
-          {hydrated && !catalog.isLoading && !catalog.error && catalog.data?.length === 0 && (
-            <State
-              title={t("shop.emptyTitle")}
-              copy={t("shop.emptyCopy")}
-              action={clearFilters}
-              actionLabel={t("shop.clearFilters")}
-            />
-          )}
-          {hydrated && catalog.data && (
-            <div
-              className={`mt-10 grid ${
-                view === "list"
-                  ? "grid-cols-1 gap-y-6"
-                  : view === "grid"
-                    ? "grid-cols-1 gap-x-6 gap-y-14 sm:grid-cols-2 xl:grid-cols-3"
-                    : "grid-cols-2 gap-x-5 gap-y-14 md:grid-cols-3 xl:grid-cols-4"
-              }`}
-            >
-              {catalog.data.map((product, index) => (
-                <Reveal key={product.slug} delay={(index % 4) * 35}>
-                  <ProductCard
-                    product={product}
-                    compact={view === "compact"}
-                    layout={view === "list" ? "list" : "grid"}
-                  />
-                </Reveal>
-              ))}
-            </div>
-          )}
-        </section>
-      </div>
+            ))}
+            <button type="button" onClick={clearFilters}>
+              {t("common.clearAll")}
+            </button>
+          </div>
+        )}
+        {(!hydrated || catalog.isLoading) && <ProductGridSkeleton view={view} />}
+        {hydrated && catalog.error && (
+          <State
+            title={t("shop.errorTitle")}
+            copy={t("shop.errorCopy")}
+            action={() => void catalog.refetch()}
+            actionLabel={t("common.tryAgain")}
+          />
+        )}
+        {hydrated && !catalog.isLoading && !catalog.error && catalog.data?.length === 0 && (
+          <State
+            title={t("shop.emptyTitle")}
+            copy={t("shop.emptyCopy")}
+            action={clearFilters}
+            actionLabel={t("shop.clearFilters")}
+          />
+        )}
+        {hydrated && catalog.data && (
+          <div
+            className={`sf-shop-products ${
+              view === "list"
+                ? "sf-shop-products--list"
+                : view === "grid"
+                  ? "sf-shop-products--grid"
+                  : "sf-shop-products--compact"
+            }`}
+          >
+            {catalog.data.map((product, index) => (
+              <Reveal key={product.slug} delay={(index % 4) * 35}>
+                <ProductCard
+                  product={product}
+                  compact={view === "compact"}
+                  layout={view === "list" ? "list" : "grid"}
+                />
+              </Reveal>
+            ))}
+          </div>
+        )}
+      </section>
       <Sheet open={filters} onOpenChange={setFilters}>
         <SheetContent
           side="bottom"
@@ -300,7 +294,53 @@ function Shop() {
               <X aria-hidden="true" />
             </button>
           </SheetTitle>
-          <div className="py-8">{FilterList}</div>
+          <div className="grid gap-8 py-8 md:grid-cols-[1fr_1fr]">
+            {FilterList}
+            <div>
+              <p className="label-xs text-taupe">
+                {locale === "ar" ? "العرض والترتيب" : "View and sort"}
+              </p>
+              <select
+                aria-label={locale === "ar" ? "ترتيب المنتجات" : "Sort products"}
+                value={search.sort ?? ""}
+                onChange={(event) =>
+                  navigate({ search: { ...search, sort: event.target.value || undefined } })
+                }
+                className="mt-5 min-h-12 w-full border border-border bg-white px-4"
+              >
+                <option value="">{t("shop.sortNewest")}</option>
+                <option value="price-asc">{t("shop.sortLow")}</option>
+                <option value="price-desc">{t("shop.sortHigh")}</option>
+              </select>
+              <div
+                role="group"
+                aria-label="Product view"
+                className="mt-5 grid grid-cols-3 border border-border"
+              >
+                {[
+                  { value: "compact" as const, label: "Compact grid", Icon: Grid3X3 },
+                  { value: "grid" as const, label: "Grid view", Icon: Grid2X2 },
+                  { value: "list" as const, label: "List view", Icon: List },
+                ].map(({ value, label, Icon }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    aria-label={label}
+                    aria-pressed={view === value}
+                    title={label}
+                    onClick={() => navigate({ search: { ...search, view: value } })}
+                    className={`grid min-h-12 place-items-center transition-colors ${
+                      view === value
+                        ? "bg-ink text-warm-white"
+                        : "text-taupe hover:bg-ivory hover:text-foreground"
+                    }`}
+                  >
+                    <Icon className="size-4" strokeWidth={1.25} />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </SheetContent>
       </Sheet>
     </div>

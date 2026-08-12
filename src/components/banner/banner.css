@@ -3,7 +3,7 @@
 }
 .global-banner-slot--loading {
   min-height: 32px;
-  background: #191714;
+  background: var(--color-primary);
 }
 .global-banner-slot--bottom {
   position: fixed;

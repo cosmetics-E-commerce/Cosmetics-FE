@@ -27,8 +27,8 @@
   transform: scaleY(0.025);
   transform-origin: bottom;
   border-block-start: 1px solid color-mix(in srgb, var(--color-gold) 70%, transparent);
-  background: color-mix(in srgb, var(--color-warm-white) 95%, transparent);
-  color: var(--color-ink);
+  background: color-mix(in srgb, var(--color-surface-elevated) 95%, transparent);
+  color: var(--color-text-primary);
   opacity: 0;
   pointer-events: none;
   transition:
@@ -76,8 +76,8 @@
 }
 
 .quick-add__quantity button:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-gold) 10%, transparent);
-  color: var(--color-gold);
+  background: var(--color-secondary);
+  color: var(--color-accent);
 }
 
 .quick-add__quantity button:active:not(:disabled) {
@@ -111,8 +111,8 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: var(--color-gold-fill);
-  color: var(--color-ink);
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
   padding-inline: 10px;
   font-size: 10px;
   font-weight: 700;
@@ -128,8 +128,8 @@
 }
 
 .quick-add__action:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-gold-fill) 84%, white);
-  color: var(--color-ink);
+  background: var(--color-primary-hover);
+  color: var(--color-text-inverse);
 }
 
 .quick-add__action:active:not(:disabled) {
@@ -138,8 +138,8 @@
 
 .quick-add__action:disabled {
   cursor: not-allowed;
-  background: color-mix(in srgb, var(--color-gold) 30%, var(--color-warm-white));
-  color: var(--color-taupe);
+  background: var(--color-surface-muted);
+  color: var(--color-text-muted);
 }
 
 .quick-add__action svg {

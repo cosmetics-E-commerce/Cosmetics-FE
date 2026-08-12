@@ -422,7 +422,7 @@ function bannerStyle(banner: StoreBanner, device: Device): CSSProperties {
       ? design.gradient
       : design.backgroundType === "IMAGE" && design.backgroundImage
         ? `url(${design.backgroundImage}) center/cover`
-        : design.backgroundColor || "#191714";
+        : design.backgroundColor || "var(--color-primary)";
   return {
     "--announcement-duration": `${banner.animation.durationMs || 300}ms`,
     "--cta-bg": design.ctaBackground,
@@ -430,7 +430,7 @@ function bannerStyle(banner: StoreBanner, device: Device): CSSProperties {
     minHeight: height,
     padding: `${design.verticalPadding || 0}px ${design.horizontalPadding || 20}px`,
     background,
-    color: design.textColor || "#fff",
+    color: design.textColor || "var(--color-text-inverse)",
     fontFamily: design.fontFamily === "SERIF" ? "var(--font-serif)" : "var(--font-sans)",
     fontSize: size,
     fontWeight: design.fontWeight || 400,
