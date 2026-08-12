@@ -205,6 +205,9 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
     await page.getByRole("button", { name: "Switch to English" }).click();
   }
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
+
+  await page.getByRole("button", { name: "Continue to Delivery" }).click();
+  await expect(page.getByRole("heading", { name: "Delivery", exact: true })).toBeVisible();
   await expect(page.getByLabel("Receiver name")).toHaveValue("Sara Ali");
   await page.getByLabel("Governorate").selectOption(governorateId);
   await page.getByLabel("City").selectOption(cityId);
@@ -214,6 +217,15 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
   await page.getByRole("button", { name: "Save and use this address" }).click();
 
   await expect(page.getByText("12 Mostafa El Nahas", { exact: false })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Delivery", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Payment", exact: true })).toBeHidden();
+
+  await page.getByRole("button", { name: "Continue to Review" }).click();
+  await expect(page.getByRole("heading", { name: "Review", exact: true })).toBeVisible();
+  await expect(page.getByText("12 Mostafa El Nahas", { exact: false })).toBeVisible();
+
+  await page.getByRole("button", { name: "Continue to Payment" }).click();
+  await expect(page.getByRole("heading", { name: "Payment", exact: true })).toBeVisible();
   const placeOrder = page.getByRole("button", { name: "Place order" }).last();
   await expect(placeOrder).toBeEnabled();
   await placeOrder.dblclick();
