@@ -243,6 +243,7 @@ export function Header() {
               onValueChange={(value) => {
                 const next = value as MegaMenuValue | "";
                 setMegaMenu(next);
+                hoveredNavIdRef.current = next || null;
                 moveNavIndicator(next || activeNavId);
               }}
               delayDuration={70}

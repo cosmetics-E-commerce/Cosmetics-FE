@@ -1,6 +1,9 @@
 import { expect, test } from "@playwright/test";
 
 const addressId = "22222222-2222-4222-8222-222222222222";
+const governorateId = "gov-cairo";
+const cityId = "city-nasr-city";
+const areaId = "area-district-7";
 const cartItem = {
   variantId: "33333333-3333-4333-8333-333333333333",
   productId: "44444444-4444-4444-8444-444444444444",
@@ -77,11 +80,35 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
     if (path.endsWith("/wishlist")) return fulfill({ items: [], totalItems: 0, updatedAt: null });
     if (path.endsWith("/users/addresses") && request.method() === "GET") return fulfill([]);
     if (path.endsWith("/payments/instructions")) return fulfill([]);
+    if (path.endsWith("/shipping/locations/governorates")) {
+      return fulfill([{ id: governorateId, name: "Cairo", nameAr: "القاهرة", code: "CAI" }]);
+    }
+    if (path.endsWith("/shipping/locations/cities")) {
+      expect(new URL(request.url()).searchParams.get("governorate")).toBe(governorateId);
+      return fulfill([
+        { id: cityId, name: "Nasr City", nameAr: "مدينة نصر", governorateId, code: "NASR" },
+      ]);
+    }
+    if (path.endsWith("/shipping/locations/areas")) {
+      expect(new URL(request.url()).searchParams.get("city")).toBe(cityId);
+      return fulfill([{ id: areaId, name: "District 7", nameAr: "الحي السابع" }]);
+    }
+    if (path.endsWith("/shipping/rates")) {
+      expect(new URL(request.url()).searchParams.get("addressId")).toBe(addressId);
+      return fulfill({
+        provider: "MOCK",
+        shippingCost: 0,
+        estimatedDays: 3,
+      });
+    }
     if (path.endsWith("/users/addresses") && request.method() === "POST") {
       expect(request.postDataJSON()).toMatchObject({
         receiverName: "Sara Ali",
         phone: "01012345678",
         country: "EG",
+        bostaGovernorateId: governorateId,
+        bostaCityId: cityId,
+        bostaZoneId: areaId,
       });
       return fulfill({
         id: addressId,
@@ -97,8 +124,9 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
         floor: null,
         apartment: null,
         postalCode: null,
-        bostaCityId: null,
-        bostaZoneId: null,
+        bostaGovernorateId: governorateId,
+        bostaCityId: cityId,
+        bostaZoneId: areaId,
         deliveryInstructions: null,
         landmark: null,
         isDefault: true,
@@ -178,9 +206,9 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
   }
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
   await expect(page.getByLabel("Receiver name")).toHaveValue("Sara Ali");
-  await page.getByLabel("Governorate").fill("Cairo");
-  await page.getByLabel("City or district").fill("Nasr City");
-  await page.getByLabel("Area").fill("District 7");
+  await page.getByLabel("Governorate").selectOption(governorateId);
+  await page.getByLabel("City").selectOption(cityId);
+  await page.getByLabel("District / area").selectOption(areaId);
   await page.getByLabel("Street").fill("Mostafa El Nahas");
   await page.getByLabel("Building").fill("12");
   await page.getByRole("button", { name: "Save and use this address" }).click();
