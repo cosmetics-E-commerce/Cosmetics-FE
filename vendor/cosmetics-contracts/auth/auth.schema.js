@@ -91,6 +91,7 @@ exports.otpPurposeEnum = zod_1.z.enum([
     "LOGIN",
     "PASSWORD_RESET",
     "PASSWORD_CHANGE",
+    "PHONE_CHANGE",
 ]);
 const otpRequestBaseSchema = zod_1.z.object({
     identifier: zod_1.z.string().trim().min(3).max(120),

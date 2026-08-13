@@ -51,7 +51,9 @@ test("search opens focused, presents live results, and dismisses with Escape", a
   await page.route("**/api/v1/promotions/prices", (route) =>
     route.fulfill({ json: { success: true, data: [] } }),
   );
-  await page.goto("/shop", { waitUntil: "networkidle" });
+  // Use a static route so this browser-level mock does not have to intercept a
+  // server-side catalog loader before Playwright has a page to control.
+  await page.goto("/privacy", { waitUntil: "networkidle" });
 
   await page.getByRole("banner").getByRole("button", { name: "Search" }).click();
   const dialog = page.getByRole("dialog");

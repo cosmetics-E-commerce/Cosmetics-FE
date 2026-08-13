@@ -1,24 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { images } from "@/lib/products";
 import { useStore } from "@/lib/store";
+import { createSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/journal")({
-  head: () => ({
-    meta: [
-      { title: "About BIOREZA Cosmetics" },
-      {
-        name: "description",
-        content: "BIOREZA's approach to curated beauty, transparent information and customer care.",
-      },
-      { property: "og:title", content: "About BIOREZA Cosmetics" },
-      {
-        property: "og:description",
-        content: "A clearer way to discover and shop beauty products.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ match }) =>
+    createSeoHead({
+      title: match.search.lang === "ar" ? "عن بيوريزا" : "About BIOREZA",
+      description:
+        match.search.lang === "ar"
+          ? "تعرفي على نهج بيوريزا في عرض تفاصيل المنتجات والمراجعات الموثقة وخدمة العملاء."
+          : "Learn about BIOREZA's approach to clear product details, verified customer reviews and customer care.",
+      path: "/journal",
+      locale: match.search.lang === "ar" ? "ar" : "en",
+      image: images.storyLarge,
+    }),
   component: AboutPage,
 });
 
@@ -101,6 +97,9 @@ function AboutPage() {
           <img
             src={images.heroSlide3}
             alt={ar ? "امرأة تحمل منتج عناية بالبشرة" : "Woman holding a skincare product"}
+            width={2880}
+            height={1425}
+            loading="eager"
             fetchPriority="high"
             decoding="async"
             draggable={false}
@@ -129,6 +128,8 @@ function AboutPage() {
           <img
             src={images.heroSlide1}
             alt={ar ? "روتين عناية بسيط بالبشرة" : "A simple skincare routine"}
+            width={2880}
+            height={1425}
             loading="lazy"
             decoding="async"
             draggable={false}
@@ -148,6 +149,8 @@ function AboutPage() {
         <img
           src={images.collection}
           alt={ar ? "مجموعة مختارة من مستحضرات العناية" : "A curated skincare collection"}
+          width={1600}
+          height={1104}
           loading="lazy"
           decoding="async"
           draggable={false}

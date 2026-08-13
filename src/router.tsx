@@ -24,6 +24,7 @@ export const getRouter = () => {
     routeTree,
     context: { queryClient },
     scrollRestoration: true,
+    trailingSlash: "never",
     defaultPreloadStaleTime: 0,
     defaultViewTransition:
       typeof document !== "undefined" &&

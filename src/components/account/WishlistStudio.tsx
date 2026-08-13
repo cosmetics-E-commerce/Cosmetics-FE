@@ -214,6 +214,10 @@ export function WishlistStudio({ data, locale }: { data: WishlistResponse; local
                       <PolishedImage
                         src={product.image}
                         alt={product.name}
+                        width={800}
+                        height={1000}
+                        loading="lazy"
+                        decoding="async"
                         className="size-full object-cover"
                       />
                     </Link>

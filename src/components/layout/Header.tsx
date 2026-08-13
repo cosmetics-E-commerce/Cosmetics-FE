@@ -150,11 +150,15 @@ export function Header({
           ? "about"
           : pathname === "/contact"
             ? "contact"
-            : pathname === "/shop"
-              ? activeBrand
-                ? "brands"
-                : "categories"
-              : null;
+            : pathname.startsWith("/brands/")
+              ? "brands"
+              : pathname.startsWith("/categories/")
+                ? "categories"
+                : pathname === "/shop"
+                  ? activeBrand
+                    ? "brands"
+                    : "categories"
+                  : null;
   const transparentHeader = pathname === "/" && !scrolled;
   const visibleBrands = useMemo(
     () =>
@@ -483,8 +487,8 @@ export function Header({
                         {visibleBrands.map((brand) => (
                           <li key={brand.id}>
                             <Link
-                              to="/shop"
-                              search={{ brand: brand.slug }}
+                              to="/brands/$slug"
+                              params={{ slug: brand.slug }}
                               onClick={closeMobileMenu}
                               className="mobile-nav__sublink"
                             >
@@ -703,7 +707,7 @@ const BrandsMegaMenu = memo(function BrandsMegaMenu({
               <ul>
                 {popular.map((brand) => (
                   <li key={brand.id}>
-                    <Link to="/shop" search={{ brand: brand.slug }} onClick={onNavigate}>
+                    <Link to="/brands/$slug" params={{ slug: brand.slug }} onClick={onNavigate}>
                       {brand.name}
                     </Link>
                   </li>
@@ -728,8 +732,8 @@ const BrandsMegaMenu = memo(function BrandsMegaMenu({
                       {entries.map((brand) => (
                         <li key={brand.id}>
                           <Link
-                            to="/shop"
-                            search={{ brand: brand.slug }}
+                            to="/brands/$slug"
+                            params={{ slug: brand.slug }}
                             onClick={onNavigate}
                             className="brand-directory__link"
                           >
@@ -823,8 +827,8 @@ const CategoriesMegaMenu = memo(function CategoriesMegaMenu({
               return (
                 <Link
                   key={category.id}
-                  to="/shop"
-                  search={{ category: category.slug }}
+                  to="/categories/$slug"
+                  params={{ slug: category.slug }}
                   onClick={onNavigate}
                   onPointerEnter={() => setSelectedCategoryId(category.id)}
                   onFocus={() => setSelectedCategoryId(category.id)}
@@ -861,8 +865,8 @@ const CategoriesMegaMenu = memo(function CategoriesMegaMenu({
                   {childCategories.slice(0, 8).map((child) => (
                     <Link
                       key={child.id}
-                      to="/shop"
-                      search={{ category: child.slug }}
+                      to="/categories/$slug"
+                      params={{ slug: child.slug }}
                       onClick={onNavigate}
                     >
                       {locale === "ar" ? child.nameAr : child.nameEn}
@@ -870,8 +874,8 @@ const CategoriesMegaMenu = memo(function CategoriesMegaMenu({
                   ))}
                   {selectedCategory && (
                     <Link
-                      to="/shop"
-                      search={{ category: selectedCategory.slug }}
+                      to="/categories/$slug"
+                      params={{ slug: selectedCategory.slug }}
                       onClick={onNavigate}
                     >
                       {copy.browseCategory}
@@ -902,8 +906,8 @@ const CategoriesMegaMenu = memo(function CategoriesMegaMenu({
                 featuredBrands.map((brand) => (
                   <Link
                     key={brand.id}
-                    to="/shop"
-                    search={{ brand: brand.slug }}
+                    to="/brands/$slug"
+                    params={{ slug: brand.slug }}
                     onClick={onNavigate}
                     className="category-mega__brand"
                   >
@@ -928,7 +932,15 @@ const CategoriesMegaMenu = memo(function CategoriesMegaMenu({
                 {copy.shopNow}
               </Link>
             </div>
-            <img src={promoProductImage} alt="" aria-hidden="true" />
+            <img
+              src={promoProductImage}
+              alt=""
+              aria-hidden="true"
+              width={900}
+              height={1100}
+              loading="lazy"
+              decoding="async"
+            />
           </aside>
         </div>
       ) : (
@@ -1044,8 +1056,8 @@ function MobileCategoryAccordion({
             </AccordionTrigger>
             <AccordionContent className="mobile-category-nav__content">
               <Link
-                to="/shop"
-                search={{ category: category.slug }}
+                to="/categories/$slug"
+                params={{ slug: category.slug }}
                 onClick={onNavigate}
                 className="mobile-nav__sublink mobile-category-nav__all"
               >
@@ -1057,8 +1069,8 @@ function MobileCategoryAccordion({
                   {children.map((child) => (
                     <li key={child.id}>
                       <Link
-                        to="/shop"
-                        search={{ category: child.slug }}
+                        to="/categories/$slug"
+                        params={{ slug: child.slug }}
                         onClick={onNavigate}
                         className="mobile-nav__sublink"
                       >

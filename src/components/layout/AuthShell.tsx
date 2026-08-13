@@ -38,6 +38,11 @@ export function AuthShell({
               src={images.storyLarge}
               alt=""
               aria-hidden="true"
+              width={1100}
+              height={1300}
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
               className="size-full object-cover"
             />
           </ParallaxMedia>

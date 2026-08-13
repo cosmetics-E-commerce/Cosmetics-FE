@@ -195,56 +195,56 @@ export declare const refreshSchema: z.ZodObject<{}, "strict", z.ZodTypeAny, {}, 
 export type RefreshInput = z.infer<typeof refreshSchema>;
 export declare const logoutSchema: z.ZodObject<{}, "strict", z.ZodTypeAny, {}, {}>;
 export type LogoutInput = z.infer<typeof logoutSchema>;
-export declare const otpPurposeEnum: z.ZodEnum<["PHONE_VERIFICATION", "EMAIL_VERIFICATION", "LOGIN", "PASSWORD_RESET", "PASSWORD_CHANGE"]>;
+export declare const otpPurposeEnum: z.ZodEnum<["PHONE_VERIFICATION", "EMAIL_VERIFICATION", "LOGIN", "PASSWORD_RESET", "PASSWORD_CHANGE", "PHONE_CHANGE"]>;
 export type OtpPurpose = z.infer<typeof otpPurposeEnum>;
 export declare const sendOtpSchema: z.ZodEffects<z.ZodObject<{
     identifier: z.ZodString;
     channel: z.ZodDefault<z.ZodEnum<["SMS", "EMAIL"]>>;
-    purpose: z.ZodDefault<z.ZodEnum<["PHONE_VERIFICATION", "EMAIL_VERIFICATION", "LOGIN", "PASSWORD_RESET", "PASSWORD_CHANGE"]>>;
+    purpose: z.ZodDefault<z.ZodEnum<["PHONE_VERIFICATION", "EMAIL_VERIFICATION", "LOGIN", "PASSWORD_RESET", "PASSWORD_CHANGE", "PHONE_CHANGE"]>>;
 }, "strip", z.ZodTypeAny, {
     identifier: string;
     channel: "SMS" | "EMAIL";
-    purpose: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE";
+    purpose: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | "PHONE_CHANGE";
 }, {
     identifier: string;
     channel?: "SMS" | "EMAIL" | undefined;
-    purpose?: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | undefined;
+    purpose?: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | "PHONE_CHANGE" | undefined;
 }>, {
     identifier: string;
     channel: "SMS" | "EMAIL";
-    purpose: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE";
+    purpose: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | "PHONE_CHANGE";
 }, {
     identifier: string;
     channel?: "SMS" | "EMAIL" | undefined;
-    purpose?: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | undefined;
+    purpose?: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | "PHONE_CHANGE" | undefined;
 }>;
 export type SendOtpInput = z.infer<typeof sendOtpSchema>;
 export declare const verifyOtpSchema: z.ZodEffects<z.ZodObject<{
     identifier: z.ZodString;
     channel: z.ZodDefault<z.ZodEnum<["SMS", "EMAIL"]>>;
-    purpose: z.ZodDefault<z.ZodEnum<["PHONE_VERIFICATION", "EMAIL_VERIFICATION", "LOGIN", "PASSWORD_RESET", "PASSWORD_CHANGE"]>>;
+    purpose: z.ZodDefault<z.ZodEnum<["PHONE_VERIFICATION", "EMAIL_VERIFICATION", "LOGIN", "PASSWORD_RESET", "PASSWORD_CHANGE", "PHONE_CHANGE"]>>;
 } & {
     otp: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     otp: string;
     identifier: string;
     channel: "SMS" | "EMAIL";
-    purpose: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE";
+    purpose: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | "PHONE_CHANGE";
 }, {
     otp: string;
     identifier: string;
     channel?: "SMS" | "EMAIL" | undefined;
-    purpose?: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | undefined;
+    purpose?: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | "PHONE_CHANGE" | undefined;
 }>, {
     otp: string;
     identifier: string;
     channel: "SMS" | "EMAIL";
-    purpose: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE";
+    purpose: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | "PHONE_CHANGE";
 }, {
     otp: string;
     identifier: string;
     channel?: "SMS" | "EMAIL" | undefined;
-    purpose?: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | undefined;
+    purpose?: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | "PHONE_CHANGE" | undefined;
 }>;
 export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>;
 export declare const forgotPasswordSchema: z.ZodEffects<z.ZodObject<{

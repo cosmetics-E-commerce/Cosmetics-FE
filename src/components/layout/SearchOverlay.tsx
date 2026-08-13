@@ -9,6 +9,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
+import "@/search-overlay.css";
 import { Search, TrendingUp, X } from "lucide-react";
 import {
   Dialog,
@@ -307,7 +308,7 @@ export function SearchOverlay() {
                 <ul>
                   {visibleCategories.map((category) => (
                     <li key={category.id}>
-                      <Link to="/shop" search={{ category: category.slug }} onClick={close}>
+                      <Link to="/categories/$slug" params={{ slug: category.slug }} onClick={close}>
                         <span>{locale === "ar" ? category.nameAr : category.nameEn}</span>
                         <small>{String(category.productCount).padStart(2, "0")}</small>
                       </Link>

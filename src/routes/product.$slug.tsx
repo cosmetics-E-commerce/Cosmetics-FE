@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import {
   Check,
   CircleHelp,
@@ -22,9 +22,19 @@ import { ProductReviews } from "@/components/shop/ProductReviews";
 import { IngredientExplorer } from "@/components/shop/IngredientExplorer";
 import { WishlistPicker } from "@/components/shop/WishlistPicker";
 import { formatPrice } from "@/lib/products";
-import { loadProduct, useCatalog, useProduct, type Locale } from "@/lib/catalog";
+import { loadCatalog, loadProduct, useProduct } from "@/lib/catalog";
+import { listProductReviews, type ProductReviews as ProductReviewsData } from "@/lib/api";
 import { useStore } from "@/lib/store";
+import { trackCommerceEvent } from "@/lib/analytics";
 import { Reveal } from "@/components/motion/Primitives";
+import {
+  breadcrumbSchema,
+  createSeoHead,
+  jsonLd,
+  productSchema,
+  productTitle,
+  type SeoLocale,
+} from "@/lib/seo";
 
 const productCopy = {
   en: {
@@ -63,29 +73,30 @@ const productCopy = {
     inStock: "In stock",
     tags: "Tags:",
     sku: "SKU:",
+    brand: "Brand:",
     category: "Category:",
     quantity: "Quantity:",
     buyNow: "Buy It Now",
     share: "Share",
+    shared: "Link copied",
     ask: "Ask a question",
-    faq: "FAQ",
     benefitsTitle: "The benefits of choosing us",
     organic: "100% original products",
     sustainable: "Fast & secure delivery",
     noChemicals: "Easy returns",
     glutenFree: "Secure payments",
-    ordersShip: "Orders ship within 5 to 10 business days.",
+    ordersShip: "Delivery timing is calculated for your address at checkout.",
     shipsFree: "Free shipping may apply on eligible orders.",
     descriptionTab: "Description",
     deliveryPolicy: "Delivery policy",
     shippingReturn: "Shipping & Return",
     customTab: "How to use",
-    freeShipping: "Free Shipping",
+    freeShipping: "Delivery across Egypt",
     freeShippingCopy: "Enjoy fast delivery across Egypt with clear checkout fees.",
     returnPolicy: "Return Policy",
     returnPolicyCopy: "Returns are available within 14 days when the item is unopened.",
-    support: "Support 24/7",
-    supportCopy: "Send your questions and our support team will help you.",
+    support: "Customer support",
+    supportCopy: "Send your questions during customer-care hours and our team will help.",
     related: "Product Related",
   },
   ar: {
@@ -123,29 +134,30 @@ const productCopy = {
     inStock: "متوفر",
     tags: "الوسوم:",
     sku: "SKU:",
+    brand: "العلامة التجارية:",
     category: "القسم:",
     quantity: "الكمية:",
     buyNow: "اشتري الآن",
     share: "مشاركة",
+    shared: "تم نسخ الرابط",
     ask: "اسألي سؤال",
-    faq: "الأسئلة الشائعة",
     benefitsTitle: "مميزات الاختيار من بيوريزا",
     organic: "منتجات أصلية 100%",
     sustainable: "توصيل سريع وآمن",
     noChemicals: "استرجاع سهل",
     glutenFree: "دفع آمن",
-    ordersShip: "يتم شحن الطلبات خلال 5 إلى 10 أيام عمل.",
+    ordersShip: "تُحسب مدة التوصيل لعنوانك عند إتمام الطلب.",
     shipsFree: "قد يتاح الشحن المجاني للطلبات المؤهلة.",
     descriptionTab: "الوصف",
     deliveryPolicy: "سياسة التوصيل",
     shippingReturn: "الشحن والاسترجاع",
     customTab: "معلومات إضافية",
-    freeShipping: "شحن سريع",
+    freeShipping: "توصيل داخل مصر",
     freeShippingCopy: "توصيل داخل مصر برسوم واضحة عند إتمام الطلب.",
     returnPolicy: "سياسة الاسترجاع",
     returnPolicyCopy: "الاسترجاع متاح خلال 14 يومًا إذا كان المنتج غير مفتوح.",
-    support: "دعم طوال الأسبوع",
-    supportCopy: "ارسلي أسئلتك وفريق الدعم يساعدك.",
+    support: "خدمة العملاء",
+    supportCopy: "أرسلي أسئلتك خلال ساعات خدمة العملاء وسيساعدك فريقنا.",
     related: "منتجات مشابهة",
   },
 } as const;
@@ -153,70 +165,78 @@ const productCopy = {
 type ProductTab = "description" | "delivery" | "returns" | "custom";
 
 export const Route = createFileRoute("/product/$slug")({
-  loader: ({ params, context }) => loadProduct(params.slug, context.locale === "ar" ? "ar" : "en"),
+  loader: async ({ params, context }) => {
+    const locale: SeoLocale = context.locale === "ar" ? "ar" : "en";
+    try {
+      const product = await loadProduct(params.slug, locale);
+      const [reviews, related] = await Promise.all([
+        product.id
+          ? listProductReviews(product.id).catch(() => emptyReviews())
+          : Promise.resolve(emptyReviews()),
+        loadCatalog(
+          {
+            categorySlug: product.categorySlug,
+            limit: 5,
+            sortBy: "createdAt",
+            sortOrder: "desc",
+          },
+          locale,
+        ).catch(() => []),
+      ]);
+      return {
+        product,
+        reviews,
+        related: related.filter((item) => item.slug !== product.slug).slice(0, 4),
+        locale,
+      };
+    } catch (error) {
+      if (isNotFoundError(error)) throw notFound();
+      throw error;
+    }
+  },
   head: ({ loaderData, params }) => {
-    const product = loaderData;
-    const site = (
-      (import.meta.env["VITE_SITE_URL"] as string | undefined) ?? "https://bioreza.com"
-    ).replace(/\/$/, "");
-    const canonical = `${site}/product/${encodeURIComponent(params.slug)}`;
-    if (!product) return { meta: [{ title: "Product — BIOREZA Cosmetics" }] };
-    const description = product.description.slice(0, 160);
-    const structuredData = {
-      "@context": "https://schema.org",
-      "@type": "Product",
-      name: product.name,
+    const product = loaderData?.product;
+    const locale = loaderData?.locale ?? "en";
+    if (!product) {
+      return createSeoHead({
+        title: locale === "ar" ? "المنتج غير موجود" : "Product not found",
+        description: locale === "ar" ? "هذا المنتج غير متاح." : "This product is not available.",
+        path: `/product/${encodeURIComponent(params.slug)}`,
+        locale,
+        index: false,
+        follow: true,
+        alternates: false,
+      });
+    }
+    const description = product.description
+      ? product.description
+      : locale === "ar"
+        ? `${product.name} ضمن قسم ${product.category}. اطلعي على السعر الحالي وخيارات المنتج وحالة التوفر.`
+        : `${product.name} in ${product.category}. View its current price, available variants and stock status.`;
+    const path = `/product/${encodeURIComponent(product.slug)}`;
+    const seo = createSeoHead({
+      title: productTitle(product.name, product.brand?.name),
       description,
-      image: product.gallery,
-      sku: product.sizes[0]?.id,
-      brand: { "@type": "Brand", name: product.type },
-      offers: {
-        "@type": "AggregateOffer",
-        priceCurrency: "EGP",
-        lowPrice: Math.min(...product.sizes.map((variant) => variant.price)),
-        highPrice: Math.max(...product.sizes.map((variant) => variant.price)),
-        availability: product.inStock
-          ? "https://schema.org/InStock"
-          : "https://schema.org/OutOfStock",
-        url: canonical,
+      path,
+      locale,
+      type: "product",
+      image: product.image,
+      index: product.sizes.length > 0,
+    });
+    const crumbs = [
+      { name: locale === "ar" ? "الرئيسية" : "Home", path: "/" },
+      { name: locale === "ar" ? "المتجر" : "Shop", path: "/shop" },
+      {
+        name: product.category,
+        path: `/categories/${encodeURIComponent(product.categorySlug ?? product.categoryId ?? "")}`,
       },
-      ...(product.reviews > 0
-        ? {
-            aggregateRating: {
-              "@type": "AggregateRating",
-              ratingValue: product.rating,
-              reviewCount: product.reviews,
-            },
-          }
-        : {}),
-    };
-    const breadcrumbData = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: site },
-        { "@type": "ListItem", position: 2, name: "Shop", item: `${site}/shop` },
-        { "@type": "ListItem", position: 3, name: product.name, item: canonical },
-      ],
-    };
+      { name: product.name, path },
+    ];
     return {
-      meta: [
-        { title: `${product.name} — BIOREZA Cosmetics` },
-        { name: "description", content: description },
-        { property: "og:title", content: `${product.name} — BIOREZA Cosmetics` },
-        { property: "og:description", content: description },
-        { property: "og:type", content: "product" },
-        { property: "og:image", content: product.image },
-      ],
-      links: [
-        { rel: "canonical", href: canonical },
-        { rel: "alternate", hrefLang: "en", href: `${canonical}?lang=en` },
-        { rel: "alternate", hrefLang: "ar", href: `${canonical}?lang=ar` },
-        { rel: "alternate", hrefLang: "x-default", href: canonical },
-      ],
+      ...seo,
       scripts: [
-        { type: "application/ld+json", children: JSON.stringify(structuredData) },
-        { type: "application/ld+json", children: JSON.stringify(breadcrumbData) },
+        jsonLd(productSchema(product, locale, loaderData?.reviews.items ?? [])),
+        jsonLd(breadcrumbSchema(crumbs, locale)),
       ],
     };
   },
@@ -227,16 +247,36 @@ function ProductPage() {
   const { slug } = Route.useParams();
   const { locale, add, wishlist, pendingVariants } = useStore();
   const labels = productCopy[locale];
-  const initialProduct = Route.useLoaderData();
-  const query = useProduct(slug, locale, initialProduct);
+  const initial = Route.useLoaderData();
+  const query = useProduct(slug, locale, initial.product);
   const product = query.data;
   const [variantIndex, setVariantIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [imageIndex, setImageIndex] = useState(0);
   const [added, setAdded] = useState(false);
+  const [shared, setShared] = useState(false);
   const [activeTab, setActiveTab] = useState<ProductTab>("description");
   const firstAvailableVariant =
     product?.sizes.findIndex((item) => item.stock === undefined || item.stock > 0) ?? -1;
+
+  useEffect(() => {
+    if (!product?.id) return;
+    trackCommerceEvent("product_viewed", {
+      productId: product.id,
+      categoryId: product.categoryId,
+      productSlug: product.slug,
+      categorySlug: product.categorySlug,
+      productName: product.name,
+      categoryName: product.category,
+    });
+  }, [
+    product?.category,
+    product?.categoryId,
+    product?.categorySlug,
+    product?.id,
+    product?.name,
+    product?.slug,
+  ]);
 
   useEffect(() => {
     setVariantIndex(firstAvailableVariant >= 0 ? firstAvailableVariant : 0);
@@ -298,18 +338,22 @@ function ProductPage() {
       : null;
   const tags = [product.type, product.category].filter(Boolean).join(", ");
   const categoryLine = [product.category, ...product.concerns].filter(Boolean).join(", ");
-  const sku = variant?.id ? variant.id.slice(0, 8) : product.slug;
-  const detailTabs: Array<{ id: ProductTab; label: string; content: string }> = [
-    {
-      id: "description",
-      label: labels.descriptionTab,
-      content: product.details || product.description,
-    },
-    { id: "delivery", label: labels.deliveryPolicy, content: labels.ordersShip },
-    { id: "returns", label: labels.shippingReturn, content: labels.returnPolicyCopy },
-    { id: "custom", label: labels.customTab, content: product.howToUse },
-  ];
-  const currentTab = detailTabs.find((tab) => tab.id === activeTab) ?? detailTabs[0]!;
+  const sku = variant?.sku;
+  const detailTabs = (
+    [
+      {
+        id: "description",
+        label: labels.descriptionTab,
+        content: product.details || product.description,
+      },
+      { id: "delivery", label: labels.deliveryPolicy, content: labels.ordersShip },
+      { id: "returns", label: labels.shippingReturn, content: labels.returnPolicyCopy },
+      { id: "custom", label: labels.customTab, content: product.howToUse },
+    ] satisfies Array<{ id: ProductTab; label: string; content: string }>
+  ).filter((tab) => Boolean(tab.content.trim()));
+  const selectedTab = detailTabs.some((tab) => tab.id === activeTab)
+    ? activeTab
+    : detailTabs[0]?.id;
 
   const addToBag = async () => {
     if (!variant?.id || outOfStock) return;
@@ -328,11 +372,32 @@ function ProductPage() {
     if (succeeded) setAdded(true);
   };
 
+  const shareProduct = async () => {
+    const shareData = { title: product.name, text: product.description, url: window.location.href };
+    if (navigator.share) {
+      await navigator.share(shareData).catch(() => undefined);
+      return;
+    }
+    await navigator.clipboard?.writeText(window.location.href);
+    setShared(true);
+    window.setTimeout(() => setShared(false), 1_500);
+  };
+
   return (
     <div className="sf-product-page product-template-white pb-24 lg:pb-0">
       <div className="product-shell">
         <Reveal as="nav" variant="fade" distance={0} className="product-reference-breadcrumb">
           <Link to="/">{labels.home}</Link>
+          <span aria-hidden="true">•</span>
+          <Link to="/shop">{labels.shop}</Link>
+          <span aria-hidden="true">•</span>
+          {product.categorySlug ? (
+            <Link to="/categories/$slug" params={{ slug: product.categorySlug }}>
+              {product.category}
+            </Link>
+          ) : (
+            <span>{product.category}</span>
+          )}
           <span aria-hidden="true">•</span>
           <span>{product.name}</span>
         </Reveal>
@@ -342,7 +407,10 @@ function ProductPage() {
             <div key={activeImage} className="product-gallery-active product-reference-main-image">
               <PolishedImage
                 src={activeImage}
-                alt={product.name}
+                alt={product.imageAlt || product.name}
+                width={1200}
+                height={1500}
+                loading="eager"
                 fetchPriority="high"
                 sizes="(min-width: 1200px) 49vw, 100vw"
                 wrapperClassName="product-reference-image-shell"
@@ -362,6 +430,8 @@ function ProductPage() {
                   <PolishedImage
                     src={image}
                     alt=""
+                    width={140}
+                    height={175}
                     loading="lazy"
                     sizes="140px"
                     wrapperClassName="product-reference-thumb-shell"
@@ -403,7 +473,9 @@ function ProductPage() {
               )}
             </div>
 
-            <p className="product-reference-description">{product.description}</p>
+            {product.description ? (
+              <p className="product-reference-description">{product.description}</p>
+            ) : null}
 
             <dl className="product-reference-meta">
               <div>
@@ -417,13 +489,33 @@ function ProductPage() {
                 <dt>{labels.tags}</dt>
                 <dd>{tags}</dd>
               </div>
-              <div>
-                <dt>{labels.sku}</dt>
-                <dd>{sku}</dd>
-              </div>
+              {sku ? (
+                <div>
+                  <dt>{labels.sku}</dt>
+                  <dd>{sku}</dd>
+                </div>
+              ) : null}
+              {product.brand ? (
+                <div>
+                  <dt>{labels.brand}</dt>
+                  <dd>
+                    <Link to="/brands/$slug" params={{ slug: product.brand.slug }}>
+                      {product.brand.name}
+                    </Link>
+                  </dd>
+                </div>
+              ) : null}
               <div>
                 <dt>{labels.category}</dt>
-                <dd>{categoryLine}</dd>
+                <dd>
+                  {product.categorySlug ? (
+                    <Link to="/categories/$slug" params={{ slug: product.categorySlug }}>
+                      {categoryLine}
+                    </Link>
+                  ) : (
+                    categoryLine
+                  )}
+                </dd>
               </div>
             </dl>
 
@@ -523,18 +615,20 @@ function ProductPage() {
             </Button>
 
             <div className="product-reference-links">
-              <button type="button">
+              <button type="button" onClick={() => void shareProduct()}>
                 <Share2 className="size-4" />
-                {labels.share}
+                {shared ? labels.shared : labels.share}
               </button>
-              <button type="button">
+              <a
+                href={`mailto:hello@bioreza.com?subject=${encodeURIComponent(`Question about ${product.name}`)}`}
+              >
                 <MessageCircleQuestion className="size-4" />
                 {labels.ask}
-              </button>
-              <button type="button">
+              </a>
+              <a href="#product-details">
                 <CircleHelp className="size-4" />
-                {labels.faq}
-              </button>
+                {labels.details}
+              </a>
             </div>
 
             <div className="product-reference-benefits-card">
@@ -565,48 +659,61 @@ function ProductPage() {
           </Reveal>
         </section>
 
-        <section
-          className="product-ingredient-intelligence"
-          aria-labelledby="ingredient-intelligence-title"
-        >
-          <header>
-            <div>
-              <p>{labels.ingredients}</p>
-              <h2 id="ingredient-intelligence-title">{labels.ingredientTitle}</h2>
-            </div>
-            <span>{labels.ingredientCount(product.ingredientDetails.length)}</span>
-          </header>
-          <p className="product-ingredient-intelligence__intro">{labels.ingredientCopy}</p>
-          <IngredientExplorer
-            ingredients={product.ingredientDetails}
-            fallback={product.ingredients}
-          />
-        </section>
+        {product.ingredientDetails.length > 0 || product.ingredients ? (
+          <section
+            className="product-ingredient-intelligence"
+            aria-labelledby="ingredient-intelligence-title"
+          >
+            <header>
+              <div>
+                <p>{labels.ingredients}</p>
+                <h2 id="ingredient-intelligence-title">{labels.ingredientTitle}</h2>
+              </div>
+              {product.ingredientDetails.length > 0 ? (
+                <span>{labels.ingredientCount(product.ingredientDetails.length)}</span>
+              ) : null}
+            </header>
+            {product.ingredientDetails.length > 0 ? (
+              <p className="product-ingredient-intelligence__intro">{labels.ingredientCopy}</p>
+            ) : null}
+            <IngredientExplorer
+              ingredients={product.ingredientDetails}
+              fallback={product.ingredients}
+            />
+          </section>
+        ) : null}
 
-        <section className="product-reference-details">
+        <section id="product-details" className="product-reference-details">
           <div className="product-reference-tabs" role="tablist" aria-label={labels.details}>
             {detailTabs.map((tab) => (
               <button
                 key={tab.id}
                 type="button"
                 role="tab"
-                aria-selected={activeTab === tab.id}
+                aria-selected={selectedTab === tab.id}
                 onClick={() => setActiveTab(tab.id)}
               >
                 {tab.label}
               </button>
             ))}
           </div>
-          <div className="product-reference-tab-panel" role="tabpanel">
-            <p>{currentTab.content}</p>
-            {activeTab === "description" && product.benefits.length > 0 ? (
-              <ul>
-                {product.benefits.map((benefit) => (
-                  <li key={benefit}>{benefit}</li>
-                ))}
-              </ul>
-            ) : null}
-          </div>
+          {detailTabs.map((tab) => (
+            <div
+              key={tab.id}
+              className="product-reference-tab-panel"
+              role="tabpanel"
+              hidden={selectedTab !== tab.id}
+            >
+              <p>{tab.content}</p>
+              {tab.id === "description" && product.benefits.length > 0 ? (
+                <ul>
+                  {product.benefits.map((benefit) => (
+                    <li key={benefit}>{benefit}</li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          ))}
         </section>
 
         <section className="product-reference-service-strip" aria-label={labels.benefitsTitle}>
@@ -653,26 +760,21 @@ function ProductPage() {
       </div>
       {product.id ? (
         <div id="product-reviews" className="product-reference-reviews">
-          <ProductReviews productId={product.id} />
+          <ProductReviews productId={product.id} initialData={initial.reviews} />
         </div>
       ) : null}
-      <RelatedProducts currentSlug={product.slug} locale={locale} title={labels.related} />
+      <RelatedProducts products={initial.related} title={labels.related} />
     </div>
   );
 }
 
 function RelatedProducts({
-  currentSlug,
-  locale,
+  products,
   title,
 }: {
-  currentSlug: string;
-  locale: Locale;
+  products: Awaited<ReturnType<typeof loadCatalog>>;
   title: string;
 }) {
-  const related = useCatalog({ limit: 5, sortBy: "createdAt", sortOrder: "desc" }, locale);
-  const products = (related.data ?? []).filter((item) => item.slug !== currentSlug).slice(0, 4);
-
   if (!products.length) return null;
 
   return (
@@ -684,5 +786,19 @@ function RelatedProducts({
         ))}
       </div>
     </section>
+  );
+}
+
+function emptyReviews(): ProductReviewsData {
+  return {
+    items: [],
+    summary: { average: 0, count: 0, distribution: {} },
+    meta: { page: 1, totalPages: 0, total: 0 },
+  };
+}
+
+function isNotFoundError(error: unknown) {
+  return (
+    typeof error === "object" && error !== null && "statusCode" in error && error.statusCode === 404
   );
 }

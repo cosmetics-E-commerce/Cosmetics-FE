@@ -41,7 +41,9 @@ export function ProductCard({
         <ProductLink product={product} ariaLabel={product.name} className="relative block">
           <PolishedImage
             src={product.image}
-            alt={product.name}
+            alt={product.imageAlt || product.name}
+            width={800}
+            height={1000}
             loading="lazy"
             decoding="async"
             sizes={
@@ -57,6 +59,8 @@ export function ProductCard({
               src={secondaryImage}
               alt=""
               aria-hidden="true"
+              width={800}
+              height={1000}
               loading="lazy"
               decoding="async"
               sizes={
@@ -111,7 +115,9 @@ export function ProductCard({
             {product.name}
           </ProductLink>
         </h3>
-        {!compact && <p className="sf-product-card__benefit line-clamp-2">{product.benefit}</p>}
+        {!compact && product.benefit ? (
+          <p className="sf-product-card__benefit line-clamp-2">{product.benefit}</p>
+        ) : null}
         {product.rating > 0 && (
           <div className="sf-product-card__rating flex items-center gap-2">
             <Stars value={product.rating} />

@@ -7,9 +7,15 @@ import { formatPrice } from "@/lib/products";
 import { useStore } from "@/lib/store";
 import { Reveal } from "@/components/motion/Primitives";
 import { useI18n } from "@/lib/i18n";
+import { createNoindexHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/cart")({
-  head: () => ({ meta: [{ title: "Shopping Bag — BIOREZA" }] }),
+  head: ({ match }) =>
+    createNoindexHead(
+      match.search.lang === "ar" ? "حقيبة التسوق" : "Shopping Bag",
+      "/cart",
+      match.search.lang === "ar" ? "ar" : "en",
+    ),
   component: CartPage,
 });
 
@@ -72,9 +78,9 @@ function CartPage() {
           <div className="h-64 animate-pulse bg-stone" />
         </div>
       ) : lines.length === 0 ? (
-        <Reveal className="mt-14 border border-border px-8 py-24 text-center">
+        <Reveal className="mt-14 min-w-0 border border-border px-5 py-20 text-center sm:px-8 sm:py-24">
           <h2 className="font-serif text-3xl">{t("cart.emptyTitle")}</h2>
-          <Button asChild variant="line" size="pill" className="mt-8">
+          <Button asChild variant="line" size="pill" className="mt-8 max-w-full px-5 text-center">
             <Link to="/shop">{t("cart.emptyAction")}</Link>
           </Button>
         </Reveal>
@@ -99,7 +105,10 @@ function CartPage() {
                   <PolishedImage
                     src={line.image}
                     alt={line.name}
+                    width={112}
+                    height={144}
                     loading="lazy"
+                    decoding="async"
                     wrapperClassName="h-32 w-24 shrink-0 sm:h-36 sm:w-28"
                     className="size-full object-cover"
                   />
