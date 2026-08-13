@@ -23,6 +23,8 @@ export const getRouter = () => {
   const router = createRouter({
     routeTree,
     context: { queryClient },
+    scrollRestoration: true,
+    trailingSlash: "never",
     defaultPreloadStaleTime: 0,
     defaultViewTransition:
       typeof document !== "undefined" &&

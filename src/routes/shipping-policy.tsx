@@ -1,7 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PolicyPage } from "@/components/legal/PolicyPage";
+import { createSeoHead } from "@/lib/seo";
 export const Route = createFileRoute("/shipping-policy")({
-  head: () => ({ meta: [{ title: "Shipping policy — BIOREZA Cosmetics" }] }),
+  head: ({ match }) =>
+    createSeoHead({
+      title: match.search.lang === "ar" ? "سياسة الشحن" : "Shipping Policy",
+      description:
+        match.search.lang === "ar"
+          ? "معلومات تجهيز وتتبع وتسليم طلبات بيوريزا داخل مصر وكيفية حساب التكلفة والمدة."
+          : "How BIOREZA orders are processed, tracked and delivered in Egypt, including delivery estimates and failed delivery.",
+      path: "/shipping-policy",
+      locale: match.search.lang === "ar" ? "ar" : "en",
+    }),
   component: ShippingPolicy,
 });
 function ShippingPolicy() {

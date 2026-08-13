@@ -20,9 +20,15 @@ import {
   type PendingEmailVerification,
 } from "@/lib/pending-verification";
 import { verificationErrorMessage } from "@/lib/verification-errors";
+import { createNoindexHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/verify-email")({
-  head: () => ({ meta: [{ title: "Verify email — BIOREZA" }] }),
+  head: ({ match }) =>
+    createNoindexHead(
+      match.search.lang === "ar" ? "تأكيد البريد الإلكتروني" : "Verify Email",
+      "/verify-email",
+      match.search.lang === "ar" ? "ar" : "en",
+    ),
   component: VerifyEmail,
 });
 

@@ -1,7 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PolicyPage } from "@/components/legal/PolicyPage";
+import { createSeoHead } from "@/lib/seo";
 export const Route = createFileRoute("/cookies")({
-  head: () => ({ meta: [{ title: "Cookie policy — BIOREZA Cosmetics" }] }),
+  head: ({ match }) =>
+    createSeoHead({
+      title: match.search.lang === "ar" ? "سياسة ملفات الارتباط" : "Cookie Policy",
+      description:
+        match.search.lang === "ar"
+          ? "كيفية استخدام بيوريزا لملفات الارتباط والتخزين الضروري للغة والسلة والأمان وتسجيل الدخول."
+          : "How BIOREZA uses essential cookies and browser storage for language, cart, security and sign-in continuity.",
+      path: "/cookies",
+      locale: match.search.lang === "ar" ? "ar" : "en",
+    }),
   component: Cookies,
 });
 function Cookies() {

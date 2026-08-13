@@ -1,13 +1,28 @@
-import { useState, useSyncExternalStore } from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Check, Grid2X2, Grid3X3, List, SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { Reveal } from "@/components/brand/Reveal";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { useBrands, useCatalogPage, useCategories } from "@/lib/catalog";
+import {
+  loadBrands,
+  loadCatalogPage,
+  loadCategories,
+  useBrands,
+  useCatalogPage,
+  useCategories,
+} from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
+import {
+  breadcrumbSchema,
+  createSeoHead,
+  itemListSchema,
+  jsonLd,
+  localizePath,
+  type SeoLocale,
+} from "@/lib/seo";
 
 type Search = {
   brand?: string | undefined;
@@ -21,8 +36,6 @@ type Search = {
 
 const PAGE_SIZE = 24;
 
-const subscribeToHydration = () => () => undefined;
-
 export const Route = createFileRoute("/shop")({
   validateSearch: (raw: Record<string, unknown>): Search => ({
     ...(typeof raw["brand"] === "string" ? { brand: raw["brand"] } : {}),
@@ -35,12 +48,101 @@ export const Route = createFileRoute("/shop")({
       : {}),
     ...(toPage(raw["page"]) ? { page: toPage(raw["page"]) } : {}),
   }),
-  head: () => ({
-    meta: [
-      { title: "Shop — BIOREZA Cosmetics" },
-      { name: "description", content: "Explore BIOREZA skincare, makeup, haircare and fragrance." },
-    ],
+  loaderDeps: ({ search }) => ({
+    brand: search.brand,
+    category: search.category,
+    concern: search.concern,
+    sort: search.sort,
+    search: search.search,
+    view: search.view,
+    page: search.page,
   }),
+  loader: async ({ deps, context }) => {
+    const locale: SeoLocale = context.locale === "ar" ? "ar" : "en";
+    const page = deps.page ?? 1;
+    const [catalog, categories, brands] = await Promise.all([
+      loadCatalogPage(catalogParams(deps, page), locale),
+      loadCategories(),
+      loadBrands(),
+    ]);
+    if (catalog.meta.total > 0 && page > catalog.meta.totalPages) throw notFound();
+    return { catalog, categories, brands, locale };
+  },
+  head: ({ loaderData, match }) => {
+    const locale = loaderData?.locale ?? "en";
+    const search = match.search;
+    const page = search.page ?? 1;
+    const filtered = Boolean(
+      search.brand ||
+      search.category ||
+      search.concern ||
+      search.search ||
+      search.sort ||
+      search.view,
+    );
+    const category = loaderData?.categories.find((item) => item.slug === search.category);
+    const brand = loaderData?.brands.find((item) => item.slug === search.brand);
+    const canonicalPath =
+      category && !search.brand && !search.concern && !search.search
+        ? `/categories/${encodeURIComponent(category.slug)}`
+        : brand && !search.category && !search.concern && !search.search
+          ? `/brands/${encodeURIComponent(brand.slug)}`
+          : "/shop";
+    const title = search.search
+      ? locale === "ar"
+        ? `نتائج البحث عن ${search.search}`
+        : `Search results for ${search.search}`
+      : page > 1
+        ? locale === "ar"
+          ? `المتجر - الصفحة ${page}`
+          : `Shop Products - Page ${page}`
+        : locale === "ar"
+          ? "تسوّقي منتجات العناية والجمال"
+          : "Shop Skincare, Makeup, Haircare & Fragrance";
+    const seo = createSeoHead({
+      title,
+      description:
+        locale === "ar"
+          ? "تصفّحي منتجات العناية بالبشرة والمكياج والشعر والعطور المتاحة من بيوريزا."
+          : "Browse BIOREZA skincare, makeup, haircare and fragrance products with current prices and availability.",
+      path: canonicalPath,
+      locale,
+      page: filtered ? undefined : page,
+      index: !filtered && Boolean(loaderData?.catalog.items.length),
+      follow: true,
+      alternates: !filtered,
+      prevPath: !filtered && page > 1 ? localizePath("/shop", locale, page - 1) : undefined,
+      nextPath:
+        !filtered && loaderData?.catalog.meta.hasNext
+          ? localizePath("/shop", locale, page + 1)
+          : undefined,
+    });
+    return {
+      ...seo,
+      scripts:
+        !filtered && loaderData
+          ? [
+              jsonLd(
+                breadcrumbSchema(
+                  [
+                    { name: locale === "ar" ? "الرئيسية" : "Home", path: "/" },
+                    { name: locale === "ar" ? "المتجر" : "Shop", path: "/shop" },
+                  ],
+                  locale,
+                ),
+              ),
+              jsonLd(
+                itemListSchema(
+                  title,
+                  loaderData.catalog.items,
+                  locale,
+                  (page - 1) * loaderData.catalog.meta.limit,
+                ),
+              ),
+            ]
+          : [],
+    };
+  },
   component: Shop,
 });
 
@@ -52,30 +154,10 @@ function Shop() {
   const [filters, setFilters] = useState(false);
   const view = search.view ?? "compact";
   const page = search.page ?? 1;
-  const hydrated = useSyncExternalStore(
-    subscribeToHydration,
-    () => true,
-    () => false,
-  );
-  const sort =
-    search.sort === "price-asc"
-      ? { sortBy: "basePrice", sortOrder: "asc" }
-      : search.sort === "price-desc"
-        ? { sortBy: "basePrice", sortOrder: "desc" }
-        : { sortBy: "createdAt", sortOrder: "desc" };
-  const catalog = useCatalogPage(
-    {
-      page,
-      limit: PAGE_SIZE,
-      brandSlug: search.brand?.toLowerCase(),
-      categorySlug: search.category?.toLowerCase(),
-      search: search.search ?? search.concern,
-      ...sort,
-    },
-    locale,
-  );
-  const categories = useCategories();
-  const brands = useBrands();
+  const initial = Route.useLoaderData();
+  const catalog = useCatalogPage(catalogParams(search, page), locale, initial.catalog);
+  const categories = useCategories(initial.categories);
+  const brands = useBrands(initial.brands);
   const activeFilters = [
     search.brand ? { key: "brand" as const, label: search.brand } : null,
     search.category ? { key: "category" as const, label: search.category } : null,
@@ -110,24 +192,17 @@ function Shop() {
   ];
   const products = catalog.data?.items ?? [];
   const meta = catalog.data?.meta;
-  const productCount = hydrated ? (meta?.total ?? products.length) : 0;
+  const productCount = meta?.total ?? products.length;
   const pageStart = meta && meta.total > 0 ? (meta.page - 1) * meta.limit + 1 : 0;
   const pageEnd = meta ? Math.min(meta.page * meta.limit, meta.total) : products.length;
-  const goToPage = (nextPage: number) =>
-    navigate({
-      search: {
-        ...search,
-        page: nextPage > 1 ? nextPage : undefined,
-      },
-    });
   const resetPageSearch = (next: Search): Search => ({
     ...next,
     page: undefined,
   });
   const shopHeadline =
     locale === "ar"
-      ? "تسوّقي منتجات تجميل نظيفة وعالية الجودة"
-      : "Shop environment friendly quality goods";
+      ? "تسوّقي العناية بالبشرة والمكياج والشعر والعطور"
+      : "Shop Skincare, Makeup, Haircare & Fragrance";
   const FilterList = (
     <div className="sf-shop-filter-panel__group">
       <p className="sf-shop-filter-panel__eyebrow">{t("shop.category")}</p>
@@ -146,28 +221,19 @@ function Shop() {
             {!search.category && <Check className="size-4" aria-hidden="true" />}
           </button>
         </li>
-        {hydrated &&
-          categories.data?.map((category) => (
-            <li key={category.id}>
-              <button
-                type="button"
-                onClick={() => {
-                  navigate({ search: resetPageSearch({ ...search, category: category.slug }) });
-                  setFilters(false);
-                }}
-                className="sf-shop-filter-panel__option"
-                data-active={search.category === category.slug || undefined}
-              >
-                <span>{locale === "ar" ? category.nameAr : category.nameEn}</span>
-                <span className="sf-shop-filter-panel__meta">
-                  {category.productCount}
-                  {search.category === category.slug && (
-                    <Check className="size-4" aria-hidden="true" />
-                  )}
-                </span>
-              </button>
-            </li>
-          ))}
+        {categories.data?.map((category) => (
+          <li key={category.id}>
+            <Link
+              to="/categories/$slug"
+              params={{ slug: category.slug }}
+              onClick={() => setFilters(false)}
+              className="sf-shop-filter-panel__option"
+            >
+              <span>{locale === "ar" ? category.nameAr : category.nameEn}</span>
+              <span className="sf-shop-filter-panel__meta">{category.productCount}</span>
+            </Link>
+          </li>
+        ))}
       </ul>
       {brands.data && brands.data.length > 0 && (
         <div className="sf-shop-filter-panel__group sf-shop-filter-panel__group--divided">
@@ -179,23 +245,15 @@ function Shop() {
               .filter((brand) => brand.productCount > 0)
               .map((brand) => (
                 <li key={brand.id}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      navigate({ search: resetPageSearch({ ...search, brand: brand.slug }) });
-                      setFilters(false);
-                    }}
+                  <Link
+                    to="/brands/$slug"
+                    params={{ slug: brand.slug }}
+                    onClick={() => setFilters(false)}
                     className="sf-shop-filter-panel__option"
-                    data-active={search.brand === brand.slug || undefined}
                   >
                     <span>{brand.name}</span>
-                    <span className="sf-shop-filter-panel__meta">
-                      {brand.productCount}
-                      {search.brand === brand.slug && (
-                        <Check className="size-4" aria-hidden="true" />
-                      )}
-                    </span>
-                  </button>
+                    <span className="sf-shop-filter-panel__meta">{brand.productCount}</span>
+                  </Link>
                 </li>
               ))}
           </ul>
@@ -289,8 +347,8 @@ function Shop() {
             </button>
           </div>
         )}
-        {(!hydrated || catalog.isLoading) && <ProductGridSkeleton view={view} />}
-        {hydrated && catalog.error && (
+        {catalog.isLoading && <ProductGridSkeleton view={view} />}
+        {catalog.error && (
           <State
             title={t("shop.errorTitle")}
             copy={t("shop.errorCopy")}
@@ -298,7 +356,7 @@ function Shop() {
             actionLabel={t("common.tryAgain")}
           />
         )}
-        {hydrated && !catalog.isLoading && !catalog.error && products.length === 0 && (
+        {!catalog.isLoading && !catalog.error && products.length === 0 && (
           <State
             title={t("shop.emptyTitle")}
             copy={t("shop.emptyCopy")}
@@ -306,7 +364,7 @@ function Shop() {
             actionLabel={t("shop.clearFilters")}
           />
         )}
-        {hydrated && catalog.data && (
+        {catalog.data && (
           <>
             <div
               className={`sf-shop-products ${
@@ -331,8 +389,19 @@ function Shop() {
               <ShopPagination
                 page={meta.page}
                 totalPages={meta.totalPages}
-                onPageChange={goToPage}
+                onPageChange={(nextPage) =>
+                  navigate({ search: { ...search, page: nextPage > 1 ? nextPage : undefined } })
+                }
                 locale={locale}
+                search={search}
+                crawlable={
+                  !search.brand &&
+                  !search.category &&
+                  !search.concern &&
+                  !search.search &&
+                  !search.sort &&
+                  !search.view
+                }
               />
             )}
           </>
@@ -425,6 +494,23 @@ function toPage(value: unknown) {
   return Number.isFinite(page) && page > 1 ? page : undefined;
 }
 
+function catalogParams(search: Search, page: number) {
+  const sort =
+    search.sort === "price-asc"
+      ? { sortBy: "basePrice", sortOrder: "asc" }
+      : search.sort === "price-desc"
+        ? { sortBy: "basePrice", sortOrder: "desc" }
+        : { sortBy: "createdAt", sortOrder: "desc" };
+  return {
+    page,
+    limit: PAGE_SIZE,
+    brandSlug: search.brand?.toLowerCase(),
+    categorySlug: search.category?.toLowerCase(),
+    search: search.search ?? search.concern,
+    ...sort,
+  };
+}
+
 function visiblePages(page: number, totalPages: number) {
   const pages = new Set(
     [1, totalPages, page - 1, page, page + 1].filter((p) => p >= 1 && p <= totalPages),
@@ -437,11 +523,15 @@ function ShopPagination({
   totalPages,
   onPageChange,
   locale,
+  search,
+  crawlable,
 }: {
   page: number;
   totalPages: number;
   onPageChange: (page: number) => void;
   locale: "ar" | "en";
+  search: Search;
+  crawlable: boolean;
 }) {
   const pages = visiblePages(page, totalPages);
   let previous = 0;
@@ -451,9 +541,15 @@ function ShopPagination({
       className="sf-shop-pagination"
       aria-label={locale === "ar" ? "صفحات المنتجات" : "Product pages"}
     >
-      <button type="button" onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
-        {locale === "ar" ? "السابق" : "Previous"}
-      </button>
+      {crawlable && page > 1 ? (
+        <Link to="/shop" search={{ ...search, page: page > 2 ? page - 1 : undefined }}>
+          {locale === "ar" ? "السابق" : "Previous"}
+        </Link>
+      ) : (
+        <button type="button" onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
+          {locale === "ar" ? "السابق" : "Previous"}
+        </button>
+      )}
       <ol>
         {pages.map((item) => {
           const gap = item - previous > 1;
@@ -461,20 +557,36 @@ function ShopPagination({
           return (
             <li key={item}>
               {gap && <span className="sf-shop-pagination__ellipsis">...</span>}
-              <button
-                type="button"
-                onClick={() => onPageChange(item)}
-                aria-current={item === page ? "page" : undefined}
-              >
-                {item}
-              </button>
+              {crawlable ? (
+                <Link
+                  to="/shop"
+                  search={{ ...search, page: item > 1 ? item : undefined }}
+                  aria-current={item === page ? "page" : undefined}
+                >
+                  {item}
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => onPageChange(item)}
+                  aria-current={item === page ? "page" : undefined}
+                >
+                  {item}
+                </button>
+              )}
             </li>
           );
         })}
       </ol>
-      <button type="button" onClick={() => onPageChange(page + 1)} disabled={page >= totalPages}>
-        {locale === "ar" ? "التالي" : "Next"}
-      </button>
+      {crawlable && page < totalPages ? (
+        <Link to="/shop" search={{ ...search, page: page + 1 }}>
+          {locale === "ar" ? "التالي" : "Next"}
+        </Link>
+      ) : (
+        <button type="button" onClick={() => onPageChange(page + 1)} disabled={page >= totalPages}>
+          {locale === "ar" ? "التالي" : "Next"}
+        </button>
+      )}
     </nav>
   );
 }

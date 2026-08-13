@@ -14,9 +14,11 @@ export function BrandMarquee({ initialBrands }: BrandMarqueeProps) {
   const { data } = useBrands(initialBrands);
   const brands = useMemo(
     () =>
-      [...(data ?? [])].sort((left, right) =>
-        left.name.localeCompare(right.name, locale, { sensitivity: "base" }),
-      ),
+      [...(data ?? [])]
+        .filter((brand) => brand.productCount > 0)
+        .sort((left, right) =>
+          left.name.localeCompare(right.name, locale, { sensitivity: "base" }),
+        ),
     [data, locale],
   );
 
@@ -66,8 +68,8 @@ function BrandLink({
 }) {
   return (
     <Link
-      to="/shop"
-      search={{ brand: brand.slug }}
+      to="/brands/$slug"
+      params={{ slug: brand.slug }}
       className="sf-brand-marquee__item"
       title={decorative ? undefined : brand.name}
       tabIndex={decorative ? -1 : undefined}

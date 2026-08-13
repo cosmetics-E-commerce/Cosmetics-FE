@@ -11,10 +11,17 @@ import {
   createProductReview,
   getReviewEligibility,
   listProductReviews,
+  type ProductReviews as ProductReviewsData,
 } from "@/lib/api";
 import { useStore } from "@/lib/store";
 
-export function ProductReviews({ productId }: { productId: string }) {
+export function ProductReviews({
+  productId,
+  initialData,
+}: {
+  productId: string;
+  initialData?: ProductReviewsData;
+}) {
   const { user, locale } = useStore();
   const client = useQueryClient();
   const ar = locale === "ar";
@@ -22,6 +29,8 @@ export function ProductReviews({ productId }: { productId: string }) {
   const reviews = useQuery({
     queryKey: ["reviews", productId],
     queryFn: () => listProductReviews(productId),
+    initialData,
+    staleTime: 60_000,
   });
   const eligibility = useQuery({
     queryKey: ["reviews", "eligibility", productId],

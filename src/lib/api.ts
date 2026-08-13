@@ -811,12 +811,40 @@ export async function listCategories() {
   return normalizeList(result);
 }
 
+export async function listCategoriesPage(params: Record<string, string | number | undefined> = {}) {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(
+    ([key, value]) => value !== undefined && value !== "" && query.set(key, String(value)),
+  );
+  const result = await rawEnvelope<
+    | PublicCategoryResponse[]
+    | { items?: PublicCategoryResponse[]; data?: PublicCategoryResponse[]; meta?: unknown }
+  >(`/categories${query.size ? `?${query}` : ""}`, { auth: false });
+  return normalizePaginatedList(result.data, result.meta, params);
+}
+
 export async function listBrands() {
   const result = await rawRequest<
     | PublicBrandListItemResponse[]
     | { items?: PublicBrandListItemResponse[]; data?: PublicBrandListItemResponse[] }
   >("/brands?limit=100&sortBy=name&sortOrder=asc", { auth: false });
   return normalizeList(result);
+}
+
+export async function listBrandsPage(params: Record<string, string | number | undefined> = {}) {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(
+    ([key, value]) => value !== undefined && value !== "" && query.set(key, String(value)),
+  );
+  const result = await rawEnvelope<
+    | PublicBrandListItemResponse[]
+    | {
+        items?: PublicBrandListItemResponse[];
+        data?: PublicBrandListItemResponse[];
+        meta?: unknown;
+      }
+  >(`/brands${query.size ? `?${query}` : ""}`, { auth: false });
+  return normalizePaginatedList(result.data, result.meta, params);
 }
 
 export const subscribeNewsletter = (email: string, locale: "en" | "ar") =>

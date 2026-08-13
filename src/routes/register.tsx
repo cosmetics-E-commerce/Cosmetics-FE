@@ -9,8 +9,14 @@ import {
   savePendingVerification,
 } from "@/lib/pending-verification";
 import { normalizeEgyptPhone } from "@/lib/forms";
+import { createNoindexHead } from "@/lib/seo";
 export const Route = createFileRoute("/register")({
-  head: () => ({ meta: [{ title: "Create account — BIOREZA" }] }),
+  head: ({ match }) =>
+    createNoindexHead(
+      match.search.lang === "ar" ? "إنشاء حساب" : "Create Account",
+      "/register",
+      match.search.lang === "ar" ? "ar" : "en",
+    ),
   component: Register,
 });
 function Register() {

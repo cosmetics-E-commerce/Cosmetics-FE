@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateAdminUserSchema = exports.adminCustomerOrdersQuerySchema = exports.adminUsersQuerySchema = exports.adminUserDetailSchema = exports.adminCustomerSummarySchema = exports.adminCustomerStatisticsSchema = exports.adminCustomerListItemSchema = exports.adminCustomerOrderSchema = exports.userProfileSchema = exports.updateAddressSchema = exports.createAddressSchema = exports.addressSchema = exports.updateMyProfileSchema = void 0;
+exports.updateAdminUserSchema = exports.adminCustomerOrdersQuerySchema = exports.adminUsersQuerySchema = exports.adminUserDetailSchema = exports.adminCustomerSummarySchema = exports.adminCustomerStatisticsSchema = exports.adminCustomerListItemSchema = exports.adminCustomerOrderSchema = exports.userProfileSchema = exports.updateAddressSchema = exports.createAddressSchema = exports.addressSchema = exports.phoneChangeOtpChallengeSchema = exports.requestPhoneChangeOtpSchema = exports.updateMyProfileSchema = void 0;
 const zod_1 = require("zod");
 const primitives_1 = require("../common/primitives");
 const enums_1 = require("../enums");
@@ -16,11 +16,20 @@ exports.updateMyProfileSchema = zod_1.z
     firstName: zod_1.z.string().trim().min(2).max(100).optional(),
     lastName: zod_1.z.string().trim().min(2).max(100).optional(),
     phone: primitives_1.egyptPhoneSchema.optional(),
+    phoneChangeOtp: zod_1.z
+        .string()
+        .regex(/^[0-9]{6}$/, "OTP must be a 6-digit code")
+        .optional(),
     profileImage: zod_1.z.string().trim().url().max(2048).nullable().optional(),
     gender: enums_1.GenderEnum.nullable().optional(),
     dateOfBirth: isoDateSchema.nullable().optional(),
 })
     .strict();
+exports.requestPhoneChangeOtpSchema = zod_1.z.object({}).strict();
+exports.phoneChangeOtpChallengeSchema = zod_1.z.object({
+    maskedEmail: zod_1.z.string().min(3),
+    ttlSeconds: zod_1.z.number().int().positive(),
+});
 exports.addressSchema = zod_1.z.object({
     id: primitives_1.uuidSchema,
     label: enums_1.AddressLabelEnum.nullable(),

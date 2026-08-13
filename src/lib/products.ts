@@ -58,7 +58,9 @@ export type IngredientInfo = {
 export type Product = {
   id?: string;
   categoryId?: string;
+  categorySlug?: string;
   brandId?: string | null;
+  brand?: { name: string; slug: string } | null;
   slug: string;
   name: string;
   category: string;
@@ -74,10 +76,12 @@ export type Product = {
   rating: number;
   reviews: number;
   image: string;
+  imageAlt?: string;
   gallery: string[];
   badge?: "New" | "Bestseller" | "Limited";
   sizes: {
     id?: string;
+    sku?: string;
     label: string;
     price: number;
     originalPrice?: number;

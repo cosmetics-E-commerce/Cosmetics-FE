@@ -20,6 +20,7 @@ import { Reveal } from "@/components/brand/Reveal";
 import { Button } from "@/components/ui/button";
 import { PolishedImage } from "@/components/ui/polished-image";
 import { apiErrorMessage, listOffers, subscribeNewsletter, type StorefrontOffer } from "@/lib/api";
+import { createSeoHead } from "@/lib/seo";
 import { useStore } from "@/lib/store";
 
 type SortMode = "latest" | "ending";
@@ -60,12 +61,32 @@ const trustItems = [
 ] as const;
 
 export const Route = createFileRoute("/offers")({
-  head: () => ({ meta: [{ title: "Offers — BIOREZA" }] }),
+  loader: () => listOffers(),
+  head: ({ loaderData, match }) => {
+    const locale = match.search.lang === "ar" ? "ar" : "en";
+    return createSeoHead({
+      title: locale === "ar" ? "عروض التجميل الحالية" : "Current Beauty Offers",
+      description:
+        locale === "ar"
+          ? "اطلعي على عروض بيوريزا النشطة والتوفير المطبق تلقائياً على المنتجات المؤهلة."
+          : "View active BIOREZA offers and automatic savings on eligible beauty products.",
+      path: "/offers",
+      locale,
+      index: Boolean(loaderData?.length),
+      follow: true,
+    });
+  },
   component: OffersPage,
 });
 
 function OffersPage() {
-  const query = useQuery({ queryKey: ["offers"], queryFn: listOffers, refetchInterval: 60_000 });
+  const initialOffers = Route.useLoaderData();
+  const query = useQuery({
+    queryKey: ["offers"],
+    queryFn: listOffers,
+    initialData: initialOffers,
+    refetchInterval: 60_000,
+  });
   const { locale } = useStore();
   const [sort, setSort] = useState<SortMode>("latest");
   const [subscribing, setSubscribing] = useState(false);

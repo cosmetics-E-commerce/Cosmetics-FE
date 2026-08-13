@@ -38,8 +38,14 @@ import { useStore } from "@/lib/store";
 import { trackCommerceEvent } from "@/lib/analytics";
 import { Reveal } from "@/components/motion/Primitives";
 import { useI18n } from "@/lib/i18n";
+import { createNoindexHead } from "@/lib/seo";
 export const Route = createFileRoute("/checkout")({
-  head: () => ({ meta: [{ title: "Checkout — BIOREZA" }] }),
+  head: ({ match }) =>
+    createNoindexHead(
+      match.search.lang === "ar" ? "إتمام الطلب" : "Checkout",
+      "/checkout",
+      match.search.lang === "ar" ? "ar" : "en",
+    ),
   component: Checkout,
 });
 
@@ -333,7 +339,10 @@ function Checkout() {
                         <PolishedImage
                           src={line.image}
                           alt=""
+                          width={96}
+                          height={120}
                           loading="lazy"
+                          decoding="async"
                           wrapperClassName="sf-checkout-bag-item__image"
                           className="size-full object-cover"
                         />

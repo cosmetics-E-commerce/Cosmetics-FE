@@ -1,7 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PolicyPage } from "@/components/legal/PolicyPage";
+import { createSeoHead } from "@/lib/seo";
 export const Route = createFileRoute("/terms")({
-  head: () => ({ meta: [{ title: "Terms & conditions — BIOREZA Cosmetics" }] }),
+  head: ({ match }) =>
+    createSeoHead({
+      title: match.search.lang === "ar" ? "الشروط والأحكام" : "Terms & Conditions",
+      description:
+        match.search.lang === "ar"
+          ? "شروط استخدام متجر بيوريزا والطلبات والدفع والمنتجات داخل مصر."
+          : "Terms governing use of the BIOREZA storefront, orders, payments and products in Egypt.",
+      path: "/terms",
+      locale: match.search.lang === "ar" ? "ar" : "en",
+    }),
   component: Terms,
 });
 function Terms() {

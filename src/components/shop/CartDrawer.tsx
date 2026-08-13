@@ -85,7 +85,10 @@ export function CartDrawer() {
                     <PolishedImage
                       src={line.image}
                       alt={line.name}
+                      width={80}
+                      height={112}
                       loading="lazy"
+                      decoding="async"
                       wrapperClassName="h-28 w-20 shrink-0"
                       className="size-full object-cover"
                     />
