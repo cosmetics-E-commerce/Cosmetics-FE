@@ -12449,7 +12449,7 @@ body:has(.account-page) .header-nav-indicator {
 /* Wishlist, verified reviews, and product intelligence overhaul */
 .product-template-white .product-shell {
   width: min(calc(100% - 48px), 1440px);
-  padding-block: 30px 58px;
+  padding-block: 10px 58px;
 }
 
 .product-reference-breadcrumb {

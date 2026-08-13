@@ -3,6 +3,7 @@ import {
   clearSession,
   createSupportRequest,
   listProductsPage,
+  listMyReviews,
   listProductReviews,
   normalizeProductReviews,
   refreshSession,
@@ -207,6 +208,24 @@ describe("email verification API", () => {
 });
 
 describe("product reviews API", () => {
+  it("treats a missing customer review library endpoint as an empty history", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            statusCode: 404,
+            code: "NOT_FOUND",
+            message: "Cannot GET /api/v1/reviews/mine",
+          }),
+          { status: 404, headers: { "Content-Type": "application/json" } },
+        ),
+      ),
+    );
+
+    await expect(listMyReviews()).resolves.toEqual({ items: [], total: 0 });
+  });
+
   it("normalizes the legacy paginated array that previously crashed product pages", async () => {
     vi.stubGlobal(
       "fetch",

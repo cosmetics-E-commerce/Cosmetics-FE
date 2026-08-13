@@ -913,7 +913,17 @@ export const createProductReview = (
 
 export const getReviewEligibility = (productId: string) =>
   rawRequest<ReviewEligibilityResponse>(`/reviews/eligibility/${productId}`);
-export const listMyReviews = () => rawRequest<CustomerReviewLibraryResponse>("/reviews/mine");
+export async function listMyReviews(): Promise<CustomerReviewLibraryResponse> {
+  try {
+    return await rawRequest<CustomerReviewLibraryResponse>("/reviews/mine");
+  } catch (error) {
+    const problem = error as ApiError | undefined;
+    if (problem?.statusCode === 404 || problem?.code === "NOT_FOUND") {
+      return { items: [], total: 0 };
+    }
+    throw error;
+  }
+}
 export const updateMyReview = (
   reviewId: string,
   body: { rating?: number; title?: string; body?: string },

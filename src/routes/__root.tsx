@@ -193,6 +193,24 @@ function RootComponent() {
   const isHome = pathname === "/";
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+    return () => {
+      window.history.scrollRestoration = previousScrollRestoration;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    const frame = window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [pathname]);
+
+  useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;

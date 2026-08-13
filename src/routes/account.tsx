@@ -121,7 +121,7 @@ function Account() {
   const myReviews = useQuery({
     queryKey: ["account", "reviews"],
     queryFn: listMyReviews,
-    enabled: Boolean(user),
+    enabled: Boolean(user) && tab === "reviews",
   });
   const addressMutation = useMutation({
     mutationFn: createAddress,
