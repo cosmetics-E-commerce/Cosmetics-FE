@@ -53,7 +53,8 @@ const productCopy = {
     details: "Product details",
     ingredients: "Ingredients",
     ingredientTitle: "Ingredient intelligence",
-    ingredientCopy: "Hover or select an ingredient to see its role, benefits, concerns, and suitability from our curated catalog.",
+    ingredientCopy:
+      "Hover or select an ingredient to see its role, benefits, concerns, and suitability from our curated catalog.",
     ingredientCount: (count: number) => `${count} mapped ingredients`,
     use: "How to use",
     reviews: "reviews",
@@ -564,7 +565,10 @@ function ProductPage() {
           </Reveal>
         </section>
 
-        <section className="product-ingredient-intelligence" aria-labelledby="ingredient-intelligence-title">
+        <section
+          className="product-ingredient-intelligence"
+          aria-labelledby="ingredient-intelligence-title"
+        >
           <header>
             <div>
               <p>{labels.ingredients}</p>

@@ -203,11 +203,13 @@ export function IngredientExplorer({
       .split(/[,;\n]/)
       .map((name) => name.trim())
       .filter(Boolean);
-    if (!rawNames.length) return ingredients.map((ingredient) => ({ name: ingredient.inciName, ingredient }));
+    if (!rawNames.length)
+      return ingredients.map((ingredient) => ({ name: ingredient.inciName, ingredient }));
     const byName = new Map<string, IngredientInfo>();
     for (const ingredient of ingredients) {
       byName.set(ingredient.inciName.trim().toLocaleLowerCase("en-US"), ingredient);
-      if (ingredient.commonName) byName.set(ingredient.commonName.trim().toLocaleLowerCase("en-US"), ingredient);
+      if (ingredient.commonName)
+        byName.set(ingredient.commonName.trim().toLocaleLowerCase("en-US"), ingredient);
     }
     const used = new Set<string>();
     const ordered = rawNames.map((name) => {
@@ -233,7 +235,10 @@ export function IngredientExplorer({
         aria-label="Product ingredients"
       >
         {displayIngredients.map(({ name, ingredient }, index) => (
-          <span key={ingredient?.id ?? `${name}-${index}`} className="inline-flex items-center gap-2">
+          <span
+            key={ingredient?.id ?? `${name}-${index}`}
+            className="inline-flex items-center gap-2"
+          >
             {ingredient ? (
               <IngredientChip
                 ingredient={ingredient}
@@ -247,7 +252,10 @@ export function IngredientExplorer({
                 onTouchOpen={() => setActive(ingredient)}
               />
             ) : (
-              <span className="ingredient-unmapped" title="No curated ingredient profile is available yet">
+              <span
+                className="ingredient-unmapped"
+                title="No curated ingredient profile is available yet"
+              >
                 {name}
               </span>
             )}

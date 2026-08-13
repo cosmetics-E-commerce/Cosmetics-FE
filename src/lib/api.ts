@@ -913,8 +913,7 @@ export const createProductReview = (
 
 export const getReviewEligibility = (productId: string) =>
   rawRequest<ReviewEligibilityResponse>(`/reviews/eligibility/${productId}`);
-export const listMyReviews = () =>
-  rawRequest<CustomerReviewLibraryResponse>("/reviews/mine");
+export const listMyReviews = () => rawRequest<CustomerReviewLibraryResponse>("/reviews/mine");
 export const updateMyReview = (
   reviewId: string,
   body: { rating?: number; title?: string; body?: string },
@@ -983,10 +982,9 @@ export const addWishlistToCollection = (collectionId: string, productId: string)
     body: { productId },
   });
 export const removeWishlistFromCollection = (collectionId: string, productId: string) =>
-  rawRequest<WishlistResponse>(
-    `/wishlist/collections/${collectionId}/items/${productId}`,
-    { method: "DELETE" },
-  );
+  rawRequest<WishlistResponse>(`/wishlist/collections/${collectionId}/items/${productId}`, {
+    method: "DELETE",
+  });
 export const getWishlistShareToken = (collectionId: string) =>
   rawRequest<{ shareToken: string }>(`/wishlist/collections/${collectionId}/share`);
 export const getSharedWishlist = (shareToken: string) =>

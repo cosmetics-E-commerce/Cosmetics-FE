@@ -76,7 +76,10 @@ export function ProductReviews({ productId }: { productId: string }) {
 
         <div className="review-studio__feed">
           {reviews.isLoading ? (
-            <div className="review-studio__loading" aria-label={ar ? "جار التحميل" : "Loading reviews"}>
+            <div
+              className="review-studio__loading"
+              aria-label={ar ? "جار التحميل" : "Loading reviews"}
+            >
               <span />
               <span />
             </div>
@@ -96,7 +99,9 @@ export function ProductReviews({ productId }: { productId: string }) {
                 {review.title ? <h3>{review.title}</h3> : null}
                 {review.body ? <p>{review.body}</p> : null}
                 <footer>
-                  <span>{review.author.firstName} {review.author.lastInitial}.</span>
+                  <span>
+                    {review.author.firstName} {review.author.lastInitial}.
+                  </span>
                   {review.author.verifiedPurchase ? (
                     <span className="review-entry__verified">
                       <CheckCircle2 aria-hidden="true" />
@@ -159,7 +164,13 @@ function ReviewEligibilityState({
     );
   }
   if (loading) {
-    return <div className="review-studio__eligibility-loading"><span /><span /><span /></div>;
+    return (
+      <div className="review-studio__eligibility-loading">
+        <span />
+        <span />
+        <span />
+      </div>
+    );
   }
   if (eligibility?.reason === "ALREADY_REVIEWED") {
     const status = eligibility.existingReview?.status ?? "PENDING";
@@ -170,10 +181,16 @@ function ReviewEligibilityState({
       >
         <p>
           {status === "APPROVED"
-            ? ar ? "مراجعتك منشورة الآن." : "Your review is live."
+            ? ar
+              ? "مراجعتك منشورة الآن."
+              : "Your review is live."
             : status === "REJECTED"
-              ? ar ? "يمكنك تعديل مراجعتك وإرسالها مرة أخرى." : "You can edit and resubmit your review."
-              : ar ? "مراجعتك قيد التحقق." : "Your review is awaiting moderation."}
+              ? ar
+                ? "يمكنك تعديل مراجعتك وإرسالها مرة أخرى."
+                : "You can edit and resubmit your review."
+              : ar
+                ? "مراجعتك قيد التحقق."
+                : "Your review is awaiting moderation."}
         </p>
         <Button asChild variant="line" size="pill">
           <Link to="/account" search={{ section: "reviews" }}>
@@ -191,7 +208,9 @@ function ReviewEligibilityState({
             ? "اطلب هذا المنتج واستلمه أولاً. هذا يحافظ على المراجعات حقيقية ومفيدة."
             : "Order and receive this product first. That keeps every review grounded in a real purchase."}
         </p>
-        <span className="review-gate__rule">{ar ? "مطلوب طلب تم توصيله" : "Delivered order required"}</span>
+        <span className="review-gate__rule">
+          {ar ? "مطلوب طلب تم توصيله" : "Delivered order required"}
+        </span>
       </ReviewGate>
     );
   }
@@ -244,7 +263,9 @@ function ReviewEligibilityState({
           required
           minLength={10}
           maxLength={5000}
-          placeholder={ar ? "كيف استخدمته وما النتيجة؟" : "How did you use it and what did you notice?"}
+          placeholder={
+            ar ? "كيف استخدمته وما النتيجة؟" : "How did you use it and what did you notice?"
+          }
         />
       </label>
       <Button type="submit" variant="solid" size="pill" loading={pending}>

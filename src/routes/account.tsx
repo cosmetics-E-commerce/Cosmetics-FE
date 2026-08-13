@@ -498,13 +498,23 @@ function Account() {
           {tab === "reviews" && (
             <div className="account-detail account-reviews">
               {myReviews.isLoading ? (
-                <div className="account-detail-skeleton account-detail-skeleton--orders"><span /><span /><span /></div>
+                <div className="account-detail-skeleton account-detail-skeleton--orders">
+                  <span />
+                  <span />
+                  <span />
+                </div>
               ) : myReviews.isError ? (
                 <div className="account-detail-state">
                   <RefreshCw aria-hidden="true" />
-                  <h3>{locale === "ar" ? "تعذر تحميل المراجعات" : "Reviews could not be loaded"}</h3>
-                  <p>{locale === "ar" ? "حاولي مرة أخرى." : "Try loading your review history again."}</p>
-                  <Button variant="line" size="pill" onClick={() => void myReviews.refetch()}>{locale === "ar" ? "إعادة المحاولة" : "Try again"}</Button>
+                  <h3>
+                    {locale === "ar" ? "تعذر تحميل المراجعات" : "Reviews could not be loaded"}
+                  </h3>
+                  <p>
+                    {locale === "ar" ? "حاولي مرة أخرى." : "Try loading your review history again."}
+                  </p>
+                  <Button variant="line" size="pill" onClick={() => void myReviews.refetch()}>
+                    {locale === "ar" ? "إعادة المحاولة" : "Try again"}
+                  </Button>
                 </div>
               ) : myReviews.data ? (
                 <ReviewLibrary data={myReviews.data} locale={locale} />

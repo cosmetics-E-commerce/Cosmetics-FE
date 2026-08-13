@@ -38,13 +38,7 @@ import {
 import { mapProduct, type Locale } from "@/lib/catalog";
 import { formatPrice } from "@/lib/products";
 
-export function WishlistStudio({
-  data,
-  locale,
-}: {
-  data: WishlistResponse;
-  locale: Locale;
-}) {
+export function WishlistStudio({ data, locale }: { data: WishlistResponse; locale: Locale }) {
   const client = useQueryClient();
   const ar = locale === "ar";
   const [selectedId, setSelectedId] = useState(data.collections[0]?.id ?? "");
@@ -54,7 +48,8 @@ export function WishlistStudio({
   const [copied, setCopied] = useState(false);
   const [copyTargets, setCopyTargets] = useState<Record<string, string>>({});
   const selected = useMemo(
-    () => data.collections.find((collection) => collection.id === selectedId) ?? data.collections[0],
+    () =>
+      data.collections.find((collection) => collection.id === selectedId) ?? data.collections[0],
     [data.collections, selectedId],
   );
 
@@ -104,7 +99,10 @@ export function WishlistStudio({
       </header>
 
       <div className="wishlist-studio__workspace">
-        <aside className="wishlist-studio__rail" aria-label={ar ? "قوائم الرغبات" : "Wishlist collections"}>
+        <aside
+          className="wishlist-studio__rail"
+          aria-label={ar ? "قوائم الرغبات" : "Wishlist collections"}
+        >
           <div className="wishlist-studio__rail-label">
             <span>{ar ? "القوائم" : "Collections"}</span>
             <small>{data.collections.length}</small>
@@ -117,14 +115,21 @@ export function WishlistStudio({
                 aria-current={collection.id === selected.id ? "page" : undefined}
                 onClick={() => setSelectedId(collection.id)}
               >
-                <span className="wishlist-studio__rail-index">{String(index + 1).padStart(2, "0")}</span>
+                <span className="wishlist-studio__rail-index">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
                 <span className="wishlist-studio__rail-name">
                   <strong>{collection.name}</strong>
                   <small>
-                    {collection.totalItems} {ar ? "منتج" : collection.totalItems === 1 ? "item" : "items"}
+                    {collection.totalItems}{" "}
+                    {ar ? "منتج" : collection.totalItems === 1 ? "item" : "items"}
                   </small>
                 </span>
-                {collection.isPrivate ? <LockKeyhole aria-label="Private" /> : <Globe2 aria-label="Public" />}
+                {collection.isPrivate ? (
+                  <LockKeyhole aria-label="Private" />
+                ) : (
+                  <Globe2 aria-label="Public" />
+                )}
               </button>
             ))}
           </nav>
@@ -140,8 +145,12 @@ export function WishlistStudio({
               <h3 id="wishlist-board-title">{selected.name}</h3>
               <p>
                 {selected.isPrivate
-                  ? ar ? "هذه القائمة لا تظهر لأي شخص آخر." : "Only you can open this collection."
-                  : ar ? "أي شخص لديه الرابط يمكنه مشاهدة هذه القائمة." : "Anyone with the link can view this collection."}
+                  ? ar
+                    ? "هذه القائمة لا تظهر لأي شخص آخر."
+                    : "Only you can open this collection."
+                  : ar
+                    ? "أي شخص لديه الرابط يمكنه مشاهدة هذه القائمة."
+                    : "Anyone with the link can view this collection."}
               </p>
             </div>
             <div className="wishlist-board__actions">
@@ -157,8 +166,18 @@ export function WishlistStudio({
                   )
                 }
               >
-                {selected.isPrivate ? <Globe2 aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
-                {selected.isPrivate ? (ar ? "اجعلها عامة" : "Make public") : ar ? "اجعلها خاصة" : "Make private"}
+                {selected.isPrivate ? (
+                  <Globe2 aria-hidden="true" />
+                ) : (
+                  <LockKeyhole aria-hidden="true" />
+                )}
+                {selected.isPrivate
+                  ? ar
+                    ? "اجعلها عامة"
+                    : "Make public"
+                  : ar
+                    ? "اجعلها خاصة"
+                    : "Make private"}
               </button>
               <button type="button" disabled={selected.isPrivate} onClick={() => void share()}>
                 {copied ? <Check aria-hidden="true" /> : <Share2 aria-hidden="true" />}
@@ -178,14 +197,25 @@ export function WishlistStudio({
               {selected.items.map((item, index) => {
                 const product = mapProduct(item.product, locale);
                 const otherCollections = data.collections.filter(
-                  (collection) => collection.id !== selected.id &&
+                  (collection) =>
+                    collection.id !== selected.id &&
                     !collection.items.some((entry) => entry.productId === item.productId),
                 );
                 return (
                   <li key={item.id} className="wishlist-piece">
-                    <span className="wishlist-piece__number">{String(index + 1).padStart(2, "0")}</span>
-                    <Link to="/product/$slug" params={{ slug: product.slug }} className="wishlist-piece__image">
-                      <PolishedImage src={product.image} alt={product.name} className="size-full object-cover" />
+                    <span className="wishlist-piece__number">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <Link
+                      to="/product/$slug"
+                      params={{ slug: product.slug }}
+                      className="wishlist-piece__image"
+                    >
+                      <PolishedImage
+                        src={product.image}
+                        alt={product.name}
+                        className="size-full object-cover"
+                      />
                     </Link>
                     <div className="wishlist-piece__body">
                       <p>{product.type}</p>
@@ -199,19 +229,27 @@ export function WishlistStudio({
                             <select
                               value={copyTargets[item.id] ?? otherCollections[0]?.id ?? ""}
                               onChange={(event) =>
-                                setCopyTargets((current) => ({ ...current, [item.id]: event.target.value }))
+                                setCopyTargets((current) => ({
+                                  ...current,
+                                  [item.id]: event.target.value,
+                                }))
                               }
                               aria-label={ar ? "اختر قائمة" : "Choose another collection"}
                             >
                               {otherCollections.map((collection) => (
-                                <option key={collection.id} value={collection.id}>{collection.name}</option>
+                                <option key={collection.id} value={collection.id}>
+                                  {collection.name}
+                                </option>
                               ))}
                             </select>
                             <button
                               type="button"
                               onClick={() => {
                                 const target = copyTargets[item.id] ?? otherCollections[0]?.id;
-                                if (target) mutation.mutate(() => addWishlistToCollection(target, item.productId));
+                                if (target)
+                                  mutation.mutate(() =>
+                                    addWishlistToCollection(target, item.productId),
+                                  );
                               }}
                             >
                               <Copy aria-hidden="true" />
@@ -228,7 +266,9 @@ export function WishlistStudio({
                       className="wishlist-piece__remove"
                       aria-label={ar ? "إزالة من القائمة" : "Remove from collection"}
                       onClick={() =>
-                        mutation.mutate(() => removeWishlistFromCollection(selected.id, item.productId))
+                        mutation.mutate(() =>
+                          removeWishlistFromCollection(selected.id, item.productId),
+                        )
                       }
                     >
                       <X aria-hidden="true" />
@@ -240,14 +280,22 @@ export function WishlistStudio({
           ) : (
             <div className="wishlist-board__empty">
               <FolderHeart aria-hidden="true" />
-              <span>{selected.isDefault ? "01" : String(data.collections.indexOf(selected) + 1).padStart(2, "0")}</span>
-              <h4>{ar ? "هذه القائمة جاهزة لاختياراتك" : "This collection is ready for your picks"}</h4>
+              <span>
+                {selected.isDefault
+                  ? "01"
+                  : String(data.collections.indexOf(selected) + 1).padStart(2, "0")}
+              </span>
+              <h4>
+                {ar ? "هذه القائمة جاهزة لاختياراتك" : "This collection is ready for your picks"}
+              </h4>
               <p>
                 {ar
                   ? "احفظي منتجاً بالقلب، ثم انسخيه إلى القائمة المناسبة."
                   : "Save a product with the heart, then organize it into the collection that fits."}
               </p>
-              <Button asChild variant="line" size="pill"><Link to="/shop">{ar ? "تصفح المنتجات" : "Browse products"}</Link></Button>
+              <Button asChild variant="line" size="pill">
+                <Link to="/shop">{ar ? "تصفح المنتجات" : "Browse products"}</Link>
+              </Button>
             </div>
           )}
         </section>
@@ -257,14 +305,18 @@ export function WishlistStudio({
         open={createOpen}
         onOpenChange={setCreateOpen}
         title={ar ? "قائمة جديدة" : "Create a collection"}
-        description={ar ? "اختاري اسماً وإعداد الخصوصية." : "Give it a clear name and choose who can see it."}
+        description={
+          ar ? "اختاري اسماً وإعداد الخصوصية." : "Give it a clear name and choose who can see it."
+        }
         initialName=""
         ar={ar}
         pending={mutation.isPending}
         onSubmit={(name, isPrivate) =>
           mutation.mutate(() => createWishlistCollection({ name, isPrivate }), {
             onSuccess: (next) => {
-              setSelectedId(next.collections.find((collection) => collection.name === name)?.id ?? selected.id);
+              setSelectedId(
+                next.collections.find((collection) => collection.name === name)?.id ?? selected.id,
+              );
               setCreateOpen(false);
             },
           })
@@ -274,7 +326,9 @@ export function WishlistStudio({
         open={renameOpen}
         onOpenChange={setRenameOpen}
         title={ar ? "تعديل اسم القائمة" : "Rename collection"}
-        description={ar ? "استخدمي اسماً يسهل تذكره." : "Use a name you will recognize at a glance."}
+        description={
+          ar ? "استخدمي اسماً يسهل تذكره." : "Use a name you will recognize at a glance."
+        }
         initialName={selected.name}
         initialPrivate={selected.isPrivate}
         hidePrivacy
@@ -291,11 +345,17 @@ export function WishlistStudio({
           <DialogHeader>
             <DialogTitle>{ar ? "حذف هذه القائمة؟" : `Delete ${selected.name}?`}</DialogTitle>
             <DialogDescription>
-              {ar ? "ستُزال القائمة فقط. لن يؤثر ذلك على طلباتك." : "The collection and its saved entries will be removed. Your orders are not affected."}
+              {ar
+                ? "ستُزال القائمة فقط. لن يؤثر ذلك على طلباتك."
+                : "The collection and its saved entries will be removed. Your orders are not affected."}
             </DialogDescription>
           </DialogHeader>
           <div className="wishlist-dialog__actions">
-            <DialogClose asChild><Button variant="line" size="pill">{ar ? "إلغاء" : "Cancel"}</Button></DialogClose>
+            <DialogClose asChild>
+              <Button variant="line" size="pill">
+                {ar ? "إلغاء" : "Cancel"}
+              </Button>
+            </DialogClose>
             <Button
               variant="solid"
               size="pill"
@@ -356,17 +416,32 @@ function CollectionDialog({
             if (name) onSubmit(name, isPrivate);
           }}
         >
-          <label><span>{ar ? "الاسم" : "Name"}</span><Input name="name" required maxLength={80} defaultValue={initialName} autoFocus /></label>
+          <label>
+            <span>{ar ? "الاسم" : "Name"}</span>
+            <Input name="name" required maxLength={80} defaultValue={initialName} autoFocus />
+          </label>
           {!hidePrivacy ? (
             <fieldset>
               <legend>{ar ? "الخصوصية" : "Privacy"}</legend>
-              <button type="button" aria-pressed={isPrivate} onClick={() => setIsPrivate(true)}><LockKeyhole />{ar ? "خاصة" : "Private"}</button>
-              <button type="button" aria-pressed={!isPrivate} onClick={() => setIsPrivate(false)}><Globe2 />{ar ? "عامة" : "Public"}</button>
+              <button type="button" aria-pressed={isPrivate} onClick={() => setIsPrivate(true)}>
+                <LockKeyhole />
+                {ar ? "خاصة" : "Private"}
+              </button>
+              <button type="button" aria-pressed={!isPrivate} onClick={() => setIsPrivate(false)}>
+                <Globe2 />
+                {ar ? "عامة" : "Public"}
+              </button>
             </fieldset>
           ) : null}
           <div className="wishlist-dialog__actions">
-            <DialogClose asChild><Button type="button" variant="line" size="pill">{ar ? "إلغاء" : "Cancel"}</Button></DialogClose>
-            <Button type="submit" variant="solid" size="pill" loading={pending}>{ar ? "حفظ" : "Save"}</Button>
+            <DialogClose asChild>
+              <Button type="button" variant="line" size="pill">
+                {ar ? "إلغاء" : "Cancel"}
+              </Button>
+            </DialogClose>
+            <Button type="submit" variant="solid" size="pill" loading={pending}>
+              {ar ? "حفظ" : "Save"}
+            </Button>
           </div>
         </form>
       </DialogContent>

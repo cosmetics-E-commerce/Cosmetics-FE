@@ -36,7 +36,11 @@ export function WishlistPicker({
   const client = useQueryClient();
   const [open, setOpen] = useState(false);
   const ar = locale === "ar";
-  const wishlist = useQuery({ queryKey: ["wishlist"], queryFn: getWishlist, enabled: Boolean(user) });
+  const wishlist = useQuery({
+    queryKey: ["wishlist"],
+    queryFn: getWishlist,
+    enabled: Boolean(user),
+  });
   const mutation = useMutation({
     mutationFn: (task: () => Promise<WishlistResponse>) => task(),
     onSuccess: (next) => client.setQueryData(["wishlist"], next),
@@ -46,7 +50,7 @@ export function WishlistPicker({
     <>
       <button
         type="button"
-        onClick={() => user ? setOpen(true) : void toggleWish(productId, slug)}
+        onClick={() => (user ? setOpen(true) : void toggleWish(productId, slug))}
         className="product-reference-wish"
         aria-pressed={wished}
         aria-label={wished ? removeLabel : addLabel}
@@ -57,7 +61,11 @@ export function WishlistPicker({
         <DialogContent className="wishlist-picker-dialog">
           <DialogHeader>
             <DialogTitle>{ar ? "احفظيه في قائمة" : "Save to collections"}</DialogTitle>
-            <DialogDescription>{ar ? "يمكن حفظ المنتج في أكثر من قائمة." : "A product can live in more than one collection."}</DialogDescription>
+            <DialogDescription>
+              {ar
+                ? "يمكن حفظ المنتج في أكثر من قائمة."
+                : "A product can live in more than one collection."}
+            </DialogDescription>
           </DialogHeader>
           <div className="wishlist-picker-dialog__lists">
             {wishlist.data?.collections.map((collection) => {
@@ -68,15 +76,35 @@ export function WishlistPicker({
                   key={collection.id}
                   aria-pressed={saved}
                   disabled={mutation.isPending}
-                  onClick={() => mutation.mutate(() => saved ? removeWishlistFromCollection(collection.id, productId) : addWishlistToCollection(collection.id, productId))}
+                  onClick={() =>
+                    mutation.mutate(() =>
+                      saved
+                        ? removeWishlistFromCollection(collection.id, productId)
+                        : addWishlistToCollection(collection.id, productId),
+                    )
+                  }
                 >
-                  <span>{collection.isPrivate ? <LockKeyhole /> : <Globe2 />}<strong>{collection.name}</strong><small>{collection.totalItems} {ar ? "منتج" : collection.totalItems === 1 ? "item" : "items"}</small></span>
+                  <span>
+                    {collection.isPrivate ? <LockKeyhole /> : <Globe2 />}
+                    <strong>{collection.name}</strong>
+                    <small>
+                      {collection.totalItems}{" "}
+                      {ar ? "منتج" : collection.totalItems === 1 ? "item" : "items"}
+                    </small>
+                  </span>
                   <span className="wishlist-picker-dialog__check">{saved ? <Check /> : null}</span>
                 </button>
               );
             })}
           </div>
-          <Link to="/account" search={{ section: "wishlist" }} className="wishlist-picker-dialog__manage" onClick={() => setOpen(false)}>{ar ? "إدارة القوائم" : "Manage collections"}</Link>
+          <Link
+            to="/account"
+            search={{ section: "wishlist" }}
+            className="wishlist-picker-dialog__manage"
+            onClick={() => setOpen(false)}
+          >
+            {ar ? "إدارة القوائم" : "Manage collections"}
+          </Link>
         </DialogContent>
       </Dialog>
     </>

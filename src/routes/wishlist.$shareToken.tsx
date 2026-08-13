@@ -22,14 +22,27 @@ function SharedWishlistPage() {
     queryFn: () => getSharedWishlist(shareToken),
     retry: false,
   });
-  if (query.isLoading) return <div className="shared-wishlist-loading"><span /><span /><span /></div>;
+  if (query.isLoading)
+    return (
+      <div className="shared-wishlist-loading">
+        <span />
+        <span />
+        <span />
+      </div>
+    );
   if (!query.data || query.isError) {
     return (
       <main className="shared-wishlist-error">
         <Heart aria-hidden="true" />
         <h1>{ar ? "هذه القائمة غير متاحة" : "This collection is unavailable"}</h1>
-        <p>{ar ? "ربما أصبحت خاصة أو تم حذفها." : "It may have been made private or removed by its owner."}</p>
-        <Button asChild variant="solid" size="pill"><Link to="/shop">{ar ? "تصفح المنتجات" : "Explore products"}</Link></Button>
+        <p>
+          {ar
+            ? "ربما أصبحت خاصة أو تم حذفها."
+            : "It may have been made private or removed by its owner."}
+        </p>
+        <Button asChild variant="solid" size="pill">
+          <Link to="/shop">{ar ? "تصفح المنتجات" : "Explore products"}</Link>
+        </Button>
       </main>
     );
   }
@@ -38,13 +51,27 @@ function SharedWishlistPage() {
     <main className="shared-wishlist-page">
       <header className="shared-wishlist-hero">
         <div>
-          <span><Globe2 aria-hidden="true" />{ar ? "قائمة عامة" : "Public collection"}</span>
+          <span>
+            <Globe2 aria-hidden="true" />
+            {ar ? "قائمة عامة" : "Public collection"}
+          </span>
           <p>{ar ? `اختيارات ${owner.firstName}` : `${owner.firstName}'s edit`}</p>
           <h1>{collection.name}</h1>
         </div>
         <dl>
-          <div><dt>{ar ? "المنتجات" : "Pieces"}</dt><dd>{String(collection.totalItems).padStart(2, "0")}</dd></div>
-          <div><dt>{ar ? "آخر تحديث" : "Updated"}</dt><dd>{new Intl.DateTimeFormat(ar ? "ar-EG" : "en-EG", { month: "short", day: "numeric" }).format(new Date(collection.updatedAt))}</dd></div>
+          <div>
+            <dt>{ar ? "المنتجات" : "Pieces"}</dt>
+            <dd>{String(collection.totalItems).padStart(2, "0")}</dd>
+          </div>
+          <div>
+            <dt>{ar ? "آخر تحديث" : "Updated"}</dt>
+            <dd>
+              {new Intl.DateTimeFormat(ar ? "ar-EG" : "en-EG", {
+                month: "short",
+                day: "numeric",
+              }).format(new Date(collection.updatedAt))}
+            </dd>
+          </div>
         </dl>
       </header>
       {collection.items.length ? (
@@ -54,13 +81,44 @@ function SharedWishlistPage() {
             return (
               <li key={item.id}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
-                <Link to="/product/$slug" params={{ slug: product.slug }} className="shared-wishlist-grid__media"><PolishedImage src={product.image} alt={product.name} className="size-full object-cover" /></Link>
-                <div><p>{product.type}</p><h2><Link to="/product/$slug" params={{ slug: product.slug }}>{product.name}</Link></h2><strong>{formatPrice(product.price)}</strong><Link to="/product/$slug" params={{ slug: product.slug }} className="shared-wishlist-grid__open">{ar ? "عرض المنتج" : "View product"}<ArrowRight aria-hidden="true" /></Link></div>
+                <Link
+                  to="/product/$slug"
+                  params={{ slug: product.slug }}
+                  className="shared-wishlist-grid__media"
+                >
+                  <PolishedImage
+                    src={product.image}
+                    alt={product.name}
+                    className="size-full object-cover"
+                  />
+                </Link>
+                <div>
+                  <p>{product.type}</p>
+                  <h2>
+                    <Link to="/product/$slug" params={{ slug: product.slug }}>
+                      {product.name}
+                    </Link>
+                  </h2>
+                  <strong>{formatPrice(product.price)}</strong>
+                  <Link
+                    to="/product/$slug"
+                    params={{ slug: product.slug }}
+                    className="shared-wishlist-grid__open"
+                  >
+                    {ar ? "عرض المنتج" : "View product"}
+                    <ArrowRight aria-hidden="true" />
+                  </Link>
+                </div>
               </li>
             );
           })}
         </ol>
-      ) : <div className="shared-wishlist-empty"><Heart /><h2>{ar ? "لا توجد منتجات بعد" : "Nothing has been added yet"}</h2></div>}
+      ) : (
+        <div className="shared-wishlist-empty">
+          <Heart />
+          <h2>{ar ? "لا توجد منتجات بعد" : "Nothing has been added yet"}</h2>
+        </div>
+      )}
     </main>
   );
 }
