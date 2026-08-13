@@ -4,7 +4,6 @@ import {
   Check,
   CircleHelp,
   Headphones,
-  Heart,
   Leaf,
   MessageCircleQuestion,
   Minus,
@@ -20,6 +19,8 @@ import { Button } from "@/components/ui/button";
 import { PolishedImage } from "@/components/ui/polished-image";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { ProductReviews } from "@/components/shop/ProductReviews";
+import { IngredientExplorer } from "@/components/shop/IngredientExplorer";
+import { WishlistPicker } from "@/components/shop/WishlistPicker";
 import { formatPrice } from "@/lib/products";
 import { loadProduct, useCatalog, useProduct, type Locale } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
@@ -51,6 +52,10 @@ const productCopy = {
     payment: "Cash on delivery and manual transfer available",
     details: "Product details",
     ingredients: "Ingredients",
+    ingredientTitle: "Ingredient intelligence",
+    ingredientCopy:
+      "Hover or select an ingredient to see its role, benefits, concerns, and suitability from our curated catalog.",
+    ingredientCount: (count: number) => `${count} mapped ingredients`,
     use: "How to use",
     reviews: "reviews",
     viewReviews: "VIEW ALL REVIEWS",
@@ -74,7 +79,7 @@ const productCopy = {
     descriptionTab: "Description",
     deliveryPolicy: "Delivery policy",
     shippingReturn: "Shipping & Return",
-    customTab: "Custom Tab",
+    customTab: "How to use",
     freeShipping: "Free Shipping",
     freeShippingCopy: "Enjoy fast delivery across Egypt with clear checkout fees.",
     returnPolicy: "Return Policy",
@@ -108,6 +113,9 @@ const productCopy = {
     payment: "الدفع عند الاستلام والتحويل اليدوي متاحان",
     details: "تفاصيل المنتج",
     ingredients: "المكونات",
+    ingredientTitle: "دليل المكونات",
+    ingredientCopy: "مرري المؤشر أو اختاري أي مكوّن لمعرفة دوره وفوائده ومحاذيره ومدى ملاءمته.",
+    ingredientCount: (count: number) => `${count} مكوّن موثق`,
     use: "طريقة الاستخدام",
     reviews: "مراجعات",
     viewReviews: "عرض كل المراجعات",
@@ -217,7 +225,7 @@ export const Route = createFileRoute("/product/$slug")({
 
 function ProductPage() {
   const { slug } = Route.useParams();
-  const { locale, add, wishlist, toggleWish, pendingVariants } = useStore();
+  const { locale, add, wishlist, pendingVariants } = useStore();
   const labels = productCopy[locale];
   const initialProduct = Route.useLoaderData();
   const query = useProduct(slug, locale, initialProduct);
@@ -493,15 +501,13 @@ function ProductPage() {
                 {outOfStock ? labels.out : added ? labels.added : labels.add}
               </Button>
               {product.id && (
-                <button
-                  type="button"
-                  onClick={() => void toggleWish(product.id!, product.slug)}
-                  className="product-reference-wish"
-                  aria-pressed={wished}
-                  aria-label={wished ? labels.wishRemove : labels.wishAdd}
-                >
-                  <Heart className={wished ? "pop" : ""} />
-                </button>
+                <WishlistPicker
+                  productId={product.id}
+                  slug={product.slug}
+                  wished={wished}
+                  addLabel={labels.wishAdd}
+                  removeLabel={labels.wishRemove}
+                />
               )}
             </div>
 
@@ -557,6 +563,24 @@ function ProductPage() {
               </li>
             </ul>
           </Reveal>
+        </section>
+
+        <section
+          className="product-ingredient-intelligence"
+          aria-labelledby="ingredient-intelligence-title"
+        >
+          <header>
+            <div>
+              <p>{labels.ingredients}</p>
+              <h2 id="ingredient-intelligence-title">{labels.ingredientTitle}</h2>
+            </div>
+            <span>{labels.ingredientCount(product.ingredientDetails.length)}</span>
+          </header>
+          <p className="product-ingredient-intelligence__intro">{labels.ingredientCopy}</p>
+          <IngredientExplorer
+            ingredients={product.ingredientDetails}
+            fallback={product.ingredients}
+          />
         </section>
 
         <section className="product-reference-details">

@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { AlertTriangle, Check, Info, Sparkles } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -21,7 +21,7 @@ function IngredientDetails({ ingredient }: { ingredient: IngredientInfo }) {
         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           INCI ingredient
         </p>
-        <h3 className="mt-1 font-serif text-xl text-foreground">{ingredient.inciName}</h3>
+        <h3 className="mt-1 text-xl font-semibold text-foreground">{ingredient.inciName}</h3>
         {ingredient.commonName && (
           <p className="mt-0.5 text-xs text-muted-foreground">
             Also known as {ingredient.commonName}
@@ -198,10 +198,32 @@ export function IngredientExplorer({
   const touchMode = useTouchMode();
   const [active, setActive] = useState<IngredientInfo | null>(null);
   const [openIngredientId, setOpenIngredientId] = useState<string | null>(null);
-  if (!ingredients.length)
-    return fallback ? (
-      <p className="text-sm leading-7 text-foreground/70">{fallback}</p>
-    ) : (
+  const displayIngredients = useMemo(() => {
+    const rawNames = (fallback ?? "")
+      .split(/[,;\n]/)
+      .map((name) => name.trim())
+      .filter(Boolean);
+    if (!rawNames.length)
+      return ingredients.map((ingredient) => ({ name: ingredient.inciName, ingredient }));
+    const byName = new Map<string, IngredientInfo>();
+    for (const ingredient of ingredients) {
+      byName.set(ingredient.inciName.trim().toLocaleLowerCase("en-US"), ingredient);
+      if (ingredient.commonName)
+        byName.set(ingredient.commonName.trim().toLocaleLowerCase("en-US"), ingredient);
+    }
+    const used = new Set<string>();
+    const ordered = rawNames.map((name) => {
+      const ingredient = byName.get(name.toLocaleLowerCase("en-US"));
+      if (ingredient) used.add(ingredient.id);
+      return { name, ingredient };
+    });
+    for (const ingredient of ingredients) {
+      if (!used.has(ingredient.id)) ordered.push({ name: ingredient.inciName, ingredient });
+    }
+    return ordered;
+  }, [fallback, ingredients]);
+  if (!displayIngredients.length)
+    return (
       <p className="text-sm text-muted-foreground">
         Ingredient details are not available for this product yet.
       </p>
@@ -212,20 +234,32 @@ export function IngredientExplorer({
         className="flex flex-wrap items-center gap-x-2.5 gap-y-2"
         aria-label="Product ingredients"
       >
-        {ingredients.map((ingredient, index) => (
-          <span key={ingredient.id} className="inline-flex items-center gap-2">
-            <IngredientChip
-              ingredient={ingredient}
-              touchMode={touchMode}
-              open={touchMode ? active?.id === ingredient.id : openIngredientId === ingredient.id}
-              onOpenChange={(open) =>
-                setOpenIngredientId((current) =>
-                  open ? ingredient.id : current === ingredient.id ? null : current,
-                )
-              }
-              onTouchOpen={() => setActive(ingredient)}
-            />
-            {index < ingredients.length - 1 && (
+        {displayIngredients.map(({ name, ingredient }, index) => (
+          <span
+            key={ingredient?.id ?? `${name}-${index}`}
+            className="inline-flex items-center gap-2"
+          >
+            {ingredient ? (
+              <IngredientChip
+                ingredient={ingredient}
+                touchMode={touchMode}
+                open={touchMode ? active?.id === ingredient.id : openIngredientId === ingredient.id}
+                onOpenChange={(open) =>
+                  setOpenIngredientId((current) =>
+                    open ? ingredient.id : current === ingredient.id ? null : current,
+                  )
+                }
+                onTouchOpen={() => setActive(ingredient)}
+              />
+            ) : (
+              <span
+                className="ingredient-unmapped"
+                title="No curated ingredient profile is available yet"
+              >
+                {name}
+              </span>
+            )}
+            {index < displayIngredients.length - 1 && (
               <span className="text-border" aria-hidden="true">
                 ·
               </span>

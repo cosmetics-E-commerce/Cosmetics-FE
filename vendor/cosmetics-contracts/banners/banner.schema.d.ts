@@ -1,29 +1,16 @@
 import { z } from "zod";
-export declare const bannerModeSchema: z.ZodEnum<
-  ["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]
->;
+export declare const bannerModeSchema: z.ZodEnum<["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]>;
 export declare const bannerStateSchema: z.ZodEnum<["DRAFT", "ACTIVE", "PAUSED", "ARCHIVED"]>;
 export declare const bannerPositionSchema: z.ZodEnum<["TOP", "BELOW_HEADER", "BOTTOM"]>;
-export declare const bannerStatusSchema: z.ZodEnum<
-  ["DRAFT", "SCHEDULED", "ACTIVE", "PAUSED", "EXPIRED", "ARCHIVED"]
->;
-export declare const bannerDisplayStrategySchema: z.ZodEnum<
-  ["HIGHEST_PRIORITY", "ROTATE", "STACK", "SEQUENCE"]
->;
-export declare const bannerMessageSchema: z.ZodObject<
-  {
+export declare const bannerStatusSchema: z.ZodEnum<["DRAFT", "SCHEDULED", "ACTIVE", "PAUSED", "EXPIRED", "ARCHIVED"]>;
+export declare const bannerDisplayStrategySchema: z.ZodEnum<["HIGHEST_PRIORITY", "ROTATE", "STACK", "SEQUENCE"]>;
+export declare const bannerMessageSchema: z.ZodObject<{
     id: z.ZodOptional<z.ZodString>;
     textEn: z.ZodString;
     textAr: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     secondaryTextEn: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     secondaryTextAr: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-    icon: z.ZodOptional<
-      z.ZodNullable<
-        z.ZodEnum<
-          ["truck", "gift", "star", "heart", "bag", "sparkle", "tag", "clock", "info", "warning"]
-        >
-      >
-    >;
+    icon: z.ZodOptional<z.ZodNullable<z.ZodEnum<["truck", "gift", "star", "heart", "bag", "sparkle", "tag", "clock", "info", "warning"]>>>;
     emoji: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     url: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>>;
     openInNewTab: z.ZodDefault<z.ZodBoolean>;
@@ -33,34 +20,23 @@ export declare const bannerMessageSchema: z.ZodObject<
     couponId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     couponCode: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     countdownAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-    style: z.ZodDefault<
-      z.ZodObject<
-        {
-          textColor: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-          emphasis: z.ZodDefault<z.ZodBoolean>;
-        },
-        "strip",
-        z.ZodTypeAny,
-        {
-          emphasis: boolean;
-          textColor?: string | null | undefined;
-        },
-        {
-          textColor?: string | null | undefined;
-          emphasis?: boolean | undefined;
-        }
-      >
-    >;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
+    style: z.ZodDefault<z.ZodObject<{
+        textColor: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        emphasis: z.ZodDefault<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        emphasis: boolean;
+        textColor?: string | null | undefined;
+    }, {
+        textColor?: string | null | undefined;
+        emphasis?: boolean | undefined;
+    }>>;
+}, "strip", z.ZodTypeAny, {
     textEn: string;
     openInNewTab: boolean;
     ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
     style: {
-      emphasis: boolean;
-      textColor?: string | null | undefined;
+        emphasis: boolean;
+        textColor?: string | null | undefined;
     };
     id?: string | undefined;
     couponCode?: string | null | undefined;
@@ -68,26 +44,13 @@ export declare const bannerMessageSchema: z.ZodObject<
     textAr?: string | null | undefined;
     secondaryTextEn?: string | null | undefined;
     secondaryTextAr?: string | null | undefined;
-    icon?:
-      | "truck"
-      | "gift"
-      | "star"
-      | "heart"
-      | "bag"
-      | "sparkle"
-      | "tag"
-      | "clock"
-      | "info"
-      | "warning"
-      | null
-      | undefined;
+    icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
     emoji?: string | null | undefined;
     ctaTextEn?: string | null | undefined;
     ctaTextAr?: string | null | undefined;
     couponId?: string | null | undefined;
     countdownAt?: string | null | undefined;
-  },
-  {
+}, {
     textEn: string;
     id?: string | undefined;
     couponCode?: string | null | undefined;
@@ -95,19 +58,7 @@ export declare const bannerMessageSchema: z.ZodObject<
     textAr?: string | null | undefined;
     secondaryTextEn?: string | null | undefined;
     secondaryTextAr?: string | null | undefined;
-    icon?:
-      | "truck"
-      | "gift"
-      | "star"
-      | "heart"
-      | "bag"
-      | "sparkle"
-      | "tag"
-      | "clock"
-      | "info"
-      | "warning"
-      | null
-      | undefined;
+    icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
     emoji?: string | null | undefined;
     openInNewTab?: boolean | undefined;
     ctaTextEn?: string | null | undefined;
@@ -115,16 +66,12 @@ export declare const bannerMessageSchema: z.ZodObject<
     ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
     couponId?: string | null | undefined;
     countdownAt?: string | null | undefined;
-    style?:
-      | {
-          textColor?: string | null | undefined;
-          emphasis?: boolean | undefined;
-        }
-      | undefined;
-  }
->;
-export declare const bannerDesignSchema: z.ZodObject<
-  {
+    style?: {
+        textColor?: string | null | undefined;
+        emphasis?: boolean | undefined;
+    } | undefined;
+}>;
+export declare const bannerDesignSchema: z.ZodObject<{
     backgroundType: z.ZodDefault<z.ZodEnum<["SOLID", "GRADIENT", "IMAGE", "PATTERN"]>>;
     backgroundColor: z.ZodDefault<z.ZodString>;
     gradient: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -159,10 +106,7 @@ export declare const bannerDesignSchema: z.ZodObject<
     ctaHoverColor: z.ZodDefault<z.ZodString>;
     ctaBorderColor: z.ZodDefault<z.ZodString>;
     ctaRadius: z.ZodDefault<z.ZodNumber>;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
+}, "strip", z.ZodTypeAny, {
     textColor: string;
     backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
     backgroundColor: string;
@@ -197,8 +141,7 @@ export declare const bannerDesignSchema: z.ZodObject<
     ctaRadius: number;
     gradient?: string | null | undefined;
     backgroundImage?: string | null | undefined;
-  },
-  {
+}, {
     textColor?: string | undefined;
     backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
     backgroundColor?: string | undefined;
@@ -233,29 +176,11 @@ export declare const bannerDesignSchema: z.ZodObject<
     ctaHoverColor?: string | undefined;
     ctaBorderColor?: string | undefined;
     ctaRadius?: number | undefined;
-  }
->;
-export declare const bannerAnimationSchema: z.ZodObject<
-  {
-    entrance: z.ZodDefault<
-      z.ZodEnum<["NONE", "FADE", "SLIDE_DOWN", "SLIDE_UP", "SCALE", "REVEAL"]>
-    >;
+}>;
+export declare const bannerAnimationSchema: z.ZodObject<{
+    entrance: z.ZodDefault<z.ZodEnum<["NONE", "FADE", "SLIDE_DOWN", "SLIDE_UP", "SCALE", "REVEAL"]>>;
     exit: z.ZodDefault<z.ZodEnum<["NONE", "FADE", "SLIDE_DOWN", "SLIDE_UP"]>>;
-    transition: z.ZodDefault<
-      z.ZodEnum<
-        [
-          "FADE",
-          "SLIDE_LEFT",
-          "SLIDE_RIGHT",
-          "SLIDE_UP",
-          "SLIDE_DOWN",
-          "CROSSFADE",
-          "BLUR",
-          "SCALE",
-          "INSTANT",
-        ]
-      >
-    >;
+    transition: z.ZodDefault<z.ZodEnum<["FADE", "SLIDE_LEFT", "SLIDE_RIGHT", "SLIDE_UP", "SLIDE_DOWN", "CROSSFADE", "BLUR", "SCALE", "INSTANT"]>>;
     durationMs: z.ZodDefault<z.ZodNumber>;
     delayMs: z.ZodDefault<z.ZodNumber>;
     easing: z.ZodDefault<z.ZodEnum<["STANDARD", "PREMIUM", "LINEAR"]>>;
@@ -269,22 +194,10 @@ export declare const bannerAnimationSchema: z.ZodObject<
     separatorColor: z.ZodDefault<z.ZodString>;
     separatorSize: z.ZodDefault<z.ZodNumber>;
     separatorSpacing: z.ZodDefault<z.ZodNumber>;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
+}, "strip", z.ZodTypeAny, {
     entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
     exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
-    transition:
-      | "FADE"
-      | "SLIDE_DOWN"
-      | "SLIDE_UP"
-      | "SCALE"
-      | "SLIDE_LEFT"
-      | "SLIDE_RIGHT"
-      | "CROSSFADE"
-      | "BLUR"
-      | "INSTANT";
+    transition: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
     durationMs: number;
     delayMs: number;
     easing: "STANDARD" | "PREMIUM" | "LINEAR";
@@ -298,21 +211,10 @@ export declare const bannerAnimationSchema: z.ZodObject<
     separatorColor: string;
     separatorSize: number;
     separatorSpacing: number;
-  },
-  {
+}, {
     entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
     exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
-    transition?:
-      | "FADE"
-      | "SLIDE_DOWN"
-      | "SLIDE_UP"
-      | "SCALE"
-      | "SLIDE_LEFT"
-      | "SLIDE_RIGHT"
-      | "CROSSFADE"
-      | "BLUR"
-      | "INSTANT"
-      | undefined;
+    transition?: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
     durationMs?: number | undefined;
     delayMs?: number | undefined;
     easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
@@ -326,10 +228,8 @@ export declare const bannerAnimationSchema: z.ZodObject<
     separatorColor?: string | undefined;
     separatorSize?: number | undefined;
     separatorSpacing?: number | undefined;
-  }
->;
-export declare const bannerBehaviorSchema: z.ZodObject<
-  {
+}>;
+export declare const bannerBehaviorSchema: z.ZodObject<{
     sticky: z.ZodDefault<z.ZodEnum<["FIXED", "STICKY", "NON_STICKY"]>>;
     dismissible: z.ZodDefault<z.ZodBoolean>;
     dismissalMode: z.ZodDefault<z.ZodEnum<["REFRESH", "SESSION", "HOURS", "DAYS", "PERMANENT"]>>;
@@ -353,10 +253,7 @@ export declare const bannerBehaviorSchema: z.ZodObject<
     successMessageAr: z.ZodDefault<z.ZodString>;
     showProgress: z.ZodDefault<z.ZodBoolean>;
     inheritPromotionSchedule: z.ZodDefault<z.ZodBoolean>;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
+}, "strip", z.ZodTypeAny, {
     loop: boolean;
     sticky: "FIXED" | "STICKY" | "NON_STICKY";
     dismissible: boolean;
@@ -380,8 +277,7 @@ export declare const bannerBehaviorSchema: z.ZodObject<
     inheritPromotionSchedule: boolean;
     redirectUrl?: string | null | undefined;
     nextBannerId?: string | null | undefined;
-  },
-  {
+}, {
     loop?: boolean | undefined;
     sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
     dismissible?: boolean | undefined;
@@ -405,34 +301,12 @@ export declare const bannerBehaviorSchema: z.ZodObject<
     successMessageAr?: string | undefined;
     showProgress?: boolean | undefined;
     inheritPromotionSchedule?: boolean | undefined;
-  }
->;
-export declare const bannerTargetingSchema: z.ZodObject<
-  {
+}>;
+export declare const bannerTargetingSchema: z.ZodObject<{
     authentication: z.ZodDefault<z.ZodEnum<["ALL", "GUEST", "LOGGED_IN"]>>;
     customerType: z.ZodDefault<z.ZodEnum<["ALL", "NEW", "RETURNING"]>>;
     devices: z.ZodDefault<z.ZodArray<z.ZodEnum<["desktop", "tablet", "mobile"]>, "many">>;
-    pages: z.ZodDefault<
-      z.ZodArray<
-        z.ZodEnum<
-          [
-            "EVERYWHERE",
-            "HOME",
-            "PRODUCTS",
-            "PRODUCT",
-            "CATEGORIES",
-            "CATEGORY",
-            "COLLECTIONS",
-            "CART",
-            "CHECKOUT",
-            "ACCOUNT",
-            "OFFERS",
-            "CUSTOM",
-          ]
-        >,
-        "many"
-      >
-    >;
+    pages: z.ZodDefault<z.ZodArray<z.ZodEnum<["EVERYWHERE", "HOME", "PRODUCTS", "PRODUCT", "CATEGORIES", "CATEGORY", "COLLECTIONS", "CART", "CHECKOUT", "ACCOUNT", "OFFERS", "CUSTOM"]>, "many">>;
     urlPatterns: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
@@ -441,234 +315,1226 @@ export declare const bannerTargetingSchema: z.ZodObject<
     cartSubtotalMax: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
     countries: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     regions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
+}, "strip", z.ZodTypeAny, {
     productIds: string[];
     categoryIds: string[];
     authentication: "ALL" | "GUEST" | "LOGGED_IN";
     customerType: "ALL" | "RETURNING" | "NEW";
     devices: ("desktop" | "tablet" | "mobile")[];
-    pages: (
-      | "HOME"
-      | "CUSTOM"
-      | "EVERYWHERE"
-      | "PRODUCTS"
-      | "PRODUCT"
-      | "CATEGORIES"
-      | "CATEGORY"
-      | "COLLECTIONS"
-      | "CART"
-      | "CHECKOUT"
-      | "ACCOUNT"
-      | "OFFERS"
-    )[];
+    pages: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[];
     urlPatterns: string[];
     cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
     cartSubtotalMin: number | null;
     cartSubtotalMax: number | null;
     countries: string[];
     regions: string[];
-  },
-  {
+}, {
     productIds?: string[] | undefined;
     categoryIds?: string[] | undefined;
     authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
     customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
     devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
-    pages?:
-      | (
-          | "HOME"
-          | "CUSTOM"
-          | "EVERYWHERE"
-          | "PRODUCTS"
-          | "PRODUCT"
-          | "CATEGORIES"
-          | "CATEGORY"
-          | "COLLECTIONS"
-          | "CART"
-          | "CHECKOUT"
-          | "ACCOUNT"
-          | "OFFERS"
-        )[]
-      | undefined;
+    pages?: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[] | undefined;
     urlPatterns?: string[] | undefined;
     cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
     cartSubtotalMin?: number | null | undefined;
     cartSubtotalMax?: number | null | undefined;
     countries?: string[] | undefined;
     regions?: string[] | undefined;
-  }
->;
-export declare const bannerResponsiveSchema: z.ZodObject<
-  {
+}>;
+export declare const bannerResponsiveSchema: z.ZodObject<{
     showDesktop: z.ZodDefault<z.ZodBoolean>;
     showTablet: z.ZodDefault<z.ZodBoolean>;
     showMobile: z.ZodDefault<z.ZodBoolean>;
-    desktopMode: z.ZodDefault<
-      z.ZodNullable<
-        z.ZodEnum<
-          ["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]
-        >
-      >
-    >;
-    tabletMode: z.ZodDefault<
-      z.ZodNullable<
-        z.ZodEnum<
-          ["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]
-        >
-      >
-    >;
-    mobileMode: z.ZodDefault<
-      z.ZodNullable<
-        z.ZodEnum<
-          ["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]
-        >
-      >
-    >;
+    desktopMode: z.ZodDefault<z.ZodNullable<z.ZodEnum<["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]>>>;
+    tabletMode: z.ZodDefault<z.ZodNullable<z.ZodEnum<["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]>>>;
+    mobileMode: z.ZodDefault<z.ZodNullable<z.ZodEnum<["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]>>>;
     desktopTextEn: z.ZodDefault<z.ZodNullable<z.ZodString>>;
     desktopTextAr: z.ZodDefault<z.ZodNullable<z.ZodString>>;
     mobileTextEn: z.ZodDefault<z.ZodNullable<z.ZodString>>;
     mobileTextAr: z.ZodDefault<z.ZodNullable<z.ZodString>>;
     hideCtaMobile: z.ZodDefault<z.ZodBoolean>;
     hideIconsMobile: z.ZodDefault<z.ZodBoolean>;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
+}, "strip", z.ZodTypeAny, {
     showDesktop: boolean;
     showTablet: boolean;
     showMobile: boolean;
-    desktopMode:
-      "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-    tabletMode:
-      "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-    mobileMode:
-      "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+    desktopMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+    tabletMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+    mobileMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
     desktopTextEn: string | null;
     desktopTextAr: string | null;
     mobileTextEn: string | null;
     mobileTextAr: string | null;
     hideCtaMobile: boolean;
     hideIconsMobile: boolean;
-  },
-  {
+}, {
     showDesktop?: boolean | undefined;
     showTablet?: boolean | undefined;
     showMobile?: boolean | undefined;
-    desktopMode?:
-      | "STATIC"
-      | "TICKER"
-      | "ROTATING"
-      | "CAROUSEL"
-      | "COUNTDOWN"
-      | "FREE_SHIPPING_PROGRESS"
-      | null
-      | undefined;
-    tabletMode?:
-      | "STATIC"
-      | "TICKER"
-      | "ROTATING"
-      | "CAROUSEL"
-      | "COUNTDOWN"
-      | "FREE_SHIPPING_PROGRESS"
-      | null
-      | undefined;
-    mobileMode?:
-      | "STATIC"
-      | "TICKER"
-      | "ROTATING"
-      | "CAROUSEL"
-      | "COUNTDOWN"
-      | "FREE_SHIPPING_PROGRESS"
-      | null
-      | undefined;
+    desktopMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+    tabletMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+    mobileMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
     desktopTextEn?: string | null | undefined;
     desktopTextAr?: string | null | undefined;
     mobileTextEn?: string | null | undefined;
     mobileTextAr?: string | null | undefined;
     hideCtaMobile?: boolean | undefined;
     hideIconsMobile?: boolean | undefined;
-  }
->;
-export declare const recurringScheduleSchema: z.ZodDefault<
-  z.ZodNullable<
-    z.ZodObject<
-      {
+}>;
+export declare const recurringScheduleSchema: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+    enabled: z.ZodDefault<z.ZodBoolean>;
+    weekdays: z.ZodDefault<z.ZodArray<z.ZodNumber, "many">>;
+    startTime: z.ZodDefault<z.ZodString>;
+    endTime: z.ZodDefault<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    enabled: boolean;
+    weekdays: number[];
+    startTime: string;
+    endTime: string;
+}, {
+    enabled?: boolean | undefined;
+    weekdays?: number[] | undefined;
+    startTime?: string | undefined;
+    endTime?: string | undefined;
+}>>>;
+export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
+    internalName: z.ZodString;
+    mode: z.ZodDefault<z.ZodEnum<["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]>>;
+    state: z.ZodDefault<z.ZodEnum<["DRAFT", "ACTIVE", "PAUSED", "ARCHIVED"]>>;
+    priority: z.ZodDefault<z.ZodNumber>;
+    sortOrder: z.ZodDefault<z.ZodNumber>;
+    position: z.ZodDefault<z.ZodEnum<["TOP", "BELOW_HEADER", "BOTTOM"]>>;
+    startsAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    endsAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    timezone: z.ZodDefault<z.ZodString>;
+    recurringSchedule: z.ZodDefault<z.ZodNullable<z.ZodObject<{
         enabled: z.ZodDefault<z.ZodBoolean>;
         weekdays: z.ZodDefault<z.ZodArray<z.ZodNumber, "many">>;
         startTime: z.ZodDefault<z.ZodString>;
         endTime: z.ZodDefault<z.ZodString>;
-      },
-      "strip",
-      z.ZodTypeAny,
-      {
+    }, "strip", z.ZodTypeAny, {
         enabled: boolean;
         weekdays: number[];
         startTime: string;
         endTime: string;
-      },
-      {
+    }, {
         enabled?: boolean | undefined;
         weekdays?: number[] | undefined;
         startTime?: string | undefined;
         endTime?: string | undefined;
-      }
-    >
-  >
->;
-export declare const createBannerSchema: z.ZodEffects<
-  z.ZodObject<
-    {
-      internalName: z.ZodString;
-      mode: z.ZodDefault<
-        z.ZodEnum<
-          ["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]
-        >
-      >;
-      state: z.ZodDefault<z.ZodEnum<["DRAFT", "ACTIVE", "PAUSED", "ARCHIVED"]>>;
-      priority: z.ZodDefault<z.ZodNumber>;
-      sortOrder: z.ZodDefault<z.ZodNumber>;
-      position: z.ZodDefault<z.ZodEnum<["TOP", "BELOW_HEADER", "BOTTOM"]>>;
-      startsAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-      endsAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-      timezone: z.ZodDefault<z.ZodString>;
-      recurringSchedule: z.ZodDefault<
-        z.ZodNullable<
-          z.ZodObject<
-            {
-              enabled: z.ZodDefault<z.ZodBoolean>;
-              weekdays: z.ZodDefault<z.ZodArray<z.ZodNumber, "many">>;
-              startTime: z.ZodDefault<z.ZodString>;
-              endTime: z.ZodDefault<z.ZodString>;
-            },
-            "strip",
-            z.ZodTypeAny,
-            {
-              enabled: boolean;
-              weekdays: number[];
-              startTime: string;
-              endTime: string;
-            },
-            {
-              enabled?: boolean | undefined;
-              weekdays?: number[] | undefined;
-              startTime?: string | undefined;
-              endTime?: string | undefined;
-            }
-          >
-        >
-      >;
-      design: z.ZodDefault<
-        z.ZodObject<
-          {
+    }>>>;
+    design: z.ZodDefault<z.ZodObject<{
+        backgroundType: z.ZodDefault<z.ZodEnum<["SOLID", "GRADIENT", "IMAGE", "PATTERN"]>>;
+        backgroundColor: z.ZodDefault<z.ZodString>;
+        gradient: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        backgroundImage: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>>;
+        pattern: z.ZodDefault<z.ZodEnum<["NONE", "DOTS", "LINES", "GRID"]>>;
+        backgroundOpacity: z.ZodDefault<z.ZodNumber>;
+        textColor: z.ZodDefault<z.ZodString>;
+        fontFamily: z.ZodDefault<z.ZodEnum<["SANS", "SERIF"]>>;
+        fontWeight: z.ZodDefault<z.ZodEnum<["200", "300", "400", "500", "600", "700"]>>;
+        fontSizeDesktop: z.ZodDefault<z.ZodNumber>;
+        fontSizeTablet: z.ZodDefault<z.ZodNumber>;
+        fontSizeMobile: z.ZodDefault<z.ZodNumber>;
+        letterSpacing: z.ZodDefault<z.ZodNumber>;
+        lineHeight: z.ZodDefault<z.ZodNumber>;
+        textTransform: z.ZodDefault<z.ZodEnum<["NONE", "UPPERCASE", "LOWERCASE", "CAPITALIZE"]>>;
+        textAlign: z.ZodDefault<z.ZodEnum<["LEFT", "CENTER", "RIGHT"]>>;
+        heightDesktop: z.ZodDefault<z.ZodNumber>;
+        heightTablet: z.ZodDefault<z.ZodNumber>;
+        heightMobile: z.ZodDefault<z.ZodNumber>;
+        horizontalPadding: z.ZodDefault<z.ZodNumber>;
+        verticalPadding: z.ZodDefault<z.ZodNumber>;
+        borderTop: z.ZodDefault<z.ZodBoolean>;
+        borderBottom: z.ZodDefault<z.ZodBoolean>;
+        borderWidth: z.ZodDefault<z.ZodNumber>;
+        borderColor: z.ZodDefault<z.ZodString>;
+        borderStyle: z.ZodDefault<z.ZodEnum<["SOLID", "DASHED", "DOTTED"]>>;
+        shadow: z.ZodDefault<z.ZodEnum<["NONE", "SUBTLE", "MEDIUM", "STRONG"]>>;
+        zIndex: z.ZodDefault<z.ZodNumber>;
+        ctaBackground: z.ZodDefault<z.ZodString>;
+        ctaColor: z.ZodDefault<z.ZodString>;
+        ctaHoverBackground: z.ZodDefault<z.ZodString>;
+        ctaHoverColor: z.ZodDefault<z.ZodString>;
+        ctaBorderColor: z.ZodDefault<z.ZodString>;
+        ctaRadius: z.ZodDefault<z.ZodNumber>;
+    }, "strip", z.ZodTypeAny, {
+        textColor: string;
+        backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
+        backgroundColor: string;
+        pattern: "NONE" | "DOTS" | "LINES" | "GRID";
+        backgroundOpacity: number;
+        fontFamily: "SANS" | "SERIF";
+        fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
+        fontSizeDesktop: number;
+        fontSizeTablet: number;
+        fontSizeMobile: number;
+        letterSpacing: number;
+        lineHeight: number;
+        textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
+        textAlign: "LEFT" | "CENTER" | "RIGHT";
+        heightDesktop: number;
+        heightTablet: number;
+        heightMobile: number;
+        horizontalPadding: number;
+        verticalPadding: number;
+        borderTop: boolean;
+        borderBottom: boolean;
+        borderWidth: number;
+        borderColor: string;
+        borderStyle: "SOLID" | "DASHED" | "DOTTED";
+        shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
+        zIndex: number;
+        ctaBackground: string;
+        ctaColor: string;
+        ctaHoverBackground: string;
+        ctaHoverColor: string;
+        ctaBorderColor: string;
+        ctaRadius: number;
+        gradient?: string | null | undefined;
+        backgroundImage?: string | null | undefined;
+    }, {
+        textColor?: string | undefined;
+        backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
+        backgroundColor?: string | undefined;
+        gradient?: string | null | undefined;
+        backgroundImage?: string | null | undefined;
+        pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
+        backgroundOpacity?: number | undefined;
+        fontFamily?: "SANS" | "SERIF" | undefined;
+        fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
+        fontSizeDesktop?: number | undefined;
+        fontSizeTablet?: number | undefined;
+        fontSizeMobile?: number | undefined;
+        letterSpacing?: number | undefined;
+        lineHeight?: number | undefined;
+        textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
+        textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
+        heightDesktop?: number | undefined;
+        heightTablet?: number | undefined;
+        heightMobile?: number | undefined;
+        horizontalPadding?: number | undefined;
+        verticalPadding?: number | undefined;
+        borderTop?: boolean | undefined;
+        borderBottom?: boolean | undefined;
+        borderWidth?: number | undefined;
+        borderColor?: string | undefined;
+        borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
+        shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
+        zIndex?: number | undefined;
+        ctaBackground?: string | undefined;
+        ctaColor?: string | undefined;
+        ctaHoverBackground?: string | undefined;
+        ctaHoverColor?: string | undefined;
+        ctaBorderColor?: string | undefined;
+        ctaRadius?: number | undefined;
+    }>>;
+    animation: z.ZodDefault<z.ZodObject<{
+        entrance: z.ZodDefault<z.ZodEnum<["NONE", "FADE", "SLIDE_DOWN", "SLIDE_UP", "SCALE", "REVEAL"]>>;
+        exit: z.ZodDefault<z.ZodEnum<["NONE", "FADE", "SLIDE_DOWN", "SLIDE_UP"]>>;
+        transition: z.ZodDefault<z.ZodEnum<["FADE", "SLIDE_LEFT", "SLIDE_RIGHT", "SLIDE_UP", "SLIDE_DOWN", "CROSSFADE", "BLUR", "SCALE", "INSTANT"]>>;
+        durationMs: z.ZodDefault<z.ZodNumber>;
+        delayMs: z.ZodDefault<z.ZodNumber>;
+        easing: z.ZodDefault<z.ZodEnum<["STANDARD", "PREMIUM", "LINEAR"]>>;
+        messageDurationMs: z.ZodDefault<z.ZodNumber>;
+        tickerSpeed: z.ZodDefault<z.ZodNumber>;
+        tickerDirection: z.ZodDefault<z.ZodEnum<["LTR", "RTL"]>>;
+        pauseOnHover: z.ZodDefault<z.ZodBoolean>;
+        pauseOnInteraction: z.ZodDefault<z.ZodBoolean>;
+        loop: z.ZodDefault<z.ZodBoolean>;
+        separator: z.ZodDefault<z.ZodString>;
+        separatorColor: z.ZodDefault<z.ZodString>;
+        separatorSize: z.ZodDefault<z.ZodNumber>;
+        separatorSpacing: z.ZodDefault<z.ZodNumber>;
+    }, "strip", z.ZodTypeAny, {
+        entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
+        exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
+        transition: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
+        durationMs: number;
+        delayMs: number;
+        easing: "STANDARD" | "PREMIUM" | "LINEAR";
+        messageDurationMs: number;
+        tickerSpeed: number;
+        tickerDirection: "LTR" | "RTL";
+        pauseOnHover: boolean;
+        pauseOnInteraction: boolean;
+        loop: boolean;
+        separator: string;
+        separatorColor: string;
+        separatorSize: number;
+        separatorSpacing: number;
+    }, {
+        entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
+        exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
+        transition?: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
+        durationMs?: number | undefined;
+        delayMs?: number | undefined;
+        easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
+        messageDurationMs?: number | undefined;
+        tickerSpeed?: number | undefined;
+        tickerDirection?: "LTR" | "RTL" | undefined;
+        pauseOnHover?: boolean | undefined;
+        pauseOnInteraction?: boolean | undefined;
+        loop?: boolean | undefined;
+        separator?: string | undefined;
+        separatorColor?: string | undefined;
+        separatorSize?: number | undefined;
+        separatorSpacing?: number | undefined;
+    }>>;
+    behavior: z.ZodDefault<z.ZodObject<{
+        sticky: z.ZodDefault<z.ZodEnum<["FIXED", "STICKY", "NON_STICKY"]>>;
+        dismissible: z.ZodDefault<z.ZodBoolean>;
+        dismissalMode: z.ZodDefault<z.ZodEnum<["REFRESH", "SESSION", "HOURS", "DAYS", "PERMANENT"]>>;
+        dismissalDuration: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+        autoplay: z.ZodDefault<z.ZodBoolean>;
+        intervalMs: z.ZodDefault<z.ZodNumber>;
+        arrows: z.ZodDefault<z.ZodBoolean>;
+        pagination: z.ZodDefault<z.ZodBoolean>;
+        loop: z.ZodDefault<z.ZodBoolean>;
+        swipe: z.ZodDefault<z.ZodBoolean>;
+        countdownEnd: z.ZodDefault<z.ZodEnum<["HIDE", "ZERO", "MESSAGE", "REDIRECT", "NEXT_BANNER"]>>;
+        expirationMessageEn: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        expirationMessageAr: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        redirectUrl: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>>;
+        nextBannerId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        freeShippingThresholdSource: z.ZodDefault<z.ZodEnum<["STORE", "CUSTOM"]>>;
+        freeShippingThreshold: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+        remainingMessageEn: z.ZodDefault<z.ZodString>;
+        remainingMessageAr: z.ZodDefault<z.ZodString>;
+        successMessageEn: z.ZodDefault<z.ZodString>;
+        successMessageAr: z.ZodDefault<z.ZodString>;
+        showProgress: z.ZodDefault<z.ZodBoolean>;
+        inheritPromotionSchedule: z.ZodDefault<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        loop: boolean;
+        sticky: "FIXED" | "STICKY" | "NON_STICKY";
+        dismissible: boolean;
+        dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
+        dismissalDuration: number | null;
+        autoplay: boolean;
+        intervalMs: number;
+        arrows: boolean;
+        pagination: boolean;
+        swipe: boolean;
+        countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
+        expirationMessageEn: string | null;
+        expirationMessageAr: string | null;
+        freeShippingThresholdSource: "STORE" | "CUSTOM";
+        freeShippingThreshold: number | null;
+        remainingMessageEn: string;
+        remainingMessageAr: string;
+        successMessageEn: string;
+        successMessageAr: string;
+        showProgress: boolean;
+        inheritPromotionSchedule: boolean;
+        redirectUrl?: string | null | undefined;
+        nextBannerId?: string | null | undefined;
+    }, {
+        loop?: boolean | undefined;
+        sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
+        dismissible?: boolean | undefined;
+        dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
+        dismissalDuration?: number | null | undefined;
+        autoplay?: boolean | undefined;
+        intervalMs?: number | undefined;
+        arrows?: boolean | undefined;
+        pagination?: boolean | undefined;
+        swipe?: boolean | undefined;
+        countdownEnd?: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER" | undefined;
+        expirationMessageEn?: string | null | undefined;
+        expirationMessageAr?: string | null | undefined;
+        redirectUrl?: string | null | undefined;
+        nextBannerId?: string | null | undefined;
+        freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
+        freeShippingThreshold?: number | null | undefined;
+        remainingMessageEn?: string | undefined;
+        remainingMessageAr?: string | undefined;
+        successMessageEn?: string | undefined;
+        successMessageAr?: string | undefined;
+        showProgress?: boolean | undefined;
+        inheritPromotionSchedule?: boolean | undefined;
+    }>>;
+    targeting: z.ZodDefault<z.ZodObject<{
+        authentication: z.ZodDefault<z.ZodEnum<["ALL", "GUEST", "LOGGED_IN"]>>;
+        customerType: z.ZodDefault<z.ZodEnum<["ALL", "NEW", "RETURNING"]>>;
+        devices: z.ZodDefault<z.ZodArray<z.ZodEnum<["desktop", "tablet", "mobile"]>, "many">>;
+        pages: z.ZodDefault<z.ZodArray<z.ZodEnum<["EVERYWHERE", "HOME", "PRODUCTS", "PRODUCT", "CATEGORIES", "CATEGORY", "COLLECTIONS", "CART", "CHECKOUT", "ACCOUNT", "OFFERS", "CUSTOM"]>, "many">>;
+        urlPatterns: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        cartState: z.ZodDefault<z.ZodEnum<["ANY", "EMPTY", "HAS_ITEMS"]>>;
+        cartSubtotalMin: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+        cartSubtotalMax: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+        countries: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        regions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        productIds: string[];
+        categoryIds: string[];
+        authentication: "ALL" | "GUEST" | "LOGGED_IN";
+        customerType: "ALL" | "RETURNING" | "NEW";
+        devices: ("desktop" | "tablet" | "mobile")[];
+        pages: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[];
+        urlPatterns: string[];
+        cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
+        cartSubtotalMin: number | null;
+        cartSubtotalMax: number | null;
+        countries: string[];
+        regions: string[];
+    }, {
+        productIds?: string[] | undefined;
+        categoryIds?: string[] | undefined;
+        authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
+        customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
+        devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
+        pages?: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[] | undefined;
+        urlPatterns?: string[] | undefined;
+        cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
+        cartSubtotalMin?: number | null | undefined;
+        cartSubtotalMax?: number | null | undefined;
+        countries?: string[] | undefined;
+        regions?: string[] | undefined;
+    }>>;
+    responsive: z.ZodDefault<z.ZodObject<{
+        showDesktop: z.ZodDefault<z.ZodBoolean>;
+        showTablet: z.ZodDefault<z.ZodBoolean>;
+        showMobile: z.ZodDefault<z.ZodBoolean>;
+        desktopMode: z.ZodDefault<z.ZodNullable<z.ZodEnum<["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]>>>;
+        tabletMode: z.ZodDefault<z.ZodNullable<z.ZodEnum<["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]>>>;
+        mobileMode: z.ZodDefault<z.ZodNullable<z.ZodEnum<["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]>>>;
+        desktopTextEn: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        desktopTextAr: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        mobileTextEn: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        mobileTextAr: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        hideCtaMobile: z.ZodDefault<z.ZodBoolean>;
+        hideIconsMobile: z.ZodDefault<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        showDesktop: boolean;
+        showTablet: boolean;
+        showMobile: boolean;
+        desktopMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+        tabletMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+        mobileMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+        desktopTextEn: string | null;
+        desktopTextAr: string | null;
+        mobileTextEn: string | null;
+        mobileTextAr: string | null;
+        hideCtaMobile: boolean;
+        hideIconsMobile: boolean;
+    }, {
+        showDesktop?: boolean | undefined;
+        showTablet?: boolean | undefined;
+        showMobile?: boolean | undefined;
+        desktopMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        tabletMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        mobileMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        desktopTextEn?: string | null | undefined;
+        desktopTextAr?: string | null | undefined;
+        mobileTextEn?: string | null | undefined;
+        mobileTextAr?: string | null | undefined;
+        hideCtaMobile?: boolean | undefined;
+        hideIconsMobile?: boolean | undefined;
+    }>>;
+    promotionId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    messages: z.ZodArray<z.ZodObject<{
+        id: z.ZodOptional<z.ZodString>;
+        textEn: z.ZodString;
+        textAr: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        secondaryTextEn: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        secondaryTextAr: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        icon: z.ZodOptional<z.ZodNullable<z.ZodEnum<["truck", "gift", "star", "heart", "bag", "sparkle", "tag", "clock", "info", "warning"]>>>;
+        emoji: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        url: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>>;
+        openInNewTab: z.ZodDefault<z.ZodBoolean>;
+        ctaTextEn: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        ctaTextAr: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        ctaStyle: z.ZodDefault<z.ZodEnum<["TEXT", "UNDERLINE", "OUTLINE", "FILLED"]>>;
+        couponId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        couponCode: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        countdownAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        style: z.ZodDefault<z.ZodObject<{
+            textColor: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            emphasis: z.ZodDefault<z.ZodBoolean>;
+        }, "strip", z.ZodTypeAny, {
+            emphasis: boolean;
+            textColor?: string | null | undefined;
+        }, {
+            textColor?: string | null | undefined;
+            emphasis?: boolean | undefined;
+        }>>;
+    }, "strip", z.ZodTypeAny, {
+        textEn: string;
+        openInNewTab: boolean;
+        ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
+        style: {
+            emphasis: boolean;
+            textColor?: string | null | undefined;
+        };
+        id?: string | undefined;
+        couponCode?: string | null | undefined;
+        url?: string | null | undefined;
+        textAr?: string | null | undefined;
+        secondaryTextEn?: string | null | undefined;
+        secondaryTextAr?: string | null | undefined;
+        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+        emoji?: string | null | undefined;
+        ctaTextEn?: string | null | undefined;
+        ctaTextAr?: string | null | undefined;
+        couponId?: string | null | undefined;
+        countdownAt?: string | null | undefined;
+    }, {
+        textEn: string;
+        id?: string | undefined;
+        couponCode?: string | null | undefined;
+        url?: string | null | undefined;
+        textAr?: string | null | undefined;
+        secondaryTextEn?: string | null | undefined;
+        secondaryTextAr?: string | null | undefined;
+        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+        emoji?: string | null | undefined;
+        openInNewTab?: boolean | undefined;
+        ctaTextEn?: string | null | undefined;
+        ctaTextAr?: string | null | undefined;
+        ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
+        couponId?: string | null | undefined;
+        countdownAt?: string | null | undefined;
+        style?: {
+            textColor?: string | null | undefined;
+            emphasis?: boolean | undefined;
+        } | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    sortOrder: number;
+    promotionId: string | null;
+    position: "TOP" | "BELOW_HEADER" | "BOTTOM";
+    state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
+    priority: number;
+    timezone: string;
+    messages: {
+        textEn: string;
+        openInNewTab: boolean;
+        ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
+        style: {
+            emphasis: boolean;
+            textColor?: string | null | undefined;
+        };
+        id?: string | undefined;
+        couponCode?: string | null | undefined;
+        url?: string | null | undefined;
+        textAr?: string | null | undefined;
+        secondaryTextEn?: string | null | undefined;
+        secondaryTextAr?: string | null | undefined;
+        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+        emoji?: string | null | undefined;
+        ctaTextEn?: string | null | undefined;
+        ctaTextAr?: string | null | undefined;
+        couponId?: string | null | undefined;
+        countdownAt?: string | null | undefined;
+    }[];
+    internalName: string;
+    mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
+    recurringSchedule: {
+        enabled: boolean;
+        weekdays: number[];
+        startTime: string;
+        endTime: string;
+    } | null;
+    design: {
+        textColor: string;
+        backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
+        backgroundColor: string;
+        pattern: "NONE" | "DOTS" | "LINES" | "GRID";
+        backgroundOpacity: number;
+        fontFamily: "SANS" | "SERIF";
+        fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
+        fontSizeDesktop: number;
+        fontSizeTablet: number;
+        fontSizeMobile: number;
+        letterSpacing: number;
+        lineHeight: number;
+        textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
+        textAlign: "LEFT" | "CENTER" | "RIGHT";
+        heightDesktop: number;
+        heightTablet: number;
+        heightMobile: number;
+        horizontalPadding: number;
+        verticalPadding: number;
+        borderTop: boolean;
+        borderBottom: boolean;
+        borderWidth: number;
+        borderColor: string;
+        borderStyle: "SOLID" | "DASHED" | "DOTTED";
+        shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
+        zIndex: number;
+        ctaBackground: string;
+        ctaColor: string;
+        ctaHoverBackground: string;
+        ctaHoverColor: string;
+        ctaBorderColor: string;
+        ctaRadius: number;
+        gradient?: string | null | undefined;
+        backgroundImage?: string | null | undefined;
+    };
+    animation: {
+        entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
+        exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
+        transition: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
+        durationMs: number;
+        delayMs: number;
+        easing: "STANDARD" | "PREMIUM" | "LINEAR";
+        messageDurationMs: number;
+        tickerSpeed: number;
+        tickerDirection: "LTR" | "RTL";
+        pauseOnHover: boolean;
+        pauseOnInteraction: boolean;
+        loop: boolean;
+        separator: string;
+        separatorColor: string;
+        separatorSize: number;
+        separatorSpacing: number;
+    };
+    behavior: {
+        loop: boolean;
+        sticky: "FIXED" | "STICKY" | "NON_STICKY";
+        dismissible: boolean;
+        dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
+        dismissalDuration: number | null;
+        autoplay: boolean;
+        intervalMs: number;
+        arrows: boolean;
+        pagination: boolean;
+        swipe: boolean;
+        countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
+        expirationMessageEn: string | null;
+        expirationMessageAr: string | null;
+        freeShippingThresholdSource: "STORE" | "CUSTOM";
+        freeShippingThreshold: number | null;
+        remainingMessageEn: string;
+        remainingMessageAr: string;
+        successMessageEn: string;
+        successMessageAr: string;
+        showProgress: boolean;
+        inheritPromotionSchedule: boolean;
+        redirectUrl?: string | null | undefined;
+        nextBannerId?: string | null | undefined;
+    };
+    targeting: {
+        productIds: string[];
+        categoryIds: string[];
+        authentication: "ALL" | "GUEST" | "LOGGED_IN";
+        customerType: "ALL" | "RETURNING" | "NEW";
+        devices: ("desktop" | "tablet" | "mobile")[];
+        pages: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[];
+        urlPatterns: string[];
+        cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
+        cartSubtotalMin: number | null;
+        cartSubtotalMax: number | null;
+        countries: string[];
+        regions: string[];
+    };
+    responsive: {
+        showDesktop: boolean;
+        showTablet: boolean;
+        showMobile: boolean;
+        desktopMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+        tabletMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+        mobileMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+        desktopTextEn: string | null;
+        desktopTextAr: string | null;
+        mobileTextEn: string | null;
+        mobileTextAr: string | null;
+        hideCtaMobile: boolean;
+        hideIconsMobile: boolean;
+    };
+    startsAt?: string | null | undefined;
+    endsAt?: string | null | undefined;
+}, {
+    messages: {
+        textEn: string;
+        id?: string | undefined;
+        couponCode?: string | null | undefined;
+        url?: string | null | undefined;
+        textAr?: string | null | undefined;
+        secondaryTextEn?: string | null | undefined;
+        secondaryTextAr?: string | null | undefined;
+        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+        emoji?: string | null | undefined;
+        openInNewTab?: boolean | undefined;
+        ctaTextEn?: string | null | undefined;
+        ctaTextAr?: string | null | undefined;
+        ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
+        couponId?: string | null | undefined;
+        countdownAt?: string | null | undefined;
+        style?: {
+            textColor?: string | null | undefined;
+            emphasis?: boolean | undefined;
+        } | undefined;
+    }[];
+    internalName: string;
+    sortOrder?: number | undefined;
+    promotionId?: string | null | undefined;
+    position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
+    state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
+    priority?: number | undefined;
+    startsAt?: string | null | undefined;
+    endsAt?: string | null | undefined;
+    timezone?: string | undefined;
+    mode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | undefined;
+    recurringSchedule?: {
+        enabled?: boolean | undefined;
+        weekdays?: number[] | undefined;
+        startTime?: string | undefined;
+        endTime?: string | undefined;
+    } | null | undefined;
+    design?: {
+        textColor?: string | undefined;
+        backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
+        backgroundColor?: string | undefined;
+        gradient?: string | null | undefined;
+        backgroundImage?: string | null | undefined;
+        pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
+        backgroundOpacity?: number | undefined;
+        fontFamily?: "SANS" | "SERIF" | undefined;
+        fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
+        fontSizeDesktop?: number | undefined;
+        fontSizeTablet?: number | undefined;
+        fontSizeMobile?: number | undefined;
+        letterSpacing?: number | undefined;
+        lineHeight?: number | undefined;
+        textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
+        textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
+        heightDesktop?: number | undefined;
+        heightTablet?: number | undefined;
+        heightMobile?: number | undefined;
+        horizontalPadding?: number | undefined;
+        verticalPadding?: number | undefined;
+        borderTop?: boolean | undefined;
+        borderBottom?: boolean | undefined;
+        borderWidth?: number | undefined;
+        borderColor?: string | undefined;
+        borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
+        shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
+        zIndex?: number | undefined;
+        ctaBackground?: string | undefined;
+        ctaColor?: string | undefined;
+        ctaHoverBackground?: string | undefined;
+        ctaHoverColor?: string | undefined;
+        ctaBorderColor?: string | undefined;
+        ctaRadius?: number | undefined;
+    } | undefined;
+    animation?: {
+        entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
+        exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
+        transition?: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
+        durationMs?: number | undefined;
+        delayMs?: number | undefined;
+        easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
+        messageDurationMs?: number | undefined;
+        tickerSpeed?: number | undefined;
+        tickerDirection?: "LTR" | "RTL" | undefined;
+        pauseOnHover?: boolean | undefined;
+        pauseOnInteraction?: boolean | undefined;
+        loop?: boolean | undefined;
+        separator?: string | undefined;
+        separatorColor?: string | undefined;
+        separatorSize?: number | undefined;
+        separatorSpacing?: number | undefined;
+    } | undefined;
+    behavior?: {
+        loop?: boolean | undefined;
+        sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
+        dismissible?: boolean | undefined;
+        dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
+        dismissalDuration?: number | null | undefined;
+        autoplay?: boolean | undefined;
+        intervalMs?: number | undefined;
+        arrows?: boolean | undefined;
+        pagination?: boolean | undefined;
+        swipe?: boolean | undefined;
+        countdownEnd?: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER" | undefined;
+        expirationMessageEn?: string | null | undefined;
+        expirationMessageAr?: string | null | undefined;
+        redirectUrl?: string | null | undefined;
+        nextBannerId?: string | null | undefined;
+        freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
+        freeShippingThreshold?: number | null | undefined;
+        remainingMessageEn?: string | undefined;
+        remainingMessageAr?: string | undefined;
+        successMessageEn?: string | undefined;
+        successMessageAr?: string | undefined;
+        showProgress?: boolean | undefined;
+        inheritPromotionSchedule?: boolean | undefined;
+    } | undefined;
+    targeting?: {
+        productIds?: string[] | undefined;
+        categoryIds?: string[] | undefined;
+        authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
+        customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
+        devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
+        pages?: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[] | undefined;
+        urlPatterns?: string[] | undefined;
+        cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
+        cartSubtotalMin?: number | null | undefined;
+        cartSubtotalMax?: number | null | undefined;
+        countries?: string[] | undefined;
+        regions?: string[] | undefined;
+    } | undefined;
+    responsive?: {
+        showDesktop?: boolean | undefined;
+        showTablet?: boolean | undefined;
+        showMobile?: boolean | undefined;
+        desktopMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        tabletMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        mobileMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        desktopTextEn?: string | null | undefined;
+        desktopTextAr?: string | null | undefined;
+        mobileTextEn?: string | null | undefined;
+        mobileTextAr?: string | null | undefined;
+        hideCtaMobile?: boolean | undefined;
+        hideIconsMobile?: boolean | undefined;
+    } | undefined;
+}>, {
+    sortOrder: number;
+    promotionId: string | null;
+    position: "TOP" | "BELOW_HEADER" | "BOTTOM";
+    state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
+    priority: number;
+    timezone: string;
+    messages: {
+        textEn: string;
+        openInNewTab: boolean;
+        ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
+        style: {
+            emphasis: boolean;
+            textColor?: string | null | undefined;
+        };
+        id?: string | undefined;
+        couponCode?: string | null | undefined;
+        url?: string | null | undefined;
+        textAr?: string | null | undefined;
+        secondaryTextEn?: string | null | undefined;
+        secondaryTextAr?: string | null | undefined;
+        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+        emoji?: string | null | undefined;
+        ctaTextEn?: string | null | undefined;
+        ctaTextAr?: string | null | undefined;
+        couponId?: string | null | undefined;
+        countdownAt?: string | null | undefined;
+    }[];
+    internalName: string;
+    mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
+    recurringSchedule: {
+        enabled: boolean;
+        weekdays: number[];
+        startTime: string;
+        endTime: string;
+    } | null;
+    design: {
+        textColor: string;
+        backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
+        backgroundColor: string;
+        pattern: "NONE" | "DOTS" | "LINES" | "GRID";
+        backgroundOpacity: number;
+        fontFamily: "SANS" | "SERIF";
+        fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
+        fontSizeDesktop: number;
+        fontSizeTablet: number;
+        fontSizeMobile: number;
+        letterSpacing: number;
+        lineHeight: number;
+        textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
+        textAlign: "LEFT" | "CENTER" | "RIGHT";
+        heightDesktop: number;
+        heightTablet: number;
+        heightMobile: number;
+        horizontalPadding: number;
+        verticalPadding: number;
+        borderTop: boolean;
+        borderBottom: boolean;
+        borderWidth: number;
+        borderColor: string;
+        borderStyle: "SOLID" | "DASHED" | "DOTTED";
+        shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
+        zIndex: number;
+        ctaBackground: string;
+        ctaColor: string;
+        ctaHoverBackground: string;
+        ctaHoverColor: string;
+        ctaBorderColor: string;
+        ctaRadius: number;
+        gradient?: string | null | undefined;
+        backgroundImage?: string | null | undefined;
+    };
+    animation: {
+        entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
+        exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
+        transition: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
+        durationMs: number;
+        delayMs: number;
+        easing: "STANDARD" | "PREMIUM" | "LINEAR";
+        messageDurationMs: number;
+        tickerSpeed: number;
+        tickerDirection: "LTR" | "RTL";
+        pauseOnHover: boolean;
+        pauseOnInteraction: boolean;
+        loop: boolean;
+        separator: string;
+        separatorColor: string;
+        separatorSize: number;
+        separatorSpacing: number;
+    };
+    behavior: {
+        loop: boolean;
+        sticky: "FIXED" | "STICKY" | "NON_STICKY";
+        dismissible: boolean;
+        dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
+        dismissalDuration: number | null;
+        autoplay: boolean;
+        intervalMs: number;
+        arrows: boolean;
+        pagination: boolean;
+        swipe: boolean;
+        countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
+        expirationMessageEn: string | null;
+        expirationMessageAr: string | null;
+        freeShippingThresholdSource: "STORE" | "CUSTOM";
+        freeShippingThreshold: number | null;
+        remainingMessageEn: string;
+        remainingMessageAr: string;
+        successMessageEn: string;
+        successMessageAr: string;
+        showProgress: boolean;
+        inheritPromotionSchedule: boolean;
+        redirectUrl?: string | null | undefined;
+        nextBannerId?: string | null | undefined;
+    };
+    targeting: {
+        productIds: string[];
+        categoryIds: string[];
+        authentication: "ALL" | "GUEST" | "LOGGED_IN";
+        customerType: "ALL" | "RETURNING" | "NEW";
+        devices: ("desktop" | "tablet" | "mobile")[];
+        pages: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[];
+        urlPatterns: string[];
+        cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
+        cartSubtotalMin: number | null;
+        cartSubtotalMax: number | null;
+        countries: string[];
+        regions: string[];
+    };
+    responsive: {
+        showDesktop: boolean;
+        showTablet: boolean;
+        showMobile: boolean;
+        desktopMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+        tabletMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+        mobileMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+        desktopTextEn: string | null;
+        desktopTextAr: string | null;
+        mobileTextEn: string | null;
+        mobileTextAr: string | null;
+        hideCtaMobile: boolean;
+        hideIconsMobile: boolean;
+    };
+    startsAt?: string | null | undefined;
+    endsAt?: string | null | undefined;
+}, {
+    messages: {
+        textEn: string;
+        id?: string | undefined;
+        couponCode?: string | null | undefined;
+        url?: string | null | undefined;
+        textAr?: string | null | undefined;
+        secondaryTextEn?: string | null | undefined;
+        secondaryTextAr?: string | null | undefined;
+        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+        emoji?: string | null | undefined;
+        openInNewTab?: boolean | undefined;
+        ctaTextEn?: string | null | undefined;
+        ctaTextAr?: string | null | undefined;
+        ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
+        couponId?: string | null | undefined;
+        countdownAt?: string | null | undefined;
+        style?: {
+            textColor?: string | null | undefined;
+            emphasis?: boolean | undefined;
+        } | undefined;
+    }[];
+    internalName: string;
+    sortOrder?: number | undefined;
+    promotionId?: string | null | undefined;
+    position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
+    state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
+    priority?: number | undefined;
+    startsAt?: string | null | undefined;
+    endsAt?: string | null | undefined;
+    timezone?: string | undefined;
+    mode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | undefined;
+    recurringSchedule?: {
+        enabled?: boolean | undefined;
+        weekdays?: number[] | undefined;
+        startTime?: string | undefined;
+        endTime?: string | undefined;
+    } | null | undefined;
+    design?: {
+        textColor?: string | undefined;
+        backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
+        backgroundColor?: string | undefined;
+        gradient?: string | null | undefined;
+        backgroundImage?: string | null | undefined;
+        pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
+        backgroundOpacity?: number | undefined;
+        fontFamily?: "SANS" | "SERIF" | undefined;
+        fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
+        fontSizeDesktop?: number | undefined;
+        fontSizeTablet?: number | undefined;
+        fontSizeMobile?: number | undefined;
+        letterSpacing?: number | undefined;
+        lineHeight?: number | undefined;
+        textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
+        textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
+        heightDesktop?: number | undefined;
+        heightTablet?: number | undefined;
+        heightMobile?: number | undefined;
+        horizontalPadding?: number | undefined;
+        verticalPadding?: number | undefined;
+        borderTop?: boolean | undefined;
+        borderBottom?: boolean | undefined;
+        borderWidth?: number | undefined;
+        borderColor?: string | undefined;
+        borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
+        shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
+        zIndex?: number | undefined;
+        ctaBackground?: string | undefined;
+        ctaColor?: string | undefined;
+        ctaHoverBackground?: string | undefined;
+        ctaHoverColor?: string | undefined;
+        ctaBorderColor?: string | undefined;
+        ctaRadius?: number | undefined;
+    } | undefined;
+    animation?: {
+        entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
+        exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
+        transition?: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
+        durationMs?: number | undefined;
+        delayMs?: number | undefined;
+        easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
+        messageDurationMs?: number | undefined;
+        tickerSpeed?: number | undefined;
+        tickerDirection?: "LTR" | "RTL" | undefined;
+        pauseOnHover?: boolean | undefined;
+        pauseOnInteraction?: boolean | undefined;
+        loop?: boolean | undefined;
+        separator?: string | undefined;
+        separatorColor?: string | undefined;
+        separatorSize?: number | undefined;
+        separatorSpacing?: number | undefined;
+    } | undefined;
+    behavior?: {
+        loop?: boolean | undefined;
+        sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
+        dismissible?: boolean | undefined;
+        dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
+        dismissalDuration?: number | null | undefined;
+        autoplay?: boolean | undefined;
+        intervalMs?: number | undefined;
+        arrows?: boolean | undefined;
+        pagination?: boolean | undefined;
+        swipe?: boolean | undefined;
+        countdownEnd?: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER" | undefined;
+        expirationMessageEn?: string | null | undefined;
+        expirationMessageAr?: string | null | undefined;
+        redirectUrl?: string | null | undefined;
+        nextBannerId?: string | null | undefined;
+        freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
+        freeShippingThreshold?: number | null | undefined;
+        remainingMessageEn?: string | undefined;
+        remainingMessageAr?: string | undefined;
+        successMessageEn?: string | undefined;
+        successMessageAr?: string | undefined;
+        showProgress?: boolean | undefined;
+        inheritPromotionSchedule?: boolean | undefined;
+    } | undefined;
+    targeting?: {
+        productIds?: string[] | undefined;
+        categoryIds?: string[] | undefined;
+        authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
+        customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
+        devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
+        pages?: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[] | undefined;
+        urlPatterns?: string[] | undefined;
+        cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
+        cartSubtotalMin?: number | null | undefined;
+        cartSubtotalMax?: number | null | undefined;
+        countries?: string[] | undefined;
+        regions?: string[] | undefined;
+    } | undefined;
+    responsive?: {
+        showDesktop?: boolean | undefined;
+        showTablet?: boolean | undefined;
+        showMobile?: boolean | undefined;
+        desktopMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        tabletMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        mobileMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        desktopTextEn?: string | null | undefined;
+        desktopTextAr?: string | null | undefined;
+        mobileTextEn?: string | null | undefined;
+        mobileTextAr?: string | null | undefined;
+        hideCtaMobile?: boolean | undefined;
+        hideIconsMobile?: boolean | undefined;
+    } | undefined;
+}>;
+export declare const updateBannerSchema: z.ZodRecord<z.ZodString, z.ZodUnknown>;
+export declare const bannerQuerySchema: z.ZodObject<{
+    page: z.ZodDefault<z.ZodNumber>;
+    limit: z.ZodDefault<z.ZodNumber>;
+    search: z.ZodOptional<z.ZodString>;
+    state: z.ZodOptional<z.ZodEnum<["DRAFT", "ACTIVE", "PAUSED", "ARCHIVED"]>>;
+    mode: z.ZodOptional<z.ZodEnum<["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]>>;
+    sort: z.ZodDefault<z.ZodEnum<["priority", "updatedAt", "startsAt", "name"]>>;
+    direction: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
+}, "strip", z.ZodTypeAny, {
+    sort: "updatedAt" | "name" | "priority" | "startsAt";
+    page: number;
+    limit: number;
+    direction: "asc" | "desc";
+    search?: string | undefined;
+    state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
+    mode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | undefined;
+}, {
+    sort?: "updatedAt" | "name" | "priority" | "startsAt" | undefined;
+    page?: number | undefined;
+    limit?: number | undefined;
+    search?: string | undefined;
+    state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
+    mode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | undefined;
+    direction?: "asc" | "desc" | undefined;
+}>;
+export declare const reorderBannersSchema: z.ZodObject<{
+    ids: z.ZodArray<z.ZodString, "many">;
+}, "strip", z.ZodTypeAny, {
+    ids: string[];
+}, {
+    ids: string[];
+}>;
+export declare const bannerEventSchema: z.ZodObject<{
+    type: z.ZodEnum<["IMPRESSION", "CLICK", "CTA_CLICK", "COUPON_COPY", "DISMISS"]>;
+    messageId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    locale: z.ZodDefault<z.ZodEnum<["en", "ar"]>>;
+    device: z.ZodDefault<z.ZodEnum<["desktop", "tablet", "mobile"]>>;
+    page: z.ZodDefault<z.ZodString>;
+    sessionHash: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+}, "strip", z.ZodTypeAny, {
+    type: "IMPRESSION" | "CLICK" | "CTA_CLICK" | "COUPON_COPY" | "DISMISS";
+    page: string;
+    locale: "en" | "ar";
+    device: "desktop" | "tablet" | "mobile";
+    messageId?: string | null | undefined;
+    sessionHash?: string | null | undefined;
+}, {
+    type: "IMPRESSION" | "CLICK" | "CTA_CLICK" | "COUPON_COPY" | "DISMISS";
+    page?: string | undefined;
+    messageId?: string | null | undefined;
+    locale?: "en" | "ar" | undefined;
+    device?: "desktop" | "tablet" | "mobile" | undefined;
+    sessionHash?: string | null | undefined;
+}>;
+export declare const activeBannerQuerySchema: z.ZodObject<{
+    locale: z.ZodDefault<z.ZodEnum<["en", "ar"]>>;
+    page: z.ZodDefault<z.ZodString>;
+    device: z.ZodDefault<z.ZodEnum<["desktop", "tablet", "mobile"]>>;
+    authenticated: z.ZodDefault<z.ZodEffects<z.ZodBoolean, boolean, unknown>>;
+    returning: z.ZodDefault<z.ZodEffects<z.ZodBoolean, boolean, unknown>>;
+    cartSubtotal: z.ZodDefault<z.ZodNumber>;
+    cartCount: z.ZodDefault<z.ZodNumber>;
+    productId: z.ZodOptional<z.ZodString>;
+    categoryId: z.ZodOptional<z.ZodString>;
+    country: z.ZodOptional<z.ZodString>;
+    region: z.ZodOptional<z.ZodString>;
+    customerName: z.ZodOptional<z.ZodString>;
+    couponCode: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    page: string;
+    locale: "en" | "ar";
+    device: "desktop" | "tablet" | "mobile";
+    authenticated: boolean;
+    returning: boolean;
+    cartSubtotal: number;
+    cartCount: number;
+    country?: string | undefined;
+    couponCode?: string | undefined;
+    productId?: string | undefined;
+    categoryId?: string | undefined;
+    region?: string | undefined;
+    customerName?: string | undefined;
+}, {
+    page?: string | undefined;
+    country?: string | undefined;
+    couponCode?: string | undefined;
+    productId?: string | undefined;
+    categoryId?: string | undefined;
+    locale?: "en" | "ar" | undefined;
+    device?: "desktop" | "tablet" | "mobile" | undefined;
+    authenticated?: unknown;
+    returning?: unknown;
+    cartSubtotal?: number | undefined;
+    cartCount?: number | undefined;
+    region?: string | undefined;
+    customerName?: string | undefined;
+}>;
+export declare const bannerSettingsSchema: z.ZodObject<{
+    enabled: z.ZodBoolean;
+    displayStrategy: z.ZodEnum<["HIGHEST_PRIORITY", "ROTATE", "STACK", "SEQUENCE"]>;
+    defaultPosition: z.ZodEnum<["TOP", "BELOW_HEADER", "BOTTOM"]>;
+    analyticsEnabled: z.ZodBoolean;
+    defaultConfig: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+}, "strip", z.ZodTypeAny, {
+    enabled: boolean;
+    displayStrategy: "HIGHEST_PRIORITY" | "ROTATE" | "STACK" | "SEQUENCE";
+    defaultPosition: "TOP" | "BELOW_HEADER" | "BOTTOM";
+    analyticsEnabled: boolean;
+    defaultConfig: Record<string, unknown>;
+}, {
+    enabled: boolean;
+    displayStrategy: "HIGHEST_PRIORITY" | "ROTATE" | "STACK" | "SEQUENCE";
+    defaultPosition: "TOP" | "BELOW_HEADER" | "BOTTOM";
+    analyticsEnabled: boolean;
+    defaultConfig?: Record<string, unknown> | undefined;
+}>;
+export declare const bannerTemplateSchema: z.ZodObject<{
+    name: z.ZodString;
+    description: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    configuration: z.ZodEffects<z.ZodObject<{
+        internalName: z.ZodString;
+        mode: z.ZodDefault<z.ZodEnum<["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]>>;
+        state: z.ZodDefault<z.ZodEnum<["DRAFT", "ACTIVE", "PAUSED", "ARCHIVED"]>>;
+        priority: z.ZodDefault<z.ZodNumber>;
+        sortOrder: z.ZodDefault<z.ZodNumber>;
+        position: z.ZodDefault<z.ZodEnum<["TOP", "BELOW_HEADER", "BOTTOM"]>>;
+        startsAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        endsAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        timezone: z.ZodDefault<z.ZodString>;
+        recurringSchedule: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+            enabled: z.ZodDefault<z.ZodBoolean>;
+            weekdays: z.ZodDefault<z.ZodArray<z.ZodNumber, "many">>;
+            startTime: z.ZodDefault<z.ZodString>;
+            endTime: z.ZodDefault<z.ZodString>;
+        }, "strip", z.ZodTypeAny, {
+            enabled: boolean;
+            weekdays: number[];
+            startTime: string;
+            endTime: string;
+        }, {
+            enabled?: boolean | undefined;
+            weekdays?: number[] | undefined;
+            startTime?: string | undefined;
+            endTime?: string | undefined;
+        }>>>;
+        design: z.ZodDefault<z.ZodObject<{
             backgroundType: z.ZodDefault<z.ZodEnum<["SOLID", "GRADIENT", "IMAGE", "PATTERN"]>>;
             backgroundColor: z.ZodDefault<z.ZodString>;
             gradient: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-            backgroundImage: z.ZodOptional<
-              z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>
-            >;
+            backgroundImage: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>>;
             pattern: z.ZodDefault<z.ZodEnum<["NONE", "DOTS", "LINES", "GRID"]>>;
             backgroundOpacity: z.ZodDefault<z.ZodNumber>;
             textColor: z.ZodDefault<z.ZodString>;
@@ -679,9 +1545,7 @@ export declare const createBannerSchema: z.ZodEffects<
             fontSizeMobile: z.ZodDefault<z.ZodNumber>;
             letterSpacing: z.ZodDefault<z.ZodNumber>;
             lineHeight: z.ZodDefault<z.ZodNumber>;
-            textTransform: z.ZodDefault<
-              z.ZodEnum<["NONE", "UPPERCASE", "LOWERCASE", "CAPITALIZE"]>
-            >;
+            textTransform: z.ZodDefault<z.ZodEnum<["NONE", "UPPERCASE", "LOWERCASE", "CAPITALIZE"]>>;
             textAlign: z.ZodDefault<z.ZodEnum<["LEFT", "CENTER", "RIGHT"]>>;
             heightDesktop: z.ZodDefault<z.ZodNumber>;
             heightTablet: z.ZodDefault<z.ZodNumber>;
@@ -701,10 +1565,7 @@ export declare const createBannerSchema: z.ZodEffects<
             ctaHoverColor: z.ZodDefault<z.ZodString>;
             ctaBorderColor: z.ZodDefault<z.ZodString>;
             ctaRadius: z.ZodDefault<z.ZodNumber>;
-          },
-          "strip",
-          z.ZodTypeAny,
-          {
+        }, "strip", z.ZodTypeAny, {
             textColor: string;
             backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
             backgroundColor: string;
@@ -739,8 +1600,7 @@ export declare const createBannerSchema: z.ZodEffects<
             ctaRadius: number;
             gradient?: string | null | undefined;
             backgroundImage?: string | null | undefined;
-          },
-          {
+        }, {
             textColor?: string | undefined;
             backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
             backgroundColor?: string | undefined;
@@ -775,31 +1635,11 @@ export declare const createBannerSchema: z.ZodEffects<
             ctaHoverColor?: string | undefined;
             ctaBorderColor?: string | undefined;
             ctaRadius?: number | undefined;
-          }
-        >
-      >;
-      animation: z.ZodDefault<
-        z.ZodObject<
-          {
-            entrance: z.ZodDefault<
-              z.ZodEnum<["NONE", "FADE", "SLIDE_DOWN", "SLIDE_UP", "SCALE", "REVEAL"]>
-            >;
+        }>>;
+        animation: z.ZodDefault<z.ZodObject<{
+            entrance: z.ZodDefault<z.ZodEnum<["NONE", "FADE", "SLIDE_DOWN", "SLIDE_UP", "SCALE", "REVEAL"]>>;
             exit: z.ZodDefault<z.ZodEnum<["NONE", "FADE", "SLIDE_DOWN", "SLIDE_UP"]>>;
-            transition: z.ZodDefault<
-              z.ZodEnum<
-                [
-                  "FADE",
-                  "SLIDE_LEFT",
-                  "SLIDE_RIGHT",
-                  "SLIDE_UP",
-                  "SLIDE_DOWN",
-                  "CROSSFADE",
-                  "BLUR",
-                  "SCALE",
-                  "INSTANT",
-                ]
-              >
-            >;
+            transition: z.ZodDefault<z.ZodEnum<["FADE", "SLIDE_LEFT", "SLIDE_RIGHT", "SLIDE_UP", "SLIDE_DOWN", "CROSSFADE", "BLUR", "SCALE", "INSTANT"]>>;
             durationMs: z.ZodDefault<z.ZodNumber>;
             delayMs: z.ZodDefault<z.ZodNumber>;
             easing: z.ZodDefault<z.ZodEnum<["STANDARD", "PREMIUM", "LINEAR"]>>;
@@ -813,22 +1653,10 @@ export declare const createBannerSchema: z.ZodEffects<
             separatorColor: z.ZodDefault<z.ZodString>;
             separatorSize: z.ZodDefault<z.ZodNumber>;
             separatorSpacing: z.ZodDefault<z.ZodNumber>;
-          },
-          "strip",
-          z.ZodTypeAny,
-          {
+        }, "strip", z.ZodTypeAny, {
             entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
             exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
-            transition:
-              | "FADE"
-              | "SLIDE_DOWN"
-              | "SLIDE_UP"
-              | "SCALE"
-              | "SLIDE_LEFT"
-              | "SLIDE_RIGHT"
-              | "CROSSFADE"
-              | "BLUR"
-              | "INSTANT";
+            transition: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
             durationMs: number;
             delayMs: number;
             easing: "STANDARD" | "PREMIUM" | "LINEAR";
@@ -842,21 +1670,10 @@ export declare const createBannerSchema: z.ZodEffects<
             separatorColor: string;
             separatorSize: number;
             separatorSpacing: number;
-          },
-          {
+        }, {
             entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
             exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
-            transition?:
-              | "FADE"
-              | "SLIDE_DOWN"
-              | "SLIDE_UP"
-              | "SCALE"
-              | "SLIDE_LEFT"
-              | "SLIDE_RIGHT"
-              | "CROSSFADE"
-              | "BLUR"
-              | "INSTANT"
-              | undefined;
+            transition?: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
             durationMs?: number | undefined;
             delayMs?: number | undefined;
             easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
@@ -870,17 +1687,11 @@ export declare const createBannerSchema: z.ZodEffects<
             separatorColor?: string | undefined;
             separatorSize?: number | undefined;
             separatorSpacing?: number | undefined;
-          }
-        >
-      >;
-      behavior: z.ZodDefault<
-        z.ZodObject<
-          {
+        }>>;
+        behavior: z.ZodDefault<z.ZodObject<{
             sticky: z.ZodDefault<z.ZodEnum<["FIXED", "STICKY", "NON_STICKY"]>>;
             dismissible: z.ZodDefault<z.ZodBoolean>;
-            dismissalMode: z.ZodDefault<
-              z.ZodEnum<["REFRESH", "SESSION", "HOURS", "DAYS", "PERMANENT"]>
-            >;
+            dismissalMode: z.ZodDefault<z.ZodEnum<["REFRESH", "SESSION", "HOURS", "DAYS", "PERMANENT"]>>;
             dismissalDuration: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
             autoplay: z.ZodDefault<z.ZodBoolean>;
             intervalMs: z.ZodDefault<z.ZodNumber>;
@@ -888,9 +1699,7 @@ export declare const createBannerSchema: z.ZodEffects<
             pagination: z.ZodDefault<z.ZodBoolean>;
             loop: z.ZodDefault<z.ZodBoolean>;
             swipe: z.ZodDefault<z.ZodBoolean>;
-            countdownEnd: z.ZodDefault<
-              z.ZodEnum<["HIDE", "ZERO", "MESSAGE", "REDIRECT", "NEXT_BANNER"]>
-            >;
+            countdownEnd: z.ZodDefault<z.ZodEnum<["HIDE", "ZERO", "MESSAGE", "REDIRECT", "NEXT_BANNER"]>>;
             expirationMessageEn: z.ZodDefault<z.ZodNullable<z.ZodString>>;
             expirationMessageAr: z.ZodDefault<z.ZodNullable<z.ZodString>>;
             redirectUrl: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>>;
@@ -903,10 +1712,7 @@ export declare const createBannerSchema: z.ZodEffects<
             successMessageAr: z.ZodDefault<z.ZodString>;
             showProgress: z.ZodDefault<z.ZodBoolean>;
             inheritPromotionSchedule: z.ZodDefault<z.ZodBoolean>;
-          },
-          "strip",
-          z.ZodTypeAny,
-          {
+        }, "strip", z.ZodTypeAny, {
             loop: boolean;
             sticky: "FIXED" | "STICKY" | "NON_STICKY";
             dismissible: boolean;
@@ -930,8 +1736,7 @@ export declare const createBannerSchema: z.ZodEffects<
             inheritPromotionSchedule: boolean;
             redirectUrl?: string | null | undefined;
             nextBannerId?: string | null | undefined;
-          },
-          {
+        }, {
             loop?: boolean | undefined;
             sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
             dismissible?: boolean | undefined;
@@ -955,36 +1760,12 @@ export declare const createBannerSchema: z.ZodEffects<
             successMessageAr?: string | undefined;
             showProgress?: boolean | undefined;
             inheritPromotionSchedule?: boolean | undefined;
-          }
-        >
-      >;
-      targeting: z.ZodDefault<
-        z.ZodObject<
-          {
+        }>>;
+        targeting: z.ZodDefault<z.ZodObject<{
             authentication: z.ZodDefault<z.ZodEnum<["ALL", "GUEST", "LOGGED_IN"]>>;
             customerType: z.ZodDefault<z.ZodEnum<["ALL", "NEW", "RETURNING"]>>;
             devices: z.ZodDefault<z.ZodArray<z.ZodEnum<["desktop", "tablet", "mobile"]>, "many">>;
-            pages: z.ZodDefault<
-              z.ZodArray<
-                z.ZodEnum<
-                  [
-                    "EVERYWHERE",
-                    "HOME",
-                    "PRODUCTS",
-                    "PRODUCT",
-                    "CATEGORIES",
-                    "CATEGORY",
-                    "COLLECTIONS",
-                    "CART",
-                    "CHECKOUT",
-                    "ACCOUNT",
-                    "OFFERS",
-                    "CUSTOM",
-                  ]
-                >,
-                "many"
-              >
-            >;
+            pages: z.ZodDefault<z.ZodArray<z.ZodEnum<["EVERYWHERE", "HOME", "PRODUCTS", "PRODUCT", "CATEGORIES", "CATEGORY", "COLLECTIONS", "CART", "CHECKOUT", "ACCOUNT", "OFFERS", "CUSTOM"]>, "many">>;
             urlPatterns: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
@@ -993,226 +1774,81 @@ export declare const createBannerSchema: z.ZodEffects<
             cartSubtotalMax: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
             countries: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             regions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-          },
-          "strip",
-          z.ZodTypeAny,
-          {
+        }, "strip", z.ZodTypeAny, {
             productIds: string[];
             categoryIds: string[];
             authentication: "ALL" | "GUEST" | "LOGGED_IN";
             customerType: "ALL" | "RETURNING" | "NEW";
             devices: ("desktop" | "tablet" | "mobile")[];
-            pages: (
-              | "HOME"
-              | "CUSTOM"
-              | "EVERYWHERE"
-              | "PRODUCTS"
-              | "PRODUCT"
-              | "CATEGORIES"
-              | "CATEGORY"
-              | "COLLECTIONS"
-              | "CART"
-              | "CHECKOUT"
-              | "ACCOUNT"
-              | "OFFERS"
-            )[];
+            pages: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[];
             urlPatterns: string[];
             cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
             cartSubtotalMin: number | null;
             cartSubtotalMax: number | null;
             countries: string[];
             regions: string[];
-          },
-          {
+        }, {
             productIds?: string[] | undefined;
             categoryIds?: string[] | undefined;
             authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
             customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
             devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
-            pages?:
-              | (
-                  | "HOME"
-                  | "CUSTOM"
-                  | "EVERYWHERE"
-                  | "PRODUCTS"
-                  | "PRODUCT"
-                  | "CATEGORIES"
-                  | "CATEGORY"
-                  | "COLLECTIONS"
-                  | "CART"
-                  | "CHECKOUT"
-                  | "ACCOUNT"
-                  | "OFFERS"
-                )[]
-              | undefined;
+            pages?: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[] | undefined;
             urlPatterns?: string[] | undefined;
             cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
             cartSubtotalMin?: number | null | undefined;
             cartSubtotalMax?: number | null | undefined;
             countries?: string[] | undefined;
             regions?: string[] | undefined;
-          }
-        >
-      >;
-      responsive: z.ZodDefault<
-        z.ZodObject<
-          {
+        }>>;
+        responsive: z.ZodDefault<z.ZodObject<{
             showDesktop: z.ZodDefault<z.ZodBoolean>;
             showTablet: z.ZodDefault<z.ZodBoolean>;
             showMobile: z.ZodDefault<z.ZodBoolean>;
-            desktopMode: z.ZodDefault<
-              z.ZodNullable<
-                z.ZodEnum<
-                  [
-                    "STATIC",
-                    "TICKER",
-                    "ROTATING",
-                    "CAROUSEL",
-                    "COUNTDOWN",
-                    "FREE_SHIPPING_PROGRESS",
-                  ]
-                >
-              >
-            >;
-            tabletMode: z.ZodDefault<
-              z.ZodNullable<
-                z.ZodEnum<
-                  [
-                    "STATIC",
-                    "TICKER",
-                    "ROTATING",
-                    "CAROUSEL",
-                    "COUNTDOWN",
-                    "FREE_SHIPPING_PROGRESS",
-                  ]
-                >
-              >
-            >;
-            mobileMode: z.ZodDefault<
-              z.ZodNullable<
-                z.ZodEnum<
-                  [
-                    "STATIC",
-                    "TICKER",
-                    "ROTATING",
-                    "CAROUSEL",
-                    "COUNTDOWN",
-                    "FREE_SHIPPING_PROGRESS",
-                  ]
-                >
-              >
-            >;
+            desktopMode: z.ZodDefault<z.ZodNullable<z.ZodEnum<["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]>>>;
+            tabletMode: z.ZodDefault<z.ZodNullable<z.ZodEnum<["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]>>>;
+            mobileMode: z.ZodDefault<z.ZodNullable<z.ZodEnum<["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]>>>;
             desktopTextEn: z.ZodDefault<z.ZodNullable<z.ZodString>>;
             desktopTextAr: z.ZodDefault<z.ZodNullable<z.ZodString>>;
             mobileTextEn: z.ZodDefault<z.ZodNullable<z.ZodString>>;
             mobileTextAr: z.ZodDefault<z.ZodNullable<z.ZodString>>;
             hideCtaMobile: z.ZodDefault<z.ZodBoolean>;
             hideIconsMobile: z.ZodDefault<z.ZodBoolean>;
-          },
-          "strip",
-          z.ZodTypeAny,
-          {
+        }, "strip", z.ZodTypeAny, {
             showDesktop: boolean;
             showTablet: boolean;
             showMobile: boolean;
-            desktopMode:
-              | "STATIC"
-              | "TICKER"
-              | "ROTATING"
-              | "CAROUSEL"
-              | "COUNTDOWN"
-              | "FREE_SHIPPING_PROGRESS"
-              | null;
-            tabletMode:
-              | "STATIC"
-              | "TICKER"
-              | "ROTATING"
-              | "CAROUSEL"
-              | "COUNTDOWN"
-              | "FREE_SHIPPING_PROGRESS"
-              | null;
-            mobileMode:
-              | "STATIC"
-              | "TICKER"
-              | "ROTATING"
-              | "CAROUSEL"
-              | "COUNTDOWN"
-              | "FREE_SHIPPING_PROGRESS"
-              | null;
+            desktopMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+            tabletMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+            mobileMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
             desktopTextEn: string | null;
             desktopTextAr: string | null;
             mobileTextEn: string | null;
             mobileTextAr: string | null;
             hideCtaMobile: boolean;
             hideIconsMobile: boolean;
-          },
-          {
+        }, {
             showDesktop?: boolean | undefined;
             showTablet?: boolean | undefined;
             showMobile?: boolean | undefined;
-            desktopMode?:
-              | "STATIC"
-              | "TICKER"
-              | "ROTATING"
-              | "CAROUSEL"
-              | "COUNTDOWN"
-              | "FREE_SHIPPING_PROGRESS"
-              | null
-              | undefined;
-            tabletMode?:
-              | "STATIC"
-              | "TICKER"
-              | "ROTATING"
-              | "CAROUSEL"
-              | "COUNTDOWN"
-              | "FREE_SHIPPING_PROGRESS"
-              | null
-              | undefined;
-            mobileMode?:
-              | "STATIC"
-              | "TICKER"
-              | "ROTATING"
-              | "CAROUSEL"
-              | "COUNTDOWN"
-              | "FREE_SHIPPING_PROGRESS"
-              | null
-              | undefined;
+            desktopMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            tabletMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            mobileMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
             desktopTextEn?: string | null | undefined;
             desktopTextAr?: string | null | undefined;
             mobileTextEn?: string | null | undefined;
             mobileTextAr?: string | null | undefined;
             hideCtaMobile?: boolean | undefined;
             hideIconsMobile?: boolean | undefined;
-          }
-        >
-      >;
-      promotionId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
-      messages: z.ZodArray<
-        z.ZodObject<
-          {
+        }>>;
+        promotionId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        messages: z.ZodArray<z.ZodObject<{
             id: z.ZodOptional<z.ZodString>;
             textEn: z.ZodString;
             textAr: z.ZodOptional<z.ZodNullable<z.ZodString>>;
             secondaryTextEn: z.ZodOptional<z.ZodNullable<z.ZodString>>;
             secondaryTextAr: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-            icon: z.ZodOptional<
-              z.ZodNullable<
-                z.ZodEnum<
-                  [
-                    "truck",
-                    "gift",
-                    "star",
-                    "heart",
-                    "bag",
-                    "sparkle",
-                    "tag",
-                    "clock",
-                    "info",
-                    "warning",
-                  ]
-                >
-              >
-            >;
+            icon: z.ZodOptional<z.ZodNullable<z.ZodEnum<["truck", "gift", "star", "heart", "bag", "sparkle", "tag", "clock", "info", "warning"]>>>;
             emoji: z.ZodOptional<z.ZodNullable<z.ZodString>>;
             url: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>>;
             openInNewTab: z.ZodDefault<z.ZodBoolean>;
@@ -1222,34 +1858,23 @@ export declare const createBannerSchema: z.ZodEffects<
             couponId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
             couponCode: z.ZodOptional<z.ZodNullable<z.ZodString>>;
             countdownAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-            style: z.ZodDefault<
-              z.ZodObject<
-                {
-                  textColor: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-                  emphasis: z.ZodDefault<z.ZodBoolean>;
-                },
-                "strip",
-                z.ZodTypeAny,
-                {
-                  emphasis: boolean;
-                  textColor?: string | null | undefined;
-                },
-                {
-                  textColor?: string | null | undefined;
-                  emphasis?: boolean | undefined;
-                }
-              >
-            >;
-          },
-          "strip",
-          z.ZodTypeAny,
-          {
+            style: z.ZodDefault<z.ZodObject<{
+                textColor: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+                emphasis: z.ZodDefault<z.ZodBoolean>;
+            }, "strip", z.ZodTypeAny, {
+                emphasis: boolean;
+                textColor?: string | null | undefined;
+            }, {
+                textColor?: string | null | undefined;
+                emphasis?: boolean | undefined;
+            }>>;
+        }, "strip", z.ZodTypeAny, {
             textEn: string;
             openInNewTab: boolean;
             ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
             style: {
-              emphasis: boolean;
-              textColor?: string | null | undefined;
+                emphasis: boolean;
+                textColor?: string | null | undefined;
             };
             id?: string | undefined;
             couponCode?: string | null | undefined;
@@ -1257,26 +1882,13 @@ export declare const createBannerSchema: z.ZodEffects<
             textAr?: string | null | undefined;
             secondaryTextEn?: string | null | undefined;
             secondaryTextAr?: string | null | undefined;
-            icon?:
-              | "truck"
-              | "gift"
-              | "star"
-              | "heart"
-              | "bag"
-              | "sparkle"
-              | "tag"
-              | "clock"
-              | "info"
-              | "warning"
-              | null
-              | undefined;
+            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
             emoji?: string | null | undefined;
             ctaTextEn?: string | null | undefined;
             ctaTextAr?: string | null | undefined;
             couponId?: string | null | undefined;
             countdownAt?: string | null | undefined;
-          },
-          {
+        }, {
             textEn: string;
             id?: string | undefined;
             couponCode?: string | null | undefined;
@@ -1284,19 +1896,7 @@ export declare const createBannerSchema: z.ZodEffects<
             textAr?: string | null | undefined;
             secondaryTextEn?: string | null | undefined;
             secondaryTextAr?: string | null | undefined;
-            icon?:
-              | "truck"
-              | "gift"
-              | "star"
-              | "heart"
-              | "bag"
-              | "sparkle"
-              | "tag"
-              | "clock"
-              | "info"
-              | "warning"
-              | null
-              | undefined;
+            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
             emoji?: string | null | undefined;
             openInNewTab?: boolean | undefined;
             ctaTextEn?: string | null | undefined;
@@ -1304,1766 +1904,25 @@ export declare const createBannerSchema: z.ZodEffects<
             ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
             couponId?: string | null | undefined;
             countdownAt?: string | null | undefined;
-            style?:
-              | {
-                  textColor?: string | null | undefined;
-                  emphasis?: boolean | undefined;
-                }
-              | undefined;
-          }
-        >,
-        "many"
-      >;
-    },
-    "strip",
-    z.ZodTypeAny,
-    {
-      sortOrder: number;
-      promotionId: string | null;
-      position: "TOP" | "BELOW_HEADER" | "BOTTOM";
-      state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
-      priority: number;
-      timezone: string;
-      messages: {
-        textEn: string;
-        openInNewTab: boolean;
-        ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
-        style: {
-          emphasis: boolean;
-          textColor?: string | null | undefined;
-        };
-        id?: string | undefined;
-        couponCode?: string | null | undefined;
-        url?: string | null | undefined;
-        textAr?: string | null | undefined;
-        secondaryTextEn?: string | null | undefined;
-        secondaryTextAr?: string | null | undefined;
-        icon?:
-          | "truck"
-          | "gift"
-          | "star"
-          | "heart"
-          | "bag"
-          | "sparkle"
-          | "tag"
-          | "clock"
-          | "info"
-          | "warning"
-          | null
-          | undefined;
-        emoji?: string | null | undefined;
-        ctaTextEn?: string | null | undefined;
-        ctaTextAr?: string | null | undefined;
-        couponId?: string | null | undefined;
-        countdownAt?: string | null | undefined;
-      }[];
-      internalName: string;
-      mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
-      recurringSchedule: {
-        enabled: boolean;
-        weekdays: number[];
-        startTime: string;
-        endTime: string;
-      } | null;
-      design: {
-        textColor: string;
-        backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
-        backgroundColor: string;
-        pattern: "NONE" | "DOTS" | "LINES" | "GRID";
-        backgroundOpacity: number;
-        fontFamily: "SANS" | "SERIF";
-        fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
-        fontSizeDesktop: number;
-        fontSizeTablet: number;
-        fontSizeMobile: number;
-        letterSpacing: number;
-        lineHeight: number;
-        textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
-        textAlign: "LEFT" | "CENTER" | "RIGHT";
-        heightDesktop: number;
-        heightTablet: number;
-        heightMobile: number;
-        horizontalPadding: number;
-        verticalPadding: number;
-        borderTop: boolean;
-        borderBottom: boolean;
-        borderWidth: number;
-        borderColor: string;
-        borderStyle: "SOLID" | "DASHED" | "DOTTED";
-        shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
-        zIndex: number;
-        ctaBackground: string;
-        ctaColor: string;
-        ctaHoverBackground: string;
-        ctaHoverColor: string;
-        ctaBorderColor: string;
-        ctaRadius: number;
-        gradient?: string | null | undefined;
-        backgroundImage?: string | null | undefined;
-      };
-      animation: {
-        entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
-        exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
-        transition:
-          | "FADE"
-          | "SLIDE_DOWN"
-          | "SLIDE_UP"
-          | "SCALE"
-          | "SLIDE_LEFT"
-          | "SLIDE_RIGHT"
-          | "CROSSFADE"
-          | "BLUR"
-          | "INSTANT";
-        durationMs: number;
-        delayMs: number;
-        easing: "STANDARD" | "PREMIUM" | "LINEAR";
-        messageDurationMs: number;
-        tickerSpeed: number;
-        tickerDirection: "LTR" | "RTL";
-        pauseOnHover: boolean;
-        pauseOnInteraction: boolean;
-        loop: boolean;
-        separator: string;
-        separatorColor: string;
-        separatorSize: number;
-        separatorSpacing: number;
-      };
-      behavior: {
-        loop: boolean;
-        sticky: "FIXED" | "STICKY" | "NON_STICKY";
-        dismissible: boolean;
-        dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
-        dismissalDuration: number | null;
-        autoplay: boolean;
-        intervalMs: number;
-        arrows: boolean;
-        pagination: boolean;
-        swipe: boolean;
-        countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
-        expirationMessageEn: string | null;
-        expirationMessageAr: string | null;
-        freeShippingThresholdSource: "STORE" | "CUSTOM";
-        freeShippingThreshold: number | null;
-        remainingMessageEn: string;
-        remainingMessageAr: string;
-        successMessageEn: string;
-        successMessageAr: string;
-        showProgress: boolean;
-        inheritPromotionSchedule: boolean;
-        redirectUrl?: string | null | undefined;
-        nextBannerId?: string | null | undefined;
-      };
-      targeting: {
-        productIds: string[];
-        categoryIds: string[];
-        authentication: "ALL" | "GUEST" | "LOGGED_IN";
-        customerType: "ALL" | "RETURNING" | "NEW";
-        devices: ("desktop" | "tablet" | "mobile")[];
-        pages: (
-          | "HOME"
-          | "CUSTOM"
-          | "EVERYWHERE"
-          | "PRODUCTS"
-          | "PRODUCT"
-          | "CATEGORIES"
-          | "CATEGORY"
-          | "COLLECTIONS"
-          | "CART"
-          | "CHECKOUT"
-          | "ACCOUNT"
-          | "OFFERS"
-        )[];
-        urlPatterns: string[];
-        cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
-        cartSubtotalMin: number | null;
-        cartSubtotalMax: number | null;
-        countries: string[];
-        regions: string[];
-      };
-      responsive: {
-        showDesktop: boolean;
-        showTablet: boolean;
-        showMobile: boolean;
-        desktopMode:
-          | "STATIC"
-          | "TICKER"
-          | "ROTATING"
-          | "CAROUSEL"
-          | "COUNTDOWN"
-          | "FREE_SHIPPING_PROGRESS"
-          | null;
-        tabletMode:
-          | "STATIC"
-          | "TICKER"
-          | "ROTATING"
-          | "CAROUSEL"
-          | "COUNTDOWN"
-          | "FREE_SHIPPING_PROGRESS"
-          | null;
-        mobileMode:
-          | "STATIC"
-          | "TICKER"
-          | "ROTATING"
-          | "CAROUSEL"
-          | "COUNTDOWN"
-          | "FREE_SHIPPING_PROGRESS"
-          | null;
-        desktopTextEn: string | null;
-        desktopTextAr: string | null;
-        mobileTextEn: string | null;
-        mobileTextAr: string | null;
-        hideCtaMobile: boolean;
-        hideIconsMobile: boolean;
-      };
-      startsAt?: string | null | undefined;
-      endsAt?: string | null | undefined;
-    },
-    {
-      messages: {
-        textEn: string;
-        id?: string | undefined;
-        couponCode?: string | null | undefined;
-        url?: string | null | undefined;
-        textAr?: string | null | undefined;
-        secondaryTextEn?: string | null | undefined;
-        secondaryTextAr?: string | null | undefined;
-        icon?:
-          | "truck"
-          | "gift"
-          | "star"
-          | "heart"
-          | "bag"
-          | "sparkle"
-          | "tag"
-          | "clock"
-          | "info"
-          | "warning"
-          | null
-          | undefined;
-        emoji?: string | null | undefined;
-        openInNewTab?: boolean | undefined;
-        ctaTextEn?: string | null | undefined;
-        ctaTextAr?: string | null | undefined;
-        ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
-        couponId?: string | null | undefined;
-        countdownAt?: string | null | undefined;
-        style?:
-          | {
-              textColor?: string | null | undefined;
-              emphasis?: boolean | undefined;
-            }
-          | undefined;
-      }[];
-      internalName: string;
-      sortOrder?: number | undefined;
-      promotionId?: string | null | undefined;
-      position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
-      state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
-      priority?: number | undefined;
-      startsAt?: string | null | undefined;
-      endsAt?: string | null | undefined;
-      timezone?: string | undefined;
-      mode?:
-        | "STATIC"
-        | "TICKER"
-        | "ROTATING"
-        | "CAROUSEL"
-        | "COUNTDOWN"
-        | "FREE_SHIPPING_PROGRESS"
-        | undefined;
-      recurringSchedule?:
-        | {
-            enabled?: boolean | undefined;
-            weekdays?: number[] | undefined;
-            startTime?: string | undefined;
-            endTime?: string | undefined;
-          }
-        | null
-        | undefined;
-      design?:
-        | {
-            textColor?: string | undefined;
-            backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
-            backgroundColor?: string | undefined;
-            gradient?: string | null | undefined;
-            backgroundImage?: string | null | undefined;
-            pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
-            backgroundOpacity?: number | undefined;
-            fontFamily?: "SANS" | "SERIF" | undefined;
-            fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
-            fontSizeDesktop?: number | undefined;
-            fontSizeTablet?: number | undefined;
-            fontSizeMobile?: number | undefined;
-            letterSpacing?: number | undefined;
-            lineHeight?: number | undefined;
-            textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
-            textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
-            heightDesktop?: number | undefined;
-            heightTablet?: number | undefined;
-            heightMobile?: number | undefined;
-            horizontalPadding?: number | undefined;
-            verticalPadding?: number | undefined;
-            borderTop?: boolean | undefined;
-            borderBottom?: boolean | undefined;
-            borderWidth?: number | undefined;
-            borderColor?: string | undefined;
-            borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-            shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
-            zIndex?: number | undefined;
-            ctaBackground?: string | undefined;
-            ctaColor?: string | undefined;
-            ctaHoverBackground?: string | undefined;
-            ctaHoverColor?: string | undefined;
-            ctaBorderColor?: string | undefined;
-            ctaRadius?: number | undefined;
-          }
-        | undefined;
-      animation?:
-        | {
-            entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
-            exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
-            transition?:
-              | "FADE"
-              | "SLIDE_DOWN"
-              | "SLIDE_UP"
-              | "SCALE"
-              | "SLIDE_LEFT"
-              | "SLIDE_RIGHT"
-              | "CROSSFADE"
-              | "BLUR"
-              | "INSTANT"
-              | undefined;
-            durationMs?: number | undefined;
-            delayMs?: number | undefined;
-            easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
-            messageDurationMs?: number | undefined;
-            tickerSpeed?: number | undefined;
-            tickerDirection?: "LTR" | "RTL" | undefined;
-            pauseOnHover?: boolean | undefined;
-            pauseOnInteraction?: boolean | undefined;
-            loop?: boolean | undefined;
-            separator?: string | undefined;
-            separatorColor?: string | undefined;
-            separatorSize?: number | undefined;
-            separatorSpacing?: number | undefined;
-          }
-        | undefined;
-      behavior?:
-        | {
-            loop?: boolean | undefined;
-            sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
-            dismissible?: boolean | undefined;
-            dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
-            dismissalDuration?: number | null | undefined;
-            autoplay?: boolean | undefined;
-            intervalMs?: number | undefined;
-            arrows?: boolean | undefined;
-            pagination?: boolean | undefined;
-            swipe?: boolean | undefined;
-            countdownEnd?: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER" | undefined;
-            expirationMessageEn?: string | null | undefined;
-            expirationMessageAr?: string | null | undefined;
-            redirectUrl?: string | null | undefined;
-            nextBannerId?: string | null | undefined;
-            freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
-            freeShippingThreshold?: number | null | undefined;
-            remainingMessageEn?: string | undefined;
-            remainingMessageAr?: string | undefined;
-            successMessageEn?: string | undefined;
-            successMessageAr?: string | undefined;
-            showProgress?: boolean | undefined;
-            inheritPromotionSchedule?: boolean | undefined;
-          }
-        | undefined;
-      targeting?:
-        | {
-            productIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
-            authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
-            customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-            devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
-            pages?:
-              | (
-                  | "HOME"
-                  | "CUSTOM"
-                  | "EVERYWHERE"
-                  | "PRODUCTS"
-                  | "PRODUCT"
-                  | "CATEGORIES"
-                  | "CATEGORY"
-                  | "COLLECTIONS"
-                  | "CART"
-                  | "CHECKOUT"
-                  | "ACCOUNT"
-                  | "OFFERS"
-                )[]
-              | undefined;
-            urlPatterns?: string[] | undefined;
-            cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
-            cartSubtotalMin?: number | null | undefined;
-            cartSubtotalMax?: number | null | undefined;
-            countries?: string[] | undefined;
-            regions?: string[] | undefined;
-          }
-        | undefined;
-      responsive?:
-        | {
-            showDesktop?: boolean | undefined;
-            showTablet?: boolean | undefined;
-            showMobile?: boolean | undefined;
-            desktopMode?:
-              | "STATIC"
-              | "TICKER"
-              | "ROTATING"
-              | "CAROUSEL"
-              | "COUNTDOWN"
-              | "FREE_SHIPPING_PROGRESS"
-              | null
-              | undefined;
-            tabletMode?:
-              | "STATIC"
-              | "TICKER"
-              | "ROTATING"
-              | "CAROUSEL"
-              | "COUNTDOWN"
-              | "FREE_SHIPPING_PROGRESS"
-              | null
-              | undefined;
-            mobileMode?:
-              | "STATIC"
-              | "TICKER"
-              | "ROTATING"
-              | "CAROUSEL"
-              | "COUNTDOWN"
-              | "FREE_SHIPPING_PROGRESS"
-              | null
-              | undefined;
-            desktopTextEn?: string | null | undefined;
-            desktopTextAr?: string | null | undefined;
-            mobileTextEn?: string | null | undefined;
-            mobileTextAr?: string | null | undefined;
-            hideCtaMobile?: boolean | undefined;
-            hideIconsMobile?: boolean | undefined;
-          }
-        | undefined;
-    }
-  >,
-  {
-    sortOrder: number;
-    promotionId: string | null;
-    position: "TOP" | "BELOW_HEADER" | "BOTTOM";
-    state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
-    priority: number;
-    timezone: string;
-    messages: {
-      textEn: string;
-      openInNewTab: boolean;
-      ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
-      style: {
-        emphasis: boolean;
-        textColor?: string | null | undefined;
-      };
-      id?: string | undefined;
-      couponCode?: string | null | undefined;
-      url?: string | null | undefined;
-      textAr?: string | null | undefined;
-      secondaryTextEn?: string | null | undefined;
-      secondaryTextAr?: string | null | undefined;
-      icon?:
-        | "truck"
-        | "gift"
-        | "star"
-        | "heart"
-        | "bag"
-        | "sparkle"
-        | "tag"
-        | "clock"
-        | "info"
-        | "warning"
-        | null
-        | undefined;
-      emoji?: string | null | undefined;
-      ctaTextEn?: string | null | undefined;
-      ctaTextAr?: string | null | undefined;
-      couponId?: string | null | undefined;
-      countdownAt?: string | null | undefined;
-    }[];
-    internalName: string;
-    mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
-    recurringSchedule: {
-      enabled: boolean;
-      weekdays: number[];
-      startTime: string;
-      endTime: string;
-    } | null;
-    design: {
-      textColor: string;
-      backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
-      backgroundColor: string;
-      pattern: "NONE" | "DOTS" | "LINES" | "GRID";
-      backgroundOpacity: number;
-      fontFamily: "SANS" | "SERIF";
-      fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
-      fontSizeDesktop: number;
-      fontSizeTablet: number;
-      fontSizeMobile: number;
-      letterSpacing: number;
-      lineHeight: number;
-      textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
-      textAlign: "LEFT" | "CENTER" | "RIGHT";
-      heightDesktop: number;
-      heightTablet: number;
-      heightMobile: number;
-      horizontalPadding: number;
-      verticalPadding: number;
-      borderTop: boolean;
-      borderBottom: boolean;
-      borderWidth: number;
-      borderColor: string;
-      borderStyle: "SOLID" | "DASHED" | "DOTTED";
-      shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
-      zIndex: number;
-      ctaBackground: string;
-      ctaColor: string;
-      ctaHoverBackground: string;
-      ctaHoverColor: string;
-      ctaBorderColor: string;
-      ctaRadius: number;
-      gradient?: string | null | undefined;
-      backgroundImage?: string | null | undefined;
-    };
-    animation: {
-      entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
-      exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
-      transition:
-        | "FADE"
-        | "SLIDE_DOWN"
-        | "SLIDE_UP"
-        | "SCALE"
-        | "SLIDE_LEFT"
-        | "SLIDE_RIGHT"
-        | "CROSSFADE"
-        | "BLUR"
-        | "INSTANT";
-      durationMs: number;
-      delayMs: number;
-      easing: "STANDARD" | "PREMIUM" | "LINEAR";
-      messageDurationMs: number;
-      tickerSpeed: number;
-      tickerDirection: "LTR" | "RTL";
-      pauseOnHover: boolean;
-      pauseOnInteraction: boolean;
-      loop: boolean;
-      separator: string;
-      separatorColor: string;
-      separatorSize: number;
-      separatorSpacing: number;
-    };
-    behavior: {
-      loop: boolean;
-      sticky: "FIXED" | "STICKY" | "NON_STICKY";
-      dismissible: boolean;
-      dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
-      dismissalDuration: number | null;
-      autoplay: boolean;
-      intervalMs: number;
-      arrows: boolean;
-      pagination: boolean;
-      swipe: boolean;
-      countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
-      expirationMessageEn: string | null;
-      expirationMessageAr: string | null;
-      freeShippingThresholdSource: "STORE" | "CUSTOM";
-      freeShippingThreshold: number | null;
-      remainingMessageEn: string;
-      remainingMessageAr: string;
-      successMessageEn: string;
-      successMessageAr: string;
-      showProgress: boolean;
-      inheritPromotionSchedule: boolean;
-      redirectUrl?: string | null | undefined;
-      nextBannerId?: string | null | undefined;
-    };
-    targeting: {
-      productIds: string[];
-      categoryIds: string[];
-      authentication: "ALL" | "GUEST" | "LOGGED_IN";
-      customerType: "ALL" | "RETURNING" | "NEW";
-      devices: ("desktop" | "tablet" | "mobile")[];
-      pages: (
-        | "HOME"
-        | "CUSTOM"
-        | "EVERYWHERE"
-        | "PRODUCTS"
-        | "PRODUCT"
-        | "CATEGORIES"
-        | "CATEGORY"
-        | "COLLECTIONS"
-        | "CART"
-        | "CHECKOUT"
-        | "ACCOUNT"
-        | "OFFERS"
-      )[];
-      urlPatterns: string[];
-      cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
-      cartSubtotalMin: number | null;
-      cartSubtotalMax: number | null;
-      countries: string[];
-      regions: string[];
-    };
-    responsive: {
-      showDesktop: boolean;
-      showTablet: boolean;
-      showMobile: boolean;
-      desktopMode:
-        | "STATIC"
-        | "TICKER"
-        | "ROTATING"
-        | "CAROUSEL"
-        | "COUNTDOWN"
-        | "FREE_SHIPPING_PROGRESS"
-        | null;
-      tabletMode:
-        | "STATIC"
-        | "TICKER"
-        | "ROTATING"
-        | "CAROUSEL"
-        | "COUNTDOWN"
-        | "FREE_SHIPPING_PROGRESS"
-        | null;
-      mobileMode:
-        | "STATIC"
-        | "TICKER"
-        | "ROTATING"
-        | "CAROUSEL"
-        | "COUNTDOWN"
-        | "FREE_SHIPPING_PROGRESS"
-        | null;
-      desktopTextEn: string | null;
-      desktopTextAr: string | null;
-      mobileTextEn: string | null;
-      mobileTextAr: string | null;
-      hideCtaMobile: boolean;
-      hideIconsMobile: boolean;
-    };
-    startsAt?: string | null | undefined;
-    endsAt?: string | null | undefined;
-  },
-  {
-    messages: {
-      textEn: string;
-      id?: string | undefined;
-      couponCode?: string | null | undefined;
-      url?: string | null | undefined;
-      textAr?: string | null | undefined;
-      secondaryTextEn?: string | null | undefined;
-      secondaryTextAr?: string | null | undefined;
-      icon?:
-        | "truck"
-        | "gift"
-        | "star"
-        | "heart"
-        | "bag"
-        | "sparkle"
-        | "tag"
-        | "clock"
-        | "info"
-        | "warning"
-        | null
-        | undefined;
-      emoji?: string | null | undefined;
-      openInNewTab?: boolean | undefined;
-      ctaTextEn?: string | null | undefined;
-      ctaTextAr?: string | null | undefined;
-      ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
-      couponId?: string | null | undefined;
-      countdownAt?: string | null | undefined;
-      style?:
-        | {
-            textColor?: string | null | undefined;
-            emphasis?: boolean | undefined;
-          }
-        | undefined;
-    }[];
-    internalName: string;
-    sortOrder?: number | undefined;
-    promotionId?: string | null | undefined;
-    position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
-    state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
-    priority?: number | undefined;
-    startsAt?: string | null | undefined;
-    endsAt?: string | null | undefined;
-    timezone?: string | undefined;
-    mode?:
-      | "STATIC"
-      | "TICKER"
-      | "ROTATING"
-      | "CAROUSEL"
-      | "COUNTDOWN"
-      | "FREE_SHIPPING_PROGRESS"
-      | undefined;
-    recurringSchedule?:
-      | {
-          enabled?: boolean | undefined;
-          weekdays?: number[] | undefined;
-          startTime?: string | undefined;
-          endTime?: string | undefined;
-        }
-      | null
-      | undefined;
-    design?:
-      | {
-          textColor?: string | undefined;
-          backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
-          backgroundColor?: string | undefined;
-          gradient?: string | null | undefined;
-          backgroundImage?: string | null | undefined;
-          pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
-          backgroundOpacity?: number | undefined;
-          fontFamily?: "SANS" | "SERIF" | undefined;
-          fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
-          fontSizeDesktop?: number | undefined;
-          fontSizeTablet?: number | undefined;
-          fontSizeMobile?: number | undefined;
-          letterSpacing?: number | undefined;
-          lineHeight?: number | undefined;
-          textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
-          textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
-          heightDesktop?: number | undefined;
-          heightTablet?: number | undefined;
-          heightMobile?: number | undefined;
-          horizontalPadding?: number | undefined;
-          verticalPadding?: number | undefined;
-          borderTop?: boolean | undefined;
-          borderBottom?: boolean | undefined;
-          borderWidth?: number | undefined;
-          borderColor?: string | undefined;
-          borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-          shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
-          zIndex?: number | undefined;
-          ctaBackground?: string | undefined;
-          ctaColor?: string | undefined;
-          ctaHoverBackground?: string | undefined;
-          ctaHoverColor?: string | undefined;
-          ctaBorderColor?: string | undefined;
-          ctaRadius?: number | undefined;
-        }
-      | undefined;
-    animation?:
-      | {
-          entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
-          exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
-          transition?:
-            | "FADE"
-            | "SLIDE_DOWN"
-            | "SLIDE_UP"
-            | "SCALE"
-            | "SLIDE_LEFT"
-            | "SLIDE_RIGHT"
-            | "CROSSFADE"
-            | "BLUR"
-            | "INSTANT"
-            | undefined;
-          durationMs?: number | undefined;
-          delayMs?: number | undefined;
-          easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
-          messageDurationMs?: number | undefined;
-          tickerSpeed?: number | undefined;
-          tickerDirection?: "LTR" | "RTL" | undefined;
-          pauseOnHover?: boolean | undefined;
-          pauseOnInteraction?: boolean | undefined;
-          loop?: boolean | undefined;
-          separator?: string | undefined;
-          separatorColor?: string | undefined;
-          separatorSize?: number | undefined;
-          separatorSpacing?: number | undefined;
-        }
-      | undefined;
-    behavior?:
-      | {
-          loop?: boolean | undefined;
-          sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
-          dismissible?: boolean | undefined;
-          dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
-          dismissalDuration?: number | null | undefined;
-          autoplay?: boolean | undefined;
-          intervalMs?: number | undefined;
-          arrows?: boolean | undefined;
-          pagination?: boolean | undefined;
-          swipe?: boolean | undefined;
-          countdownEnd?: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER" | undefined;
-          expirationMessageEn?: string | null | undefined;
-          expirationMessageAr?: string | null | undefined;
-          redirectUrl?: string | null | undefined;
-          nextBannerId?: string | null | undefined;
-          freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
-          freeShippingThreshold?: number | null | undefined;
-          remainingMessageEn?: string | undefined;
-          remainingMessageAr?: string | undefined;
-          successMessageEn?: string | undefined;
-          successMessageAr?: string | undefined;
-          showProgress?: boolean | undefined;
-          inheritPromotionSchedule?: boolean | undefined;
-        }
-      | undefined;
-    targeting?:
-      | {
-          productIds?: string[] | undefined;
-          categoryIds?: string[] | undefined;
-          authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
-          customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-          devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
-          pages?:
-            | (
-                | "HOME"
-                | "CUSTOM"
-                | "EVERYWHERE"
-                | "PRODUCTS"
-                | "PRODUCT"
-                | "CATEGORIES"
-                | "CATEGORY"
-                | "COLLECTIONS"
-                | "CART"
-                | "CHECKOUT"
-                | "ACCOUNT"
-                | "OFFERS"
-              )[]
-            | undefined;
-          urlPatterns?: string[] | undefined;
-          cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
-          cartSubtotalMin?: number | null | undefined;
-          cartSubtotalMax?: number | null | undefined;
-          countries?: string[] | undefined;
-          regions?: string[] | undefined;
-        }
-      | undefined;
-    responsive?:
-      | {
-          showDesktop?: boolean | undefined;
-          showTablet?: boolean | undefined;
-          showMobile?: boolean | undefined;
-          desktopMode?:
-            | "STATIC"
-            | "TICKER"
-            | "ROTATING"
-            | "CAROUSEL"
-            | "COUNTDOWN"
-            | "FREE_SHIPPING_PROGRESS"
-            | null
-            | undefined;
-          tabletMode?:
-            | "STATIC"
-            | "TICKER"
-            | "ROTATING"
-            | "CAROUSEL"
-            | "COUNTDOWN"
-            | "FREE_SHIPPING_PROGRESS"
-            | null
-            | undefined;
-          mobileMode?:
-            | "STATIC"
-            | "TICKER"
-            | "ROTATING"
-            | "CAROUSEL"
-            | "COUNTDOWN"
-            | "FREE_SHIPPING_PROGRESS"
-            | null
-            | undefined;
-          desktopTextEn?: string | null | undefined;
-          desktopTextAr?: string | null | undefined;
-          mobileTextEn?: string | null | undefined;
-          mobileTextAr?: string | null | undefined;
-          hideCtaMobile?: boolean | undefined;
-          hideIconsMobile?: boolean | undefined;
-        }
-      | undefined;
-  }
->;
-export declare const updateBannerSchema: z.ZodRecord<z.ZodString, z.ZodUnknown>;
-export declare const bannerQuerySchema: z.ZodObject<
-  {
-    page: z.ZodDefault<z.ZodNumber>;
-    limit: z.ZodDefault<z.ZodNumber>;
-    search: z.ZodOptional<z.ZodString>;
-    state: z.ZodOptional<z.ZodEnum<["DRAFT", "ACTIVE", "PAUSED", "ARCHIVED"]>>;
-    mode: z.ZodOptional<
-      z.ZodEnum<["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]>
-    >;
-    sort: z.ZodDefault<z.ZodEnum<["priority", "updatedAt", "startsAt", "name"]>>;
-    direction: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
-    sort: "updatedAt" | "name" | "priority" | "startsAt";
-    page: number;
-    limit: number;
-    direction: "asc" | "desc";
-    search?: string | undefined;
-    state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
-    mode?:
-      | "STATIC"
-      | "TICKER"
-      | "ROTATING"
-      | "CAROUSEL"
-      | "COUNTDOWN"
-      | "FREE_SHIPPING_PROGRESS"
-      | undefined;
-  },
-  {
-    sort?: "updatedAt" | "name" | "priority" | "startsAt" | undefined;
-    page?: number | undefined;
-    limit?: number | undefined;
-    search?: string | undefined;
-    state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
-    mode?:
-      | "STATIC"
-      | "TICKER"
-      | "ROTATING"
-      | "CAROUSEL"
-      | "COUNTDOWN"
-      | "FREE_SHIPPING_PROGRESS"
-      | undefined;
-    direction?: "asc" | "desc" | undefined;
-  }
->;
-export declare const reorderBannersSchema: z.ZodObject<
-  {
-    ids: z.ZodArray<z.ZodString, "many">;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
-    ids: string[];
-  },
-  {
-    ids: string[];
-  }
->;
-export declare const bannerEventSchema: z.ZodObject<
-  {
-    type: z.ZodEnum<["IMPRESSION", "CLICK", "CTA_CLICK", "COUPON_COPY", "DISMISS"]>;
-    messageId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-    locale: z.ZodDefault<z.ZodEnum<["en", "ar"]>>;
-    device: z.ZodDefault<z.ZodEnum<["desktop", "tablet", "mobile"]>>;
-    page: z.ZodDefault<z.ZodString>;
-    sessionHash: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
-    type: "IMPRESSION" | "CLICK" | "CTA_CLICK" | "COUPON_COPY" | "DISMISS";
-    page: string;
-    locale: "en" | "ar";
-    device: "desktop" | "tablet" | "mobile";
-    messageId?: string | null | undefined;
-    sessionHash?: string | null | undefined;
-  },
-  {
-    type: "IMPRESSION" | "CLICK" | "CTA_CLICK" | "COUPON_COPY" | "DISMISS";
-    page?: string | undefined;
-    messageId?: string | null | undefined;
-    locale?: "en" | "ar" | undefined;
-    device?: "desktop" | "tablet" | "mobile" | undefined;
-    sessionHash?: string | null | undefined;
-  }
->;
-export declare const activeBannerQuerySchema: z.ZodObject<
-  {
-    locale: z.ZodDefault<z.ZodEnum<["en", "ar"]>>;
-    page: z.ZodDefault<z.ZodString>;
-    device: z.ZodDefault<z.ZodEnum<["desktop", "tablet", "mobile"]>>;
-    authenticated: z.ZodDefault<z.ZodEffects<z.ZodBoolean, boolean, unknown>>;
-    returning: z.ZodDefault<z.ZodEffects<z.ZodBoolean, boolean, unknown>>;
-    cartSubtotal: z.ZodDefault<z.ZodNumber>;
-    cartCount: z.ZodDefault<z.ZodNumber>;
-    productId: z.ZodOptional<z.ZodString>;
-    categoryId: z.ZodOptional<z.ZodString>;
-    country: z.ZodOptional<z.ZodString>;
-    region: z.ZodOptional<z.ZodString>;
-    customerName: z.ZodOptional<z.ZodString>;
-    couponCode: z.ZodOptional<z.ZodString>;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
-    page: string;
-    locale: "en" | "ar";
-    device: "desktop" | "tablet" | "mobile";
-    authenticated: boolean;
-    returning: boolean;
-    cartSubtotal: number;
-    cartCount: number;
-    country?: string | undefined;
-    couponCode?: string | undefined;
-    productId?: string | undefined;
-    categoryId?: string | undefined;
-    region?: string | undefined;
-    customerName?: string | undefined;
-  },
-  {
-    page?: string | undefined;
-    country?: string | undefined;
-    couponCode?: string | undefined;
-    productId?: string | undefined;
-    categoryId?: string | undefined;
-    locale?: "en" | "ar" | undefined;
-    device?: "desktop" | "tablet" | "mobile" | undefined;
-    authenticated?: unknown;
-    returning?: unknown;
-    cartSubtotal?: number | undefined;
-    cartCount?: number | undefined;
-    region?: string | undefined;
-    customerName?: string | undefined;
-  }
->;
-export declare const bannerSettingsSchema: z.ZodObject<
-  {
-    enabled: z.ZodBoolean;
-    displayStrategy: z.ZodEnum<["HIGHEST_PRIORITY", "ROTATE", "STACK", "SEQUENCE"]>;
-    defaultPosition: z.ZodEnum<["TOP", "BELOW_HEADER", "BOTTOM"]>;
-    analyticsEnabled: z.ZodBoolean;
-    defaultConfig: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
-    enabled: boolean;
-    displayStrategy: "HIGHEST_PRIORITY" | "ROTATE" | "STACK" | "SEQUENCE";
-    defaultPosition: "TOP" | "BELOW_HEADER" | "BOTTOM";
-    analyticsEnabled: boolean;
-    defaultConfig: Record<string, unknown>;
-  },
-  {
-    enabled: boolean;
-    displayStrategy: "HIGHEST_PRIORITY" | "ROTATE" | "STACK" | "SEQUENCE";
-    defaultPosition: "TOP" | "BELOW_HEADER" | "BOTTOM";
-    analyticsEnabled: boolean;
-    defaultConfig?: Record<string, unknown> | undefined;
-  }
->;
-export declare const bannerTemplateSchema: z.ZodObject<
-  {
-    name: z.ZodString;
-    description: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-    configuration: z.ZodEffects<
-      z.ZodObject<
-        {
-          internalName: z.ZodString;
-          mode: z.ZodDefault<
-            z.ZodEnum<
-              ["STATIC", "TICKER", "ROTATING", "CAROUSEL", "COUNTDOWN", "FREE_SHIPPING_PROGRESS"]
-            >
-          >;
-          state: z.ZodDefault<z.ZodEnum<["DRAFT", "ACTIVE", "PAUSED", "ARCHIVED"]>>;
-          priority: z.ZodDefault<z.ZodNumber>;
-          sortOrder: z.ZodDefault<z.ZodNumber>;
-          position: z.ZodDefault<z.ZodEnum<["TOP", "BELOW_HEADER", "BOTTOM"]>>;
-          startsAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-          endsAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-          timezone: z.ZodDefault<z.ZodString>;
-          recurringSchedule: z.ZodDefault<
-            z.ZodNullable<
-              z.ZodObject<
-                {
-                  enabled: z.ZodDefault<z.ZodBoolean>;
-                  weekdays: z.ZodDefault<z.ZodArray<z.ZodNumber, "many">>;
-                  startTime: z.ZodDefault<z.ZodString>;
-                  endTime: z.ZodDefault<z.ZodString>;
-                },
-                "strip",
-                z.ZodTypeAny,
-                {
-                  enabled: boolean;
-                  weekdays: number[];
-                  startTime: string;
-                  endTime: string;
-                },
-                {
-                  enabled?: boolean | undefined;
-                  weekdays?: number[] | undefined;
-                  startTime?: string | undefined;
-                  endTime?: string | undefined;
-                }
-              >
-            >
-          >;
-          design: z.ZodDefault<
-            z.ZodObject<
-              {
-                backgroundType: z.ZodDefault<z.ZodEnum<["SOLID", "GRADIENT", "IMAGE", "PATTERN"]>>;
-                backgroundColor: z.ZodDefault<z.ZodString>;
-                gradient: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-                backgroundImage: z.ZodOptional<
-                  z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>
-                >;
-                pattern: z.ZodDefault<z.ZodEnum<["NONE", "DOTS", "LINES", "GRID"]>>;
-                backgroundOpacity: z.ZodDefault<z.ZodNumber>;
-                textColor: z.ZodDefault<z.ZodString>;
-                fontFamily: z.ZodDefault<z.ZodEnum<["SANS", "SERIF"]>>;
-                fontWeight: z.ZodDefault<z.ZodEnum<["200", "300", "400", "500", "600", "700"]>>;
-                fontSizeDesktop: z.ZodDefault<z.ZodNumber>;
-                fontSizeTablet: z.ZodDefault<z.ZodNumber>;
-                fontSizeMobile: z.ZodDefault<z.ZodNumber>;
-                letterSpacing: z.ZodDefault<z.ZodNumber>;
-                lineHeight: z.ZodDefault<z.ZodNumber>;
-                textTransform: z.ZodDefault<
-                  z.ZodEnum<["NONE", "UPPERCASE", "LOWERCASE", "CAPITALIZE"]>
-                >;
-                textAlign: z.ZodDefault<z.ZodEnum<["LEFT", "CENTER", "RIGHT"]>>;
-                heightDesktop: z.ZodDefault<z.ZodNumber>;
-                heightTablet: z.ZodDefault<z.ZodNumber>;
-                heightMobile: z.ZodDefault<z.ZodNumber>;
-                horizontalPadding: z.ZodDefault<z.ZodNumber>;
-                verticalPadding: z.ZodDefault<z.ZodNumber>;
-                borderTop: z.ZodDefault<z.ZodBoolean>;
-                borderBottom: z.ZodDefault<z.ZodBoolean>;
-                borderWidth: z.ZodDefault<z.ZodNumber>;
-                borderColor: z.ZodDefault<z.ZodString>;
-                borderStyle: z.ZodDefault<z.ZodEnum<["SOLID", "DASHED", "DOTTED"]>>;
-                shadow: z.ZodDefault<z.ZodEnum<["NONE", "SUBTLE", "MEDIUM", "STRONG"]>>;
-                zIndex: z.ZodDefault<z.ZodNumber>;
-                ctaBackground: z.ZodDefault<z.ZodString>;
-                ctaColor: z.ZodDefault<z.ZodString>;
-                ctaHoverBackground: z.ZodDefault<z.ZodString>;
-                ctaHoverColor: z.ZodDefault<z.ZodString>;
-                ctaBorderColor: z.ZodDefault<z.ZodString>;
-                ctaRadius: z.ZodDefault<z.ZodNumber>;
-              },
-              "strip",
-              z.ZodTypeAny,
-              {
-                textColor: string;
-                backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
-                backgroundColor: string;
-                pattern: "NONE" | "DOTS" | "LINES" | "GRID";
-                backgroundOpacity: number;
-                fontFamily: "SANS" | "SERIF";
-                fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
-                fontSizeDesktop: number;
-                fontSizeTablet: number;
-                fontSizeMobile: number;
-                letterSpacing: number;
-                lineHeight: number;
-                textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
-                textAlign: "LEFT" | "CENTER" | "RIGHT";
-                heightDesktop: number;
-                heightTablet: number;
-                heightMobile: number;
-                horizontalPadding: number;
-                verticalPadding: number;
-                borderTop: boolean;
-                borderBottom: boolean;
-                borderWidth: number;
-                borderColor: string;
-                borderStyle: "SOLID" | "DASHED" | "DOTTED";
-                shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
-                zIndex: number;
-                ctaBackground: string;
-                ctaColor: string;
-                ctaHoverBackground: string;
-                ctaHoverColor: string;
-                ctaBorderColor: string;
-                ctaRadius: number;
-                gradient?: string | null | undefined;
-                backgroundImage?: string | null | undefined;
-              },
-              {
-                textColor?: string | undefined;
-                backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
-                backgroundColor?: string | undefined;
-                gradient?: string | null | undefined;
-                backgroundImage?: string | null | undefined;
-                pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
-                backgroundOpacity?: number | undefined;
-                fontFamily?: "SANS" | "SERIF" | undefined;
-                fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
-                fontSizeDesktop?: number | undefined;
-                fontSizeTablet?: number | undefined;
-                fontSizeMobile?: number | undefined;
-                letterSpacing?: number | undefined;
-                lineHeight?: number | undefined;
-                textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
-                textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
-                heightDesktop?: number | undefined;
-                heightTablet?: number | undefined;
-                heightMobile?: number | undefined;
-                horizontalPadding?: number | undefined;
-                verticalPadding?: number | undefined;
-                borderTop?: boolean | undefined;
-                borderBottom?: boolean | undefined;
-                borderWidth?: number | undefined;
-                borderColor?: string | undefined;
-                borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-                shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
-                zIndex?: number | undefined;
-                ctaBackground?: string | undefined;
-                ctaColor?: string | undefined;
-                ctaHoverBackground?: string | undefined;
-                ctaHoverColor?: string | undefined;
-                ctaBorderColor?: string | undefined;
-                ctaRadius?: number | undefined;
-              }
-            >
-          >;
-          animation: z.ZodDefault<
-            z.ZodObject<
-              {
-                entrance: z.ZodDefault<
-                  z.ZodEnum<["NONE", "FADE", "SLIDE_DOWN", "SLIDE_UP", "SCALE", "REVEAL"]>
-                >;
-                exit: z.ZodDefault<z.ZodEnum<["NONE", "FADE", "SLIDE_DOWN", "SLIDE_UP"]>>;
-                transition: z.ZodDefault<
-                  z.ZodEnum<
-                    [
-                      "FADE",
-                      "SLIDE_LEFT",
-                      "SLIDE_RIGHT",
-                      "SLIDE_UP",
-                      "SLIDE_DOWN",
-                      "CROSSFADE",
-                      "BLUR",
-                      "SCALE",
-                      "INSTANT",
-                    ]
-                  >
-                >;
-                durationMs: z.ZodDefault<z.ZodNumber>;
-                delayMs: z.ZodDefault<z.ZodNumber>;
-                easing: z.ZodDefault<z.ZodEnum<["STANDARD", "PREMIUM", "LINEAR"]>>;
-                messageDurationMs: z.ZodDefault<z.ZodNumber>;
-                tickerSpeed: z.ZodDefault<z.ZodNumber>;
-                tickerDirection: z.ZodDefault<z.ZodEnum<["LTR", "RTL"]>>;
-                pauseOnHover: z.ZodDefault<z.ZodBoolean>;
-                pauseOnInteraction: z.ZodDefault<z.ZodBoolean>;
-                loop: z.ZodDefault<z.ZodBoolean>;
-                separator: z.ZodDefault<z.ZodString>;
-                separatorColor: z.ZodDefault<z.ZodString>;
-                separatorSize: z.ZodDefault<z.ZodNumber>;
-                separatorSpacing: z.ZodDefault<z.ZodNumber>;
-              },
-              "strip",
-              z.ZodTypeAny,
-              {
-                entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
-                exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
-                transition:
-                  | "FADE"
-                  | "SLIDE_DOWN"
-                  | "SLIDE_UP"
-                  | "SCALE"
-                  | "SLIDE_LEFT"
-                  | "SLIDE_RIGHT"
-                  | "CROSSFADE"
-                  | "BLUR"
-                  | "INSTANT";
-                durationMs: number;
-                delayMs: number;
-                easing: "STANDARD" | "PREMIUM" | "LINEAR";
-                messageDurationMs: number;
-                tickerSpeed: number;
-                tickerDirection: "LTR" | "RTL";
-                pauseOnHover: boolean;
-                pauseOnInteraction: boolean;
-                loop: boolean;
-                separator: string;
-                separatorColor: string;
-                separatorSize: number;
-                separatorSpacing: number;
-              },
-              {
-                entrance?:
-                  "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
-                exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
-                transition?:
-                  | "FADE"
-                  | "SLIDE_DOWN"
-                  | "SLIDE_UP"
-                  | "SCALE"
-                  | "SLIDE_LEFT"
-                  | "SLIDE_RIGHT"
-                  | "CROSSFADE"
-                  | "BLUR"
-                  | "INSTANT"
-                  | undefined;
-                durationMs?: number | undefined;
-                delayMs?: number | undefined;
-                easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
-                messageDurationMs?: number | undefined;
-                tickerSpeed?: number | undefined;
-                tickerDirection?: "LTR" | "RTL" | undefined;
-                pauseOnHover?: boolean | undefined;
-                pauseOnInteraction?: boolean | undefined;
-                loop?: boolean | undefined;
-                separator?: string | undefined;
-                separatorColor?: string | undefined;
-                separatorSize?: number | undefined;
-                separatorSpacing?: number | undefined;
-              }
-            >
-          >;
-          behavior: z.ZodDefault<
-            z.ZodObject<
-              {
-                sticky: z.ZodDefault<z.ZodEnum<["FIXED", "STICKY", "NON_STICKY"]>>;
-                dismissible: z.ZodDefault<z.ZodBoolean>;
-                dismissalMode: z.ZodDefault<
-                  z.ZodEnum<["REFRESH", "SESSION", "HOURS", "DAYS", "PERMANENT"]>
-                >;
-                dismissalDuration: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
-                autoplay: z.ZodDefault<z.ZodBoolean>;
-                intervalMs: z.ZodDefault<z.ZodNumber>;
-                arrows: z.ZodDefault<z.ZodBoolean>;
-                pagination: z.ZodDefault<z.ZodBoolean>;
-                loop: z.ZodDefault<z.ZodBoolean>;
-                swipe: z.ZodDefault<z.ZodBoolean>;
-                countdownEnd: z.ZodDefault<
-                  z.ZodEnum<["HIDE", "ZERO", "MESSAGE", "REDIRECT", "NEXT_BANNER"]>
-                >;
-                expirationMessageEn: z.ZodDefault<z.ZodNullable<z.ZodString>>;
-                expirationMessageAr: z.ZodDefault<z.ZodNullable<z.ZodString>>;
-                redirectUrl: z.ZodOptional<
-                  z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>
-                >;
-                nextBannerId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-                freeShippingThresholdSource: z.ZodDefault<z.ZodEnum<["STORE", "CUSTOM"]>>;
-                freeShippingThreshold: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
-                remainingMessageEn: z.ZodDefault<z.ZodString>;
-                remainingMessageAr: z.ZodDefault<z.ZodString>;
-                successMessageEn: z.ZodDefault<z.ZodString>;
-                successMessageAr: z.ZodDefault<z.ZodString>;
-                showProgress: z.ZodDefault<z.ZodBoolean>;
-                inheritPromotionSchedule: z.ZodDefault<z.ZodBoolean>;
-              },
-              "strip",
-              z.ZodTypeAny,
-              {
-                loop: boolean;
-                sticky: "FIXED" | "STICKY" | "NON_STICKY";
-                dismissible: boolean;
-                dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
-                dismissalDuration: number | null;
-                autoplay: boolean;
-                intervalMs: number;
-                arrows: boolean;
-                pagination: boolean;
-                swipe: boolean;
-                countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
-                expirationMessageEn: string | null;
-                expirationMessageAr: string | null;
-                freeShippingThresholdSource: "STORE" | "CUSTOM";
-                freeShippingThreshold: number | null;
-                remainingMessageEn: string;
-                remainingMessageAr: string;
-                successMessageEn: string;
-                successMessageAr: string;
-                showProgress: boolean;
-                inheritPromotionSchedule: boolean;
-                redirectUrl?: string | null | undefined;
-                nextBannerId?: string | null | undefined;
-              },
-              {
-                loop?: boolean | undefined;
-                sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
-                dismissible?: boolean | undefined;
-                dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
-                dismissalDuration?: number | null | undefined;
-                autoplay?: boolean | undefined;
-                intervalMs?: number | undefined;
-                arrows?: boolean | undefined;
-                pagination?: boolean | undefined;
-                swipe?: boolean | undefined;
-                countdownEnd?: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER" | undefined;
-                expirationMessageEn?: string | null | undefined;
-                expirationMessageAr?: string | null | undefined;
-                redirectUrl?: string | null | undefined;
-                nextBannerId?: string | null | undefined;
-                freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
-                freeShippingThreshold?: number | null | undefined;
-                remainingMessageEn?: string | undefined;
-                remainingMessageAr?: string | undefined;
-                successMessageEn?: string | undefined;
-                successMessageAr?: string | undefined;
-                showProgress?: boolean | undefined;
-                inheritPromotionSchedule?: boolean | undefined;
-              }
-            >
-          >;
-          targeting: z.ZodDefault<
-            z.ZodObject<
-              {
-                authentication: z.ZodDefault<z.ZodEnum<["ALL", "GUEST", "LOGGED_IN"]>>;
-                customerType: z.ZodDefault<z.ZodEnum<["ALL", "NEW", "RETURNING"]>>;
-                devices: z.ZodDefault<
-                  z.ZodArray<z.ZodEnum<["desktop", "tablet", "mobile"]>, "many">
-                >;
-                pages: z.ZodDefault<
-                  z.ZodArray<
-                    z.ZodEnum<
-                      [
-                        "EVERYWHERE",
-                        "HOME",
-                        "PRODUCTS",
-                        "PRODUCT",
-                        "CATEGORIES",
-                        "CATEGORY",
-                        "COLLECTIONS",
-                        "CART",
-                        "CHECKOUT",
-                        "ACCOUNT",
-                        "OFFERS",
-                        "CUSTOM",
-                      ]
-                    >,
-                    "many"
-                  >
-                >;
-                urlPatterns: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                cartState: z.ZodDefault<z.ZodEnum<["ANY", "EMPTY", "HAS_ITEMS"]>>;
-                cartSubtotalMin: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
-                cartSubtotalMax: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
-                countries: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                regions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-              },
-              "strip",
-              z.ZodTypeAny,
-              {
-                productIds: string[];
-                categoryIds: string[];
-                authentication: "ALL" | "GUEST" | "LOGGED_IN";
-                customerType: "ALL" | "RETURNING" | "NEW";
-                devices: ("desktop" | "tablet" | "mobile")[];
-                pages: (
-                  | "HOME"
-                  | "CUSTOM"
-                  | "EVERYWHERE"
-                  | "PRODUCTS"
-                  | "PRODUCT"
-                  | "CATEGORIES"
-                  | "CATEGORY"
-                  | "COLLECTIONS"
-                  | "CART"
-                  | "CHECKOUT"
-                  | "ACCOUNT"
-                  | "OFFERS"
-                )[];
-                urlPatterns: string[];
-                cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
-                cartSubtotalMin: number | null;
-                cartSubtotalMax: number | null;
-                countries: string[];
-                regions: string[];
-              },
-              {
-                productIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
-                authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
-                customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-                devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
-                pages?:
-                  | (
-                      | "HOME"
-                      | "CUSTOM"
-                      | "EVERYWHERE"
-                      | "PRODUCTS"
-                      | "PRODUCT"
-                      | "CATEGORIES"
-                      | "CATEGORY"
-                      | "COLLECTIONS"
-                      | "CART"
-                      | "CHECKOUT"
-                      | "ACCOUNT"
-                      | "OFFERS"
-                    )[]
-                  | undefined;
-                urlPatterns?: string[] | undefined;
-                cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
-                cartSubtotalMin?: number | null | undefined;
-                cartSubtotalMax?: number | null | undefined;
-                countries?: string[] | undefined;
-                regions?: string[] | undefined;
-              }
-            >
-          >;
-          responsive: z.ZodDefault<
-            z.ZodObject<
-              {
-                showDesktop: z.ZodDefault<z.ZodBoolean>;
-                showTablet: z.ZodDefault<z.ZodBoolean>;
-                showMobile: z.ZodDefault<z.ZodBoolean>;
-                desktopMode: z.ZodDefault<
-                  z.ZodNullable<
-                    z.ZodEnum<
-                      [
-                        "STATIC",
-                        "TICKER",
-                        "ROTATING",
-                        "CAROUSEL",
-                        "COUNTDOWN",
-                        "FREE_SHIPPING_PROGRESS",
-                      ]
-                    >
-                  >
-                >;
-                tabletMode: z.ZodDefault<
-                  z.ZodNullable<
-                    z.ZodEnum<
-                      [
-                        "STATIC",
-                        "TICKER",
-                        "ROTATING",
-                        "CAROUSEL",
-                        "COUNTDOWN",
-                        "FREE_SHIPPING_PROGRESS",
-                      ]
-                    >
-                  >
-                >;
-                mobileMode: z.ZodDefault<
-                  z.ZodNullable<
-                    z.ZodEnum<
-                      [
-                        "STATIC",
-                        "TICKER",
-                        "ROTATING",
-                        "CAROUSEL",
-                        "COUNTDOWN",
-                        "FREE_SHIPPING_PROGRESS",
-                      ]
-                    >
-                  >
-                >;
-                desktopTextEn: z.ZodDefault<z.ZodNullable<z.ZodString>>;
-                desktopTextAr: z.ZodDefault<z.ZodNullable<z.ZodString>>;
-                mobileTextEn: z.ZodDefault<z.ZodNullable<z.ZodString>>;
-                mobileTextAr: z.ZodDefault<z.ZodNullable<z.ZodString>>;
-                hideCtaMobile: z.ZodDefault<z.ZodBoolean>;
-                hideIconsMobile: z.ZodDefault<z.ZodBoolean>;
-              },
-              "strip",
-              z.ZodTypeAny,
-              {
-                showDesktop: boolean;
-                showTablet: boolean;
-                showMobile: boolean;
-                desktopMode:
-                  | "STATIC"
-                  | "TICKER"
-                  | "ROTATING"
-                  | "CAROUSEL"
-                  | "COUNTDOWN"
-                  | "FREE_SHIPPING_PROGRESS"
-                  | null;
-                tabletMode:
-                  | "STATIC"
-                  | "TICKER"
-                  | "ROTATING"
-                  | "CAROUSEL"
-                  | "COUNTDOWN"
-                  | "FREE_SHIPPING_PROGRESS"
-                  | null;
-                mobileMode:
-                  | "STATIC"
-                  | "TICKER"
-                  | "ROTATING"
-                  | "CAROUSEL"
-                  | "COUNTDOWN"
-                  | "FREE_SHIPPING_PROGRESS"
-                  | null;
-                desktopTextEn: string | null;
-                desktopTextAr: string | null;
-                mobileTextEn: string | null;
-                mobileTextAr: string | null;
-                hideCtaMobile: boolean;
-                hideIconsMobile: boolean;
-              },
-              {
-                showDesktop?: boolean | undefined;
-                showTablet?: boolean | undefined;
-                showMobile?: boolean | undefined;
-                desktopMode?:
-                  | "STATIC"
-                  | "TICKER"
-                  | "ROTATING"
-                  | "CAROUSEL"
-                  | "COUNTDOWN"
-                  | "FREE_SHIPPING_PROGRESS"
-                  | null
-                  | undefined;
-                tabletMode?:
-                  | "STATIC"
-                  | "TICKER"
-                  | "ROTATING"
-                  | "CAROUSEL"
-                  | "COUNTDOWN"
-                  | "FREE_SHIPPING_PROGRESS"
-                  | null
-                  | undefined;
-                mobileMode?:
-                  | "STATIC"
-                  | "TICKER"
-                  | "ROTATING"
-                  | "CAROUSEL"
-                  | "COUNTDOWN"
-                  | "FREE_SHIPPING_PROGRESS"
-                  | null
-                  | undefined;
-                desktopTextEn?: string | null | undefined;
-                desktopTextAr?: string | null | undefined;
-                mobileTextEn?: string | null | undefined;
-                mobileTextAr?: string | null | undefined;
-                hideCtaMobile?: boolean | undefined;
-                hideIconsMobile?: boolean | undefined;
-              }
-            >
-          >;
-          promotionId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
-          messages: z.ZodArray<
-            z.ZodObject<
-              {
-                id: z.ZodOptional<z.ZodString>;
-                textEn: z.ZodString;
-                textAr: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-                secondaryTextEn: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-                secondaryTextAr: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-                icon: z.ZodOptional<
-                  z.ZodNullable<
-                    z.ZodEnum<
-                      [
-                        "truck",
-                        "gift",
-                        "star",
-                        "heart",
-                        "bag",
-                        "sparkle",
-                        "tag",
-                        "clock",
-                        "info",
-                        "warning",
-                      ]
-                    >
-                  >
-                >;
-                emoji: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-                url: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>>;
-                openInNewTab: z.ZodDefault<z.ZodBoolean>;
-                ctaTextEn: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-                ctaTextAr: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-                ctaStyle: z.ZodDefault<z.ZodEnum<["TEXT", "UNDERLINE", "OUTLINE", "FILLED"]>>;
-                couponId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-                couponCode: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-                countdownAt: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-                style: z.ZodDefault<
-                  z.ZodObject<
-                    {
-                      textColor: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-                      emphasis: z.ZodDefault<z.ZodBoolean>;
-                    },
-                    "strip",
-                    z.ZodTypeAny,
-                    {
-                      emphasis: boolean;
-                      textColor?: string | null | undefined;
-                    },
-                    {
-                      textColor?: string | null | undefined;
-                      emphasis?: boolean | undefined;
-                    }
-                  >
-                >;
-              },
-              "strip",
-              z.ZodTypeAny,
-              {
-                textEn: string;
-                openInNewTab: boolean;
-                ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
-                style: {
-                  emphasis: boolean;
-                  textColor?: string | null | undefined;
-                };
-                id?: string | undefined;
-                couponCode?: string | null | undefined;
-                url?: string | null | undefined;
-                textAr?: string | null | undefined;
-                secondaryTextEn?: string | null | undefined;
-                secondaryTextAr?: string | null | undefined;
-                icon?:
-                  | "truck"
-                  | "gift"
-                  | "star"
-                  | "heart"
-                  | "bag"
-                  | "sparkle"
-                  | "tag"
-                  | "clock"
-                  | "info"
-                  | "warning"
-                  | null
-                  | undefined;
-                emoji?: string | null | undefined;
-                ctaTextEn?: string | null | undefined;
-                ctaTextAr?: string | null | undefined;
-                couponId?: string | null | undefined;
-                countdownAt?: string | null | undefined;
-              },
-              {
-                textEn: string;
-                id?: string | undefined;
-                couponCode?: string | null | undefined;
-                url?: string | null | undefined;
-                textAr?: string | null | undefined;
-                secondaryTextEn?: string | null | undefined;
-                secondaryTextAr?: string | null | undefined;
-                icon?:
-                  | "truck"
-                  | "gift"
-                  | "star"
-                  | "heart"
-                  | "bag"
-                  | "sparkle"
-                  | "tag"
-                  | "clock"
-                  | "info"
-                  | "warning"
-                  | null
-                  | undefined;
-                emoji?: string | null | undefined;
-                openInNewTab?: boolean | undefined;
-                ctaTextEn?: string | null | undefined;
-                ctaTextAr?: string | null | undefined;
-                ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
-                couponId?: string | null | undefined;
-                countdownAt?: string | null | undefined;
-                style?:
-                  | {
-                      textColor?: string | null | undefined;
-                      emphasis?: boolean | undefined;
-                    }
-                  | undefined;
-              }
-            >,
-            "many"
-          >;
-        },
-        "strip",
-        z.ZodTypeAny,
-        {
-          sortOrder: number;
-          promotionId: string | null;
-          position: "TOP" | "BELOW_HEADER" | "BOTTOM";
-          state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
-          priority: number;
-          timezone: string;
-          messages: {
+            style?: {
+                textColor?: string | null | undefined;
+                emphasis?: boolean | undefined;
+            } | undefined;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        sortOrder: number;
+        promotionId: string | null;
+        position: "TOP" | "BELOW_HEADER" | "BOTTOM";
+        state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
+        priority: number;
+        timezone: string;
+        messages: {
             textEn: string;
             openInNewTab: boolean;
             ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
             style: {
-              emphasis: boolean;
-              textColor?: string | null | undefined;
+                emphasis: boolean;
+                textColor?: string | null | undefined;
             };
             id?: string | undefined;
             couponCode?: string | null | undefined;
@@ -3071,35 +1930,22 @@ export declare const bannerTemplateSchema: z.ZodObject<
             textAr?: string | null | undefined;
             secondaryTextEn?: string | null | undefined;
             secondaryTextAr?: string | null | undefined;
-            icon?:
-              | "truck"
-              | "gift"
-              | "star"
-              | "heart"
-              | "bag"
-              | "sparkle"
-              | "tag"
-              | "clock"
-              | "info"
-              | "warning"
-              | null
-              | undefined;
+            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
             emoji?: string | null | undefined;
             ctaTextEn?: string | null | undefined;
             ctaTextAr?: string | null | undefined;
             couponId?: string | null | undefined;
             countdownAt?: string | null | undefined;
-          }[];
-          internalName: string;
-          mode:
-            "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
-          recurringSchedule: {
+        }[];
+        internalName: string;
+        mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
+        recurringSchedule: {
             enabled: boolean;
             weekdays: number[];
             startTime: string;
             endTime: string;
-          } | null;
-          design: {
+        } | null;
+        design: {
             textColor: string;
             backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
             backgroundColor: string;
@@ -3134,20 +1980,11 @@ export declare const bannerTemplateSchema: z.ZodObject<
             ctaRadius: number;
             gradient?: string | null | undefined;
             backgroundImage?: string | null | undefined;
-          };
-          animation: {
+        };
+        animation: {
             entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
             exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
-            transition:
-              | "FADE"
-              | "SLIDE_DOWN"
-              | "SLIDE_UP"
-              | "SCALE"
-              | "SLIDE_LEFT"
-              | "SLIDE_RIGHT"
-              | "CROSSFADE"
-              | "BLUR"
-              | "INSTANT";
+            transition: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
             durationMs: number;
             delayMs: number;
             easing: "STANDARD" | "PREMIUM" | "LINEAR";
@@ -3161,8 +1998,8 @@ export declare const bannerTemplateSchema: z.ZodObject<
             separatorColor: string;
             separatorSize: number;
             separatorSpacing: number;
-          };
-          behavior: {
+        };
+        behavior: {
             loop: boolean;
             sticky: "FIXED" | "STICKY" | "NON_STICKY";
             dismissible: boolean;
@@ -3186,74 +2023,39 @@ export declare const bannerTemplateSchema: z.ZodObject<
             inheritPromotionSchedule: boolean;
             redirectUrl?: string | null | undefined;
             nextBannerId?: string | null | undefined;
-          };
-          targeting: {
+        };
+        targeting: {
             productIds: string[];
             categoryIds: string[];
             authentication: "ALL" | "GUEST" | "LOGGED_IN";
             customerType: "ALL" | "RETURNING" | "NEW";
             devices: ("desktop" | "tablet" | "mobile")[];
-            pages: (
-              | "HOME"
-              | "CUSTOM"
-              | "EVERYWHERE"
-              | "PRODUCTS"
-              | "PRODUCT"
-              | "CATEGORIES"
-              | "CATEGORY"
-              | "COLLECTIONS"
-              | "CART"
-              | "CHECKOUT"
-              | "ACCOUNT"
-              | "OFFERS"
-            )[];
+            pages: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[];
             urlPatterns: string[];
             cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
             cartSubtotalMin: number | null;
             cartSubtotalMax: number | null;
             countries: string[];
             regions: string[];
-          };
-          responsive: {
+        };
+        responsive: {
             showDesktop: boolean;
             showTablet: boolean;
             showMobile: boolean;
-            desktopMode:
-              | "STATIC"
-              | "TICKER"
-              | "ROTATING"
-              | "CAROUSEL"
-              | "COUNTDOWN"
-              | "FREE_SHIPPING_PROGRESS"
-              | null;
-            tabletMode:
-              | "STATIC"
-              | "TICKER"
-              | "ROTATING"
-              | "CAROUSEL"
-              | "COUNTDOWN"
-              | "FREE_SHIPPING_PROGRESS"
-              | null;
-            mobileMode:
-              | "STATIC"
-              | "TICKER"
-              | "ROTATING"
-              | "CAROUSEL"
-              | "COUNTDOWN"
-              | "FREE_SHIPPING_PROGRESS"
-              | null;
+            desktopMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+            tabletMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+            mobileMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
             desktopTextEn: string | null;
             desktopTextAr: string | null;
             mobileTextEn: string | null;
             mobileTextAr: string | null;
             hideCtaMobile: boolean;
             hideIconsMobile: boolean;
-          };
-          startsAt?: string | null | undefined;
-          endsAt?: string | null | undefined;
-        },
-        {
-          messages: {
+        };
+        startsAt?: string | null | undefined;
+        endsAt?: string | null | undefined;
+    }, {
+        messages: {
             textEn: string;
             id?: string | undefined;
             couponCode?: string | null | undefined;
@@ -3261,19 +2063,7 @@ export declare const bannerTemplateSchema: z.ZodObject<
             textAr?: string | null | undefined;
             secondaryTextEn?: string | null | undefined;
             secondaryTextAr?: string | null | undefined;
-            icon?:
-              | "truck"
-              | "gift"
-              | "star"
-              | "heart"
-              | "bag"
-              | "sparkle"
-              | "tag"
-              | "clock"
-              | "info"
-              | "warning"
-              | null
-              | undefined;
+            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
             emoji?: string | null | undefined;
             openInNewTab?: boolean | undefined;
             ctaTextEn?: string | null | undefined;
@@ -3281,445 +2071,10 @@ export declare const bannerTemplateSchema: z.ZodObject<
             ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
             couponId?: string | null | undefined;
             countdownAt?: string | null | undefined;
-            style?:
-              | {
-                  textColor?: string | null | undefined;
-                  emphasis?: boolean | undefined;
-                }
-              | undefined;
-          }[];
-          internalName: string;
-          sortOrder?: number | undefined;
-          promotionId?: string | null | undefined;
-          position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
-          state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
-          priority?: number | undefined;
-          startsAt?: string | null | undefined;
-          endsAt?: string | null | undefined;
-          timezone?: string | undefined;
-          mode?:
-            | "STATIC"
-            | "TICKER"
-            | "ROTATING"
-            | "CAROUSEL"
-            | "COUNTDOWN"
-            | "FREE_SHIPPING_PROGRESS"
-            | undefined;
-          recurringSchedule?:
-            | {
-                enabled?: boolean | undefined;
-                weekdays?: number[] | undefined;
-                startTime?: string | undefined;
-                endTime?: string | undefined;
-              }
-            | null
-            | undefined;
-          design?:
-            | {
-                textColor?: string | undefined;
-                backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
-                backgroundColor?: string | undefined;
-                gradient?: string | null | undefined;
-                backgroundImage?: string | null | undefined;
-                pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
-                backgroundOpacity?: number | undefined;
-                fontFamily?: "SANS" | "SERIF" | undefined;
-                fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
-                fontSizeDesktop?: number | undefined;
-                fontSizeTablet?: number | undefined;
-                fontSizeMobile?: number | undefined;
-                letterSpacing?: number | undefined;
-                lineHeight?: number | undefined;
-                textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
-                textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
-                heightDesktop?: number | undefined;
-                heightTablet?: number | undefined;
-                heightMobile?: number | undefined;
-                horizontalPadding?: number | undefined;
-                verticalPadding?: number | undefined;
-                borderTop?: boolean | undefined;
-                borderBottom?: boolean | undefined;
-                borderWidth?: number | undefined;
-                borderColor?: string | undefined;
-                borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-                shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
-                zIndex?: number | undefined;
-                ctaBackground?: string | undefined;
-                ctaColor?: string | undefined;
-                ctaHoverBackground?: string | undefined;
-                ctaHoverColor?: string | undefined;
-                ctaBorderColor?: string | undefined;
-                ctaRadius?: number | undefined;
-              }
-            | undefined;
-          animation?:
-            | {
-                entrance?:
-                  "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
-                exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
-                transition?:
-                  | "FADE"
-                  | "SLIDE_DOWN"
-                  | "SLIDE_UP"
-                  | "SCALE"
-                  | "SLIDE_LEFT"
-                  | "SLIDE_RIGHT"
-                  | "CROSSFADE"
-                  | "BLUR"
-                  | "INSTANT"
-                  | undefined;
-                durationMs?: number | undefined;
-                delayMs?: number | undefined;
-                easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
-                messageDurationMs?: number | undefined;
-                tickerSpeed?: number | undefined;
-                tickerDirection?: "LTR" | "RTL" | undefined;
-                pauseOnHover?: boolean | undefined;
-                pauseOnInteraction?: boolean | undefined;
-                loop?: boolean | undefined;
-                separator?: string | undefined;
-                separatorColor?: string | undefined;
-                separatorSize?: number | undefined;
-                separatorSpacing?: number | undefined;
-              }
-            | undefined;
-          behavior?:
-            | {
-                loop?: boolean | undefined;
-                sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
-                dismissible?: boolean | undefined;
-                dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
-                dismissalDuration?: number | null | undefined;
-                autoplay?: boolean | undefined;
-                intervalMs?: number | undefined;
-                arrows?: boolean | undefined;
-                pagination?: boolean | undefined;
-                swipe?: boolean | undefined;
-                countdownEnd?: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER" | undefined;
-                expirationMessageEn?: string | null | undefined;
-                expirationMessageAr?: string | null | undefined;
-                redirectUrl?: string | null | undefined;
-                nextBannerId?: string | null | undefined;
-                freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
-                freeShippingThreshold?: number | null | undefined;
-                remainingMessageEn?: string | undefined;
-                remainingMessageAr?: string | undefined;
-                successMessageEn?: string | undefined;
-                successMessageAr?: string | undefined;
-                showProgress?: boolean | undefined;
-                inheritPromotionSchedule?: boolean | undefined;
-              }
-            | undefined;
-          targeting?:
-            | {
-                productIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
-                authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
-                customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-                devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
-                pages?:
-                  | (
-                      | "HOME"
-                      | "CUSTOM"
-                      | "EVERYWHERE"
-                      | "PRODUCTS"
-                      | "PRODUCT"
-                      | "CATEGORIES"
-                      | "CATEGORY"
-                      | "COLLECTIONS"
-                      | "CART"
-                      | "CHECKOUT"
-                      | "ACCOUNT"
-                      | "OFFERS"
-                    )[]
-                  | undefined;
-                urlPatterns?: string[] | undefined;
-                cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
-                cartSubtotalMin?: number | null | undefined;
-                cartSubtotalMax?: number | null | undefined;
-                countries?: string[] | undefined;
-                regions?: string[] | undefined;
-              }
-            | undefined;
-          responsive?:
-            | {
-                showDesktop?: boolean | undefined;
-                showTablet?: boolean | undefined;
-                showMobile?: boolean | undefined;
-                desktopMode?:
-                  | "STATIC"
-                  | "TICKER"
-                  | "ROTATING"
-                  | "CAROUSEL"
-                  | "COUNTDOWN"
-                  | "FREE_SHIPPING_PROGRESS"
-                  | null
-                  | undefined;
-                tabletMode?:
-                  | "STATIC"
-                  | "TICKER"
-                  | "ROTATING"
-                  | "CAROUSEL"
-                  | "COUNTDOWN"
-                  | "FREE_SHIPPING_PROGRESS"
-                  | null
-                  | undefined;
-                mobileMode?:
-                  | "STATIC"
-                  | "TICKER"
-                  | "ROTATING"
-                  | "CAROUSEL"
-                  | "COUNTDOWN"
-                  | "FREE_SHIPPING_PROGRESS"
-                  | null
-                  | undefined;
-                desktopTextEn?: string | null | undefined;
-                desktopTextAr?: string | null | undefined;
-                mobileTextEn?: string | null | undefined;
-                mobileTextAr?: string | null | undefined;
-                hideCtaMobile?: boolean | undefined;
-                hideIconsMobile?: boolean | undefined;
-              }
-            | undefined;
-        }
-      >,
-      {
-        sortOrder: number;
-        promotionId: string | null;
-        position: "TOP" | "BELOW_HEADER" | "BOTTOM";
-        state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
-        priority: number;
-        timezone: string;
-        messages: {
-          textEn: string;
-          openInNewTab: boolean;
-          ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
-          style: {
-            emphasis: boolean;
-            textColor?: string | null | undefined;
-          };
-          id?: string | undefined;
-          couponCode?: string | null | undefined;
-          url?: string | null | undefined;
-          textAr?: string | null | undefined;
-          secondaryTextEn?: string | null | undefined;
-          secondaryTextAr?: string | null | undefined;
-          icon?:
-            | "truck"
-            | "gift"
-            | "star"
-            | "heart"
-            | "bag"
-            | "sparkle"
-            | "tag"
-            | "clock"
-            | "info"
-            | "warning"
-            | null
-            | undefined;
-          emoji?: string | null | undefined;
-          ctaTextEn?: string | null | undefined;
-          ctaTextAr?: string | null | undefined;
-          couponId?: string | null | undefined;
-          countdownAt?: string | null | undefined;
-        }[];
-        internalName: string;
-        mode:
-          "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
-        recurringSchedule: {
-          enabled: boolean;
-          weekdays: number[];
-          startTime: string;
-          endTime: string;
-        } | null;
-        design: {
-          textColor: string;
-          backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
-          backgroundColor: string;
-          pattern: "NONE" | "DOTS" | "LINES" | "GRID";
-          backgroundOpacity: number;
-          fontFamily: "SANS" | "SERIF";
-          fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
-          fontSizeDesktop: number;
-          fontSizeTablet: number;
-          fontSizeMobile: number;
-          letterSpacing: number;
-          lineHeight: number;
-          textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
-          textAlign: "LEFT" | "CENTER" | "RIGHT";
-          heightDesktop: number;
-          heightTablet: number;
-          heightMobile: number;
-          horizontalPadding: number;
-          verticalPadding: number;
-          borderTop: boolean;
-          borderBottom: boolean;
-          borderWidth: number;
-          borderColor: string;
-          borderStyle: "SOLID" | "DASHED" | "DOTTED";
-          shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
-          zIndex: number;
-          ctaBackground: string;
-          ctaColor: string;
-          ctaHoverBackground: string;
-          ctaHoverColor: string;
-          ctaBorderColor: string;
-          ctaRadius: number;
-          gradient?: string | null | undefined;
-          backgroundImage?: string | null | undefined;
-        };
-        animation: {
-          entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
-          exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
-          transition:
-            | "FADE"
-            | "SLIDE_DOWN"
-            | "SLIDE_UP"
-            | "SCALE"
-            | "SLIDE_LEFT"
-            | "SLIDE_RIGHT"
-            | "CROSSFADE"
-            | "BLUR"
-            | "INSTANT";
-          durationMs: number;
-          delayMs: number;
-          easing: "STANDARD" | "PREMIUM" | "LINEAR";
-          messageDurationMs: number;
-          tickerSpeed: number;
-          tickerDirection: "LTR" | "RTL";
-          pauseOnHover: boolean;
-          pauseOnInteraction: boolean;
-          loop: boolean;
-          separator: string;
-          separatorColor: string;
-          separatorSize: number;
-          separatorSpacing: number;
-        };
-        behavior: {
-          loop: boolean;
-          sticky: "FIXED" | "STICKY" | "NON_STICKY";
-          dismissible: boolean;
-          dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
-          dismissalDuration: number | null;
-          autoplay: boolean;
-          intervalMs: number;
-          arrows: boolean;
-          pagination: boolean;
-          swipe: boolean;
-          countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
-          expirationMessageEn: string | null;
-          expirationMessageAr: string | null;
-          freeShippingThresholdSource: "STORE" | "CUSTOM";
-          freeShippingThreshold: number | null;
-          remainingMessageEn: string;
-          remainingMessageAr: string;
-          successMessageEn: string;
-          successMessageAr: string;
-          showProgress: boolean;
-          inheritPromotionSchedule: boolean;
-          redirectUrl?: string | null | undefined;
-          nextBannerId?: string | null | undefined;
-        };
-        targeting: {
-          productIds: string[];
-          categoryIds: string[];
-          authentication: "ALL" | "GUEST" | "LOGGED_IN";
-          customerType: "ALL" | "RETURNING" | "NEW";
-          devices: ("desktop" | "tablet" | "mobile")[];
-          pages: (
-            | "HOME"
-            | "CUSTOM"
-            | "EVERYWHERE"
-            | "PRODUCTS"
-            | "PRODUCT"
-            | "CATEGORIES"
-            | "CATEGORY"
-            | "COLLECTIONS"
-            | "CART"
-            | "CHECKOUT"
-            | "ACCOUNT"
-            | "OFFERS"
-          )[];
-          urlPatterns: string[];
-          cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
-          cartSubtotalMin: number | null;
-          cartSubtotalMax: number | null;
-          countries: string[];
-          regions: string[];
-        };
-        responsive: {
-          showDesktop: boolean;
-          showTablet: boolean;
-          showMobile: boolean;
-          desktopMode:
-            | "STATIC"
-            | "TICKER"
-            | "ROTATING"
-            | "CAROUSEL"
-            | "COUNTDOWN"
-            | "FREE_SHIPPING_PROGRESS"
-            | null;
-          tabletMode:
-            | "STATIC"
-            | "TICKER"
-            | "ROTATING"
-            | "CAROUSEL"
-            | "COUNTDOWN"
-            | "FREE_SHIPPING_PROGRESS"
-            | null;
-          mobileMode:
-            | "STATIC"
-            | "TICKER"
-            | "ROTATING"
-            | "CAROUSEL"
-            | "COUNTDOWN"
-            | "FREE_SHIPPING_PROGRESS"
-            | null;
-          desktopTextEn: string | null;
-          desktopTextAr: string | null;
-          mobileTextEn: string | null;
-          mobileTextAr: string | null;
-          hideCtaMobile: boolean;
-          hideIconsMobile: boolean;
-        };
-        startsAt?: string | null | undefined;
-        endsAt?: string | null | undefined;
-      },
-      {
-        messages: {
-          textEn: string;
-          id?: string | undefined;
-          couponCode?: string | null | undefined;
-          url?: string | null | undefined;
-          textAr?: string | null | undefined;
-          secondaryTextEn?: string | null | undefined;
-          secondaryTextAr?: string | null | undefined;
-          icon?:
-            | "truck"
-            | "gift"
-            | "star"
-            | "heart"
-            | "bag"
-            | "sparkle"
-            | "tag"
-            | "clock"
-            | "info"
-            | "warning"
-            | null
-            | undefined;
-          emoji?: string | null | undefined;
-          openInNewTab?: boolean | undefined;
-          ctaTextEn?: string | null | undefined;
-          ctaTextAr?: string | null | undefined;
-          ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
-          couponId?: string | null | undefined;
-          countdownAt?: string | null | undefined;
-          style?:
-            | {
+            style?: {
                 textColor?: string | null | undefined;
                 emphasis?: boolean | undefined;
-              }
-            | undefined;
+            } | undefined;
         }[];
         internalName: string;
         sortOrder?: number | undefined;
@@ -3730,466 +2085,14 @@ export declare const bannerTemplateSchema: z.ZodObject<
         startsAt?: string | null | undefined;
         endsAt?: string | null | undefined;
         timezone?: string | undefined;
-        mode?:
-          | "STATIC"
-          | "TICKER"
-          | "ROTATING"
-          | "CAROUSEL"
-          | "COUNTDOWN"
-          | "FREE_SHIPPING_PROGRESS"
-          | undefined;
-        recurringSchedule?:
-          | {
-              enabled?: boolean | undefined;
-              weekdays?: number[] | undefined;
-              startTime?: string | undefined;
-              endTime?: string | undefined;
-            }
-          | null
-          | undefined;
-        design?:
-          | {
-              textColor?: string | undefined;
-              backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
-              backgroundColor?: string | undefined;
-              gradient?: string | null | undefined;
-              backgroundImage?: string | null | undefined;
-              pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
-              backgroundOpacity?: number | undefined;
-              fontFamily?: "SANS" | "SERIF" | undefined;
-              fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
-              fontSizeDesktop?: number | undefined;
-              fontSizeTablet?: number | undefined;
-              fontSizeMobile?: number | undefined;
-              letterSpacing?: number | undefined;
-              lineHeight?: number | undefined;
-              textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
-              textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
-              heightDesktop?: number | undefined;
-              heightTablet?: number | undefined;
-              heightMobile?: number | undefined;
-              horizontalPadding?: number | undefined;
-              verticalPadding?: number | undefined;
-              borderTop?: boolean | undefined;
-              borderBottom?: boolean | undefined;
-              borderWidth?: number | undefined;
-              borderColor?: string | undefined;
-              borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-              shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
-              zIndex?: number | undefined;
-              ctaBackground?: string | undefined;
-              ctaColor?: string | undefined;
-              ctaHoverBackground?: string | undefined;
-              ctaHoverColor?: string | undefined;
-              ctaBorderColor?: string | undefined;
-              ctaRadius?: number | undefined;
-            }
-          | undefined;
-        animation?:
-          | {
-              entrance?:
-                "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
-              exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
-              transition?:
-                | "FADE"
-                | "SLIDE_DOWN"
-                | "SLIDE_UP"
-                | "SCALE"
-                | "SLIDE_LEFT"
-                | "SLIDE_RIGHT"
-                | "CROSSFADE"
-                | "BLUR"
-                | "INSTANT"
-                | undefined;
-              durationMs?: number | undefined;
-              delayMs?: number | undefined;
-              easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
-              messageDurationMs?: number | undefined;
-              tickerSpeed?: number | undefined;
-              tickerDirection?: "LTR" | "RTL" | undefined;
-              pauseOnHover?: boolean | undefined;
-              pauseOnInteraction?: boolean | undefined;
-              loop?: boolean | undefined;
-              separator?: string | undefined;
-              separatorColor?: string | undefined;
-              separatorSize?: number | undefined;
-              separatorSpacing?: number | undefined;
-            }
-          | undefined;
-        behavior?:
-          | {
-              loop?: boolean | undefined;
-              sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
-              dismissible?: boolean | undefined;
-              dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
-              dismissalDuration?: number | null | undefined;
-              autoplay?: boolean | undefined;
-              intervalMs?: number | undefined;
-              arrows?: boolean | undefined;
-              pagination?: boolean | undefined;
-              swipe?: boolean | undefined;
-              countdownEnd?: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER" | undefined;
-              expirationMessageEn?: string | null | undefined;
-              expirationMessageAr?: string | null | undefined;
-              redirectUrl?: string | null | undefined;
-              nextBannerId?: string | null | undefined;
-              freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
-              freeShippingThreshold?: number | null | undefined;
-              remainingMessageEn?: string | undefined;
-              remainingMessageAr?: string | undefined;
-              successMessageEn?: string | undefined;
-              successMessageAr?: string | undefined;
-              showProgress?: boolean | undefined;
-              inheritPromotionSchedule?: boolean | undefined;
-            }
-          | undefined;
-        targeting?:
-          | {
-              productIds?: string[] | undefined;
-              categoryIds?: string[] | undefined;
-              authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
-              customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-              devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
-              pages?:
-                | (
-                    | "HOME"
-                    | "CUSTOM"
-                    | "EVERYWHERE"
-                    | "PRODUCTS"
-                    | "PRODUCT"
-                    | "CATEGORIES"
-                    | "CATEGORY"
-                    | "COLLECTIONS"
-                    | "CART"
-                    | "CHECKOUT"
-                    | "ACCOUNT"
-                    | "OFFERS"
-                  )[]
-                | undefined;
-              urlPatterns?: string[] | undefined;
-              cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
-              cartSubtotalMin?: number | null | undefined;
-              cartSubtotalMax?: number | null | undefined;
-              countries?: string[] | undefined;
-              regions?: string[] | undefined;
-            }
-          | undefined;
-        responsive?:
-          | {
-              showDesktop?: boolean | undefined;
-              showTablet?: boolean | undefined;
-              showMobile?: boolean | undefined;
-              desktopMode?:
-                | "STATIC"
-                | "TICKER"
-                | "ROTATING"
-                | "CAROUSEL"
-                | "COUNTDOWN"
-                | "FREE_SHIPPING_PROGRESS"
-                | null
-                | undefined;
-              tabletMode?:
-                | "STATIC"
-                | "TICKER"
-                | "ROTATING"
-                | "CAROUSEL"
-                | "COUNTDOWN"
-                | "FREE_SHIPPING_PROGRESS"
-                | null
-                | undefined;
-              mobileMode?:
-                | "STATIC"
-                | "TICKER"
-                | "ROTATING"
-                | "CAROUSEL"
-                | "COUNTDOWN"
-                | "FREE_SHIPPING_PROGRESS"
-                | null
-                | undefined;
-              desktopTextEn?: string | null | undefined;
-              desktopTextAr?: string | null | undefined;
-              mobileTextEn?: string | null | undefined;
-              mobileTextAr?: string | null | undefined;
-              hideCtaMobile?: boolean | undefined;
-              hideIconsMobile?: boolean | undefined;
-            }
-          | undefined;
-      }
-    >;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
-    name: string;
-    configuration: {
-      sortOrder: number;
-      promotionId: string | null;
-      position: "TOP" | "BELOW_HEADER" | "BOTTOM";
-      state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
-      priority: number;
-      timezone: string;
-      messages: {
-        textEn: string;
-        openInNewTab: boolean;
-        ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
-        style: {
-          emphasis: boolean;
-          textColor?: string | null | undefined;
-        };
-        id?: string | undefined;
-        couponCode?: string | null | undefined;
-        url?: string | null | undefined;
-        textAr?: string | null | undefined;
-        secondaryTextEn?: string | null | undefined;
-        secondaryTextAr?: string | null | undefined;
-        icon?:
-          | "truck"
-          | "gift"
-          | "star"
-          | "heart"
-          | "bag"
-          | "sparkle"
-          | "tag"
-          | "clock"
-          | "info"
-          | "warning"
-          | null
-          | undefined;
-        emoji?: string | null | undefined;
-        ctaTextEn?: string | null | undefined;
-        ctaTextAr?: string | null | undefined;
-        couponId?: string | null | undefined;
-        countdownAt?: string | null | undefined;
-      }[];
-      internalName: string;
-      mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
-      recurringSchedule: {
-        enabled: boolean;
-        weekdays: number[];
-        startTime: string;
-        endTime: string;
-      } | null;
-      design: {
-        textColor: string;
-        backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
-        backgroundColor: string;
-        pattern: "NONE" | "DOTS" | "LINES" | "GRID";
-        backgroundOpacity: number;
-        fontFamily: "SANS" | "SERIF";
-        fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
-        fontSizeDesktop: number;
-        fontSizeTablet: number;
-        fontSizeMobile: number;
-        letterSpacing: number;
-        lineHeight: number;
-        textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
-        textAlign: "LEFT" | "CENTER" | "RIGHT";
-        heightDesktop: number;
-        heightTablet: number;
-        heightMobile: number;
-        horizontalPadding: number;
-        verticalPadding: number;
-        borderTop: boolean;
-        borderBottom: boolean;
-        borderWidth: number;
-        borderColor: string;
-        borderStyle: "SOLID" | "DASHED" | "DOTTED";
-        shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
-        zIndex: number;
-        ctaBackground: string;
-        ctaColor: string;
-        ctaHoverBackground: string;
-        ctaHoverColor: string;
-        ctaBorderColor: string;
-        ctaRadius: number;
-        gradient?: string | null | undefined;
-        backgroundImage?: string | null | undefined;
-      };
-      animation: {
-        entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
-        exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
-        transition:
-          | "FADE"
-          | "SLIDE_DOWN"
-          | "SLIDE_UP"
-          | "SCALE"
-          | "SLIDE_LEFT"
-          | "SLIDE_RIGHT"
-          | "CROSSFADE"
-          | "BLUR"
-          | "INSTANT";
-        durationMs: number;
-        delayMs: number;
-        easing: "STANDARD" | "PREMIUM" | "LINEAR";
-        messageDurationMs: number;
-        tickerSpeed: number;
-        tickerDirection: "LTR" | "RTL";
-        pauseOnHover: boolean;
-        pauseOnInteraction: boolean;
-        loop: boolean;
-        separator: string;
-        separatorColor: string;
-        separatorSize: number;
-        separatorSpacing: number;
-      };
-      behavior: {
-        loop: boolean;
-        sticky: "FIXED" | "STICKY" | "NON_STICKY";
-        dismissible: boolean;
-        dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
-        dismissalDuration: number | null;
-        autoplay: boolean;
-        intervalMs: number;
-        arrows: boolean;
-        pagination: boolean;
-        swipe: boolean;
-        countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
-        expirationMessageEn: string | null;
-        expirationMessageAr: string | null;
-        freeShippingThresholdSource: "STORE" | "CUSTOM";
-        freeShippingThreshold: number | null;
-        remainingMessageEn: string;
-        remainingMessageAr: string;
-        successMessageEn: string;
-        successMessageAr: string;
-        showProgress: boolean;
-        inheritPromotionSchedule: boolean;
-        redirectUrl?: string | null | undefined;
-        nextBannerId?: string | null | undefined;
-      };
-      targeting: {
-        productIds: string[];
-        categoryIds: string[];
-        authentication: "ALL" | "GUEST" | "LOGGED_IN";
-        customerType: "ALL" | "RETURNING" | "NEW";
-        devices: ("desktop" | "tablet" | "mobile")[];
-        pages: (
-          | "HOME"
-          | "CUSTOM"
-          | "EVERYWHERE"
-          | "PRODUCTS"
-          | "PRODUCT"
-          | "CATEGORIES"
-          | "CATEGORY"
-          | "COLLECTIONS"
-          | "CART"
-          | "CHECKOUT"
-          | "ACCOUNT"
-          | "OFFERS"
-        )[];
-        urlPatterns: string[];
-        cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
-        cartSubtotalMin: number | null;
-        cartSubtotalMax: number | null;
-        countries: string[];
-        regions: string[];
-      };
-      responsive: {
-        showDesktop: boolean;
-        showTablet: boolean;
-        showMobile: boolean;
-        desktopMode:
-          | "STATIC"
-          | "TICKER"
-          | "ROTATING"
-          | "CAROUSEL"
-          | "COUNTDOWN"
-          | "FREE_SHIPPING_PROGRESS"
-          | null;
-        tabletMode:
-          | "STATIC"
-          | "TICKER"
-          | "ROTATING"
-          | "CAROUSEL"
-          | "COUNTDOWN"
-          | "FREE_SHIPPING_PROGRESS"
-          | null;
-        mobileMode:
-          | "STATIC"
-          | "TICKER"
-          | "ROTATING"
-          | "CAROUSEL"
-          | "COUNTDOWN"
-          | "FREE_SHIPPING_PROGRESS"
-          | null;
-        desktopTextEn: string | null;
-        desktopTextAr: string | null;
-        mobileTextEn: string | null;
-        mobileTextAr: string | null;
-        hideCtaMobile: boolean;
-        hideIconsMobile: boolean;
-      };
-      startsAt?: string | null | undefined;
-      endsAt?: string | null | undefined;
-    };
-    description?: string | null | undefined;
-  },
-  {
-    name: string;
-    configuration: {
-      messages: {
-        textEn: string;
-        id?: string | undefined;
-        couponCode?: string | null | undefined;
-        url?: string | null | undefined;
-        textAr?: string | null | undefined;
-        secondaryTextEn?: string | null | undefined;
-        secondaryTextAr?: string | null | undefined;
-        icon?:
-          | "truck"
-          | "gift"
-          | "star"
-          | "heart"
-          | "bag"
-          | "sparkle"
-          | "tag"
-          | "clock"
-          | "info"
-          | "warning"
-          | null
-          | undefined;
-        emoji?: string | null | undefined;
-        openInNewTab?: boolean | undefined;
-        ctaTextEn?: string | null | undefined;
-        ctaTextAr?: string | null | undefined;
-        ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
-        couponId?: string | null | undefined;
-        countdownAt?: string | null | undefined;
-        style?:
-          | {
-              textColor?: string | null | undefined;
-              emphasis?: boolean | undefined;
-            }
-          | undefined;
-      }[];
-      internalName: string;
-      sortOrder?: number | undefined;
-      promotionId?: string | null | undefined;
-      position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
-      state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
-      priority?: number | undefined;
-      startsAt?: string | null | undefined;
-      endsAt?: string | null | undefined;
-      timezone?: string | undefined;
-      mode?:
-        | "STATIC"
-        | "TICKER"
-        | "ROTATING"
-        | "CAROUSEL"
-        | "COUNTDOWN"
-        | "FREE_SHIPPING_PROGRESS"
-        | undefined;
-      recurringSchedule?:
-        | {
+        mode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | undefined;
+        recurringSchedule?: {
             enabled?: boolean | undefined;
             weekdays?: number[] | undefined;
             startTime?: string | undefined;
             endTime?: string | undefined;
-          }
-        | null
-        | undefined;
-      design?:
-        | {
+        } | null | undefined;
+        design?: {
             textColor?: string | undefined;
             backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
             backgroundColor?: string | undefined;
@@ -4224,23 +2127,11 @@ export declare const bannerTemplateSchema: z.ZodObject<
             ctaHoverColor?: string | undefined;
             ctaBorderColor?: string | undefined;
             ctaRadius?: number | undefined;
-          }
-        | undefined;
-      animation?:
-        | {
+        } | undefined;
+        animation?: {
             entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
             exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
-            transition?:
-              | "FADE"
-              | "SLIDE_DOWN"
-              | "SLIDE_UP"
-              | "SCALE"
-              | "SLIDE_LEFT"
-              | "SLIDE_RIGHT"
-              | "CROSSFADE"
-              | "BLUR"
-              | "INSTANT"
-              | undefined;
+            transition?: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
             durationMs?: number | undefined;
             delayMs?: number | undefined;
             easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
@@ -4254,10 +2145,8 @@ export declare const bannerTemplateSchema: z.ZodObject<
             separatorColor?: string | undefined;
             separatorSize?: number | undefined;
             separatorSpacing?: number | undefined;
-          }
-        | undefined;
-      behavior?:
-        | {
+        } | undefined;
+        behavior?: {
             loop?: boolean | undefined;
             sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
             dismissible?: boolean | undefined;
@@ -4281,102 +2170,638 @@ export declare const bannerTemplateSchema: z.ZodObject<
             successMessageAr?: string | undefined;
             showProgress?: boolean | undefined;
             inheritPromotionSchedule?: boolean | undefined;
-          }
-        | undefined;
-      targeting?:
-        | {
+        } | undefined;
+        targeting?: {
             productIds?: string[] | undefined;
             categoryIds?: string[] | undefined;
             authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
             customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
             devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
-            pages?:
-              | (
-                  | "HOME"
-                  | "CUSTOM"
-                  | "EVERYWHERE"
-                  | "PRODUCTS"
-                  | "PRODUCT"
-                  | "CATEGORIES"
-                  | "CATEGORY"
-                  | "COLLECTIONS"
-                  | "CART"
-                  | "CHECKOUT"
-                  | "ACCOUNT"
-                  | "OFFERS"
-                )[]
-              | undefined;
+            pages?: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[] | undefined;
             urlPatterns?: string[] | undefined;
             cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
             cartSubtotalMin?: number | null | undefined;
             cartSubtotalMax?: number | null | undefined;
             countries?: string[] | undefined;
             regions?: string[] | undefined;
-          }
-        | undefined;
-      responsive?:
-        | {
+        } | undefined;
+        responsive?: {
             showDesktop?: boolean | undefined;
             showTablet?: boolean | undefined;
             showMobile?: boolean | undefined;
-            desktopMode?:
-              | "STATIC"
-              | "TICKER"
-              | "ROTATING"
-              | "CAROUSEL"
-              | "COUNTDOWN"
-              | "FREE_SHIPPING_PROGRESS"
-              | null
-              | undefined;
-            tabletMode?:
-              | "STATIC"
-              | "TICKER"
-              | "ROTATING"
-              | "CAROUSEL"
-              | "COUNTDOWN"
-              | "FREE_SHIPPING_PROGRESS"
-              | null
-              | undefined;
-            mobileMode?:
-              | "STATIC"
-              | "TICKER"
-              | "ROTATING"
-              | "CAROUSEL"
-              | "COUNTDOWN"
-              | "FREE_SHIPPING_PROGRESS"
-              | null
-              | undefined;
+            desktopMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            tabletMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            mobileMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
             desktopTextEn?: string | null | undefined;
             desktopTextAr?: string | null | undefined;
             mobileTextEn?: string | null | undefined;
             mobileTextAr?: string | null | undefined;
             hideCtaMobile?: boolean | undefined;
             hideIconsMobile?: boolean | undefined;
-          }
-        | undefined;
+        } | undefined;
+    }>, {
+        sortOrder: number;
+        promotionId: string | null;
+        position: "TOP" | "BELOW_HEADER" | "BOTTOM";
+        state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
+        priority: number;
+        timezone: string;
+        messages: {
+            textEn: string;
+            openInNewTab: boolean;
+            ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
+            style: {
+                emphasis: boolean;
+                textColor?: string | null | undefined;
+            };
+            id?: string | undefined;
+            couponCode?: string | null | undefined;
+            url?: string | null | undefined;
+            textAr?: string | null | undefined;
+            secondaryTextEn?: string | null | undefined;
+            secondaryTextAr?: string | null | undefined;
+            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+            emoji?: string | null | undefined;
+            ctaTextEn?: string | null | undefined;
+            ctaTextAr?: string | null | undefined;
+            couponId?: string | null | undefined;
+            countdownAt?: string | null | undefined;
+        }[];
+        internalName: string;
+        mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
+        recurringSchedule: {
+            enabled: boolean;
+            weekdays: number[];
+            startTime: string;
+            endTime: string;
+        } | null;
+        design: {
+            textColor: string;
+            backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
+            backgroundColor: string;
+            pattern: "NONE" | "DOTS" | "LINES" | "GRID";
+            backgroundOpacity: number;
+            fontFamily: "SANS" | "SERIF";
+            fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
+            fontSizeDesktop: number;
+            fontSizeTablet: number;
+            fontSizeMobile: number;
+            letterSpacing: number;
+            lineHeight: number;
+            textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
+            textAlign: "LEFT" | "CENTER" | "RIGHT";
+            heightDesktop: number;
+            heightTablet: number;
+            heightMobile: number;
+            horizontalPadding: number;
+            verticalPadding: number;
+            borderTop: boolean;
+            borderBottom: boolean;
+            borderWidth: number;
+            borderColor: string;
+            borderStyle: "SOLID" | "DASHED" | "DOTTED";
+            shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
+            zIndex: number;
+            ctaBackground: string;
+            ctaColor: string;
+            ctaHoverBackground: string;
+            ctaHoverColor: string;
+            ctaBorderColor: string;
+            ctaRadius: number;
+            gradient?: string | null | undefined;
+            backgroundImage?: string | null | undefined;
+        };
+        animation: {
+            entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
+            exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
+            transition: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
+            durationMs: number;
+            delayMs: number;
+            easing: "STANDARD" | "PREMIUM" | "LINEAR";
+            messageDurationMs: number;
+            tickerSpeed: number;
+            tickerDirection: "LTR" | "RTL";
+            pauseOnHover: boolean;
+            pauseOnInteraction: boolean;
+            loop: boolean;
+            separator: string;
+            separatorColor: string;
+            separatorSize: number;
+            separatorSpacing: number;
+        };
+        behavior: {
+            loop: boolean;
+            sticky: "FIXED" | "STICKY" | "NON_STICKY";
+            dismissible: boolean;
+            dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
+            dismissalDuration: number | null;
+            autoplay: boolean;
+            intervalMs: number;
+            arrows: boolean;
+            pagination: boolean;
+            swipe: boolean;
+            countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
+            expirationMessageEn: string | null;
+            expirationMessageAr: string | null;
+            freeShippingThresholdSource: "STORE" | "CUSTOM";
+            freeShippingThreshold: number | null;
+            remainingMessageEn: string;
+            remainingMessageAr: string;
+            successMessageEn: string;
+            successMessageAr: string;
+            showProgress: boolean;
+            inheritPromotionSchedule: boolean;
+            redirectUrl?: string | null | undefined;
+            nextBannerId?: string | null | undefined;
+        };
+        targeting: {
+            productIds: string[];
+            categoryIds: string[];
+            authentication: "ALL" | "GUEST" | "LOGGED_IN";
+            customerType: "ALL" | "RETURNING" | "NEW";
+            devices: ("desktop" | "tablet" | "mobile")[];
+            pages: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[];
+            urlPatterns: string[];
+            cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
+            cartSubtotalMin: number | null;
+            cartSubtotalMax: number | null;
+            countries: string[];
+            regions: string[];
+        };
+        responsive: {
+            showDesktop: boolean;
+            showTablet: boolean;
+            showMobile: boolean;
+            desktopMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+            tabletMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+            mobileMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+            desktopTextEn: string | null;
+            desktopTextAr: string | null;
+            mobileTextEn: string | null;
+            mobileTextAr: string | null;
+            hideCtaMobile: boolean;
+            hideIconsMobile: boolean;
+        };
+        startsAt?: string | null | undefined;
+        endsAt?: string | null | undefined;
+    }, {
+        messages: {
+            textEn: string;
+            id?: string | undefined;
+            couponCode?: string | null | undefined;
+            url?: string | null | undefined;
+            textAr?: string | null | undefined;
+            secondaryTextEn?: string | null | undefined;
+            secondaryTextAr?: string | null | undefined;
+            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+            emoji?: string | null | undefined;
+            openInNewTab?: boolean | undefined;
+            ctaTextEn?: string | null | undefined;
+            ctaTextAr?: string | null | undefined;
+            ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
+            couponId?: string | null | undefined;
+            countdownAt?: string | null | undefined;
+            style?: {
+                textColor?: string | null | undefined;
+                emphasis?: boolean | undefined;
+            } | undefined;
+        }[];
+        internalName: string;
+        sortOrder?: number | undefined;
+        promotionId?: string | null | undefined;
+        position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
+        state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
+        priority?: number | undefined;
+        startsAt?: string | null | undefined;
+        endsAt?: string | null | undefined;
+        timezone?: string | undefined;
+        mode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | undefined;
+        recurringSchedule?: {
+            enabled?: boolean | undefined;
+            weekdays?: number[] | undefined;
+            startTime?: string | undefined;
+            endTime?: string | undefined;
+        } | null | undefined;
+        design?: {
+            textColor?: string | undefined;
+            backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
+            backgroundColor?: string | undefined;
+            gradient?: string | null | undefined;
+            backgroundImage?: string | null | undefined;
+            pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
+            backgroundOpacity?: number | undefined;
+            fontFamily?: "SANS" | "SERIF" | undefined;
+            fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
+            fontSizeDesktop?: number | undefined;
+            fontSizeTablet?: number | undefined;
+            fontSizeMobile?: number | undefined;
+            letterSpacing?: number | undefined;
+            lineHeight?: number | undefined;
+            textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
+            textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
+            heightDesktop?: number | undefined;
+            heightTablet?: number | undefined;
+            heightMobile?: number | undefined;
+            horizontalPadding?: number | undefined;
+            verticalPadding?: number | undefined;
+            borderTop?: boolean | undefined;
+            borderBottom?: boolean | undefined;
+            borderWidth?: number | undefined;
+            borderColor?: string | undefined;
+            borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
+            shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
+            zIndex?: number | undefined;
+            ctaBackground?: string | undefined;
+            ctaColor?: string | undefined;
+            ctaHoverBackground?: string | undefined;
+            ctaHoverColor?: string | undefined;
+            ctaBorderColor?: string | undefined;
+            ctaRadius?: number | undefined;
+        } | undefined;
+        animation?: {
+            entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
+            exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
+            transition?: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
+            durationMs?: number | undefined;
+            delayMs?: number | undefined;
+            easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
+            messageDurationMs?: number | undefined;
+            tickerSpeed?: number | undefined;
+            tickerDirection?: "LTR" | "RTL" | undefined;
+            pauseOnHover?: boolean | undefined;
+            pauseOnInteraction?: boolean | undefined;
+            loop?: boolean | undefined;
+            separator?: string | undefined;
+            separatorColor?: string | undefined;
+            separatorSize?: number | undefined;
+            separatorSpacing?: number | undefined;
+        } | undefined;
+        behavior?: {
+            loop?: boolean | undefined;
+            sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
+            dismissible?: boolean | undefined;
+            dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
+            dismissalDuration?: number | null | undefined;
+            autoplay?: boolean | undefined;
+            intervalMs?: number | undefined;
+            arrows?: boolean | undefined;
+            pagination?: boolean | undefined;
+            swipe?: boolean | undefined;
+            countdownEnd?: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER" | undefined;
+            expirationMessageEn?: string | null | undefined;
+            expirationMessageAr?: string | null | undefined;
+            redirectUrl?: string | null | undefined;
+            nextBannerId?: string | null | undefined;
+            freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
+            freeShippingThreshold?: number | null | undefined;
+            remainingMessageEn?: string | undefined;
+            remainingMessageAr?: string | undefined;
+            successMessageEn?: string | undefined;
+            successMessageAr?: string | undefined;
+            showProgress?: boolean | undefined;
+            inheritPromotionSchedule?: boolean | undefined;
+        } | undefined;
+        targeting?: {
+            productIds?: string[] | undefined;
+            categoryIds?: string[] | undefined;
+            authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
+            customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
+            devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
+            pages?: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[] | undefined;
+            urlPatterns?: string[] | undefined;
+            cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
+            cartSubtotalMin?: number | null | undefined;
+            cartSubtotalMax?: number | null | undefined;
+            countries?: string[] | undefined;
+            regions?: string[] | undefined;
+        } | undefined;
+        responsive?: {
+            showDesktop?: boolean | undefined;
+            showTablet?: boolean | undefined;
+            showMobile?: boolean | undefined;
+            desktopMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            tabletMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            mobileMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            desktopTextEn?: string | null | undefined;
+            desktopTextAr?: string | null | undefined;
+            mobileTextEn?: string | null | undefined;
+            mobileTextAr?: string | null | undefined;
+            hideCtaMobile?: boolean | undefined;
+            hideIconsMobile?: boolean | undefined;
+        } | undefined;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    name: string;
+    configuration: {
+        sortOrder: number;
+        promotionId: string | null;
+        position: "TOP" | "BELOW_HEADER" | "BOTTOM";
+        state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
+        priority: number;
+        timezone: string;
+        messages: {
+            textEn: string;
+            openInNewTab: boolean;
+            ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
+            style: {
+                emphasis: boolean;
+                textColor?: string | null | undefined;
+            };
+            id?: string | undefined;
+            couponCode?: string | null | undefined;
+            url?: string | null | undefined;
+            textAr?: string | null | undefined;
+            secondaryTextEn?: string | null | undefined;
+            secondaryTextAr?: string | null | undefined;
+            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+            emoji?: string | null | undefined;
+            ctaTextEn?: string | null | undefined;
+            ctaTextAr?: string | null | undefined;
+            couponId?: string | null | undefined;
+            countdownAt?: string | null | undefined;
+        }[];
+        internalName: string;
+        mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
+        recurringSchedule: {
+            enabled: boolean;
+            weekdays: number[];
+            startTime: string;
+            endTime: string;
+        } | null;
+        design: {
+            textColor: string;
+            backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
+            backgroundColor: string;
+            pattern: "NONE" | "DOTS" | "LINES" | "GRID";
+            backgroundOpacity: number;
+            fontFamily: "SANS" | "SERIF";
+            fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
+            fontSizeDesktop: number;
+            fontSizeTablet: number;
+            fontSizeMobile: number;
+            letterSpacing: number;
+            lineHeight: number;
+            textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
+            textAlign: "LEFT" | "CENTER" | "RIGHT";
+            heightDesktop: number;
+            heightTablet: number;
+            heightMobile: number;
+            horizontalPadding: number;
+            verticalPadding: number;
+            borderTop: boolean;
+            borderBottom: boolean;
+            borderWidth: number;
+            borderColor: string;
+            borderStyle: "SOLID" | "DASHED" | "DOTTED";
+            shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
+            zIndex: number;
+            ctaBackground: string;
+            ctaColor: string;
+            ctaHoverBackground: string;
+            ctaHoverColor: string;
+            ctaBorderColor: string;
+            ctaRadius: number;
+            gradient?: string | null | undefined;
+            backgroundImage?: string | null | undefined;
+        };
+        animation: {
+            entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
+            exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
+            transition: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
+            durationMs: number;
+            delayMs: number;
+            easing: "STANDARD" | "PREMIUM" | "LINEAR";
+            messageDurationMs: number;
+            tickerSpeed: number;
+            tickerDirection: "LTR" | "RTL";
+            pauseOnHover: boolean;
+            pauseOnInteraction: boolean;
+            loop: boolean;
+            separator: string;
+            separatorColor: string;
+            separatorSize: number;
+            separatorSpacing: number;
+        };
+        behavior: {
+            loop: boolean;
+            sticky: "FIXED" | "STICKY" | "NON_STICKY";
+            dismissible: boolean;
+            dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
+            dismissalDuration: number | null;
+            autoplay: boolean;
+            intervalMs: number;
+            arrows: boolean;
+            pagination: boolean;
+            swipe: boolean;
+            countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
+            expirationMessageEn: string | null;
+            expirationMessageAr: string | null;
+            freeShippingThresholdSource: "STORE" | "CUSTOM";
+            freeShippingThreshold: number | null;
+            remainingMessageEn: string;
+            remainingMessageAr: string;
+            successMessageEn: string;
+            successMessageAr: string;
+            showProgress: boolean;
+            inheritPromotionSchedule: boolean;
+            redirectUrl?: string | null | undefined;
+            nextBannerId?: string | null | undefined;
+        };
+        targeting: {
+            productIds: string[];
+            categoryIds: string[];
+            authentication: "ALL" | "GUEST" | "LOGGED_IN";
+            customerType: "ALL" | "RETURNING" | "NEW";
+            devices: ("desktop" | "tablet" | "mobile")[];
+            pages: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[];
+            urlPatterns: string[];
+            cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
+            cartSubtotalMin: number | null;
+            cartSubtotalMax: number | null;
+            countries: string[];
+            regions: string[];
+        };
+        responsive: {
+            showDesktop: boolean;
+            showTablet: boolean;
+            showMobile: boolean;
+            desktopMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+            tabletMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+            mobileMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+            desktopTextEn: string | null;
+            desktopTextAr: string | null;
+            mobileTextEn: string | null;
+            mobileTextAr: string | null;
+            hideCtaMobile: boolean;
+            hideIconsMobile: boolean;
+        };
+        startsAt?: string | null | undefined;
+        endsAt?: string | null | undefined;
     };
     description?: string | null | undefined;
-  }
->;
-export declare const analyticsQuerySchema: z.ZodObject<
-  {
+}, {
+    name: string;
+    configuration: {
+        messages: {
+            textEn: string;
+            id?: string | undefined;
+            couponCode?: string | null | undefined;
+            url?: string | null | undefined;
+            textAr?: string | null | undefined;
+            secondaryTextEn?: string | null | undefined;
+            secondaryTextAr?: string | null | undefined;
+            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+            emoji?: string | null | undefined;
+            openInNewTab?: boolean | undefined;
+            ctaTextEn?: string | null | undefined;
+            ctaTextAr?: string | null | undefined;
+            ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
+            couponId?: string | null | undefined;
+            countdownAt?: string | null | undefined;
+            style?: {
+                textColor?: string | null | undefined;
+                emphasis?: boolean | undefined;
+            } | undefined;
+        }[];
+        internalName: string;
+        sortOrder?: number | undefined;
+        promotionId?: string | null | undefined;
+        position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
+        state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
+        priority?: number | undefined;
+        startsAt?: string | null | undefined;
+        endsAt?: string | null | undefined;
+        timezone?: string | undefined;
+        mode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | undefined;
+        recurringSchedule?: {
+            enabled?: boolean | undefined;
+            weekdays?: number[] | undefined;
+            startTime?: string | undefined;
+            endTime?: string | undefined;
+        } | null | undefined;
+        design?: {
+            textColor?: string | undefined;
+            backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
+            backgroundColor?: string | undefined;
+            gradient?: string | null | undefined;
+            backgroundImage?: string | null | undefined;
+            pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
+            backgroundOpacity?: number | undefined;
+            fontFamily?: "SANS" | "SERIF" | undefined;
+            fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
+            fontSizeDesktop?: number | undefined;
+            fontSizeTablet?: number | undefined;
+            fontSizeMobile?: number | undefined;
+            letterSpacing?: number | undefined;
+            lineHeight?: number | undefined;
+            textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
+            textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
+            heightDesktop?: number | undefined;
+            heightTablet?: number | undefined;
+            heightMobile?: number | undefined;
+            horizontalPadding?: number | undefined;
+            verticalPadding?: number | undefined;
+            borderTop?: boolean | undefined;
+            borderBottom?: boolean | undefined;
+            borderWidth?: number | undefined;
+            borderColor?: string | undefined;
+            borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
+            shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
+            zIndex?: number | undefined;
+            ctaBackground?: string | undefined;
+            ctaColor?: string | undefined;
+            ctaHoverBackground?: string | undefined;
+            ctaHoverColor?: string | undefined;
+            ctaBorderColor?: string | undefined;
+            ctaRadius?: number | undefined;
+        } | undefined;
+        animation?: {
+            entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
+            exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
+            transition?: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
+            durationMs?: number | undefined;
+            delayMs?: number | undefined;
+            easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
+            messageDurationMs?: number | undefined;
+            tickerSpeed?: number | undefined;
+            tickerDirection?: "LTR" | "RTL" | undefined;
+            pauseOnHover?: boolean | undefined;
+            pauseOnInteraction?: boolean | undefined;
+            loop?: boolean | undefined;
+            separator?: string | undefined;
+            separatorColor?: string | undefined;
+            separatorSize?: number | undefined;
+            separatorSpacing?: number | undefined;
+        } | undefined;
+        behavior?: {
+            loop?: boolean | undefined;
+            sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
+            dismissible?: boolean | undefined;
+            dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
+            dismissalDuration?: number | null | undefined;
+            autoplay?: boolean | undefined;
+            intervalMs?: number | undefined;
+            arrows?: boolean | undefined;
+            pagination?: boolean | undefined;
+            swipe?: boolean | undefined;
+            countdownEnd?: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER" | undefined;
+            expirationMessageEn?: string | null | undefined;
+            expirationMessageAr?: string | null | undefined;
+            redirectUrl?: string | null | undefined;
+            nextBannerId?: string | null | undefined;
+            freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
+            freeShippingThreshold?: number | null | undefined;
+            remainingMessageEn?: string | undefined;
+            remainingMessageAr?: string | undefined;
+            successMessageEn?: string | undefined;
+            successMessageAr?: string | undefined;
+            showProgress?: boolean | undefined;
+            inheritPromotionSchedule?: boolean | undefined;
+        } | undefined;
+        targeting?: {
+            productIds?: string[] | undefined;
+            categoryIds?: string[] | undefined;
+            authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
+            customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
+            devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
+            pages?: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[] | undefined;
+            urlPatterns?: string[] | undefined;
+            cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
+            cartSubtotalMin?: number | null | undefined;
+            cartSubtotalMax?: number | null | undefined;
+            countries?: string[] | undefined;
+            regions?: string[] | undefined;
+        } | undefined;
+        responsive?: {
+            showDesktop?: boolean | undefined;
+            showTablet?: boolean | undefined;
+            showMobile?: boolean | undefined;
+            desktopMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            tabletMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            mobileMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            desktopTextEn?: string | null | undefined;
+            desktopTextAr?: string | null | undefined;
+            mobileTextEn?: string | null | undefined;
+            mobileTextAr?: string | null | undefined;
+            hideCtaMobile?: boolean | undefined;
+            hideIconsMobile?: boolean | undefined;
+        } | undefined;
+    };
+    description?: string | null | undefined;
+}>;
+export declare const analyticsQuerySchema: z.ZodObject<{
     range: z.ZodDefault<z.ZodEnum<["24h", "7d", "30d", "custom"]>>;
     from: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     to: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-  },
-  "strip",
-  z.ZodTypeAny,
-  {
+}, "strip", z.ZodTypeAny, {
     range: "custom" | "24h" | "7d" | "30d";
     from?: string | null | undefined;
     to?: string | null | undefined;
-  },
-  {
+}, {
     range?: "custom" | "24h" | "7d" | "30d" | undefined;
     from?: string | null | undefined;
     to?: string | null | undefined;
-  }
->;
+}>;
 export type BannerDraft = z.infer<typeof createBannerSchema>;
 export type BannerMessageInput = z.infer<typeof bannerMessageSchema>;
 export type ActiveBannerContext = z.infer<typeof activeBannerQuerySchema>;

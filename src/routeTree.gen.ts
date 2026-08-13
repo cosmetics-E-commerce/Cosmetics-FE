@@ -30,6 +30,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
+import { Route as WishlistShareTokenRouteImport } from './routes/wishlist.$shareToken'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -136,6 +137,11 @@ const ProductSlugRoute = ProductSlugRouteImport.update({
   path: '/product/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WishlistShareTokenRoute = WishlistShareTokenRouteImport.update({
+  id: '/wishlist/$shareToken',
+  path: '/wishlist/$shareToken',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -159,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/product/$slug': typeof ProductSlugRoute
+  '/wishlist/$shareToken': typeof WishlistShareTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -182,6 +189,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/product/$slug': typeof ProductSlugRoute
+  '/wishlist/$shareToken': typeof WishlistShareTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -206,6 +214,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/product/$slug': typeof ProductSlugRoute
+  '/wishlist/$shareToken': typeof WishlistShareTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -231,6 +240,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/verify-email'
     | '/product/$slug'
+    | '/wishlist/$shareToken'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -254,6 +264,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/verify-email'
     | '/product/$slug'
+    | '/wishlist/$shareToken'
   id:
     | '__root__'
     | '/'
@@ -277,6 +288,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/verify-email'
     | '/product/$slug'
+    | '/wishlist/$shareToken'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -301,6 +313,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
   ProductSlugRoute: typeof ProductSlugRoute
+  WishlistShareTokenRoute: typeof WishlistShareTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -452,6 +465,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/wishlist/$shareToken': {
+      id: '/wishlist/$shareToken'
+      path: '/wishlist/$shareToken'
+      fullPath: '/wishlist/$shareToken'
+      preLoaderRoute: typeof WishlistShareTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -477,6 +497,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   VerifyEmailRoute: VerifyEmailRoute,
   ProductSlugRoute: ProductSlugRoute,
+  WishlistShareTokenRoute: WishlistShareTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
