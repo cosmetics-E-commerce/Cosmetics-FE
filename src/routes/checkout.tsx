@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  Check,
   CheckCircle2,
   Clipboard,
   CreditCard,
@@ -888,10 +889,12 @@ function CheckoutSteps({
             aria-current={state === "active" ? "step" : undefined}
           >
             <button type="button" disabled={!canOpen} onClick={() => onSelect(step.number)}>
-              <span className="sf-checkout-step__dot">
-                {state === "complete" ? <CheckCircle2 /> : step.number}
+              <span className="sf-checkout-step__marker" aria-hidden="true">
+                <span className="sf-checkout-step__dot">
+                  {state === "complete" ? <Check /> : step.number}
+                </span>
               </span>
-              <span>
+              <span className="sf-checkout-step__text">
                 <strong>{step.label}</strong>
                 {step.sub && <small>{step.sub}</small>}
               </span>

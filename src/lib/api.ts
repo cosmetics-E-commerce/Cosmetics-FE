@@ -924,6 +924,71 @@ export async function listMyReviews(): Promise<CustomerReviewLibraryResponse> {
     throw error;
   }
 }
+
+function normalizeWishlistResponse(payload: WishlistResponse): WishlistResponse {
+  const items = Array.isArray(payload.items) ? payload.items.filter((item) => item.product) : [];
+  const collections = Array.isArray(payload.collections)
+    ? payload.collections.map((collection) => {
+        const collectionItems = Array.isArray(collection.items)
+          ? collection.items.filter((item) => item.product)
+          : [];
+        return {
+          ...collection,
+          items: collectionItems,
+          totalItems: collection.totalItems ?? collectionItems.length,
+        };
+      })
+    : [];
+  const uniqueItems = items.length
+    ? items
+    : collections
+        .flatMap((collection) => collection.items)
+        .filter(
+          (item, index, all) =>
+            all.findIndex((candidate) => candidate.productId === item.productId) === index,
+        );
+
+  if (collections.length) {
+    return {
+      ...payload,
+      collections,
+      items: uniqueItems,
+      totalItems: payload.totalItems ?? uniqueItems.length,
+      updatedAt: payload.updatedAt ?? null,
+    };
+  }
+
+  const firstItem = uniqueItems[0];
+  if (!firstItem) {
+    return {
+      collections: [],
+      items: [],
+      totalItems: payload.totalItems ?? 0,
+      updatedAt: payload.updatedAt ?? null,
+    };
+  }
+
+  const timestamp = firstItem.addedAt;
+  return {
+    collections: [
+      {
+        id: firstItem.collectionId,
+        name: "Saved products",
+        isPrivate: true,
+        isDefault: true,
+        shareToken: null,
+        items: uniqueItems,
+        totalItems: uniqueItems.length,
+        createdAt: timestamp,
+        updatedAt: payload.updatedAt ?? timestamp,
+      },
+    ],
+    items: uniqueItems,
+    totalItems: payload.totalItems ?? uniqueItems.length,
+    updatedAt: payload.updatedAt ?? timestamp,
+  };
+}
+
 export const updateMyReview = (
   reviewId: string,
   body: { rating?: number; title?: string; body?: string },
@@ -969,13 +1034,21 @@ export const getPromotionPrices = (
 export const listOffers = () =>
   rawRequest<StorefrontOffer[]>("/promotions/offers", { auth: false });
 
-export const getWishlist = () => rawRequest<WishlistResponse>("/wishlist");
+export async function getWishlist(): Promise<WishlistResponse> {
+  return normalizeWishlistResponse(await rawRequest<WishlistResponse>("/wishlist"));
+}
 export const addWishlist = (productId: string) =>
-  rawRequest<WishlistResponse>("/wishlist/items", { method: "POST", body: { productId } });
+  rawRequest<WishlistResponse>("/wishlist/items", { method: "POST", body: { productId } }).then(
+    normalizeWishlistResponse,
+  );
 export const removeWishlist = (productId: string) =>
-  rawRequest<WishlistResponse>(`/wishlist/items/${productId}`, { method: "DELETE" });
+  rawRequest<WishlistResponse>(`/wishlist/items/${productId}`, { method: "DELETE" }).then(
+    normalizeWishlistResponse,
+  );
 export const createWishlistCollection = (body: { name: string; isPrivate: boolean }) =>
-  rawRequest<WishlistResponse>("/wishlist/collections", { method: "POST", body });
+  rawRequest<WishlistResponse>("/wishlist/collections", { method: "POST", body }).then(
+    normalizeWishlistResponse,
+  );
 export const updateWishlistCollection = (
   collectionId: string,
   body: { name?: string; isPrivate?: boolean },
@@ -983,18 +1056,20 @@ export const updateWishlistCollection = (
   rawRequest<WishlistResponse>(`/wishlist/collections/${collectionId}`, {
     method: "PATCH",
     body,
-  });
+  }).then(normalizeWishlistResponse);
 export const deleteWishlistCollection = (collectionId: string) =>
-  rawRequest<WishlistResponse>(`/wishlist/collections/${collectionId}`, { method: "DELETE" });
+  rawRequest<WishlistResponse>(`/wishlist/collections/${collectionId}`, { method: "DELETE" }).then(
+    normalizeWishlistResponse,
+  );
 export const addWishlistToCollection = (collectionId: string, productId: string) =>
   rawRequest<WishlistResponse>(`/wishlist/collections/${collectionId}/items`, {
     method: "POST",
     body: { productId },
-  });
+  }).then(normalizeWishlistResponse);
 export const removeWishlistFromCollection = (collectionId: string, productId: string) =>
   rawRequest<WishlistResponse>(`/wishlist/collections/${collectionId}/items/${productId}`, {
     method: "DELETE",
-  });
+  }).then(normalizeWishlistResponse);
 export const getWishlistShareToken = (collectionId: string) =>
   rawRequest<{ shareToken: string }>(`/wishlist/collections/${collectionId}/share`);
 export const getSharedWishlist = (shareToken: string) =>

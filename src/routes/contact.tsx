@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Paperclip, X } from "lucide-react";
+import { ImagePlus, Paperclip, X } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -176,9 +176,14 @@ function Contact() {
             </Field>
 
             <div className="sf-contact-attachment">
+              <span className="sf-contact-attachment__icon" aria-hidden="true">
+                <ImagePlus />
+              </span>
               <div className="sf-contact-attachment__heading">
-                <span>{ar ? "إضافة صورة" : "Add a photo"}</span>
-                <small>{ar ? "اختياري" : "Optional"}</small>
+                <span>
+                  {ar ? "إضافة صورة" : "Add a photo"}
+                  <small>{ar ? "اختياري" : "Optional"}</small>
+                </span>
                 <p>
                   {ar
                     ? "JPG أو PNG أو WebP، بحد أقصى 5 ميجابايت."

@@ -64,7 +64,69 @@ export function WishlistStudio({ data, locale }: { data: WishlistResponse; local
     onError: (error) => toast.error(apiErrorMessage(error, locale)),
   });
 
-  if (!selected) return null;
+  if (!selected) {
+    return (
+      <div className="wishlist-studio">
+        <header className="wishlist-studio__masthead">
+          <div>
+            <p>{ar ? "مجموعتك الشخصية" : "Your collection space"}</p>
+            <h2>{ar ? "قوائم الرغبات" : "Wishlist collections"}</h2>
+            <span>
+              {ar
+                ? "احفظي المنتجات المفضلة لديك أو أنشئي قائمة خاصة."
+                : "Save products with the heart or create a private collection for later."}
+            </span>
+          </div>
+          <Button type="button" variant="solid" size="pill" onClick={() => setCreateOpen(true)}>
+            <Plus aria-hidden="true" />
+            {ar ? "قائمة جديدة" : "New collection"}
+          </Button>
+        </header>
+        <div className="wishlist-board wishlist-board--empty-state">
+          <div className="wishlist-board__empty">
+            <FolderHeart aria-hidden="true" />
+            <span>01</span>
+            <h4>{ar ? "قائمة المفضلة جاهزة" : "Your wishlist is ready"}</h4>
+            <p>
+              {ar
+                ? "اضغطي على القلب في أي منتج لحفظه هنا، أو ابدئي بقائمة جديدة."
+                : "Tap the heart on any product to save it here, or start with a new collection."}
+            </p>
+            <div className="wishlist-board__empty-actions">
+              <Button asChild variant="line" size="pill">
+                <Link to="/shop">{ar ? "تصفح المنتجات" : "Browse products"}</Link>
+              </Button>
+              <Button type="button" variant="solid" size="pill" onClick={() => setCreateOpen(true)}>
+                <Plus aria-hidden="true" />
+                {ar ? "قائمة جديدة" : "New collection"}
+              </Button>
+            </div>
+          </div>
+        </div>
+        <CollectionDialog
+          open={createOpen}
+          onOpenChange={setCreateOpen}
+          title={ar ? "قائمة جديدة" : "Create a collection"}
+          description={
+            ar ? "اختاري اسماً وإعداد الخصوصية." : "Give it a clear name and choose who can see it."
+          }
+          initialName=""
+          ar={ar}
+          pending={mutation.isPending}
+          onSubmit={(name, isPrivate) =>
+            mutation.mutate(() => createWishlistCollection({ name, isPrivate }), {
+              onSuccess: (next) => {
+                setSelectedId(
+                  next.collections.find((collection) => collection.name === name)?.id ?? "",
+                );
+                setCreateOpen(false);
+              },
+            })
+          }
+        />
+      </div>
+    );
+  }
 
   const share = async () => {
     if (selected.isPrivate) return;

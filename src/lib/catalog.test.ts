@@ -66,4 +66,25 @@ describe("mapProduct", () => {
     expect(mapped.image).not.toBe("");
     expect(mapped.gallery).toEqual([mapped.image]);
   });
+
+  it("tolerates legacy wishlist products with sparse catalog fields", () => {
+    const mapped = mapProduct(
+      {
+        id: "product-id",
+        slug: "legacy-serum",
+        nameEn: "Legacy Serum",
+        nameAr: "سيروم",
+        imageUrl: null,
+      } as never,
+      "en",
+    );
+
+    expect(mapped).toMatchObject({
+      slug: "legacy-serum",
+      name: "Legacy Serum",
+      category: "Collection",
+      price: 0,
+      inStock: false,
+    });
+  });
 });

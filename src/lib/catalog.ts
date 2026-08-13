@@ -23,16 +23,23 @@ const fallbackImages: Record<string, string> = {
 
 export function mapProduct(product: PublicProductResponse, locale: Locale): Product {
   const arabic = locale === "ar";
-  const variants = product.variants as Array<
+  const variants = (product.variants ?? []) as Array<
     (typeof product.variants)[number] & { stock?: number }
   >;
   const hasStockData = variants.some((variant) => typeof variant.stock === "number");
   const stock = hasStockData
     ? variants.reduce((total, variant) => total + (variant.stock ?? 0), 0)
     : undefined;
-  const categoryName = arabic ? product.category.nameAr : product.category.nameEn;
-  const categoryFallback = fallbackImages[product.category.slug.toLowerCase()] ?? images.collection;
-  const gallery = product.images
+  const category = product.category ?? {
+    id: "",
+    slug: "collection",
+    nameEn: "Collection",
+    nameAr: "المجموعة",
+  };
+  const categoryName = arabic ? category.nameAr : category.nameEn;
+  const categoryFallback = fallbackImages[category.slug.toLowerCase()] ?? images.collection;
+  const skinType = product.skinType ?? [];
+  const gallery = (product.images ?? [])
     .slice()
     .sort((a, b) => a.sortOrder - b.sortOrder)
     .map((image) => image.url.trim())
@@ -40,23 +47,21 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
   const primary = product.imageUrl?.trim() || gallery[0] || categoryFallback;
   return {
     id: product.id,
-    categoryId: product.category.id,
+    categoryId: category.id,
     brandId: product.brand?.id ?? null,
     slug: product.slug,
     name: arabic ? product.nameAr : product.nameEn,
     category: categoryName,
     type: product.brand?.name ?? categoryName,
-    benefit: product.skinType.length
-      ? product.skinType.map(prettyEnum).join(" · ")
-      : "Curated beauty essential",
+    benefit: skinType.length ? skinType.map(prettyEnum).join(" · ") : "Curated beauty essential",
     description:
       (arabic ? product.descriptionAr : product.descriptionEn) ??
       product.descriptionEn ??
       product.descriptionAr ??
       "A carefully selected BIOREZA essential.",
-    price: product.basePrice / 100,
-    rating: product.rating,
-    reviews: product.reviewCount,
+    price: (product.basePrice ?? 0) / 100,
+    rating: product.rating ?? 0,
+    reviews: product.reviewCount ?? 0,
     image: primary,
     gallery: gallery.length ? gallery : [primary],
     sizes: variants.map((variant) => ({
@@ -67,8 +72,8 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
       ...(variant.stock !== undefined ? { stock: variant.stock } : {}),
     })),
     ...(stock !== undefined ? { stock } : {}),
-    concerns: product.skinType.map(prettyEnum),
-    skinTypes: product.skinType.map(prettyEnum),
+    concerns: skinType.map(prettyEnum),
+    skinTypes: skinType.map(prettyEnum),
     inStock: stock === undefined ? variants.length > 0 : stock > 0,
     ingredients: product.ingredients ?? "Ingredient details are being prepared.",
     ingredientDetails: product.ingredientDetails,
@@ -76,7 +81,7 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
     details:
       (arabic ? product.descriptionAr : product.descriptionEn) ??
       "Authentic product supplied through BIOREZA.",
-    benefits: product.skinType.map((type) => `Suitable for ${prettyEnum(type).toLowerCase()} skin`),
+    benefits: skinType.map((type) => `Suitable for ${prettyEnum(type).toLowerCase()} skin`),
   };
 }
 

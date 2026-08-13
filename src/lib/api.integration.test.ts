@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   clearSession,
   createSupportRequest,
+  getWishlist,
   listProductsPage,
   listMyReviews,
   listProductReviews,
@@ -149,6 +150,79 @@ describe("catalog pagination API", () => {
       },
     });
     expect(String(fetchMock.mock.calls[0]?.[0])).toContain("/products?page=2&limit=24");
+  });
+});
+
+describe("wishlist API", () => {
+  it("does not invent a collection id when an empty legacy wishlist has no collections", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            success: true,
+            data: {
+              items: [],
+              totalItems: 0,
+              updatedAt: null,
+            },
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        ),
+      ),
+    );
+
+    await expect(getWishlist()).resolves.toMatchObject({
+      collections: [],
+      items: [],
+      totalItems: 0,
+      updatedAt: null,
+    });
+  });
+
+  it("wraps legacy wishlist items in a default collection", async () => {
+    const item = {
+      id: "wishlist-item",
+      collectionId: "legacy-collection",
+      productId: "product-id",
+      product: {
+        id: "product-id",
+        slug: "legacy-serum",
+        nameEn: "Legacy Serum",
+        nameAr: "سيروم",
+      },
+      addedAt: "2026-08-13T12:00:00.000Z",
+    };
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(
+          JSON.stringify({
+            success: true,
+            data: {
+              items: [item],
+              totalItems: 1,
+              updatedAt: null,
+            },
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        ),
+      ),
+    );
+
+    await expect(getWishlist()).resolves.toMatchObject({
+      collections: [
+        {
+          id: "legacy-collection",
+          name: "Saved products",
+          isDefault: true,
+          items: [item],
+          totalItems: 1,
+        },
+      ],
+      items: [item],
+      totalItems: 1,
+    });
   });
 });
 
