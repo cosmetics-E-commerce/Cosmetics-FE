@@ -27,6 +27,8 @@ export const PolishedImage = forwardRef<HTMLImageElement, PolishedImageProps>(
     );
 
     useEffect(() => {
+      setLoaded(false);
+      setFailed(false);
       const image = imageRef.current;
       if (!image?.complete) return;
       setLoaded(true);

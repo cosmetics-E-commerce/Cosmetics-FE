@@ -1166,3 +1166,24 @@ html[data-motion-ready="true"]
     animation: none;
   }
 }
+
+/* Final tactile and narrow-screen details shared across storefront routes. */
+::selection {
+  background: var(--color-gold-soft);
+  color: var(--color-ink);
+}
+
+:where(a, button, summary, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 3px;
+}
+
+:where(button, input, select, textarea):disabled {
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  :where(input, select, textarea) {
+    font-size: 16px;
+  }
+}

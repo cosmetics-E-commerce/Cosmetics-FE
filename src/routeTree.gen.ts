@@ -23,13 +23,20 @@ import { Route as OrderConfirmedRouteImport } from './routes/order-confirmed'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReturnsRouteImport } from './routes/returns'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as ShippingPolicyRouteImport } from './routes/shipping-policy'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
+import { Route as BrandsSlugRouteImport } from './routes/brands.$slug'
+import { Route as CategoriesSlugRouteImport } from './routes/categories.$slug'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
+import { Route as SitemapsBrandsDotxmlRouteImport } from './routes/sitemaps/brands[.]xml'
+import { Route as SitemapsCategoriesDotxmlRouteImport } from './routes/sitemaps/categories[.]xml'
+import { Route as SitemapsPagesDotxmlRouteImport } from './routes/sitemaps/pages[.]xml'
+import { Route as SitemapsProductsDotxmlRouteImport } from './routes/sitemaps/products[.]xml'
 import { Route as WishlistShareTokenRouteImport } from './routes/wishlist.$shareToken'
 
 const IndexRoute = IndexRouteImport.update({
@@ -102,6 +109,11 @@ const ReturnsRoute = ReturnsRouteImport.update({
   path: '/returns',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShippingPolicyRoute = ShippingPolicyRouteImport.update({
   id: '/shipping-policy',
   path: '/shipping-policy',
@@ -132,9 +144,40 @@ const VerifyEmailRoute = VerifyEmailRouteImport.update({
   path: '/verify-email',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BrandsSlugRoute = BrandsSlugRouteImport.update({
+  id: '/brands/$slug',
+  path: '/brands/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategoriesSlugRoute = CategoriesSlugRouteImport.update({
+  id: '/categories/$slug',
+  path: '/categories/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProductSlugRoute = ProductSlugRouteImport.update({
   id: '/product/$slug',
   path: '/product/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapsBrandsDotxmlRoute = SitemapsBrandsDotxmlRouteImport.update({
+  id: '/sitemaps/brands.xml',
+  path: '/sitemaps/brands.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapsCategoriesDotxmlRoute =
+  SitemapsCategoriesDotxmlRouteImport.update({
+    id: '/sitemaps/categories.xml',
+    path: '/sitemaps/categories.xml',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const SitemapsPagesDotxmlRoute = SitemapsPagesDotxmlRouteImport.update({
+  id: '/sitemaps/pages.xml',
+  path: '/sitemaps/pages.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapsProductsDotxmlRoute = SitemapsProductsDotxmlRouteImport.update({
+  id: '/sitemaps/products.xml',
+  path: '/sitemaps/products.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WishlistShareTokenRoute = WishlistShareTokenRouteImport.update({
@@ -158,13 +201,20 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/returns': typeof ReturnsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/shipping-policy': typeof ShippingPolicyRoute
   '/shop': typeof ShopRoute
   '/sign-in': typeof SignInRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/brands/$slug': typeof BrandsSlugRoute
+  '/categories/$slug': typeof CategoriesSlugRoute
   '/product/$slug': typeof ProductSlugRoute
+  '/sitemaps/brands.xml': typeof SitemapsBrandsDotxmlRoute
+  '/sitemaps/categories.xml': typeof SitemapsCategoriesDotxmlRoute
+  '/sitemaps/pages.xml': typeof SitemapsPagesDotxmlRoute
+  '/sitemaps/products.xml': typeof SitemapsProductsDotxmlRoute
   '/wishlist/$shareToken': typeof WishlistShareTokenRoute
 }
 export interface FileRoutesByTo {
@@ -182,13 +232,20 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/returns': typeof ReturnsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/shipping-policy': typeof ShippingPolicyRoute
   '/shop': typeof ShopRoute
   '/sign-in': typeof SignInRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/brands/$slug': typeof BrandsSlugRoute
+  '/categories/$slug': typeof CategoriesSlugRoute
   '/product/$slug': typeof ProductSlugRoute
+  '/sitemaps/brands.xml': typeof SitemapsBrandsDotxmlRoute
+  '/sitemaps/categories.xml': typeof SitemapsCategoriesDotxmlRoute
+  '/sitemaps/pages.xml': typeof SitemapsPagesDotxmlRoute
+  '/sitemaps/products.xml': typeof SitemapsProductsDotxmlRoute
   '/wishlist/$shareToken': typeof WishlistShareTokenRoute
 }
 export interface FileRoutesById {
@@ -207,13 +264,20 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/register': typeof RegisterRoute
   '/returns': typeof ReturnsRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/shipping-policy': typeof ShippingPolicyRoute
   '/shop': typeof ShopRoute
   '/sign-in': typeof SignInRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/verify-email': typeof VerifyEmailRoute
+  '/brands/$slug': typeof BrandsSlugRoute
+  '/categories/$slug': typeof CategoriesSlugRoute
   '/product/$slug': typeof ProductSlugRoute
+  '/sitemaps/brands.xml': typeof SitemapsBrandsDotxmlRoute
+  '/sitemaps/categories.xml': typeof SitemapsCategoriesDotxmlRoute
+  '/sitemaps/pages.xml': typeof SitemapsPagesDotxmlRoute
+  '/sitemaps/products.xml': typeof SitemapsProductsDotxmlRoute
   '/wishlist/$shareToken': typeof WishlistShareTokenRoute
 }
 export interface FileRouteTypes {
@@ -233,13 +297,20 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/register'
     | '/returns'
+    | '/robots.txt'
     | '/shipping-policy'
     | '/shop'
     | '/sign-in'
     | '/sitemap.xml'
     | '/terms'
     | '/verify-email'
+    | '/brands/$slug'
+    | '/categories/$slug'
     | '/product/$slug'
+    | '/sitemaps/brands.xml'
+    | '/sitemaps/categories.xml'
+    | '/sitemaps/pages.xml'
+    | '/sitemaps/products.xml'
     | '/wishlist/$shareToken'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -257,13 +328,20 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/register'
     | '/returns'
+    | '/robots.txt'
     | '/shipping-policy'
     | '/shop'
     | '/sign-in'
     | '/sitemap.xml'
     | '/terms'
     | '/verify-email'
+    | '/brands/$slug'
+    | '/categories/$slug'
     | '/product/$slug'
+    | '/sitemaps/brands.xml'
+    | '/sitemaps/categories.xml'
+    | '/sitemaps/pages.xml'
+    | '/sitemaps/products.xml'
     | '/wishlist/$shareToken'
   id:
     | '__root__'
@@ -281,13 +359,20 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/register'
     | '/returns'
+    | '/robots.txt'
     | '/shipping-policy'
     | '/shop'
     | '/sign-in'
     | '/sitemap.xml'
     | '/terms'
     | '/verify-email'
+    | '/brands/$slug'
+    | '/categories/$slug'
     | '/product/$slug'
+    | '/sitemaps/brands.xml'
+    | '/sitemaps/categories.xml'
+    | '/sitemaps/pages.xml'
+    | '/sitemaps/products.xml'
     | '/wishlist/$shareToken'
   fileRoutesById: FileRoutesById
 }
@@ -306,13 +391,20 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   RegisterRoute: typeof RegisterRoute
   ReturnsRoute: typeof ReturnsRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
   ShippingPolicyRoute: typeof ShippingPolicyRoute
   ShopRoute: typeof ShopRoute
   SignInRoute: typeof SignInRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
+  BrandsSlugRoute: typeof BrandsSlugRoute
+  CategoriesSlugRoute: typeof CategoriesSlugRoute
   ProductSlugRoute: typeof ProductSlugRoute
+  SitemapsBrandsDotxmlRoute: typeof SitemapsBrandsDotxmlRoute
+  SitemapsCategoriesDotxmlRoute: typeof SitemapsCategoriesDotxmlRoute
+  SitemapsPagesDotxmlRoute: typeof SitemapsPagesDotxmlRoute
+  SitemapsProductsDotxmlRoute: typeof SitemapsProductsDotxmlRoute
   WishlistShareTokenRoute: typeof WishlistShareTokenRoute
 }
 
@@ -416,6 +508,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReturnsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shipping-policy': {
       id: '/shipping-policy'
       path: '/shipping-policy'
@@ -458,11 +557,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifyEmailRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/brands/$slug': {
+      id: '/brands/$slug'
+      path: '/brands/$slug'
+      fullPath: '/brands/$slug'
+      preLoaderRoute: typeof BrandsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/categories/$slug': {
+      id: '/categories/$slug'
+      path: '/categories/$slug'
+      fullPath: '/categories/$slug'
+      preLoaderRoute: typeof CategoriesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/product/$slug': {
       id: '/product/$slug'
       path: '/product/$slug'
       fullPath: '/product/$slug'
       preLoaderRoute: typeof ProductSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemaps/brands.xml': {
+      id: '/sitemaps/brands.xml'
+      path: '/sitemaps/brands.xml'
+      fullPath: '/sitemaps/brands.xml'
+      preLoaderRoute: typeof SitemapsBrandsDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemaps/categories.xml': {
+      id: '/sitemaps/categories.xml'
+      path: '/sitemaps/categories.xml'
+      fullPath: '/sitemaps/categories.xml'
+      preLoaderRoute: typeof SitemapsCategoriesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemaps/pages.xml': {
+      id: '/sitemaps/pages.xml'
+      path: '/sitemaps/pages.xml'
+      fullPath: '/sitemaps/pages.xml'
+      preLoaderRoute: typeof SitemapsPagesDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemaps/products.xml': {
+      id: '/sitemaps/products.xml'
+      path: '/sitemaps/products.xml'
+      fullPath: '/sitemaps/products.xml'
+      preLoaderRoute: typeof SitemapsProductsDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/wishlist/$shareToken': {
@@ -490,13 +631,20 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   RegisterRoute: RegisterRoute,
   ReturnsRoute: ReturnsRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
   ShippingPolicyRoute: ShippingPolicyRoute,
   ShopRoute: ShopRoute,
   SignInRoute: SignInRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   VerifyEmailRoute: VerifyEmailRoute,
+  BrandsSlugRoute: BrandsSlugRoute,
+  CategoriesSlugRoute: CategoriesSlugRoute,
   ProductSlugRoute: ProductSlugRoute,
+  SitemapsBrandsDotxmlRoute: SitemapsBrandsDotxmlRoute,
+  SitemapsCategoriesDotxmlRoute: SitemapsCategoriesDotxmlRoute,
+  SitemapsPagesDotxmlRoute: SitemapsPagesDotxmlRoute,
+  SitemapsProductsDotxmlRoute: SitemapsProductsDotxmlRoute,
   WishlistShareTokenRoute: WishlistShareTokenRoute,
 }
 export const routeTree = rootRouteImport

@@ -15,6 +15,8 @@ export function Logo({
         alt=""
         width={64}
         height={64}
+        loading="lazy"
+        decoding="async"
         aria-hidden="true"
         className="brand-logo__mark"
       />

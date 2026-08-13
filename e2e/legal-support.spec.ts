@@ -14,7 +14,7 @@ test("legal surface and support submission work", async ({ page }) => {
     }),
   );
   await page.goto("/contact");
-  await expect(page.getByRole("heading", { name: "How can we help?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Send a message" })).toBeVisible();
   await page.getByLabel("Name").fill("Sara Ali");
   await page.getByLabel("Email", { exact: true }).fill("sara@example.com");
   await page.getByLabel("Subject").fill("Order delivery");

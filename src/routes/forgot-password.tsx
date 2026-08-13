@@ -3,8 +3,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AuthShell, AuthField } from "@/components/layout/AuthShell";
 import { Button } from "@/components/ui/button";
 import { apiErrorMessage, forgotPassword, resetPassword, verifyResetOtp } from "@/lib/api";
+import { createNoindexHead } from "@/lib/seo";
 export const Route = createFileRoute("/forgot-password")({
-  head: () => ({ meta: [{ title: "Reset password — BIOREZA" }] }),
+  head: ({ match }) =>
+    createNoindexHead(
+      match.search.lang === "ar" ? "إعادة تعيين كلمة المرور" : "Reset Password",
+      "/forgot-password",
+      match.search.lang === "ar" ? "ar" : "en",
+    ),
   component: Forgot,
 });
 function Forgot() {

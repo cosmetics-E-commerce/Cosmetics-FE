@@ -7,15 +7,15 @@ import { BrandMarquee } from "./BrandMarquee";
 vi.mock("@tanstack/react-router", () => ({
   Link: ({
     to,
-    search,
+    params,
     children,
     ...props
   }: AnchorHTMLAttributes<HTMLAnchorElement> & {
     to: string;
-    search: { brand: string };
+    params?: { slug: string };
     children: ReactNode;
   }) => (
-    <a href={`${to}?brand=${search.brand}`} {...props}>
+    <a href={to.replace("$slug", params?.slug ?? "")} {...props}>
       {children}
     </a>
   ),
@@ -36,12 +36,14 @@ describe("BrandMarquee", () => {
         initialBrands={[
           { id: "one", name: "Brand One", slug: "brand-one", logoUrl: null, productCount: 4 },
           { id: "two", name: "Brand Two", slug: "brand-two", logoUrl: null, productCount: 7 },
+          { id: "empty", name: "Empty Brand", slug: "empty-brand", logoUrl: null, productCount: 0 },
         ]}
       />,
     );
 
-    expect(container.querySelectorAll('a[href="/shop?brand=brand-one"]')).toHaveLength(2);
-    expect(container.querySelectorAll('a[href="/shop?brand=brand-two"]')).toHaveLength(2);
+    expect(container.querySelectorAll('a[href="/brands/brand-one"]')).toHaveLength(2);
+    expect(container.querySelectorAll('a[href="/brands/brand-two"]')).toHaveLength(2);
+    expect(container.querySelectorAll('a[href="/brands/empty-brand"]')).toHaveLength(0);
 
     const clonedLinks = container.querySelectorAll(".sf-brand-marquee__group--clone a");
     expect(clonedLinks).toHaveLength(2);

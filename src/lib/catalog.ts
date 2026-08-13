@@ -38,29 +38,32 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
     .map((image) => image.url.trim())
     .filter(Boolean);
   const primary = product.imageUrl?.trim() || gallery[0] || categoryFallback;
+  const primaryImage = product.images.find((image) => image.url.trim() === primary);
+  const description = firstNonEmpty(
+    arabic ? product.descriptionAr : product.descriptionEn,
+    arabic ? product.descriptionEn : product.descriptionAr,
+  );
   return {
     id: product.id,
     categoryId: product.category.id,
+    categorySlug: product.category.slug,
     brandId: product.brand?.id ?? null,
+    brand: product.brand ? { name: product.brand.name, slug: product.brand.slug } : null,
     slug: product.slug,
     name: arabic ? product.nameAr : product.nameEn,
     category: categoryName,
     type: product.brand?.name ?? categoryName,
-    benefit: product.skinType.length
-      ? product.skinType.map(prettyEnum).join(" · ")
-      : "Curated beauty essential",
-    description:
-      (arabic ? product.descriptionAr : product.descriptionEn) ??
-      product.descriptionEn ??
-      product.descriptionAr ??
-      "A carefully selected BIOREZA essential.",
+    benefit: product.skinType.length ? product.skinType.map(prettyEnum).join(" · ") : "",
+    description,
     price: product.basePrice / 100,
     rating: product.rating,
     reviews: product.reviewCount,
     image: primary,
+    imageAlt: primaryImage?.altText?.trim() || product.nameEn,
     gallery: gallery.length ? gallery : [primary],
     sizes: variants.map((variant) => ({
       id: variant.id,
+      sku: variant.sku,
       label: arabic ? variant.nameAr : variant.nameEn,
       price: variant.price / 100,
       shadeHex: variant.shadeHex,
@@ -70,12 +73,10 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
     concerns: product.skinType.map(prettyEnum),
     skinTypes: product.skinType.map(prettyEnum),
     inStock: stock === undefined ? variants.length > 0 : stock > 0,
-    ingredients: product.ingredients ?? "Ingredient details are being prepared.",
+    ingredients: product.ingredients?.trim() ?? "",
     ingredientDetails: product.ingredientDetails,
-    howToUse: product.howToUse ?? "Follow the directions on the product packaging.",
-    details:
-      (arabic ? product.descriptionAr : product.descriptionEn) ??
-      "Authentic product supplied through BIOREZA.",
+    howToUse: product.howToUse?.trim() ?? "",
+    details: description,
     benefits: product.skinType.map((type) => `Suitable for ${prettyEnum(type).toLowerCase()} skin`),
   };
 }
@@ -142,8 +143,6 @@ export function useProduct(slug: string, locale: Locale = "en", initialData?: Pr
     queryKey: ["product", slug, locale],
     queryFn: async () => {
       const record = await getProduct(slug);
-      if (typeof window !== "undefined")
-        trackCommerceEvent("product_viewed", { productId: record.id });
       return applyPrices(mapProduct(record, locale), await promotionalPrices([record]));
     },
     enabled: Boolean(slug),
@@ -155,8 +154,8 @@ export function useProduct(slug: string, locale: Locale = "en", initialData?: Pr
 export function useCategories(initialData?: Awaited<ReturnType<typeof listCategories>>) {
   return useQuery({
     queryKey: ["categories"],
-    queryFn: listCategories,
-    initialData,
+    queryFn: async () => filterEntitiesWithProducts(await listCategories()),
+    initialData: initialData ? filterEntitiesWithProducts(initialData) : undefined,
     staleTime: 300_000,
   });
 }
@@ -164,8 +163,8 @@ export function useCategories(initialData?: Awaited<ReturnType<typeof listCatego
 export function useBrands(initialData?: Awaited<ReturnType<typeof listBrands>>) {
   return useQuery({
     queryKey: ["brands"],
-    queryFn: listBrands,
-    initialData,
+    queryFn: async () => filterEntitiesWithProducts(await listBrands()),
+    initialData: initialData ? filterEntitiesWithProducts(initialData) : undefined,
     staleTime: 300_000,
   });
 }
@@ -179,13 +178,34 @@ export async function loadCatalog(
   return records.map((product) => applyPrices(mapProduct(product, locale), prices));
 }
 
+export async function loadCatalogPage(
+  params: Record<string, string | number | undefined> = {},
+  locale: Locale = "en",
+) {
+  const records = await listProductsPage(params);
+  const prices = await promotionalPrices(records.items);
+  return {
+    items: records.items.map((product) => applyPrices(mapProduct(product, locale), prices)),
+    meta: records.meta,
+  };
+}
+
 export async function loadProduct(slug: string, locale: Locale = "en") {
   const record = await getProduct(slug);
   return applyPrices(mapProduct(record, locale), await promotionalPrices([record]));
 }
 
-export const loadCategories = listCategories;
-export const loadBrands = listBrands;
+export async function loadCategories() {
+  return filterEntitiesWithProducts(await listCategories());
+}
+
+export async function loadBrands() {
+  return filterEntitiesWithProducts(await listBrands());
+}
+
+function filterEntitiesWithProducts<T extends { productCount: number }>(entities: T[]) {
+  return entities.filter((entity) => entity.productCount > 0);
+}
 
 function prettyEnum(value: string) {
   return value
@@ -194,6 +214,10 @@ function prettyEnum(value: string) {
       /(^|_)([a-z])/g,
       (_, space, letter: string) => `${space ? " " : ""}${letter.toUpperCase()}`,
     );
+}
+
+function firstNonEmpty(...values: Array<string | null | undefined>) {
+  return values.find((value) => value?.trim())?.trim() ?? "";
 }
 
 async function promotionalPrices(products: PublicProductResponse[]) {

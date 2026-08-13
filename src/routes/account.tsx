@@ -58,6 +58,7 @@ import { mapProduct } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 import { Reveal } from "@/components/motion/Primitives";
 import { getOrderStatusCopy } from "@/lib/i18n";
+import { createNoindexHead } from "@/lib/seo";
 export const Route = createFileRoute("/account")({
   validateSearch: (raw: Record<string, unknown>) => ({
     section:
@@ -69,7 +70,12 @@ export const Route = createFileRoute("/account")({
         ? raw["section"]
         : undefined,
   }),
-  head: () => ({ meta: [{ title: "My account - BIOREZA" }] }),
+  head: ({ match }) =>
+    createNoindexHead(
+      match.search.lang === "ar" ? "حسابي" : "My Account",
+      "/account",
+      match.search.lang === "ar" ? "ar" : "en",
+    ),
   component: Account,
 });
 const tabs = [
@@ -1096,7 +1102,14 @@ function Overview({
                     params={{ slug: product.slug }}
                     aria-label={product.name}
                   >
-                    <img src={product.image} alt="" loading="lazy" />
+                    <img
+                      src={product.image}
+                      alt=""
+                      width={96}
+                      height={120}
+                      loading="lazy"
+                      decoding="async"
+                    />
                     <span>
                       <strong>{product.name}</strong>
                       <small>{formatPrice(product.price)}</small>

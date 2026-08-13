@@ -7,27 +7,32 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { apiErrorMessage, createSupportRequest } from "@/lib/api";
 import { useStore } from "@/lib/store";
+import { createSeoHead } from "@/lib/seo";
 
 const MAX_ATTACHMENT_BYTES = 5 * 1024 * 1024;
 const ACCEPTED_ATTACHMENT_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title: "Contact customer care - BIOREZA Cosmetics" },
-      {
-        name: "description",
-        content:
-          "Contact BIOREZA customer care about an order, product, payment, return, or privacy request.",
-      },
-    ],
-  }),
+  head: ({ match }) =>
+    createSeoHead({
+      title: match.search.lang === "ar" ? "تواصلي مع بيوريزا" : "Contact BIOREZA Customer Care",
+      description:
+        match.search.lang === "ar"
+          ? "تواصلي مع خدمة عملاء بيوريزا بشأن طلب أو منتج أو دفع أو استرجاع أو طلب خصوصية."
+          : "Contact BIOREZA customer care about an order, product, payment, return or privacy request.",
+      path: "/contact",
+      locale: match.search.lang === "ar" ? "ar" : "en",
+    }),
   component: Contact,
 });
 
 function Contact() {
   const { locale } = useStore();
   const [sending, setSending] = useState(false);
+  const [submissionFeedback, setSubmissionFeedback] = useState<{
+    kind: "success" | "error";
+    message: string;
+  } | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [attachment, setAttachment] = useState<File | null>(null);
   const attachmentInput = useRef<HTMLInputElement>(null);
@@ -93,6 +98,7 @@ function Contact() {
               event.preventDefault();
               const form = event.currentTarget;
               const values = Object.fromEntries(new FormData(form));
+              setSubmissionFeedback(null);
               setSending(true);
               try {
                 const result = await createSupportRequest(
@@ -110,13 +116,15 @@ function Contact() {
                 );
                 form.reset();
                 removeAttachment();
-                toast.success(
-                  ar
-                    ? `تم استلام طلبك: ${result.id.slice(0, 8)}`
-                    : `Request received: ${result.id.slice(0, 8)}`,
-                );
+                const message = ar
+                  ? `تم استلام طلبك: ${result.id.slice(0, 8)}`
+                  : `Request received: ${result.id.slice(0, 8)}`;
+                setSubmissionFeedback({ kind: "success", message });
+                toast.success(message);
               } catch (error) {
-                toast.error(apiErrorMessage(error, locale));
+                const message = apiErrorMessage(error, locale);
+                setSubmissionFeedback({ kind: "error", message });
+                toast.error(message);
               } finally {
                 setSending(false);
               }
@@ -212,6 +220,15 @@ function Contact() {
                 </label>
               )}
             </div>
+
+            {submissionFeedback ? (
+              <p
+                className={`sf-contact-form__feedback sf-contact-form__feedback--${submissionFeedback.kind}`}
+                role={submissionFeedback.kind === "error" ? "alert" : "status"}
+              >
+                {submissionFeedback.message}
+              </p>
+            ) : null}
 
             <div className="sf-contact-form__footer">
               <p>

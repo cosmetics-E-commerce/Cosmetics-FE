@@ -12,6 +12,8 @@ import {
 } from "@/components/home/Sections";
 import { BrandMarquee } from "@/components/home/BrandMarquee";
 import { loadBrands, loadCatalog, loadCategories } from "@/lib/catalog";
+import { images } from "@/lib/products";
+import { absoluteUrl, canonicalUrl, createSeoHead, itemListSchema, jsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
@@ -23,25 +25,50 @@ export const Route = createFileRoute("/")({
       loadCategories(),
       loadBrands(),
     ]);
-    return { products, categories, brands };
+    return {
+      products,
+      categories,
+      brands,
+      locale: context.locale === "ar" ? ("ar" as const) : ("en" as const),
+    };
   },
-  head: () => ({
-    meta: [
-      { title: "BIOREZA Cosmetics — Healthy skin is beautiful skin" },
-      {
-        name: "description",
-        content:
-          "Advanced skincare and curated beauty essentials from BIOREZA. Science-backed formulas, dermatologically tested, made for visible results.",
-      },
-      { property: "og:title", content: "BIOREZA Cosmetics — Healthy skin is beautiful skin" },
-      {
-        property: "og:description",
-        content: "Advanced skincare and curated beauty essentials, selected for visible results.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  head: ({ loaderData }) => {
+    const locale = loaderData?.locale ?? "en";
+    const title =
+      locale === "ar"
+        ? "بيوريزا لمستحضرات التجميل | العناية والجمال"
+        : "BIOREZA Cosmetics | Skincare & Beauty";
+    const description =
+      locale === "ar"
+        ? "تسوّقي منتجات العناية بالبشرة والمكياج والشعر والعطور المتاحة من بيوريزا مع الأسعار وحالة التوفر."
+        : "Shop BIOREZA skincare, makeup, haircare and fragrance products with current prices, product details and availability.";
+    const seo = createSeoHead({
+      title,
+      description,
+      path: "/",
+      locale,
+      image: images.heroSlide1,
+    });
+    return {
+      ...seo,
+      scripts: [
+        jsonLd({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          "@id": `${canonicalUrl("/", locale)}#webpage`,
+          url: canonicalUrl("/", locale),
+          name: title,
+          description,
+          inLanguage: locale,
+          primaryImageOfPage: { "@type": "ImageObject", url: absoluteUrl(images.heroSlide1) },
+          isPartOf: { "@id": `${canonicalUrl("/", "en")}#website` },
+        }),
+        ...(loaderData?.products.length
+          ? [jsonLd(itemListSchema("Featured products", loaderData.products, locale))]
+          : []),
+      ],
+    };
+  },
   component: Index,
 });
 

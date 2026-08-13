@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/Primitives";
 import { getOrderStatusCopy } from "@/lib/i18n";
 import { useStore } from "@/lib/store";
+import { createNoindexHead } from "@/lib/seo";
 type Search = { order?: string; status?: string; payment?: string };
 export const Route = createFileRoute("/order-confirmed")({
   validateSearch: (raw: Record<string, unknown>): Search => ({
@@ -11,7 +12,12 @@ export const Route = createFileRoute("/order-confirmed")({
     ...(typeof raw["status"] === "string" ? { status: raw["status"] } : {}),
     ...(typeof raw["payment"] === "string" ? { payment: raw["payment"] } : {}),
   }),
-  head: () => ({ meta: [{ title: "Order received — BIOREZA" }] }),
+  head: ({ match }) =>
+    createNoindexHead(
+      match.search.lang === "ar" ? "تم استلام الطلب" : "Order Received",
+      "/order-confirmed",
+      match.search.lang === "ar" ? "ar" : "en",
+    ),
   component: Confirmed,
 });
 function Confirmed() {

@@ -1,16 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PolicyPage } from "@/components/legal/PolicyPage";
+import { createSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/privacy")({
-  head: () => ({
-    meta: [
-      { title: "Privacy policy — BIOREZA Cosmetics" },
-      {
-        name: "description",
-        content: "How BIOREZA collects, uses, retains and protects personal data.",
-      },
-    ],
-  }),
+  head: ({ match }) =>
+    createSeoHead({
+      title: match.search.lang === "ar" ? "سياسة الخصوصية" : "Privacy Policy",
+      description:
+        match.search.lang === "ar"
+          ? "تعرفي على البيانات التي تعالجها بيوريزا وكيفية استخدامها وحمايتها والاحتفاظ بها."
+          : "Learn what personal data BIOREZA processes and how it is used, protected and retained.",
+      path: "/privacy",
+      locale: match.search.lang === "ar" ? "ar" : "en",
+    }),
   component: Privacy,
 });
 

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SignInPage } from "@/components/auth/SignInPage";
+import { createNoindexHead } from "@/lib/seo";
 
 type SignInSearch = {
   returnTo?: "/checkout" | undefined;
@@ -11,7 +12,12 @@ export const Route = createFileRoute("/sign-in")({
     returnTo: raw["returnTo"] === "/checkout" ? ("/checkout" as const) : undefined,
     verified: raw["verified"] === true || raw["verified"] === "true" || undefined,
   }),
-  head: () => ({ meta: [{ title: "Sign in — BIOREZA" }] }),
+  head: ({ match }) =>
+    createNoindexHead(
+      match.search.lang === "ar" ? "تسجيل الدخول" : "Sign In",
+      "/sign-in",
+      match.search.lang === "ar" ? "ar" : "en",
+    ),
   component: SignIn,
 });
 function SignIn() {

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Globe2, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -7,9 +7,30 @@ import { getSharedWishlist } from "@/lib/api";
 import { mapProduct } from "@/lib/catalog";
 import { formatPrice } from "@/lib/products";
 import { useStore } from "@/lib/store";
+import { createNoindexHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/wishlist/$shareToken")({
-  head: () => ({ meta: [{ title: "Shared wishlist | BIOREZA" }] }),
+  loader: async ({ params }) => {
+    try {
+      return await getSharedWishlist(params.shareToken);
+    } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "statusCode" in error &&
+        error.statusCode === 404
+      ) {
+        throw notFound();
+      }
+      throw error;
+    }
+  },
+  head: ({ match, params }) =>
+    createNoindexHead(
+      match.search.lang === "ar" ? "قائمة مفضلة مشتركة" : "Shared Wishlist",
+      `/wishlist/${encodeURIComponent(params.shareToken)}`,
+      match.search.lang === "ar" ? "ar" : "en",
+    ),
   component: SharedWishlistPage,
 });
 
@@ -20,6 +41,7 @@ function SharedWishlistPage() {
   const query = useQuery({
     queryKey: ["shared-wishlist", shareToken],
     queryFn: () => getSharedWishlist(shareToken),
+    initialData: Route.useLoaderData(),
     retry: false,
   });
   if (query.isLoading)
@@ -88,7 +110,10 @@ function SharedWishlistPage() {
                 >
                   <PolishedImage
                     src={product.image}
-                    alt={product.name}
+                    alt={product.imageAlt || product.name}
+                    width={800}
+                    height={1000}
+                    loading="lazy"
                     className="size-full object-cover"
                   />
                 </Link>

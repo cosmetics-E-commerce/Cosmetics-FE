@@ -102,7 +102,7 @@ const servicePillars = [
 const paymentMethods = [
   {
     label: "InstaPay",
-    src: "/payment-methods/instapay-clean.png",
+    src: "/payment-methods/instapay-logo.png",
     className: "payment-method-logo--instapay",
     width: 512,
     height: 512,
@@ -134,7 +134,15 @@ export function Footer() {
           <Reveal stagger staggerMs={55} distance={18} className="site-footer__main">
             <div className="site-footer__brand-column">
               <Link to="/" className="site-footer__brand" aria-label="BIOREZA home">
-                <img src="/bioreza-logo.png" alt="" aria-hidden="true" width={64} height={64} />
+                <img
+                  src="/bioreza-logo.png"
+                  alt=""
+                  aria-hidden="true"
+                  width={64}
+                  height={64}
+                  loading="lazy"
+                  decoding="async"
+                />
                 <span>
                   BIOREZA
                   <small>COSMETICS</small>
@@ -198,6 +206,7 @@ export function Footer() {
                           alt={method.label}
                           width={method.width}
                           height={method.height}
+                          loading="lazy"
                           decoding="async"
                           className={method.className}
                         />

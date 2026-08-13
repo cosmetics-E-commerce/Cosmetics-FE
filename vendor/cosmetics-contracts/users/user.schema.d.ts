@@ -3,6 +3,7 @@ export declare const updateMyProfileSchema: z.ZodObject<{
     firstName: z.ZodOptional<z.ZodString>;
     lastName: z.ZodOptional<z.ZodString>;
     phone: z.ZodOptional<z.ZodString>;
+    phoneChangeOtp: z.ZodOptional<z.ZodString>;
     profileImage: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     gender: z.ZodOptional<z.ZodNullable<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>>;
     dateOfBirth: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>>;
@@ -11,6 +12,7 @@ export declare const updateMyProfileSchema: z.ZodObject<{
     lastName?: string | undefined;
     phone?: string | undefined;
     gender?: "MALE" | "FEMALE" | "OTHER" | null | undefined;
+    phoneChangeOtp?: string | undefined;
     profileImage?: string | null | undefined;
     dateOfBirth?: string | null | undefined;
 }, {
@@ -18,10 +20,24 @@ export declare const updateMyProfileSchema: z.ZodObject<{
     lastName?: string | undefined;
     phone?: string | undefined;
     gender?: "MALE" | "FEMALE" | "OTHER" | null | undefined;
+    phoneChangeOtp?: string | undefined;
     profileImage?: string | null | undefined;
     dateOfBirth?: string | null | undefined;
 }>;
 export type UpdateMyProfileInput = z.infer<typeof updateMyProfileSchema>;
+export declare const requestPhoneChangeOtpSchema: z.ZodObject<{}, "strict", z.ZodTypeAny, {}, {}>;
+export type RequestPhoneChangeOtpInput = z.infer<typeof requestPhoneChangeOtpSchema>;
+export declare const phoneChangeOtpChallengeSchema: z.ZodObject<{
+    maskedEmail: z.ZodString;
+    ttlSeconds: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    maskedEmail: string;
+    ttlSeconds: number;
+}, {
+    maskedEmail: string;
+    ttlSeconds: number;
+}>;
+export type PhoneChangeOtpChallenge = z.infer<typeof phoneChangeOtpChallengeSchema>;
 export declare const addressSchema: z.ZodObject<{
     id: z.ZodString;
     label: z.ZodNullable<z.ZodEnum<["HOME", "WORK", "OTHER"]>>;

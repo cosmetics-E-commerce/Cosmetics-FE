@@ -41,6 +41,7 @@ import {
 export type CartLine = {
   variantId: string;
   productId: string;
+  categoryId: string;
   slug: string;
   name: string;
   image: string;
@@ -130,7 +131,7 @@ export function StoreProvider({
 
   useEffect(() => {
     setReady(true);
-    const saved = document.cookie.includes("bioreza.locale=ar") ? "ar" : initialLocale;
+    const saved = initialLocale;
     setLocaleState(saved);
     window.localStorage.setItem("bioreza.locale", saved);
     if (!hasRefreshSession()) {
@@ -243,7 +244,10 @@ export function StoreProvider({
         }
         trackCommerceEvent("product_added_to_cart", {
           productId: line.productId,
+          categoryId: line.categoryId,
           variantId,
+          productSlug: line.slug,
+          productName: line.name,
           metadata: { quantity: line.qty },
         });
         return true;
@@ -274,7 +278,13 @@ export function StoreProvider({
       }
       try {
         commitCart(await removeCartItem(variantId));
-        trackCommerceEvent("product_removed_from_cart", { variantId });
+        trackCommerceEvent("product_removed_from_cart", {
+          variantId,
+          productId: removedItem?.productId,
+          categoryId: removedItem?.categoryId,
+          productSlug: removedItem?.slug,
+          productName: removedItem?.productNameEn,
+        });
         toast(locale === "ar" ? "تمت الإزالة من حقيبتك" : "Removed from your bag", {
           action: removedItem
             ? {
@@ -435,23 +445,24 @@ export function StoreProvider({
     void queryClient.invalidateQueries({ queryKey: ["cart"] });
   }, [queryClient]);
 
-  const setLocale = useCallback(
-    (next: Locale) => {
-      setLocaleState(next);
-      window.localStorage.setItem("bioreza.locale", next);
-      document.cookie = `bioreza.locale=${next}; Path=/; Max-Age=31536000; SameSite=Lax`;
-      document.documentElement.lang = next;
-      document.documentElement.dir = next === "ar" ? "rtl" : "ltr";
-      void queryClient.invalidateQueries({ queryKey: ["catalog"] });
-    },
-    [queryClient],
-  );
+  const setLocale = useCallback((next: Locale) => {
+    setLocaleState(next);
+    window.localStorage.setItem("bioreza.locale", next);
+    document.cookie = `bioreza.locale=${next}; Path=/; Max-Age=31536000; SameSite=Lax`;
+    document.documentElement.lang = next;
+    document.documentElement.dir = next === "ar" ? "rtl" : "ltr";
+    const url = new URL(window.location.href);
+    if (next === "ar") url.searchParams.set("lang", "ar");
+    else url.searchParams.delete("lang");
+    window.location.assign(`${url.pathname}${url.search}${url.hash}`);
+  }, []);
 
   const lines = useMemo<CartLine[]>(
     () =>
       (cart?.items ?? []).map((item) => ({
         variantId: item.variantId,
         productId: item.productId,
+        categoryId: item.categoryId,
         slug: item.slug,
         name: locale === "ar" ? item.productNameAr : item.productNameEn,
         image: item.imageUrl ?? "",

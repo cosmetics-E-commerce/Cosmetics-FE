@@ -1,8 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PolicyPage } from "@/components/legal/PolicyPage";
+import { createSeoHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/returns")({
-  head: () => ({ meta: [{ title: "Returns & refunds — BIOREZA Cosmetics" }] }),
+  head: ({ match }) =>
+    createSeoHead({
+      title: match.search.lang === "ar" ? "الاسترجاع واسترداد الأموال" : "Returns & Refunds",
+      description:
+        match.search.lang === "ar"
+          ? "شروط ومواعيد استرجاع منتجات بيوريزا واسترداد الأموال للمنتجات المؤهلة أو المعيبة."
+          : "BIOREZA return windows, eligibility and refund process for eligible, faulty or incorrect products.",
+      path: "/returns",
+      locale: match.search.lang === "ar" ? "ar" : "en",
+    }),
   component: Returns,
 });
 function Returns() {

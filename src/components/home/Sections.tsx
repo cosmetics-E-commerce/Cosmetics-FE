@@ -24,6 +24,7 @@ import {
   useState,
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
+  type ReactNode,
 } from "react";
 import { toast } from "sonner";
 
@@ -50,16 +51,16 @@ const heroSlides = [
     image: images.heroSlide1,
     position: "center center",
     eyebrow: {
-      en: "New skin ritual",
-      ar: "روتين بشرة جديد",
+      en: "Curated beauty",
+      ar: "اختيارات جمال منتقاة",
     },
     title: {
-      en: ["Natural Beauty", "Collection"],
-      ar: ["مجموعة الجمال", "الطبيعي"],
+      en: ["Skincare & Beauty", "Collection"],
+      ar: ["مجموعة العناية", "والجمال"],
     },
     copy: {
-      en: "Discover clean textures, refined skincare essentials, and a glow that feels effortless.",
-      ar: "اكتشفي قواماً ناعماً، أساسيات عناية راقية، وإشراقة تبدو طبيعية كل يوم.",
+      en: "Explore skincare, makeup, haircare, and fragrance with clear product details and current availability.",
+      ar: "اكتشفي العناية بالبشرة والمكياج والشعر والعطور مع تفاصيل واضحة وحالة التوفر الحالية.",
     },
     cta: {
       en: "Shop Now",
@@ -75,16 +76,16 @@ const heroSlides = [
     image: images.heroSlide2,
     position: "center center",
     eyebrow: {
-      en: "Organic skincare",
-      ar: "عناية عضوية بالبشرة",
+      en: "Skincare essentials",
+      ar: "أساسيات العناية بالبشرة",
     },
     title: {
       en: ["Glow Skin", "Every Day"],
       ar: ["بشرة مشرقة", "كل يوم"],
     },
     copy: {
-      en: "Pure formulas for a luminous finish, selected for comfort, clarity, and visible care.",
-      ar: "تركيبات نقية تمنح لمسة مضيئة، مختارة للراحة والوضوح والعناية الملحوظة.",
+      en: "Compare formulas, ingredients, prices, and options before choosing what fits your routine.",
+      ar: "قارني التركيبات والمكونات والأسعار والخيارات قبل اختيار ما يناسب روتينك.",
     },
     cta: {
       en: "Explore Products",
@@ -104,8 +105,8 @@ const heroSlides = [
       ar: "جمال بثقة",
     },
     title: {
-      en: ["Beauty Of", "Nature"],
-      ar: ["جمال", "من الطبيعة"],
+      en: ["Beauty, Clearly", "Chosen"],
+      ar: ["جمال مختار", "بوضوح"],
     },
     copy: {
       en: "A considered edit of skincare and beauty pieces for calm, polished routines.",
@@ -124,6 +125,7 @@ const heroSlides = [
 
 export function Hero() {
   const { locale } = useStore();
+  const { reducedMotion } = useMotionPreferences();
   const ar = locale === "ar";
   const [activeSlide, setActiveSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -134,12 +136,12 @@ export function Hero() {
   const previousSlide = () => goToSlide(activeSlide - 1);
 
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || reducedMotion) return;
     const timer = window.setInterval(() => {
       setActiveSlide((current) => (current + 1) % heroSlides.length);
     }, 6200);
     return () => window.clearInterval(timer);
-  }, [isPaused]);
+  }, [isPaused, reducedMotion]);
 
   return (
     <section
@@ -160,10 +162,11 @@ export function Hero() {
               <img
                 src={slide.image}
                 alt=""
-                width={2048}
-                height={1000}
-                fetchPriority={index === 0 ? "high" : "auto"}
-                decoding={index === 0 ? "sync" : "async"}
+                width={2880}
+                height={1425}
+                loading={index === 0 ? "eager" : "lazy"}
+                fetchPriority={index === 0 ? "high" : "low"}
+                decoding="async"
                 className="size-full object-cover"
               />
             </ParallaxMedia>
@@ -322,15 +325,11 @@ export function CategoryGrid({
         <Reveal as="ul" stagger staggerMs={45} distance={18} className="sf-category-orbits">
           {categoryTiles.map((category) => (
             <li key={category.id} className="sf-category-orbit">
-              <Link
-                to="/shop"
-                search={category.slug ? { category: category.slug } : {}}
-                className="sf-category-orbit__link"
-              >
+              <CategoryTileLink slug={category.slug} className="sf-category-orbit__link">
                 <span className="sf-category-orbit__media">
                   <PolishedImage
                     src={category.image}
-                    alt=""
+                    alt={category.name}
                     width={640}
                     height={640}
                     loading="lazy"
@@ -349,12 +348,32 @@ export function CategoryGrid({
                   {ar ? "تسوقي الآن" : "Shop now"}
                   <ArrowRight className="size-3.5" aria-hidden="true" />
                 </span>
-              </Link>
+              </CategoryTileLink>
             </li>
           ))}
         </Reveal>
       </div>
     </section>
+  );
+}
+
+function CategoryTileLink({
+  slug,
+  className,
+  children,
+}: {
+  slug: string | null;
+  className: string;
+  children: ReactNode;
+}) {
+  return slug ? (
+    <Link to="/categories/$slug" params={{ slug }} className={className}>
+      {children}
+    </Link>
+  ) : (
+    <Link to="/shop" className={className}>
+      {children}
+    </Link>
   );
 }
 
@@ -412,7 +431,14 @@ export function Featured({ initialProducts }: { initialProducts?: Product[] }) {
             </Link>
           </div>
           <div className="sf-arrivals-hero__media" aria-hidden="true">
-            <img src={images.cream} alt="" loading="lazy" />
+            <img
+              src={images.cream}
+              alt=""
+              width={900}
+              height={1100}
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         </Reveal>
 
@@ -427,8 +453,8 @@ export function Featured({ initialProducts }: { initialProducts?: Product[] }) {
             {tabs.map((tab) => (
               <Link
                 key={tab.slug}
-                to="/shop"
-                search={{ category: tab.slug }}
+                to="/categories/$slug"
+                params={{ slug: tab.slug }}
                 className="sf-arrivals-tab"
               >
                 {tab.label}
@@ -511,10 +537,26 @@ export function CollectionFeature() {
         </Button>
       </Reveal>
       <ImageReveal direction="up" className="sf-editorial-card sf-editorial-card--image">
-        <img src={images.storyLarge} alt="" loading="lazy" className="size-full object-cover" />
+        <img
+          src={images.storyLarge}
+          alt=""
+          width={1100}
+          height={1300}
+          loading="lazy"
+          decoding="async"
+          className="size-full object-cover"
+        />
       </ImageReveal>
       <Reveal className="sf-editorial-card sf-editorial-card--detail">
-        <img src={images.storyDetail} alt="" loading="lazy" className="size-full object-cover" />
+        <img
+          src={images.storyDetail}
+          alt=""
+          width={900}
+          height={900}
+          loading="lazy"
+          decoding="async"
+          className="size-full object-cover"
+        />
         <div>
           <p className="sf-kicker">{ar ? "الجمال في التفاصيل" : "Texture, clearly seen"}</p>
           <p>
@@ -689,7 +731,15 @@ export function BrandStory() {
     <section className="sf-story">
       <div className="sf-shell sf-story__layout">
         <ImageReveal direction="left" className="sf-story__image">
-          <img src={images.collection} alt="" loading="lazy" className="size-full object-cover" />
+          <img
+            src={images.collection}
+            alt=""
+            width={1600}
+            height={1104}
+            loading="lazy"
+            decoding="async"
+            className="size-full object-cover"
+          />
         </ImageReveal>
         <Reveal stagger className="sf-story__copy">
           <p className="sf-kicker">{ar ? "اختيار بيوريزا" : "The BIOREZA standard"}</p>
@@ -803,7 +853,7 @@ export function BeautyDifference() {
               loading="lazy"
               decoding="async"
               width={1920}
-              height={900}
+              height={940}
               className="sf-comparison__image"
               draggable={false}
             />
@@ -813,7 +863,7 @@ export function BeautyDifference() {
               loading="lazy"
               decoding="async"
               width={1920}
-              height={900}
+              height={940}
               className="sf-comparison__image sf-comparison__image--after"
               draggable={false}
             />
