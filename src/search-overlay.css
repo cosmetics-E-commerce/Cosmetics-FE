@@ -968,7 +968,6 @@
   .search-discovery,
   [dir="rtl"] .search-discovery {
     border-inline-end: 0;
-    border-bottom: 1px solid var(--search-line);
     padding: 23px 0 18px;
   }
 
@@ -1336,7 +1335,6 @@
 .search-discovery,
 [dir="rtl"] .search-discovery {
   border-inline-end: 0;
-  border-bottom: 1px solid var(--search-line);
   padding: 14px 0 12px;
 }
 
@@ -1351,6 +1349,10 @@
 .search-discovery li {
   flex: 0 0 auto;
   border-bottom: 0;
+}
+
+.search-discovery li + li {
+  border-top: 0;
 }
 
 .search-discovery li:nth-child(n + 6) {

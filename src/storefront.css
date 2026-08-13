@@ -12394,6 +12394,7 @@ body:has(.sf-contact-page) .store-header[data-scrolled] .store-header__bar {
   gap: clamp(24px, 4vw, 58px);
   align-items: center;
   min-height: calc(100dvh - 156px);
+  border-top: 0;
 }
 
 .sf-contact-intro {
@@ -14903,7 +14904,6 @@ body:has(.sf-contact-page) .store-header[data-scrolled] .store-header__bar {
   .search-discovery,
   [dir="rtl"] .search-discovery {
     border-inline-end: 0;
-    border-bottom: 1px solid var(--sf-line);
     padding: 22px 0;
   }
 
@@ -14911,6 +14911,10 @@ body:has(.sf-contact-page) .store-header[data-scrolled] .store-header__bar {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0 18px;
+  }
+
+  .search-discovery li + li {
+    border-top: 0;
   }
 
   .search-products--with-discovery {
