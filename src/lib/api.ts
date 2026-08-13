@@ -993,6 +993,11 @@ export const getSharedWishlist = (shareToken: string) =>
   rawRequest<SharedWishlistResponse>(`/shared-wishlists/${shareToken}`, { auth: false });
 
 export const getProfile = () => rawRequest<UserProfileResponse>("/users/me");
+export const requestPhoneChangeOtp = () =>
+  rawRequest<{ maskedEmail: string; ttlSeconds: number }>("/users/me/phone-change/otp", {
+    method: "POST",
+    body: {},
+  });
 export const updateProfile = (body: Record<string, unknown>) =>
   rawRequest<UserProfileResponse>("/users/me", { method: "PATCH", body });
 export const listAddresses = () => rawRequest<AddressResponse[]>("/users/addresses");
