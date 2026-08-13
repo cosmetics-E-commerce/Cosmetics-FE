@@ -335,34 +335,43 @@ h4,
   --brand-gap: 0.74rem;
 }
 
-body:has(.sf-shop-page) .store-header {
+body:has(.sf-shop-page) .store-header,
+body:has(.sf-product-page) .store-header {
   color: #202020;
 }
 
 body:has(.sf-shop-page) .store-header__bar,
-body:has(.sf-shop-page) .store-header[data-scrolled] .store-header__bar {
+body:has(.sf-shop-page) .store-header[data-scrolled] .store-header__bar,
+body:has(.sf-product-page) .store-header__bar,
+body:has(.sf-product-page) .store-header[data-scrolled] .store-header__bar {
   border-bottom-color: #eeeeee;
   background: rgba(255, 255, 255, 0.98);
   box-shadow: 0 10px 30px -24px rgba(18, 18, 18, 0.28);
   backdrop-filter: blur(18px);
 }
 
-body:has(.sf-shop-page) .store-header .nav-link {
+body:has(.sf-shop-page) .store-header .nav-link,
+body:has(.sf-product-page) .store-header .nav-link {
   color: #626262;
 }
 
 body:has(.sf-shop-page) .store-header .nav-link:hover,
 body:has(.sf-shop-page) .store-header .nav-link[data-state="open"],
-body:has(.sf-shop-page) .store-header .nav-link[data-active="true"] {
+body:has(.sf-shop-page) .store-header .nav-link[data-active="true"],
+body:has(.sf-product-page) .store-header .nav-link:hover,
+body:has(.sf-product-page) .store-header .nav-link[data-state="open"],
+body:has(.sf-product-page) .store-header .nav-link[data-active="true"] {
   color: #1f1f1f;
 }
 
-body:has(.sf-shop-page) .store-header .header-action:hover {
+body:has(.sf-shop-page) .store-header .header-action:hover,
+body:has(.sf-product-page) .store-header .header-action:hover {
   background: #f5f5f5;
   color: #1f1f1f;
 }
 
-body:has(.sf-shop-page) .header-actions__divider {
+body:has(.sf-shop-page) .header-actions__divider,
+body:has(.sf-product-page) .header-actions__divider {
   background: #e6e6e6;
 }
 
@@ -5074,32 +5083,36 @@ html[data-motion-ready="true"] .sf-concern-list[data-motion-state="hidden"]::bef
 
 .sf-shop-pagination {
   display: flex;
-  width: min(100%, 680px);
+  width: max-content;
+  max-width: 100%;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
   margin: clamp(42px, 5vw, 70px) auto 0;
-  padding: 10px;
+  padding: 8px;
   border: 1px solid #ededed;
   border-radius: 999px;
   background: #fff;
-  box-shadow: 0 22px 48px rgba(20, 20, 20, 0.06);
+  box-shadow: 0 18px 40px rgba(20, 20, 20, 0.055);
 }
 
 .sf-shop-pagination ol {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .sf-shop-pagination li {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
-.sf-shop-pagination button {
+/* Page controls render as links when the listing is crawlable and as buttons
+   otherwise, so every rule has to cover both or half the states go unstyled. */
+.sf-shop-pagination :is(button, a) {
   display: inline-flex;
   min-width: 42px;
   min-height: 42px;
@@ -5109,8 +5122,10 @@ html[data-motion-ready="true"] .sf-concern-list[data-motion-state="hidden"]::bef
   border-radius: 999px;
   color: #24211f;
   font-size: 0.84rem;
-  font-weight: 750;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
+  text-decoration: none;
   transition:
     background 180ms ease,
     border-color 180ms ease,
@@ -5118,38 +5133,76 @@ html[data-motion-ready="true"] .sf-concern-list[data-motion-state="hidden"]::bef
     transform 180ms ease;
 }
 
-.sf-shop-pagination > button {
-  min-width: 106px;
-  padding-inline: 18px;
+.sf-shop-pagination > :is(button, a) {
+  min-width: 0;
+  padding-inline: 20px;
   border-color: #ece7de;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-.sf-shop-pagination button:hover:not(:disabled),
-.sf-shop-pagination button:focus-visible:not(:disabled) {
+.sf-shop-pagination :is(button, a):hover:not(:disabled),
+.sf-shop-pagination :is(button, a):focus-visible:not(:disabled) {
   border-color: #1f1f1f;
   background: #1f1f1f;
   color: #fff;
   transform: translateY(-1px);
 }
 
-.sf-shop-pagination button[aria-current="page"] {
+.sf-shop-pagination :is(button, a)[aria-current="page"] {
   border-color: #b78243;
   background: #b78243;
   color: #fff;
+  cursor: default;
+}
+
+.sf-shop-pagination :is(button, a)[aria-current="page"]:hover {
+  border-color: #b78243;
+  background: #b78243;
+  color: #fff;
+  transform: none;
 }
 
 .sf-shop-pagination button:disabled {
   cursor: not-allowed;
-  color: #bebebe;
-  opacity: 0.55;
+  border-color: #f2efea;
+  color: #c2bdb6;
+}
+
+.sf-shop-pagination button:disabled:hover {
+  background: transparent;
+  color: #c2bdb6;
+  transform: none;
 }
 
 .sf-shop-pagination__ellipsis {
   display: inline-flex;
-  width: 26px;
+  width: 24px;
   justify-content: center;
-  color: #a7a7a7;
+  color: #b3aca3;
   font-weight: 700;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .sf-shop-pagination {
+    width: 100%;
+    border-radius: 22px;
+    padding: 10px;
+  }
+
+  .sf-shop-pagination > :is(button, a) {
+    padding-inline: 14px;
+    font-size: 0.7rem;
+  }
+
+  .sf-shop-pagination :is(button, a) {
+    min-width: 38px;
+    min-height: 38px;
+  }
 }
 
 .sf-shop-page .sf-product-card {
@@ -15158,6 +15211,177 @@ body:has(.sf-contact-page) .store-header[data-scrolled] .store-header__bar {
   font-size: 0.84rem;
 }
 
+/* Product page refinement: a tighter, calmer two-column layout with a
+   right-sized gallery that stays put while the details scroll. */
+.product-template-white .product-shell,
+.product-template-white .product-reference-related {
+  width: min(calc(100% - 48px), 1320px);
+}
+
+.product-reference-layout {
+  grid-template-columns: minmax(0, 560px) minmax(400px, 1fr);
+  gap: clamp(40px, 4.6vw, 84px);
+}
+
+.product-reference-gallery {
+  max-width: 560px;
+}
+
+.product-template-white .product-gallery-active,
+.product-reference-main-image {
+  aspect-ratio: 1;
+  border: 1px solid #efece7;
+  border-radius: 16px;
+  background: #fcfbfa;
+  box-shadow: 0 26px 60px -40px rgba(24, 20, 16, 0.42);
+}
+
+.product-reference-image-shell {
+  min-height: 0;
+}
+
+.product-reference-thumbs {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+  max-width: 420px;
+}
+
+.product-reference-thumb {
+  border-radius: 10px;
+}
+
+.product-reference-thumb[aria-current="true"] {
+  border-color: var(--product-ink);
+  box-shadow: 0 0 0 1px var(--product-ink);
+}
+
+.product-reference-summary {
+  padding-top: 0;
+}
+
+.product-reference-summary h1 {
+  font-size: clamp(2rem, 2.6vw, 3.15rem);
+}
+
+.product-reference-rating {
+  margin-top: 16px;
+}
+
+/* Meta reads as a spec table: quiet labels, hairline rows. */
+.product-reference-meta {
+  gap: 0;
+  margin-top: 26px;
+  border-top: 1px solid var(--product-line);
+}
+
+.product-reference-meta div {
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 18px;
+  align-items: baseline;
+  border-bottom: 1px solid var(--product-line);
+  padding-block: 11px;
+}
+
+.product-reference-meta dt {
+  color: var(--product-muted);
+  font-size: 0.7rem;
+  font-weight: 750;
+  letter-spacing: 0.09em;
+}
+
+.product-reference-meta dd {
+  color: var(--product-ink);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.product-reference-meta .is-stock,
+.product-reference-meta .is-out {
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.product-reference-quantity-label {
+  margin-top: 26px;
+  color: var(--product-muted);
+  font-size: 0.7rem;
+  font-weight: 750;
+  letter-spacing: 0.09em;
+}
+
+.product-reference-actions {
+  grid-template-columns: 132px minmax(0, 1fr) 58px;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.product-template-white .product-add-to-cart,
+.product-reference-quantity,
+.product-reference-wish {
+  min-height: 58px;
+  border-radius: 8px;
+}
+
+/* Primary action carries the weight; buy-now stays the quiet outline. */
+.product-template-white .product-add-to-cart {
+  background: var(--product-ink);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.product-template-white .product-add-to-cart:hover:not(:disabled) {
+  background: #000;
+  color: #fff;
+}
+
+.product-template-white .product-add-to-cart:disabled {
+  background: #ededed;
+  color: #a2a2a2;
+}
+
+.product-template-white .product-reference-buy-now {
+  min-height: 54px;
+  margin-top: 12px;
+  border-radius: 8px;
+  border-color: var(--product-line);
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  box-shadow: none;
+}
+
+.product-template-white .product-reference-buy-now:hover:not(:disabled) {
+  border-color: var(--product-ink);
+  background: #fafafa;
+}
+
+.product-reference-wish svg {
+  width: 20px;
+  height: 20px;
+}
+
+.product-reference-links {
+  margin-top: 26px;
+}
+
+.product-reference-benefits-card {
+  margin-top: 26px;
+}
+
+@media (min-width: 1041px) {
+  .product-reference-layout {
+    align-items: start;
+  }
+
+  .product-reference-gallery {
+    position: sticky;
+    top: calc(var(--store-header-offset, 96px) + 18px);
+  }
+}
+
 .product-ingredient-intelligence {
   display: grid;
   grid-template-columns: minmax(240px, 0.38fr) minmax(0, 0.62fr);
@@ -16451,6 +16675,101 @@ body:has(.account-page) .header-nav-indicator {
   color: #686868;
 }
 
+
+/* Filter drawer: flex column so the sticky footer can never be pushed past
+   the panel edge (the old body max-height was a magic number that overshot
+   the available space by the header/footer delta and clipped the buttons). */
+.sf-shop-filter-drawer {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.sf-shop-filter-panel__header,
+.sf-shop-filter-panel__footer {
+  flex: none;
+}
+
+.sf-shop-filter-panel__body {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+  overscroll-behavior: contain;
+}
+
+/* Facet headings pin while their options scroll, so the list never reads as
+   one undifferentiated run of names. */
+.sf-shop-filter-panel__body .sf-shop-filter-panel__eyebrow {
+  position: sticky;
+  z-index: 2;
+  top: -24px;
+  margin-inline: -28px;
+  border-bottom: 1px solid #f2ece2;
+  background: #fffdfa;
+  padding: 10px 28px 8px;
+}
+
+.sf-shop-filter-panel__group + .sf-shop-filter-panel__group,
+.sf-shop-filter-panel__group--divided {
+  margin-top: 22px;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.sf-shop-filter-panel__list {
+  margin-top: 10px;
+}
+
+.sf-shop-filter-panel__option {
+  min-height: 44px;
+  font-size: 0.92rem;
+}
+
+/* Counts read as quiet chips instead of stray numbers on the far edge. */
+.sf-shop-filter-panel__meta {
+  min-width: 32px;
+  justify-content: center;
+  border-radius: 999px;
+  background: #f4efe7;
+  padding: 3px 9px;
+  color: #8d8071;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.sf-shop-filter-panel__option:hover .sf-shop-filter-panel__meta,
+.sf-shop-filter-panel__option:focus-visible .sf-shop-filter-panel__meta {
+  background: #efe4d3;
+}
+
+.sf-shop-filter-panel__option[data-active="true"] {
+  border-color: #c89655;
+  background: #fbf3e8;
+  font-weight: 650;
+}
+
+.sf-shop-filter-panel__option[data-active="true"] .sf-shop-filter-panel__meta {
+  background: #efdcc0;
+  color: #8a5a26;
+}
+
+.sf-shop-filter-panel__footer {
+  position: relative;
+  padding-top: 16px;
+}
+
+/* Fade hints that the list keeps going under the action row. */
+.sf-shop-filter-panel__footer::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 100%;
+  height: 28px;
+  background: linear-gradient(to top, #fffdfa, rgba(255, 253, 250, 0));
+  pointer-events: none;
+}
+
 @media (max-width: 1040px) {
   .wishlist-studio__workspace {
     grid-template-columns: 1fr;
@@ -17201,6 +17520,258 @@ body:has(.account-page) .header-nav-indicator {
   margin-top: 10px !important;
   padding-top: 28px !important;
 }
+
+/* Customer reviews: contain it to the page grid, dial the type back to the
+   rest of the PDP, and give both columns real cards to sit in. */
+.product-reference-reviews > section {
+  width: min(calc(100% - 48px), 1320px);
+  margin-inline: auto;
+  padding-block: clamp(48px, 5vw, 72px) clamp(52px, 5vw, 78px);
+}
+
+.review-studio__header {
+  align-items: center;
+  gap: 24px;
+  border-bottom: 1px solid #e8e4de;
+  padding-bottom: 22px;
+}
+
+.review-studio__header h2 {
+  margin-top: 8px;
+  font-size: clamp(1.75rem, 2.5vw, 2.6rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+/* Score reads as one compact badge instead of a stray number in the corner. */
+.review-studio__score {
+  gap: 14px;
+  border: 1px solid #ece7e0;
+  border-radius: 16px;
+  background: #fdfcfa;
+  padding: 14px 20px;
+}
+
+.review-studio__score > strong {
+  font-size: clamp(1.9rem, 2.4vw, 2.5rem);
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.review-studio__score > div {
+  gap: 5px;
+}
+
+.review-studio__grid {
+  grid-template-columns: minmax(280px, 0.68fr) minmax(0, 1fr);
+  gap: clamp(28px, 3vw, 52px);
+  padding-top: 32px;
+}
+
+/* The gate is a card like everything else on this page, not a grey slab. */
+.review-gate {
+  gap: 14px;
+  border: 1px solid #ece7e0;
+  border-top: 1px solid #ece7e0;
+  border-radius: 18px;
+  background: #fbf9f6;
+  padding: clamp(22px, 2.6vw, 30px);
+}
+
+.review-gate__icon {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #e4dcd0;
+  border-radius: 12px;
+  background: #fff;
+  color: #9b642d;
+}
+
+.review-gate h3 {
+  font-size: clamp(1.15rem, 1.6vw, 1.45rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.review-gate p {
+  font-size: 0.88rem;
+}
+
+.review-gate__rule {
+  border-radius: 999px;
+  border-color: #e0d7c8;
+  background: #fff;
+  padding: 8px 14px;
+  font-size: 0.64rem;
+}
+
+/* Empty state fills its column instead of leaving a dead half-screen. */
+.review-studio__empty {
+  justify-items: center;
+  gap: 10px;
+  min-height: 100%;
+  align-content: center;
+  border: 1px dashed #e3ddd4;
+  border-top: 1px dashed #e3ddd4;
+  border-radius: 18px;
+  padding: clamp(34px, 4vw, 54px) 24px;
+  text-align: center;
+}
+
+.review-studio__empty svg {
+  width: 26px;
+  height: 26px;
+  color: #c2b8a8;
+}
+
+.review-studio__empty h3 {
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  font-weight: 700;
+}
+
+.review-studio__empty p {
+  max-width: 34ch;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 900px) {
+  .review-studio__header {
+    align-items: start;
+  }
+
+  .review-studio__score {
+    width: 100%;
+  }
+
+  /* This block sits after the shared breakpoint rules, so the single-column
+     collapse has to be restated here or the feed overflows the viewport. */
+  .review-studio__grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+}
+
+
+/* Account layout: identity banner over three even stat tiles, so long
+   labels and emails stop being clipped by the registry's narrow tracks. */
+.account-page .account-hero {
+  overflow: visible !important;
+}
+
+.account-page .account-hero__registry {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  align-self: stretch !important;
+  overflow: hidden !important;
+  border-inline-start: 1px solid #eeeeee !important;
+  border-radius: 0 24px 24px 0 !important;
+  background: #fdfcfa !important;
+}
+
+.account-page .account-hero__registry > div {
+  display: grid !important;
+  min-width: 0 !important;
+  align-content: center !important;
+  justify-items: center !important;
+  border: 0 !important;
+  border-top: 1px solid #eeeeee !important;
+  border-inline-start: 1px solid #eeeeee !important;
+  padding: 20px 14px !important;
+  text-align: center !important;
+}
+
+.account-page .account-hero__registry > div:nth-child(2) {
+  border-inline-start: 0 !important;
+}
+
+/* Identity spans the full width so the name and email are never truncated. */
+.account-page .account-hero__registry > .account-hero__person {
+  grid-column: 1 / -1 !important;
+  grid-template-columns: 56px minmax(0, 1fr) !important;
+  justify-items: start !important;
+  gap: 2px 14px !important;
+  border-top: 0 !important;
+  border-inline-start: 0 !important;
+  padding: 22px clamp(18px, 2vw, 28px) !important;
+  text-align: start !important;
+}
+
+.account-page .account-hero__person .account-profile-avatar {
+  width: 56px !important;
+  height: 56px !important;
+}
+
+.account-page .account-hero__registry dt,
+.account-page .account-hero__registry small {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  color: #8a8178 !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+  text-overflow: ellipsis !important;
+  text-transform: none !important;
+  white-space: nowrap !important;
+}
+
+.account-page .account-hero__person dd {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  font-size: 1.02rem !important;
+  font-weight: 700 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.account-page .account-hero__person small {
+  max-width: 100% !important;
+  margin-top: 4px !important;
+  border: 0 !important;
+  background: none !important;
+  padding: 0 !important;
+  font-weight: 500 !important;
+}
+
+.account-page .account-hero__registry data {
+  font-size: clamp(1.5rem, 1.9vw, 1.95rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1.1 !important;
+}
+
+/* The copy column no longer has to prop up a tall registry. */
+.account-page .account-hero__copy {
+  justify-content: center !important;
+  min-height: 0 !important;
+  padding-block: clamp(28px, 3.4vw, 46px) !important;
+}
+
+.account-page .account-hero h1 {
+  font-size: clamp(2rem, 3vw, 3.2rem) !important;
+}
+
+/* Keep the sign-out affordance inside the sticky pill. */
+.account-page .account-nav {
+  padding-inline: 22px !important;
+}
+
+/* The tab row forces 54px buttons; the sign-out pill has to opt out or its
+   999px radius balloons into an oval that the rounded bar clips. */
+.account-page .account-nav__signout {
+  align-items: center !important;
+  padding-inline-start: 12px !important;
+}
+
+.account-page .account-nav__button--signout {
+  min-height: 36px !important;
+  align-self: center !important;
+  padding-inline: 14px !important;
+}
+
+.account-page .account-nav :focus-visible {
+  outline-offset: -3px !important;
+}
+
 
 @media (max-width: 980px) {
   .account-page .account-orders__item {

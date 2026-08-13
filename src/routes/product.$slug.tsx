@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import {
   Check,
   CircleHelp,
@@ -245,6 +245,7 @@ export const Route = createFileRoute("/product/$slug")({
 
 function ProductPage() {
   const { slug } = Route.useParams();
+  const navigate = useNavigate();
   const { locale, add, wishlist, pendingVariants } = useStore();
   const labels = productCopy[locale];
   const initial = Route.useLoaderData();
@@ -254,6 +255,7 @@ function ProductPage() {
   const [quantity, setQuantity] = useState(1);
   const [imageIndex, setImageIndex] = useState(0);
   const [added, setAdded] = useState(false);
+  const [buyNowLoading, setBuyNowLoading] = useState(false);
   const [shared, setShared] = useState(false);
   const [activeTab, setActiveTab] = useState<ProductTab>("description");
   const firstAvailableVariant =
@@ -356,7 +358,7 @@ function ProductPage() {
     : detailTabs[0]?.id;
 
   const addToBag = async () => {
-    if (!variant?.id || outOfStock) return;
+    if (!variant?.id || outOfStock) return false;
     const succeeded = await add({
       variantId: variant.id,
       productId: product.id,
@@ -370,6 +372,20 @@ function ProductPage() {
       qty: quantity,
     });
     if (succeeded) setAdded(true);
+    return succeeded;
+  };
+
+  const buyNow = async () => {
+    if (!variant?.id || outOfStock || buyNowLoading) return;
+    setBuyNowLoading(true);
+    try {
+      const succeeded = await addToBag();
+      if (succeeded) {
+        await navigate({ to: "/checkout" });
+      }
+    } finally {
+      setBuyNowLoading(false);
+    }
   };
 
   const shareProduct = async () => {
@@ -607,9 +623,9 @@ function ProductPage() {
               variant="quiet"
               size="pill"
               className="product-reference-buy-now"
-              disabled={!variant?.id || outOfStock}
-              loading={adding}
-              onClick={() => void addToBag()}
+              disabled={!variant?.id || outOfStock || buyNowLoading}
+              loading={buyNowLoading}
+              onClick={() => void buyNow()}
             >
               {labels.buyNow}
             </Button>

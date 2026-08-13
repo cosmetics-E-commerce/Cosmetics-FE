@@ -228,6 +228,7 @@ function Shop() {
               params={{ slug: category.slug }}
               onClick={() => setFilters(false)}
               className="sf-shop-filter-panel__option"
+              data-active={search.category === category.slug || undefined}
             >
               <span>{locale === "ar" ? category.nameAr : category.nameEn}</span>
               <span className="sf-shop-filter-panel__meta">{category.productCount}</span>
@@ -250,6 +251,7 @@ function Shop() {
                     params={{ slug: brand.slug }}
                     onClick={() => setFilters(false)}
                     className="sf-shop-filter-panel__option"
+                    data-active={search.brand === brand.slug || undefined}
                   >
                     <span>{brand.name}</span>
                     <span className="sf-shop-filter-panel__meta">{brand.productCount}</span>
@@ -511,6 +513,10 @@ function catalogParams(search: Search, page: number) {
   };
 }
 
+// Without an exact search match, TanStack marks the page-1 link (which carries
+// no `page` param) as active on every page, so it renders aria-current too.
+const paginationActiveOptions = { exact: true, includeSearch: true } as const;
+
 function visiblePages(page: number, totalPages: number) {
   const pages = new Set(
     [1, totalPages, page - 1, page, page + 1].filter((p) => p >= 1 && p <= totalPages),
@@ -542,7 +548,11 @@ function ShopPagination({
       aria-label={locale === "ar" ? "صفحات المنتجات" : "Product pages"}
     >
       {crawlable && page > 1 ? (
-        <Link to="/shop" search={{ ...search, page: page > 2 ? page - 1 : undefined }}>
+        <Link
+          to="/shop"
+          search={{ ...search, page: page > 2 ? page - 1 : undefined }}
+          activeOptions={paginationActiveOptions}
+        >
           {locale === "ar" ? "السابق" : "Previous"}
         </Link>
       ) : (
@@ -561,6 +571,7 @@ function ShopPagination({
                 <Link
                   to="/shop"
                   search={{ ...search, page: item > 1 ? item : undefined }}
+                  activeOptions={paginationActiveOptions}
                   aria-current={item === page ? "page" : undefined}
                 >
                   {item}
@@ -579,7 +590,11 @@ function ShopPagination({
         })}
       </ol>
       {crawlable && page < totalPages ? (
-        <Link to="/shop" search={{ ...search, page: page + 1 }}>
+        <Link
+          to="/shop"
+          search={{ ...search, page: page + 1 }}
+          activeOptions={paginationActiveOptions}
+        >
           {locale === "ar" ? "التالي" : "Next"}
         </Link>
       ) : (
