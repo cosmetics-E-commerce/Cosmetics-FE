@@ -128,8 +128,18 @@ export function Header({
   const { t } = useI18n();
   const navigate = useNavigate();
   const headerRef = useRef<HTMLElement>(null);
-  const { count, setCartOpen, setSearchOpen, wishlist, user, locale, setLocale, signOut } =
-    useStore();
+  const {
+    count,
+    searchOpen,
+    searchTriggerRef,
+    setCartOpen,
+    setSearchOpen,
+    wishlist,
+    user,
+    locale,
+    setLocale,
+    signOut,
+  } = useStore();
   const { pathname, search } = useLocation();
   const categories = useCategories();
   const brands = useBrands();
@@ -347,9 +357,13 @@ export function Header({
 
           <div className="header-actions justify-self-end">
             <button
+              ref={searchTriggerRef}
               type="button"
               onClick={() => setSearchOpen(true)}
               aria-label={t("nav.search")}
+              aria-haspopup="dialog"
+              aria-expanded={searchOpen}
+              aria-controls={searchOpen ? "storefront-search-dialog" : undefined}
               className="header-action grid h-11 w-11 place-items-center"
             >
               <Search strokeWidth={1.25} className="size-[18px]" aria-hidden="true" />

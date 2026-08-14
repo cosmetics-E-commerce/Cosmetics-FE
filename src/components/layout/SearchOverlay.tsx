@@ -85,10 +85,10 @@ const copy = {
 } as const;
 
 export function SearchOverlay() {
-  const { searchOpen, setSearchOpen, locale } = useStore();
+  const { searchOpen, searchTriggerRef, setSearchOpen, locale } = useStore();
   const navigate = useNavigate();
   const labels = copy[locale];
-  const openerRef = useRef<HTMLElement | null>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const statusId = useId();
@@ -107,7 +107,7 @@ export function SearchOverlay() {
 
     const viewportPadding = 12;
     const panelWidth = Math.min(520, window.innerWidth - viewportPadding * 2);
-    const anchor = openerRef.current;
+    const anchor = searchTriggerRef.current;
     const rect = anchor?.getBoundingClientRect();
     const top = rect ? rect.bottom + 12 : 76;
     const fallbackLeft = window.innerWidth - panelWidth - viewportPadding;
@@ -126,7 +126,7 @@ export function SearchOverlay() {
       "--search-anchor-arrow-left": `${arrowLeft}px`,
       "--search-panel-width": `${panelWidth}px`,
     } as CSSProperties);
-  }, []);
+  }, [searchTriggerRef]);
 
   useEffect(() => {
     if (!searchOpen) setQuery("");
@@ -208,22 +208,25 @@ export function SearchOverlay() {
   return (
     <Dialog open={searchOpen} onOpenChange={setSearchOpen}>
       <DialogContent
+        id="storefront-search-dialog"
         showCloseButton={false}
         overlayClassName="search-overlay__backdrop"
         className="search-overlay"
         style={anchorStyle}
         onOpenAutoFocus={(event) => {
           event.preventDefault();
-          if (document.activeElement instanceof HTMLElement) {
-            openerRef.current = document.activeElement;
-          }
+          const activeElement = document.activeElement;
+          returnFocusRef.current =
+            activeElement instanceof HTMLElement && activeElement !== document.body
+              ? activeElement
+              : searchTriggerRef.current;
           updateAnchorPosition();
           window.requestAnimationFrame(() => inputRef.current?.focus({ preventScroll: true }));
         }}
         onCloseAutoFocus={(event) => {
           event.preventDefault();
-          openerRef.current?.focus({ preventScroll: true });
-          openerRef.current = null;
+          (returnFocusRef.current ?? searchTriggerRef.current)?.focus({ preventScroll: true });
+          returnFocusRef.current = null;
         }}
       >
         <DialogDescription className="sr-only">{labels.description}</DialogDescription>
