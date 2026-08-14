@@ -33,3 +33,23 @@ playwright-report/
 *.njsproj
 *.sln
 *.sw?
+
+# ── Production deployment (added with the production setup) ──
+# The existing `*.local` pattern catches .env.local but nothing else, so the
+# real env filenames are listed explicitly.
+.env
+.env.production
+.env.production.local
+.env.staging
+!.env.example
+
+# TLS material and private keys.
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Database dumps and backups.
+backups/
+*.sql.gz
+*.dump

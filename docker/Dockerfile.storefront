@@ -1,0 +1,108 @@
+# syntax=docker/dockerfile:1.7
+#
+# Production image for the Cosmetics-FE storefront.
+# Build context is the Cosmetics-FE root.
+#
+# This app is TanStack Start, not a static SPA: `vite build` runs Nitro and
+# emits an SSR server. It cannot be served as a folder of files. The default
+# Nitro target in vite.config.ts is `cloudflare-module`, so this build sets
+# NITRO_PRESET=node-server to get a plain Node server instead — an env var
+# rather than a config edit, so the existing Cloudflare/dev flow is untouched.
+#
+# The result runs as:  node .output/server/index.mjs   (honours PORT / HOST)
+# Nitro's node-server preset serves .output/public itself, with hashed-asset
+# cache headers, so Nginx only has to proxy.
+
+ARG NODE_VERSION=22-alpine
+
+# ═══════════════════════════════════════════════════════════
+# base — pnpm toolchain
+# ═══════════════════════════════════════════════════════════
+FROM node:${NODE_VERSION} AS base
+
+RUN apk add --no-cache libc6-compat dumb-init
+
+ENV PNPM_HOME=/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+# No explicit version: corepack resolves the `packageManager` field in
+# package.json, so the image always matches what the repo pins.
+RUN corepack enable
+
+WORKDIR /app
+
+# ═══════════════════════════════════════════════════════════
+# deps — install once, cached on manifests alone
+# ═══════════════════════════════════════════════════════════
+FROM base AS deps
+
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
+
+RUN --mount=type=cache,id=pnpm-fe,target=/pnpm/store \
+    if [ -f pnpm-lock.yaml ]; then \
+      pnpm install --frozen-lockfile; \
+    else \
+      echo "WARNING: no pnpm-lock.yaml — installing unpinned" && pnpm install; \
+    fi
+
+# ═══════════════════════════════════════════════════════════
+# build — Vite + Nitro, targeting a Node server
+# ═══════════════════════════════════════════════════════════
+FROM base AS build
+
+# Vite inlines VITE_* values at build time — they are baked into the bundle and
+# are NOT read from the container environment at runtime. Changing either one
+# means rebuilding the image, not restarting the container. Both are public
+# values (a URL each); no secret may ever be passed as a VITE_* variable,
+# because everything with that prefix ships to the browser.
+ARG VITE_API_BASE_URL
+ARG VITE_SITE_URL
+ARG VITE_ENFORCE_CANONICAL_HOST=false
+ARG VITE_GOOGLE_SITE_VERIFICATION=
+ARG VITE_BING_SITE_VERIFICATION=
+
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL \
+    VITE_SITE_URL=$VITE_SITE_URL \
+    VITE_ENFORCE_CANONICAL_HOST=$VITE_ENFORCE_CANONICAL_HOST \
+    VITE_GOOGLE_SITE_VERIFICATION=$VITE_GOOGLE_SITE_VERIFICATION \
+    VITE_BING_SITE_VERIFICATION=$VITE_BING_SITE_VERIFICATION \
+    NITRO_PRESET=node-server \
+    NODE_ENV=production
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+RUN test -n "$VITE_API_BASE_URL" || (echo "VITE_API_BASE_URL build arg is required" && exit 1)
+
+RUN pnpm build
+
+# ═══════════════════════════════════════════════════════════
+# production — .output is self-contained, nothing else needed
+# ═══════════════════════════════════════════════════════════
+FROM node:${NODE_VERSION} AS production
+
+RUN apk add --no-cache dumb-init \
+ && addgroup -g 1001 -S nodejs \
+ && adduser -u 1001 -S storefront -G nodejs
+
+WORKDIR /app
+
+ENV NODE_ENV=production \
+    PORT=5173 \
+    HOST=0.0.0.0
+
+# Nitro bundles every dependency it needs into .output — there is no
+# node_modules install in this stage and no package.json to resolve.
+COPY --from=build --chown=storefront:nodejs /app/.output ./.output
+
+USER storefront
+
+EXPOSE 5173
+
+# Probes a static asset, not `/`. An SSR page renders a 500 when the API is
+# unreachable, which is an API problem — it must not report the storefront
+# process itself as unhealthy.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||5173)+'/favicon.png').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+
+ENTRYPOINT ["dumb-init", "--"]
+CMD ["node", ".output/server/index.mjs"]

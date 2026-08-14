@@ -1,0 +1,42 @@
+# Build context is the Cosmetics-FE root — keep it small and avoid leaking secrets.
+#
+# vendor/cosmetics-contracts is deliberately NOT ignored: the storefront imports
+# it by relative path and it is committed, so the image builds without needing
+# the backend repo present.
+
+node_modules
+.pnpm-store
+
+# Build output — regenerated inside the image.
+.output
+.nitro
+.vinxi
+.tanstack
+dist
+dist-ssr
+.wrangler
+.dev.vars
+
+# Never bake real credentials into an image layer.
+.env
+.env.*
+!.env.example
+
+.git
+.gitignore
+.github
+
+# Tests and reports contribute nothing to a production build.
+e2e
+test-results
+playwright-report
+coverage
+
+.vscode
+.idea
+.claude
+.DS_Store
+*.log
+
+*.md
+!README.md
