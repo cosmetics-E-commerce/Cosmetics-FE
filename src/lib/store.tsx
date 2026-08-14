@@ -6,6 +6,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type RefObject,
   type ReactNode,
 } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -74,6 +75,7 @@ type StoreValue = {
   wishlist: string[];
   cartOpen: boolean;
   searchOpen: boolean;
+  searchTriggerRef: RefObject<HTMLButtonElement | null>;
   count: number;
   cartFeedbackKey: number;
   subtotal: number;
@@ -124,6 +126,7 @@ export function StoreProvider({
   const [cartOpen, setCartOpen] = useState(false);
   const [cartFeedbackKey, setCartFeedbackKey] = useState(0);
   const [searchOpen, setSearchOpen] = useState(false);
+  const searchTriggerRef = useRef<HTMLButtonElement>(null);
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
   const [pendingVariants, setPendingVariants] = useState<string[]>([]);
   const pendingVariantIds = useRef(new Set<string>());
@@ -491,6 +494,7 @@ export function StoreProvider({
       wishlist,
       cartOpen,
       searchOpen,
+      searchTriggerRef,
       count: cart?.totalQuantity ?? 0,
       cartFeedbackKey,
       subtotal: (cart?.subtotal ?? 0) / 100,
@@ -534,6 +538,7 @@ export function StoreProvider({
       remove,
       removeCoupon,
       searchOpen,
+      searchTriggerRef,
       setSession,
       setLocale,
       setQty,
