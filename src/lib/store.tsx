@@ -215,6 +215,7 @@ export function StoreProvider({
               productNameAr: line.name,
               variantNameEn: line.size ?? "Standard",
               variantNameAr: line.size ?? "Standard",
+              variantOptions: [],
               sku: "",
               imageUrl: line.image ?? null,
               unitPrice,
@@ -466,7 +467,13 @@ export function StoreProvider({
         slug: item.slug,
         name: locale === "ar" ? item.productNameAr : item.productNameEn,
         image: item.imageUrl ?? "",
-        size: locale === "ar" ? item.variantNameAr : item.variantNameEn,
+        size: item.variantOptions.length
+          ? item.variantOptions
+              .map((option) => (locale === "ar" ? option.valueAr : option.valueEn))
+              .join(" / ")
+          : locale === "ar"
+            ? item.variantNameAr
+            : item.variantNameEn,
         price: item.unitPrice / 100,
         originalPrice: item.unitPrice / 100,
         discount: item.discount / 100,

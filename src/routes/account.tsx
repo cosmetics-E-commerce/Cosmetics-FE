@@ -1,4 +1,4 @@
-import { useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -55,6 +55,7 @@ import {
 } from "@/lib/api";
 import { formatPrice } from "@/lib/products";
 import { mapProduct } from "@/lib/catalog";
+import { scrollElementHorizontallyIntoView } from "@/lib/horizontal-nav";
 import { useStore } from "@/lib/store";
 import { Reveal } from "@/components/motion/Primitives";
 import { getOrderStatusCopy } from "@/lib/i18n";
@@ -104,6 +105,7 @@ function Account() {
     ttlSeconds: number;
   } | null>(null);
   const [phoneOtp, setPhoneOtp] = useState("");
+  const accountNavScrollerRef = useRef<HTMLUListElement>(null);
   const profile = useQuery({
     queryKey: ["account", "profile"],
     queryFn: getProfile,
@@ -151,6 +153,42 @@ function Account() {
     mutationFn: requestPhoneChangeOtp,
     onError: (error) => toast.error(apiErrorMessage(error, locale)),
   });
+  useEffect(() => {
+    let frame = 0;
+    let disposed = false;
+    const revealActiveTab = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(() => {
+        if (disposed) return;
+        const scroller = accountNavScrollerRef.current;
+        const activeTab = scroller?.querySelector<HTMLElement>('[aria-current="page"]');
+        if (!scroller || !activeTab) return;
+
+        scrollElementHorizontallyIntoView(scroller, activeTab, {
+          behavior: "auto",
+        });
+      });
+    };
+
+    revealActiveTab();
+    const scroller = accountNavScrollerRef.current;
+    const activeTab = scroller?.querySelector<HTMLElement>('[aria-current="page"]');
+    const resizeObserver = new ResizeObserver(revealActiveTab);
+    if (scroller) {
+      resizeObserver.observe(scroller);
+      for (const item of scroller.children) resizeObserver.observe(item);
+    }
+    if (activeTab) resizeObserver.observe(activeTab);
+    void document.fonts.ready.then(revealActiveTab);
+    window.addEventListener("resize", revealActiveTab);
+
+    return () => {
+      disposed = true;
+      window.cancelAnimationFrame(frame);
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", revealActiveTab);
+    };
+  }, [authHydrated, locale, tab, user?.id]);
   if (!authHydrated)
     return (
       <div className="grid min-h-[60vh] place-items-center">
@@ -284,12 +322,12 @@ function Account() {
         </dl>
       </Reveal>
 
-      <Reveal className="account-shell">
+      <div className="account-shell">
         <nav
           className="account-nav"
           aria-label={locale === "ar" ? "أقسام الحساب" : "Account sections"}
         >
-          <ul>
+          <ul ref={accountNavScrollerRef}>
             {tabs.map((item) => (
               <li key={item.value}>
                 <button
@@ -297,6 +335,7 @@ function Account() {
                   onClick={() =>
                     void navigate({
                       to: "/account",
+                      resetScroll: false,
                       search: {
                         section: item.value === "overview" ? undefined : item.value,
                       },
@@ -833,7 +872,7 @@ function Account() {
             </div>
           )}
         </section>
-      </Reveal>
+      </div>
       <Dialog
         open={signOutOpen}
         onOpenChange={(open) => {

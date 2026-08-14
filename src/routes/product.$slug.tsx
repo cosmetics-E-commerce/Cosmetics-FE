@@ -26,6 +26,12 @@ import { loadCatalog, loadProduct, useProduct } from "@/lib/catalog";
 import { listProductReviews, type ProductReviews as ProductReviewsData } from "@/lib/api";
 import { useStore } from "@/lib/store";
 import { trackCommerceEvent } from "@/lib/analytics";
+import {
+  optionValueState,
+  resolveVariant,
+  selectionForVariant,
+  type VariantSelection,
+} from "@/lib/variant-selection";
 import { Reveal } from "@/components/motion/Primitives";
 import {
   breadcrumbSchema,
@@ -50,6 +56,8 @@ const productCopy = {
     out: "Out of stock",
     low: (stock: number) => `Low stock · ${stock} remaining`,
     variant: "Variant",
+    unavailableCombination: "Unavailable with your current selection",
+    soldOutValue: "Sold out",
     decrease: "Decrease quantity",
     increase: "Increase quantity",
     add: "Add to bag",
@@ -112,6 +120,8 @@ const productCopy = {
     out: "نفد المخزون",
     low: (stock: number) => `مخزون محدود · متبقي ${stock}`,
     variant: "الخيار",
+    unavailableCombination: "غير متاح مع اختيارك الحالي",
+    soldOutValue: "نفد المخزون",
     decrease: "تقليل الكمية",
     increase: "زيادة الكمية",
     add: "أضيفي إلى الحقيبة",
@@ -252,6 +262,7 @@ function ProductPage() {
   const query = useProduct(slug, locale, initial.product);
   const product = query.data;
   const [variantIndex, setVariantIndex] = useState(0);
+  const [variantSelection, setVariantSelection] = useState<VariantSelection>({});
   const [quantity, setQuantity] = useState(1);
   const [imageIndex, setImageIndex] = useState(0);
   const [added, setAdded] = useState(false);
@@ -281,11 +292,26 @@ function ProductPage() {
   ]);
 
   useEffect(() => {
-    setVariantIndex(firstAvailableVariant >= 0 ? firstAvailableVariant : 0);
+    const nextIndex = firstAvailableVariant >= 0 ? firstAvailableVariant : 0;
+    setVariantIndex(nextIndex);
+    if (product) {
+      setVariantSelection(selectionForVariant(product.options ?? [], product.sizes[nextIndex]));
+    }
     setImageIndex(0);
     setQuantity(1);
     setAdded(false);
-  }, [firstAvailableVariant, slug]);
+  }, [firstAvailableVariant, product, slug]);
+
+  const selectedVariant = product
+    ? product.options?.length
+      ? resolveVariant(product.options, product.sizes, variantSelection)
+      : (product.sizes[variantIndex] ?? product.sizes[0])
+    : undefined;
+
+  useEffect(() => {
+    setImageIndex(0);
+    setQuantity(1);
+  }, [selectedVariant?.id]);
 
   useEffect(() => {
     if (!added) return;
@@ -327,13 +353,23 @@ function ProductPage() {
     );
   }
 
-  const variant = product.sizes[variantIndex] ?? product.sizes[0];
+  const variant = selectedVariant;
   const variantStock = variant?.stock;
   const outOfStock = variantStock === 0;
   const lowStock = variantStock !== undefined && variantStock > 0 && variantStock < 10;
   const wished = wishlist.includes(product.slug);
   const adding = Boolean(variant?.id && pendingVariants.includes(variant.id));
-  const activeImage = product.gallery[imageIndex] ?? product.image;
+  const activeMedia = variant?.media?.length
+    ? variant.media
+    : product.media?.length
+      ? product.media
+      : product.gallery.map((url, index) => ({
+          id: `legacy-${index}`,
+          url,
+          altText: product.imageAlt || product.name,
+        }));
+  const activeImage = activeMedia[imageIndex]?.url ?? product.image;
+  const activeImageAlt = activeMedia[imageIndex]?.altText || product.imageAlt || product.name;
   const discountPercent =
     variant?.originalPrice && variant.originalPrice > variant.price
       ? Math.round((1 - variant.price / variant.originalPrice) * 100)
@@ -423,7 +459,7 @@ function ProductPage() {
             <div key={activeImage} className="product-gallery-active product-reference-main-image">
               <PolishedImage
                 src={activeImage}
-                alt={product.imageAlt || product.name}
+                alt={activeImageAlt}
                 width={1200}
                 height={1500}
                 loading="eager"
@@ -434,9 +470,9 @@ function ProductPage() {
               />
             </div>
             <div className="product-reference-thumbs">
-              {product.gallery.map((image, index) => (
+              {activeMedia.map((image, index) => (
                 <button
-                  key={`${image}-${index}`}
+                  key={image.id}
                   type="button"
                   onClick={() => setImageIndex(index)}
                   aria-label={labels.image(index + 1)}
@@ -444,8 +480,8 @@ function ProductPage() {
                   className="product-reference-thumb"
                 >
                   <PolishedImage
-                    src={image}
-                    alt=""
+                    src={image.url}
+                    alt={image.altText}
                     width={140}
                     height={175}
                     loading="lazy"
@@ -545,7 +581,81 @@ function ProductPage() {
               <p className="product-reference-stock">{labels.low(variantStock)}</p>
             )}
 
-            {product.sizes.length > 1 && (
+            {(product.options?.length ?? 0) > 0 ? (
+              <div className="product-option-selectors">
+                {product.options!.map((option) => (
+                  <fieldset key={option.id} className="product-reference-variants">
+                    <legend>{option.label}</legend>
+                    <div>
+                      {option.values.map((value) => {
+                        const valueState = optionValueState({
+                          optionId: option.id,
+                          valueId: value.id,
+                          options: product.options!,
+                          variants: product.sizes,
+                          selection: variantSelection,
+                        });
+                        const available = valueState === "available";
+                        const selected = variantSelection[option.id] === value.id;
+                        const metadataHex =
+                          typeof value.metadata?.["hex"] === "string" &&
+                          /^#[0-9a-f]{6}$/i.test(value.metadata["hex"])
+                            ? value.metadata["hex"]
+                            : undefined;
+                        const swatch =
+                          metadataHex ??
+                          product.sizes.find((item) => item.optionValueIds?.includes(value.id))
+                            ?.shadeHex;
+                        return (
+                          <button
+                            key={value.id}
+                            type="button"
+                            disabled={!available}
+                            title={
+                              valueState === "sold-out"
+                                ? labels.soldOutValue
+                                : valueState === "unavailable"
+                                  ? labels.unavailableCombination
+                                  : undefined
+                            }
+                            onClick={() => {
+                              setVariantSelection((current) => ({
+                                ...current,
+                                [option.id]: value.id,
+                              }));
+                            }}
+                            aria-pressed={selected}
+                            aria-label={`${option.label}: ${value.label}${valueState === "sold-out" ? `, ${labels.soldOutValue}` : valueState === "unavailable" ? `, ${labels.unavailableCombination}` : ""}`}
+                            className={`product-variant${swatch ? " has-swatch" : ""}`}
+                          >
+                            {swatch ? (
+                              <span
+                                className="product-variant-swatch"
+                                style={{ backgroundColor: swatch }}
+                                aria-hidden="true"
+                              />
+                            ) : null}
+                            <span className="product-variant-label">
+                              {value.label}
+                              {valueState === "sold-out" ? (
+                                <small>{labels.soldOutValue}</small>
+                              ) : null}
+                            </span>
+                            {selected ? (
+                              <Check
+                                className="product-variant-check"
+                                size={14}
+                                aria-hidden="true"
+                              />
+                            ) : null}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </fieldset>
+                ))}
+              </div>
+            ) : product.sizes.length > 1 ? (
               <fieldset className="product-reference-variants">
                 <legend>{labels.variant}</legend>
                 <div>
@@ -573,7 +683,7 @@ function ProductPage() {
                   ))}
                 </div>
               </fieldset>
-            )}
+            ) : null}
 
             <div className="product-reference-quantity-label">{labels.quantity}</div>
             <div className="purchase-actions product-reference-actions">

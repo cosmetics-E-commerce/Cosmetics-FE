@@ -44,6 +44,15 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
     .sort((a, b) => a.sortOrder - b.sortOrder)
     .map((image) => image.url.trim())
     .filter(Boolean);
+  const media = (product.images ?? [])
+    .slice()
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .filter((image) => Boolean(image.url.trim()))
+    .map((image) => ({
+      id: image.id,
+      url: image.url.trim(),
+      altText: image.altText?.trim() || (arabic ? product.nameAr : product.nameEn),
+    }));
   const primary = product.imageUrl?.trim() || gallery[0] || categoryFallback;
   const primaryImage = (product.images ?? []).find((image) => image.url.trim() === primary);
   const description = firstNonEmpty(
@@ -68,12 +77,35 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
     image: primary,
     imageAlt: primaryImage?.altText?.trim() || product.nameEn,
     gallery: gallery.length ? gallery : [primary],
+    media: media.length
+      ? media
+      : [{ id: `legacy-${product.id}`, url: primary, altText: product.nameEn }],
+    options: (product.options ?? []).map((option) => ({
+      id: option.id,
+      label: arabic ? option.nameAr : option.nameEn,
+      values: option.values.map((value) => ({
+        id: value.id,
+        label: arabic ? value.valueAr : value.valueEn,
+        metadata: value.metadata,
+      })),
+    })),
     sizes: variants.map((variant) => ({
       id: variant.id,
       sku: variant.sku,
       label: arabic ? variant.nameAr : variant.nameEn,
       price: variant.price / 100,
+      ...(variant.compareAtPrice !== null ? { originalPrice: variant.compareAtPrice / 100 } : {}),
       shadeHex: variant.shadeHex,
+      optionValueIds: variant.optionValues.map((value) => value.id),
+      optionValues: variant.optionValues.map((value) => ({
+        id: value.id,
+        label: arabic ? value.valueAr : value.valueEn,
+      })),
+      media: variant.images.map((image) => ({
+        id: image.id,
+        url: image.url,
+        altText: image.altText?.trim() || (arabic ? product.nameAr : product.nameEn),
+      })),
       ...(variant.stock !== undefined ? { stock: variant.stock } : {}),
     })),
     ...(stock !== undefined ? { stock } : {}),

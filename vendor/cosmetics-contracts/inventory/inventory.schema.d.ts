@@ -338,10 +338,10 @@ export declare const inventoryBatchSchema: z.ZodObject<{
     id: string;
     variantId: string;
     expiresAt: string;
+    costPrice: number;
     batchNumber: string;
     manufacturedAt: string | null;
     paoMonths: number | null;
-    costPrice: number;
     available: number;
     receivedAt: string;
     quantityOnHand: number;
@@ -364,10 +364,10 @@ export declare const inventoryBatchSchema: z.ZodObject<{
     id: string;
     variantId: string;
     expiresAt: string;
+    costPrice: number;
     batchNumber: string;
     manufacturedAt: string | null;
     paoMonths: number | null;
-    costPrice: number;
     available: number;
     receivedAt: string;
     quantityOnHand: number;
@@ -825,10 +825,10 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
         id: string;
         variantId: string;
         expiresAt: string;
+        costPrice: number;
         batchNumber: string;
         manufacturedAt: string | null;
         paoMonths: number | null;
-        costPrice: number;
         available: number;
         receivedAt: string;
         quantityOnHand: number;
@@ -851,10 +851,10 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
         id: string;
         variantId: string;
         expiresAt: string;
+        costPrice: number;
         batchNumber: string;
         manufacturedAt: string | null;
         paoMonths: number | null;
-        costPrice: number;
         available: number;
         receivedAt: string;
         quantityOnHand: number;
@@ -901,10 +901,10 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
         id: string;
         variantId: string;
         expiresAt: string;
+        costPrice: number;
         batchNumber: string;
         manufacturedAt: string | null;
         paoMonths: number | null;
-        costPrice: number;
         available: number;
         receivedAt: string;
         quantityOnHand: number;
@@ -937,10 +937,10 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
         id: string;
         variantId: string;
         expiresAt: string;
+        costPrice: number;
         batchNumber: string;
         manufacturedAt: string | null;
         paoMonths: number | null;
-        costPrice: number;
         available: number;
         receivedAt: string;
         quantityOnHand: number;
@@ -1214,48 +1214,48 @@ export declare const receiveInventoryBatchSchema: z.ZodEffects<z.ZodEffects<z.Zo
     variantId: string;
     quantity: number;
     expiresAt: Date;
-    batchNumber: string;
     costPrice: number;
+    batchNumber: string;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }, {
     variantId: string;
     quantity: number;
     expiresAt: Date;
-    batchNumber: string;
     costPrice: number;
+    batchNumber: string;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }>, {
     variantId: string;
     quantity: number;
     expiresAt: Date;
-    batchNumber: string;
     costPrice: number;
+    batchNumber: string;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }, {
     variantId: string;
     quantity: number;
     expiresAt: Date;
-    batchNumber: string;
     costPrice: number;
+    batchNumber: string;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }>, {
     variantId: string;
     quantity: number;
     expiresAt: Date;
-    batchNumber: string;
     costPrice: number;
+    batchNumber: string;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }, {
     variantId: string;
     quantity: number;
     expiresAt: Date;
-    batchNumber: string;
     costPrice: number;
+    batchNumber: string;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }>;

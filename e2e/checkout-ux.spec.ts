@@ -14,6 +14,7 @@ const cartItem = {
   productNameAr: "سيروم التهدئة",
   variantNameEn: "30 ml",
   variantNameAr: "30 مل",
+  variantOptions: [],
   sku: "SERUM-30",
   imageUrl: "/favicon.png",
   unitPrice: 125000,

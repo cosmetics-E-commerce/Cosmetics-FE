@@ -96,13 +96,104 @@ export declare const wishlistItemSchema: z.ZodObject<{
             slug: string;
             logoUrl: string | null;
         }>>;
+        options: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            nameEn: z.ZodString;
+            nameAr: z.ZodString;
+            position: z.ZodNumber;
+            values: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                valueEn: z.ZodString;
+                valueAr: z.ZodString;
+                position: z.ZodNumber;
+                metadata: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+            }, "strip", z.ZodTypeAny, {
+                id: string;
+                valueEn: string;
+                valueAr: string;
+                position: number;
+                metadata: Record<string, unknown> | null;
+            }, {
+                id: string;
+                valueEn: string;
+                valueAr: string;
+                position: number;
+                metadata: Record<string, unknown> | null;
+            }>, "many">;
+        }, "strip", z.ZodTypeAny, {
+            values: {
+                id: string;
+                valueEn: string;
+                valueAr: string;
+                position: number;
+                metadata: Record<string, unknown> | null;
+            }[];
+            id: string;
+            position: number;
+            nameEn: string;
+            nameAr: string;
+        }, {
+            values: {
+                id: string;
+                valueEn: string;
+                valueAr: string;
+                position: number;
+                metadata: Record<string, unknown> | null;
+            }[];
+            id: string;
+            position: number;
+            nameEn: string;
+            nameAr: string;
+        }>, "many">;
         variants: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
             sku: z.ZodString;
             nameEn: z.ZodString;
             nameAr: z.ZodString;
             price: z.ZodNumber;
+            compareAtPrice: z.ZodNullable<z.ZodNumber>;
             shadeHex: z.ZodNullable<z.ZodString>;
+            optionValues: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                valueEn: z.ZodString;
+                valueAr: z.ZodString;
+                position: z.ZodNumber;
+                metadata: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+            }, "strip", z.ZodTypeAny, {
+                id: string;
+                valueEn: string;
+                valueAr: string;
+                position: number;
+                metadata: Record<string, unknown> | null;
+            }, {
+                id: string;
+                valueEn: string;
+                valueAr: string;
+                position: number;
+                metadata: Record<string, unknown> | null;
+            }>, "many">;
+            images: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                variantId: z.ZodNullable<z.ZodString>;
+                url: z.ZodString;
+                altText: z.ZodNullable<z.ZodString>;
+                sortOrder: z.ZodNumber;
+                isPrimary: z.ZodBoolean;
+            }, "strip", z.ZodTypeAny, {
+                sortOrder: number;
+                id: string;
+                variantId: string | null;
+                url: string;
+                altText: string | null;
+                isPrimary: boolean;
+            }, {
+                sortOrder: number;
+                id: string;
+                variantId: string | null;
+                url: string;
+                altText: string | null;
+                isPrimary: boolean;
+            }>, "many">;
         } & {
             stock: z.ZodNumber;
         }, "strip", z.ZodTypeAny, {
@@ -111,7 +202,23 @@ export declare const wishlistItemSchema: z.ZodObject<{
             price: number;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             shadeHex: string | null;
+            images: {
+                sortOrder: number;
+                id: string;
+                variantId: string | null;
+                url: string;
+                altText: string | null;
+                isPrimary: boolean;
+            }[];
+            optionValues: {
+                id: string;
+                valueEn: string;
+                valueAr: string;
+                position: number;
+                metadata: Record<string, unknown> | null;
+            }[];
             stock: number;
         }, {
             id: string;
@@ -119,11 +226,28 @@ export declare const wishlistItemSchema: z.ZodObject<{
             price: number;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             shadeHex: string | null;
+            images: {
+                sortOrder: number;
+                id: string;
+                variantId: string | null;
+                url: string;
+                altText: string | null;
+                isPrimary: boolean;
+            }[];
+            optionValues: {
+                id: string;
+                valueEn: string;
+                valueAr: string;
+                position: number;
+                metadata: Record<string, unknown> | null;
+            }[];
             stock: number;
         }>, "many">;
         images: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
+            variantId: z.ZodNullable<z.ZodString>;
             url: z.ZodString;
             altText: z.ZodNullable<z.ZodString>;
             sortOrder: z.ZodNumber;
@@ -131,12 +255,14 @@ export declare const wishlistItemSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             sortOrder: number;
             id: string;
+            variantId: string | null;
             url: string;
             altText: string | null;
             isPrimary: boolean;
         }, {
             sortOrder: number;
             id: string;
+            variantId: string | null;
             url: string;
             altText: string | null;
             isPrimary: boolean;
@@ -206,6 +332,19 @@ export declare const wishlistItemSchema: z.ZodObject<{
             concentrationUnit: string | null;
         }>, "many">;
     }, "strip", z.ZodTypeAny, {
+        options: {
+            values: {
+                id: string;
+                valueEn: string;
+                valueAr: string;
+                position: number;
+                metadata: Record<string, unknown> | null;
+            }[];
+            id: string;
+            position: number;
+            nameEn: string;
+            nameAr: string;
+        }[];
         id: string;
         imageUrl: string | null;
         slug: string;
@@ -213,23 +352,40 @@ export declare const wishlistItemSchema: z.ZodObject<{
         descriptionAr: string | null;
         nameEn: string;
         nameAr: string;
+        compareAtPrice: number | null;
         ingredients: string | null;
         howToUse: string | null;
         skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
         basePrice: number;
-        compareAtPrice: number | null;
         variants: {
             id: string;
             sku: string;
             price: number;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             shadeHex: string | null;
+            images: {
+                sortOrder: number;
+                id: string;
+                variantId: string | null;
+                url: string;
+                altText: string | null;
+                isPrimary: boolean;
+            }[];
+            optionValues: {
+                id: string;
+                valueEn: string;
+                valueAr: string;
+                position: number;
+                metadata: Record<string, unknown> | null;
+            }[];
             stock: number;
         }[];
         images: {
             sortOrder: number;
             id: string;
+            variantId: string | null;
             url: string;
             altText: string | null;
             isPrimary: boolean;
@@ -274,6 +430,19 @@ export declare const wishlistItemSchema: z.ZodObject<{
             concentrationUnit: string | null;
         }[];
     }, {
+        options: {
+            values: {
+                id: string;
+                valueEn: string;
+                valueAr: string;
+                position: number;
+                metadata: Record<string, unknown> | null;
+            }[];
+            id: string;
+            position: number;
+            nameEn: string;
+            nameAr: string;
+        }[];
         id: string;
         imageUrl: string | null;
         slug: string;
@@ -281,23 +450,40 @@ export declare const wishlistItemSchema: z.ZodObject<{
         descriptionAr: string | null;
         nameEn: string;
         nameAr: string;
+        compareAtPrice: number | null;
         ingredients: string | null;
         howToUse: string | null;
         skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
         basePrice: number;
-        compareAtPrice: number | null;
         variants: {
             id: string;
             sku: string;
             price: number;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             shadeHex: string | null;
+            images: {
+                sortOrder: number;
+                id: string;
+                variantId: string | null;
+                url: string;
+                altText: string | null;
+                isPrimary: boolean;
+            }[];
+            optionValues: {
+                id: string;
+                valueEn: string;
+                valueAr: string;
+                position: number;
+                metadata: Record<string, unknown> | null;
+            }[];
             stock: number;
         }[];
         images: {
             sortOrder: number;
             id: string;
+            variantId: string | null;
             url: string;
             altText: string | null;
             isPrimary: boolean;
@@ -348,6 +534,19 @@ export declare const wishlistItemSchema: z.ZodObject<{
     productId: string;
     collectionId: string;
     product: {
+        options: {
+            values: {
+                id: string;
+                valueEn: string;
+                valueAr: string;
+                position: number;
+                metadata: Record<string, unknown> | null;
+            }[];
+            id: string;
+            position: number;
+            nameEn: string;
+            nameAr: string;
+        }[];
         id: string;
         imageUrl: string | null;
         slug: string;
@@ -355,23 +554,40 @@ export declare const wishlistItemSchema: z.ZodObject<{
         descriptionAr: string | null;
         nameEn: string;
         nameAr: string;
+        compareAtPrice: number | null;
         ingredients: string | null;
         howToUse: string | null;
         skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
         basePrice: number;
-        compareAtPrice: number | null;
         variants: {
             id: string;
             sku: string;
             price: number;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             shadeHex: string | null;
+            images: {
+                sortOrder: number;
+                id: string;
+                variantId: string | null;
+                url: string;
+                altText: string | null;
+                isPrimary: boolean;
+            }[];
+            optionValues: {
+                id: string;
+                valueEn: string;
+                valueAr: string;
+                position: number;
+                metadata: Record<string, unknown> | null;
+            }[];
             stock: number;
         }[];
         images: {
             sortOrder: number;
             id: string;
+            variantId: string | null;
             url: string;
             altText: string | null;
             isPrimary: boolean;
@@ -422,6 +638,19 @@ export declare const wishlistItemSchema: z.ZodObject<{
     productId: string;
     collectionId: string;
     product: {
+        options: {
+            values: {
+                id: string;
+                valueEn: string;
+                valueAr: string;
+                position: number;
+                metadata: Record<string, unknown> | null;
+            }[];
+            id: string;
+            position: number;
+            nameEn: string;
+            nameAr: string;
+        }[];
         id: string;
         imageUrl: string | null;
         slug: string;
@@ -429,23 +658,40 @@ export declare const wishlistItemSchema: z.ZodObject<{
         descriptionAr: string | null;
         nameEn: string;
         nameAr: string;
+        compareAtPrice: number | null;
         ingredients: string | null;
         howToUse: string | null;
         skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
         basePrice: number;
-        compareAtPrice: number | null;
         variants: {
             id: string;
             sku: string;
             price: number;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             shadeHex: string | null;
+            images: {
+                sortOrder: number;
+                id: string;
+                variantId: string | null;
+                url: string;
+                altText: string | null;
+                isPrimary: boolean;
+            }[];
+            optionValues: {
+                id: string;
+                valueEn: string;
+                valueAr: string;
+                position: number;
+                metadata: Record<string, unknown> | null;
+            }[];
             stock: number;
         }[];
         images: {
             sortOrder: number;
             id: string;
+            variantId: string | null;
             url: string;
             altText: string | null;
             isPrimary: boolean;
@@ -560,13 +806,104 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 slug: string;
                 logoUrl: string | null;
             }>>;
+            options: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                nameEn: z.ZodString;
+                nameAr: z.ZodString;
+                position: z.ZodNumber;
+                values: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    valueEn: z.ZodString;
+                    valueAr: z.ZodString;
+                    position: z.ZodNumber;
+                    metadata: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+                }, "strip", z.ZodTypeAny, {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }, {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }>, "many">;
+            }, "strip", z.ZodTypeAny, {
+                values: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
+                id: string;
+                position: number;
+                nameEn: string;
+                nameAr: string;
+            }, {
+                values: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
+                id: string;
+                position: number;
+                nameEn: string;
+                nameAr: string;
+            }>, "many">;
             variants: z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
                 sku: z.ZodString;
                 nameEn: z.ZodString;
                 nameAr: z.ZodString;
                 price: z.ZodNumber;
+                compareAtPrice: z.ZodNullable<z.ZodNumber>;
                 shadeHex: z.ZodNullable<z.ZodString>;
+                optionValues: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    valueEn: z.ZodString;
+                    valueAr: z.ZodString;
+                    position: z.ZodNumber;
+                    metadata: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+                }, "strip", z.ZodTypeAny, {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }, {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }>, "many">;
+                images: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    variantId: z.ZodNullable<z.ZodString>;
+                    url: z.ZodString;
+                    altText: z.ZodNullable<z.ZodString>;
+                    sortOrder: z.ZodNumber;
+                    isPrimary: z.ZodBoolean;
+                }, "strip", z.ZodTypeAny, {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }, {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }>, "many">;
             } & {
                 stock: z.ZodNumber;
             }, "strip", z.ZodTypeAny, {
@@ -575,7 +912,23 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 price: number;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 shadeHex: string | null;
+                images: {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }[];
+                optionValues: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
                 stock: number;
             }, {
                 id: string;
@@ -583,11 +936,28 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 price: number;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 shadeHex: string | null;
+                images: {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }[];
+                optionValues: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
                 stock: number;
             }>, "many">;
             images: z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
+                variantId: z.ZodNullable<z.ZodString>;
                 url: z.ZodString;
                 altText: z.ZodNullable<z.ZodString>;
                 sortOrder: z.ZodNumber;
@@ -595,12 +965,14 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             }, "strip", z.ZodTypeAny, {
                 sortOrder: number;
                 id: string;
+                variantId: string | null;
                 url: string;
                 altText: string | null;
                 isPrimary: boolean;
             }, {
                 sortOrder: number;
                 id: string;
+                variantId: string | null;
                 url: string;
                 altText: string | null;
                 isPrimary: boolean;
@@ -670,6 +1042,19 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 concentrationUnit: string | null;
             }>, "many">;
         }, "strip", z.ZodTypeAny, {
+            options: {
+                values: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
+                id: string;
+                position: number;
+                nameEn: string;
+                nameAr: string;
+            }[];
             id: string;
             imageUrl: string | null;
             slug: string;
@@ -677,23 +1062,40 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             descriptionAr: string | null;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             ingredients: string | null;
             howToUse: string | null;
             skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
             basePrice: number;
-            compareAtPrice: number | null;
             variants: {
                 id: string;
                 sku: string;
                 price: number;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 shadeHex: string | null;
+                images: {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }[];
+                optionValues: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
                 stock: number;
             }[];
             images: {
                 sortOrder: number;
                 id: string;
+                variantId: string | null;
                 url: string;
                 altText: string | null;
                 isPrimary: boolean;
@@ -738,6 +1140,19 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 concentrationUnit: string | null;
             }[];
         }, {
+            options: {
+                values: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
+                id: string;
+                position: number;
+                nameEn: string;
+                nameAr: string;
+            }[];
             id: string;
             imageUrl: string | null;
             slug: string;
@@ -745,23 +1160,40 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             descriptionAr: string | null;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             ingredients: string | null;
             howToUse: string | null;
             skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
             basePrice: number;
-            compareAtPrice: number | null;
             variants: {
                 id: string;
                 sku: string;
                 price: number;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 shadeHex: string | null;
+                images: {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }[];
+                optionValues: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
                 stock: number;
             }[];
             images: {
                 sortOrder: number;
                 id: string;
+                variantId: string | null;
                 url: string;
                 altText: string | null;
                 isPrimary: boolean;
@@ -812,6 +1244,19 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
         productId: string;
         collectionId: string;
         product: {
+            options: {
+                values: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
+                id: string;
+                position: number;
+                nameEn: string;
+                nameAr: string;
+            }[];
             id: string;
             imageUrl: string | null;
             slug: string;
@@ -819,23 +1264,40 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             descriptionAr: string | null;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             ingredients: string | null;
             howToUse: string | null;
             skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
             basePrice: number;
-            compareAtPrice: number | null;
             variants: {
                 id: string;
                 sku: string;
                 price: number;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 shadeHex: string | null;
+                images: {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }[];
+                optionValues: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
                 stock: number;
             }[];
             images: {
                 sortOrder: number;
                 id: string;
+                variantId: string | null;
                 url: string;
                 altText: string | null;
                 isPrimary: boolean;
@@ -886,6 +1348,19 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
         productId: string;
         collectionId: string;
         product: {
+            options: {
+                values: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
+                id: string;
+                position: number;
+                nameEn: string;
+                nameAr: string;
+            }[];
             id: string;
             imageUrl: string | null;
             slug: string;
@@ -893,23 +1368,40 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             descriptionAr: string | null;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             ingredients: string | null;
             howToUse: string | null;
             skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
             basePrice: number;
-            compareAtPrice: number | null;
             variants: {
                 id: string;
                 sku: string;
                 price: number;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 shadeHex: string | null;
+                images: {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }[];
+                optionValues: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
                 stock: number;
             }[];
             images: {
                 sortOrder: number;
                 id: string;
+                variantId: string | null;
                 url: string;
                 altText: string | null;
                 isPrimary: boolean;
@@ -970,6 +1462,19 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
         productId: string;
         collectionId: string;
         product: {
+            options: {
+                values: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
+                id: string;
+                position: number;
+                nameEn: string;
+                nameAr: string;
+            }[];
             id: string;
             imageUrl: string | null;
             slug: string;
@@ -977,23 +1482,40 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             descriptionAr: string | null;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             ingredients: string | null;
             howToUse: string | null;
             skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
             basePrice: number;
-            compareAtPrice: number | null;
             variants: {
                 id: string;
                 sku: string;
                 price: number;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 shadeHex: string | null;
+                images: {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }[];
+                optionValues: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
                 stock: number;
             }[];
             images: {
                 sortOrder: number;
                 id: string;
+                variantId: string | null;
                 url: string;
                 altText: string | null;
                 isPrimary: boolean;
@@ -1054,6 +1576,19 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
         productId: string;
         collectionId: string;
         product: {
+            options: {
+                values: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
+                id: string;
+                position: number;
+                nameEn: string;
+                nameAr: string;
+            }[];
             id: string;
             imageUrl: string | null;
             slug: string;
@@ -1061,23 +1596,40 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             descriptionAr: string | null;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             ingredients: string | null;
             howToUse: string | null;
             skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
             basePrice: number;
-            compareAtPrice: number | null;
             variants: {
                 id: string;
                 sku: string;
                 price: number;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 shadeHex: string | null;
+                images: {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }[];
+                optionValues: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
                 stock: number;
             }[];
             images: {
                 sortOrder: number;
                 id: string;
+                variantId: string | null;
                 url: string;
                 altText: string | null;
                 isPrimary: boolean;
@@ -1197,13 +1749,104 @@ export declare const wishlistSchema: z.ZodObject<{
                     slug: string;
                     logoUrl: string | null;
                 }>>;
+                options: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    nameEn: z.ZodString;
+                    nameAr: z.ZodString;
+                    position: z.ZodNumber;
+                    values: z.ZodArray<z.ZodObject<{
+                        id: z.ZodString;
+                        valueEn: z.ZodString;
+                        valueAr: z.ZodString;
+                        position: z.ZodNumber;
+                        metadata: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+                    }, "strip", z.ZodTypeAny, {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }, {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }>, "many">;
+                }, "strip", z.ZodTypeAny, {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }, {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }>, "many">;
                 variants: z.ZodArray<z.ZodObject<{
                     id: z.ZodString;
                     sku: z.ZodString;
                     nameEn: z.ZodString;
                     nameAr: z.ZodString;
                     price: z.ZodNumber;
+                    compareAtPrice: z.ZodNullable<z.ZodNumber>;
                     shadeHex: z.ZodNullable<z.ZodString>;
+                    optionValues: z.ZodArray<z.ZodObject<{
+                        id: z.ZodString;
+                        valueEn: z.ZodString;
+                        valueAr: z.ZodString;
+                        position: z.ZodNumber;
+                        metadata: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+                    }, "strip", z.ZodTypeAny, {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }, {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }>, "many">;
+                    images: z.ZodArray<z.ZodObject<{
+                        id: z.ZodString;
+                        variantId: z.ZodNullable<z.ZodString>;
+                        url: z.ZodString;
+                        altText: z.ZodNullable<z.ZodString>;
+                        sortOrder: z.ZodNumber;
+                        isPrimary: z.ZodBoolean;
+                    }, "strip", z.ZodTypeAny, {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }, {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }>, "many">;
                 } & {
                     stock: z.ZodNumber;
                 }, "strip", z.ZodTypeAny, {
@@ -1212,7 +1855,23 @@ export declare const wishlistSchema: z.ZodObject<{
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }, {
                     id: string;
@@ -1220,11 +1879,28 @@ export declare const wishlistSchema: z.ZodObject<{
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }>, "many">;
                 images: z.ZodArray<z.ZodObject<{
                     id: z.ZodString;
+                    variantId: z.ZodNullable<z.ZodString>;
                     url: z.ZodString;
                     altText: z.ZodNullable<z.ZodString>;
                     sortOrder: z.ZodNumber;
@@ -1232,12 +1908,14 @@ export declare const wishlistSchema: z.ZodObject<{
                 }, "strip", z.ZodTypeAny, {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
                 }, {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -1307,6 +1985,19 @@ export declare const wishlistSchema: z.ZodObject<{
                     concentrationUnit: string | null;
                 }>, "many">;
             }, "strip", z.ZodTypeAny, {
+                options: {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }[];
                 id: string;
                 imageUrl: string | null;
                 slug: string;
@@ -1314,23 +2005,40 @@ export declare const wishlistSchema: z.ZodObject<{
                 descriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 ingredients: string | null;
                 howToUse: string | null;
                 skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
                 basePrice: number;
-                compareAtPrice: number | null;
                 variants: {
                     id: string;
                     sku: string;
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }[];
                 images: {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -1375,6 +2083,19 @@ export declare const wishlistSchema: z.ZodObject<{
                     concentrationUnit: string | null;
                 }[];
             }, {
+                options: {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }[];
                 id: string;
                 imageUrl: string | null;
                 slug: string;
@@ -1382,23 +2103,40 @@ export declare const wishlistSchema: z.ZodObject<{
                 descriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 ingredients: string | null;
                 howToUse: string | null;
                 skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
                 basePrice: number;
-                compareAtPrice: number | null;
                 variants: {
                     id: string;
                     sku: string;
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }[];
                 images: {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -1449,6 +2187,19 @@ export declare const wishlistSchema: z.ZodObject<{
             productId: string;
             collectionId: string;
             product: {
+                options: {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }[];
                 id: string;
                 imageUrl: string | null;
                 slug: string;
@@ -1456,23 +2207,40 @@ export declare const wishlistSchema: z.ZodObject<{
                 descriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 ingredients: string | null;
                 howToUse: string | null;
                 skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
                 basePrice: number;
-                compareAtPrice: number | null;
                 variants: {
                     id: string;
                     sku: string;
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }[];
                 images: {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -1523,6 +2291,19 @@ export declare const wishlistSchema: z.ZodObject<{
             productId: string;
             collectionId: string;
             product: {
+                options: {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }[];
                 id: string;
                 imageUrl: string | null;
                 slug: string;
@@ -1530,23 +2311,40 @@ export declare const wishlistSchema: z.ZodObject<{
                 descriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 ingredients: string | null;
                 howToUse: string | null;
                 skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
                 basePrice: number;
-                compareAtPrice: number | null;
                 variants: {
                     id: string;
                     sku: string;
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }[];
                 images: {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -1607,6 +2405,19 @@ export declare const wishlistSchema: z.ZodObject<{
             productId: string;
             collectionId: string;
             product: {
+                options: {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }[];
                 id: string;
                 imageUrl: string | null;
                 slug: string;
@@ -1614,23 +2425,40 @@ export declare const wishlistSchema: z.ZodObject<{
                 descriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 ingredients: string | null;
                 howToUse: string | null;
                 skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
                 basePrice: number;
-                compareAtPrice: number | null;
                 variants: {
                     id: string;
                     sku: string;
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }[];
                 images: {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -1691,6 +2519,19 @@ export declare const wishlistSchema: z.ZodObject<{
             productId: string;
             collectionId: string;
             product: {
+                options: {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }[];
                 id: string;
                 imageUrl: string | null;
                 slug: string;
@@ -1698,23 +2539,40 @@ export declare const wishlistSchema: z.ZodObject<{
                 descriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 ingredients: string | null;
                 howToUse: string | null;
                 skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
                 basePrice: number;
-                compareAtPrice: number | null;
                 variants: {
                     id: string;
                     sku: string;
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }[];
                 images: {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -1826,13 +2684,104 @@ export declare const wishlistSchema: z.ZodObject<{
                 slug: string;
                 logoUrl: string | null;
             }>>;
+            options: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                nameEn: z.ZodString;
+                nameAr: z.ZodString;
+                position: z.ZodNumber;
+                values: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    valueEn: z.ZodString;
+                    valueAr: z.ZodString;
+                    position: z.ZodNumber;
+                    metadata: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+                }, "strip", z.ZodTypeAny, {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }, {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }>, "many">;
+            }, "strip", z.ZodTypeAny, {
+                values: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
+                id: string;
+                position: number;
+                nameEn: string;
+                nameAr: string;
+            }, {
+                values: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
+                id: string;
+                position: number;
+                nameEn: string;
+                nameAr: string;
+            }>, "many">;
             variants: z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
                 sku: z.ZodString;
                 nameEn: z.ZodString;
                 nameAr: z.ZodString;
                 price: z.ZodNumber;
+                compareAtPrice: z.ZodNullable<z.ZodNumber>;
                 shadeHex: z.ZodNullable<z.ZodString>;
+                optionValues: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    valueEn: z.ZodString;
+                    valueAr: z.ZodString;
+                    position: z.ZodNumber;
+                    metadata: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+                }, "strip", z.ZodTypeAny, {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }, {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }>, "many">;
+                images: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    variantId: z.ZodNullable<z.ZodString>;
+                    url: z.ZodString;
+                    altText: z.ZodNullable<z.ZodString>;
+                    sortOrder: z.ZodNumber;
+                    isPrimary: z.ZodBoolean;
+                }, "strip", z.ZodTypeAny, {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }, {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }>, "many">;
             } & {
                 stock: z.ZodNumber;
             }, "strip", z.ZodTypeAny, {
@@ -1841,7 +2790,23 @@ export declare const wishlistSchema: z.ZodObject<{
                 price: number;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 shadeHex: string | null;
+                images: {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }[];
+                optionValues: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
                 stock: number;
             }, {
                 id: string;
@@ -1849,11 +2814,28 @@ export declare const wishlistSchema: z.ZodObject<{
                 price: number;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 shadeHex: string | null;
+                images: {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }[];
+                optionValues: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
                 stock: number;
             }>, "many">;
             images: z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
+                variantId: z.ZodNullable<z.ZodString>;
                 url: z.ZodString;
                 altText: z.ZodNullable<z.ZodString>;
                 sortOrder: z.ZodNumber;
@@ -1861,12 +2843,14 @@ export declare const wishlistSchema: z.ZodObject<{
             }, "strip", z.ZodTypeAny, {
                 sortOrder: number;
                 id: string;
+                variantId: string | null;
                 url: string;
                 altText: string | null;
                 isPrimary: boolean;
             }, {
                 sortOrder: number;
                 id: string;
+                variantId: string | null;
                 url: string;
                 altText: string | null;
                 isPrimary: boolean;
@@ -1936,6 +2920,19 @@ export declare const wishlistSchema: z.ZodObject<{
                 concentrationUnit: string | null;
             }>, "many">;
         }, "strip", z.ZodTypeAny, {
+            options: {
+                values: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
+                id: string;
+                position: number;
+                nameEn: string;
+                nameAr: string;
+            }[];
             id: string;
             imageUrl: string | null;
             slug: string;
@@ -1943,23 +2940,40 @@ export declare const wishlistSchema: z.ZodObject<{
             descriptionAr: string | null;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             ingredients: string | null;
             howToUse: string | null;
             skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
             basePrice: number;
-            compareAtPrice: number | null;
             variants: {
                 id: string;
                 sku: string;
                 price: number;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 shadeHex: string | null;
+                images: {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }[];
+                optionValues: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
                 stock: number;
             }[];
             images: {
                 sortOrder: number;
                 id: string;
+                variantId: string | null;
                 url: string;
                 altText: string | null;
                 isPrimary: boolean;
@@ -2004,6 +3018,19 @@ export declare const wishlistSchema: z.ZodObject<{
                 concentrationUnit: string | null;
             }[];
         }, {
+            options: {
+                values: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
+                id: string;
+                position: number;
+                nameEn: string;
+                nameAr: string;
+            }[];
             id: string;
             imageUrl: string | null;
             slug: string;
@@ -2011,23 +3038,40 @@ export declare const wishlistSchema: z.ZodObject<{
             descriptionAr: string | null;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             ingredients: string | null;
             howToUse: string | null;
             skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
             basePrice: number;
-            compareAtPrice: number | null;
             variants: {
                 id: string;
                 sku: string;
                 price: number;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 shadeHex: string | null;
+                images: {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }[];
+                optionValues: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
                 stock: number;
             }[];
             images: {
                 sortOrder: number;
                 id: string;
+                variantId: string | null;
                 url: string;
                 altText: string | null;
                 isPrimary: boolean;
@@ -2078,6 +3122,19 @@ export declare const wishlistSchema: z.ZodObject<{
         productId: string;
         collectionId: string;
         product: {
+            options: {
+                values: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
+                id: string;
+                position: number;
+                nameEn: string;
+                nameAr: string;
+            }[];
             id: string;
             imageUrl: string | null;
             slug: string;
@@ -2085,23 +3142,40 @@ export declare const wishlistSchema: z.ZodObject<{
             descriptionAr: string | null;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             ingredients: string | null;
             howToUse: string | null;
             skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
             basePrice: number;
-            compareAtPrice: number | null;
             variants: {
                 id: string;
                 sku: string;
                 price: number;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 shadeHex: string | null;
+                images: {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }[];
+                optionValues: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
                 stock: number;
             }[];
             images: {
                 sortOrder: number;
                 id: string;
+                variantId: string | null;
                 url: string;
                 altText: string | null;
                 isPrimary: boolean;
@@ -2152,6 +3226,19 @@ export declare const wishlistSchema: z.ZodObject<{
         productId: string;
         collectionId: string;
         product: {
+            options: {
+                values: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
+                id: string;
+                position: number;
+                nameEn: string;
+                nameAr: string;
+            }[];
             id: string;
             imageUrl: string | null;
             slug: string;
@@ -2159,23 +3246,40 @@ export declare const wishlistSchema: z.ZodObject<{
             descriptionAr: string | null;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             ingredients: string | null;
             howToUse: string | null;
             skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
             basePrice: number;
-            compareAtPrice: number | null;
             variants: {
                 id: string;
                 sku: string;
                 price: number;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 shadeHex: string | null;
+                images: {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }[];
+                optionValues: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
                 stock: number;
             }[];
             images: {
                 sortOrder: number;
                 id: string;
+                variantId: string | null;
                 url: string;
                 altText: string | null;
                 isPrimary: boolean;
@@ -2231,6 +3335,19 @@ export declare const wishlistSchema: z.ZodObject<{
         productId: string;
         collectionId: string;
         product: {
+            options: {
+                values: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
+                id: string;
+                position: number;
+                nameEn: string;
+                nameAr: string;
+            }[];
             id: string;
             imageUrl: string | null;
             slug: string;
@@ -2238,23 +3355,40 @@ export declare const wishlistSchema: z.ZodObject<{
             descriptionAr: string | null;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             ingredients: string | null;
             howToUse: string | null;
             skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
             basePrice: number;
-            compareAtPrice: number | null;
             variants: {
                 id: string;
                 sku: string;
                 price: number;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 shadeHex: string | null;
+                images: {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }[];
+                optionValues: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
                 stock: number;
             }[];
             images: {
                 sortOrder: number;
                 id: string;
+                variantId: string | null;
                 url: string;
                 altText: string | null;
                 isPrimary: boolean;
@@ -2313,6 +3447,19 @@ export declare const wishlistSchema: z.ZodObject<{
             productId: string;
             collectionId: string;
             product: {
+                options: {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }[];
                 id: string;
                 imageUrl: string | null;
                 slug: string;
@@ -2320,23 +3467,40 @@ export declare const wishlistSchema: z.ZodObject<{
                 descriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 ingredients: string | null;
                 howToUse: string | null;
                 skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
                 basePrice: number;
-                compareAtPrice: number | null;
                 variants: {
                     id: string;
                     sku: string;
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }[];
                 images: {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -2394,6 +3558,19 @@ export declare const wishlistSchema: z.ZodObject<{
         productId: string;
         collectionId: string;
         product: {
+            options: {
+                values: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
+                id: string;
+                position: number;
+                nameEn: string;
+                nameAr: string;
+            }[];
             id: string;
             imageUrl: string | null;
             slug: string;
@@ -2401,23 +3578,40 @@ export declare const wishlistSchema: z.ZodObject<{
             descriptionAr: string | null;
             nameEn: string;
             nameAr: string;
+            compareAtPrice: number | null;
             ingredients: string | null;
             howToUse: string | null;
             skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
             basePrice: number;
-            compareAtPrice: number | null;
             variants: {
                 id: string;
                 sku: string;
                 price: number;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 shadeHex: string | null;
+                images: {
+                    sortOrder: number;
+                    id: string;
+                    variantId: string | null;
+                    url: string;
+                    altText: string | null;
+                    isPrimary: boolean;
+                }[];
+                optionValues: {
+                    id: string;
+                    valueEn: string;
+                    valueAr: string;
+                    position: number;
+                    metadata: Record<string, unknown> | null;
+                }[];
                 stock: number;
             }[];
             images: {
                 sortOrder: number;
                 id: string;
+                variantId: string | null;
                 url: string;
                 altText: string | null;
                 isPrimary: boolean;
@@ -2476,6 +3670,19 @@ export declare const wishlistSchema: z.ZodObject<{
             productId: string;
             collectionId: string;
             product: {
+                options: {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }[];
                 id: string;
                 imageUrl: string | null;
                 slug: string;
@@ -2483,23 +3690,40 @@ export declare const wishlistSchema: z.ZodObject<{
                 descriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 ingredients: string | null;
                 howToUse: string | null;
                 skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
                 basePrice: number;
-                compareAtPrice: number | null;
                 variants: {
                     id: string;
                     sku: string;
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }[];
                 images: {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -2625,13 +3849,104 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     slug: string;
                     logoUrl: string | null;
                 }>>;
+                options: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    nameEn: z.ZodString;
+                    nameAr: z.ZodString;
+                    position: z.ZodNumber;
+                    values: z.ZodArray<z.ZodObject<{
+                        id: z.ZodString;
+                        valueEn: z.ZodString;
+                        valueAr: z.ZodString;
+                        position: z.ZodNumber;
+                        metadata: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+                    }, "strip", z.ZodTypeAny, {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }, {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }>, "many">;
+                }, "strip", z.ZodTypeAny, {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }, {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }>, "many">;
                 variants: z.ZodArray<z.ZodObject<{
                     id: z.ZodString;
                     sku: z.ZodString;
                     nameEn: z.ZodString;
                     nameAr: z.ZodString;
                     price: z.ZodNumber;
+                    compareAtPrice: z.ZodNullable<z.ZodNumber>;
                     shadeHex: z.ZodNullable<z.ZodString>;
+                    optionValues: z.ZodArray<z.ZodObject<{
+                        id: z.ZodString;
+                        valueEn: z.ZodString;
+                        valueAr: z.ZodString;
+                        position: z.ZodNumber;
+                        metadata: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
+                    }, "strip", z.ZodTypeAny, {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }, {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }>, "many">;
+                    images: z.ZodArray<z.ZodObject<{
+                        id: z.ZodString;
+                        variantId: z.ZodNullable<z.ZodString>;
+                        url: z.ZodString;
+                        altText: z.ZodNullable<z.ZodString>;
+                        sortOrder: z.ZodNumber;
+                        isPrimary: z.ZodBoolean;
+                    }, "strip", z.ZodTypeAny, {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }, {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }>, "many">;
                 } & {
                     stock: z.ZodNumber;
                 }, "strip", z.ZodTypeAny, {
@@ -2640,7 +3955,23 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }, {
                     id: string;
@@ -2648,11 +3979,28 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }>, "many">;
                 images: z.ZodArray<z.ZodObject<{
                     id: z.ZodString;
+                    variantId: z.ZodNullable<z.ZodString>;
                     url: z.ZodString;
                     altText: z.ZodNullable<z.ZodString>;
                     sortOrder: z.ZodNumber;
@@ -2660,12 +4008,14 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 }, "strip", z.ZodTypeAny, {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
                 }, {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -2735,6 +4085,19 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     concentrationUnit: string | null;
                 }>, "many">;
             }, "strip", z.ZodTypeAny, {
+                options: {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }[];
                 id: string;
                 imageUrl: string | null;
                 slug: string;
@@ -2742,23 +4105,40 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 descriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 ingredients: string | null;
                 howToUse: string | null;
                 skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
                 basePrice: number;
-                compareAtPrice: number | null;
                 variants: {
                     id: string;
                     sku: string;
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }[];
                 images: {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -2803,6 +4183,19 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     concentrationUnit: string | null;
                 }[];
             }, {
+                options: {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }[];
                 id: string;
                 imageUrl: string | null;
                 slug: string;
@@ -2810,23 +4203,40 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 descriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 ingredients: string | null;
                 howToUse: string | null;
                 skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
                 basePrice: number;
-                compareAtPrice: number | null;
                 variants: {
                     id: string;
                     sku: string;
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }[];
                 images: {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -2877,6 +4287,19 @@ export declare const sharedWishlistSchema: z.ZodObject<{
             productId: string;
             collectionId: string;
             product: {
+                options: {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }[];
                 id: string;
                 imageUrl: string | null;
                 slug: string;
@@ -2884,23 +4307,40 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 descriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 ingredients: string | null;
                 howToUse: string | null;
                 skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
                 basePrice: number;
-                compareAtPrice: number | null;
                 variants: {
                     id: string;
                     sku: string;
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }[];
                 images: {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -2951,6 +4391,19 @@ export declare const sharedWishlistSchema: z.ZodObject<{
             productId: string;
             collectionId: string;
             product: {
+                options: {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }[];
                 id: string;
                 imageUrl: string | null;
                 slug: string;
@@ -2958,23 +4411,40 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 descriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 ingredients: string | null;
                 howToUse: string | null;
                 skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
                 basePrice: number;
-                compareAtPrice: number | null;
                 variants: {
                     id: string;
                     sku: string;
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }[];
                 images: {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -3038,6 +4508,19 @@ export declare const sharedWishlistSchema: z.ZodObject<{
             productId: string;
             collectionId: string;
             product: {
+                options: {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }[];
                 id: string;
                 imageUrl: string | null;
                 slug: string;
@@ -3045,23 +4528,40 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 descriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 ingredients: string | null;
                 howToUse: string | null;
                 skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
                 basePrice: number;
-                compareAtPrice: number | null;
                 variants: {
                     id: string;
                     sku: string;
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }[];
                 images: {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -3122,6 +4622,19 @@ export declare const sharedWishlistSchema: z.ZodObject<{
             productId: string;
             collectionId: string;
             product: {
+                options: {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }[];
                 id: string;
                 imageUrl: string | null;
                 slug: string;
@@ -3129,23 +4642,40 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 descriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 ingredients: string | null;
                 howToUse: string | null;
                 skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
                 basePrice: number;
-                compareAtPrice: number | null;
                 variants: {
                     id: string;
                     sku: string;
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }[];
                 images: {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -3211,6 +4741,19 @@ export declare const sharedWishlistSchema: z.ZodObject<{
             productId: string;
             collectionId: string;
             product: {
+                options: {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }[];
                 id: string;
                 imageUrl: string | null;
                 slug: string;
@@ -3218,23 +4761,40 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 descriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 ingredients: string | null;
                 howToUse: string | null;
                 skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
                 basePrice: number;
-                compareAtPrice: number | null;
                 variants: {
                     id: string;
                     sku: string;
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }[];
                 images: {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;
@@ -3300,6 +4860,19 @@ export declare const sharedWishlistSchema: z.ZodObject<{
             productId: string;
             collectionId: string;
             product: {
+                options: {
+                    values: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
+                    id: string;
+                    position: number;
+                    nameEn: string;
+                    nameAr: string;
+                }[];
                 id: string;
                 imageUrl: string | null;
                 slug: string;
@@ -3307,23 +4880,40 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 descriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
+                compareAtPrice: number | null;
                 ingredients: string | null;
                 howToUse: string | null;
                 skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
                 basePrice: number;
-                compareAtPrice: number | null;
                 variants: {
                     id: string;
                     sku: string;
                     price: number;
                     nameEn: string;
                     nameAr: string;
+                    compareAtPrice: number | null;
                     shadeHex: string | null;
+                    images: {
+                        sortOrder: number;
+                        id: string;
+                        variantId: string | null;
+                        url: string;
+                        altText: string | null;
+                        isPrimary: boolean;
+                    }[];
+                    optionValues: {
+                        id: string;
+                        valueEn: string;
+                        valueAr: string;
+                        position: number;
+                        metadata: Record<string, unknown> | null;
+                    }[];
                     stock: number;
                 }[];
                 images: {
                     sortOrder: number;
                     id: string;
+                    variantId: string | null;
                     url: string;
                     altText: string | null;
                     isPrimary: boolean;

@@ -3854,10 +3854,10 @@ export declare const popupAnalyticsEventSchema: z.ZodObject<{
     type: "IMPRESSION" | "COUPON_COPY" | "DISMISS" | "ELIGIBLE" | "PRIMARY_CLICK" | "SECONDARY_CLICK" | "FORM_SUBMIT" | "SUCCESS" | "CONVERSION";
     page: string;
     variantId: string | null;
+    metadata: Record<string, string | number | boolean | null>;
     locale: "en" | "ar";
     device: "desktop" | "tablet" | "mobile";
     sessionId: string;
-    metadata: Record<string, string | number | boolean | null>;
     visitorId: string;
     eventId: string;
     campaignId: string;
@@ -3892,10 +3892,10 @@ export declare const popupAnalyticsBatchSchema: z.ZodObject<{
         type: "IMPRESSION" | "COUPON_COPY" | "DISMISS" | "ELIGIBLE" | "PRIMARY_CLICK" | "SECONDARY_CLICK" | "FORM_SUBMIT" | "SUCCESS" | "CONVERSION";
         page: string;
         variantId: string | null;
+        metadata: Record<string, string | number | boolean | null>;
         locale: "en" | "ar";
         device: "desktop" | "tablet" | "mobile";
         sessionId: string;
-        metadata: Record<string, string | number | boolean | null>;
         visitorId: string;
         eventId: string;
         campaignId: string;
@@ -3918,10 +3918,10 @@ export declare const popupAnalyticsBatchSchema: z.ZodObject<{
         type: "IMPRESSION" | "COUPON_COPY" | "DISMISS" | "ELIGIBLE" | "PRIMARY_CLICK" | "SECONDARY_CLICK" | "FORM_SUBMIT" | "SUCCESS" | "CONVERSION";
         page: string;
         variantId: string | null;
+        metadata: Record<string, string | number | boolean | null>;
         locale: "en" | "ar";
         device: "desktop" | "tablet" | "mobile";
         sessionId: string;
-        metadata: Record<string, string | number | boolean | null>;
         visitorId: string;
         eventId: string;
         campaignId: string;

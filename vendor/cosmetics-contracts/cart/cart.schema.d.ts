@@ -30,6 +30,28 @@ export declare const cartItemSchema: z.ZodObject<{
     productNameAr: z.ZodString;
     variantNameEn: z.ZodString;
     variantNameAr: z.ZodString;
+    variantOptions: z.ZodArray<z.ZodObject<{
+        optionId: z.ZodString;
+        optionNameEn: z.ZodString;
+        optionNameAr: z.ZodString;
+        valueId: z.ZodString;
+        valueEn: z.ZodString;
+        valueAr: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        optionId: string;
+        optionNameEn: string;
+        optionNameAr: string;
+        valueId: string;
+        valueEn: string;
+        valueAr: string;
+    }, {
+        optionId: string;
+        optionNameEn: string;
+        optionNameAr: string;
+        valueId: string;
+        valueEn: string;
+        valueAr: string;
+    }>, "many">;
     sku: z.ZodString;
     imageUrl: z.ZodNullable<z.ZodString>;
     categoryId: z.ZodString;
@@ -49,6 +71,14 @@ export declare const cartItemSchema: z.ZodObject<{
     variantId: string;
     quantity: number;
     productId: string;
+    variantOptions: {
+        optionId: string;
+        optionNameEn: string;
+        optionNameAr: string;
+        valueId: string;
+        valueEn: string;
+        valueAr: string;
+    }[];
     sku: string;
     discount: number;
     imageUrl: string | null;
@@ -70,6 +100,14 @@ export declare const cartItemSchema: z.ZodObject<{
     variantId: string;
     quantity: number;
     productId: string;
+    variantOptions: {
+        optionId: string;
+        optionNameEn: string;
+        optionNameAr: string;
+        valueId: string;
+        valueEn: string;
+        valueAr: string;
+    }[];
     sku: string;
     discount: number;
     imageUrl: string | null;
@@ -98,6 +136,28 @@ export declare const cartSchema: z.ZodObject<{
         productNameAr: z.ZodString;
         variantNameEn: z.ZodString;
         variantNameAr: z.ZodString;
+        variantOptions: z.ZodArray<z.ZodObject<{
+            optionId: z.ZodString;
+            optionNameEn: z.ZodString;
+            optionNameAr: z.ZodString;
+            valueId: z.ZodString;
+            valueEn: z.ZodString;
+            valueAr: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }, {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }>, "many">;
         sku: z.ZodString;
         imageUrl: z.ZodNullable<z.ZodString>;
         categoryId: z.ZodString;
@@ -117,6 +177,14 @@ export declare const cartSchema: z.ZodObject<{
         variantId: string;
         quantity: number;
         productId: string;
+        variantOptions: {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }[];
         sku: string;
         discount: number;
         imageUrl: string | null;
@@ -138,6 +206,14 @@ export declare const cartSchema: z.ZodObject<{
         variantId: string;
         quantity: number;
         productId: string;
+        variantOptions: {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }[];
         sku: string;
         discount: number;
         imageUrl: string | null;
@@ -218,6 +294,14 @@ export declare const cartSchema: z.ZodObject<{
         variantId: string;
         quantity: number;
         productId: string;
+        variantOptions: {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }[];
         sku: string;
         discount: number;
         imageUrl: string | null;
@@ -269,6 +353,14 @@ export declare const cartSchema: z.ZodObject<{
         variantId: string;
         quantity: number;
         productId: string;
+        variantOptions: {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }[];
         sku: string;
         discount: number;
         imageUrl: string | null;
