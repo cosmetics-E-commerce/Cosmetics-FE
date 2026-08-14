@@ -79,9 +79,9 @@ export declare const commerceEventSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     name: "product_viewed" | "product_added_to_cart" | "product_removed_from_cart" | "wishlist_added" | "wishlist_removed" | "search_performed" | "search_result_clicked" | "cart_viewed" | "checkout_started" | "checkout_step_completed" | "purchase_completed" | "coupon_applied" | "offer_viewed" | "product_shared";
     source: "storefront" | "admin" | "server";
+    metadata: Record<string, string | number | boolean | null>;
     sessionId: string;
     deviceType: "unknown" | "desktop" | "tablet" | "mobile";
-    metadata: Record<string, string | number | boolean | null>;
     orderId?: string | null | undefined;
     variantId?: string | null | undefined;
     productId?: string | null | undefined;
@@ -95,11 +95,11 @@ export declare const commerceEventSchema: z.ZodObject<{
     variantId?: string | null | undefined;
     productId?: string | null | undefined;
     source?: "storefront" | "admin" | "server" | undefined;
+    metadata?: Record<string, string | number | boolean | null> | undefined;
     categoryId?: string | null | undefined;
     searchTerm?: string | null | undefined;
     resultCount?: number | null | undefined;
     deviceType?: "unknown" | "desktop" | "tablet" | "mobile" | undefined;
-    metadata?: Record<string, string | number | boolean | null> | undefined;
 }>;
 export declare const savedViewSchema: z.ZodObject<{
     name: z.ZodString;

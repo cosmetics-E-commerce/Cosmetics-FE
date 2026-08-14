@@ -78,6 +78,16 @@ export type Product = {
   image: string;
   imageAlt?: string;
   gallery: string[];
+  media?: Array<{
+    id: string;
+    url: string;
+    altText: string;
+  }>;
+  options?: Array<{
+    id: string;
+    label: string;
+    values: Array<{ id: string; label: string; metadata?: Record<string, unknown> | null }>;
+  }>;
   badge?: "New" | "Bestseller" | "Limited";
   sizes: {
     id?: string;
@@ -88,6 +98,9 @@ export type Product = {
     promotionTitle?: string;
     shadeHex?: string | null;
     stock?: number;
+    optionValueIds?: string[];
+    optionValues?: Array<{ id: string; label: string }>;
+    media?: Array<{ id: string; url: string; altText: string }>;
   }[];
   stock?: number;
   concerns: string[];

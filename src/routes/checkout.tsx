@@ -292,7 +292,9 @@ function Checkout() {
       />
     );
   return (
-    <div className="sf-checkout-page">
+    <div
+      className={`sf-checkout-page${!result && activeStep === 4 ? " sf-checkout-page--with-mobile-action" : ""}`}
+    >
       <Reveal stagger staggerMs={45} distance={18} className="sf-checkout-hero">
         <p className="sf-checkout-eyebrow">{t("checkout.eyebrow")}</p>
         <h1 className="display">{t("checkout.title")}</h1>
@@ -797,7 +799,7 @@ function Checkout() {
           </aside>
         </div>
       )}
-      {!result && (
+      {!result && activeStep === 4 && (
         <div className="mobile-primary-bar fixed inset-x-0 bottom-0 z-30 border-t border-border bg-white px-4 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.18)] lg:hidden">
           <div className="mx-auto flex max-w-lg items-center gap-3">
             <div className="min-w-0 flex-1">

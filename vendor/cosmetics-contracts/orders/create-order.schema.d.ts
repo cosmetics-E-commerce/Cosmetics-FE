@@ -204,6 +204,30 @@ export declare const orderItemResponseSchema: z.ZodObject<{
     productId: z.ZodString;
     variantId: z.ZodString;
     productName: z.ZodString;
+    variantName: z.ZodNullable<z.ZodString>;
+    variantOptions: z.ZodArray<z.ZodObject<{
+        optionId: z.ZodString;
+        optionNameEn: z.ZodString;
+        optionNameAr: z.ZodString;
+        valueId: z.ZodString;
+        valueEn: z.ZodString;
+        valueAr: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        optionId: string;
+        optionNameEn: string;
+        optionNameAr: string;
+        valueId: string;
+        valueEn: string;
+        valueAr: string;
+    }, {
+        optionId: string;
+        optionNameEn: string;
+        optionNameAr: string;
+        valueId: string;
+        valueEn: string;
+        valueAr: string;
+    }>, "many">;
+    imageReference: z.ZodNullable<z.ZodString>;
     sku: z.ZodString;
     price: z.ZodNumber;
     quantity: z.ZodNumber;
@@ -217,6 +241,16 @@ export declare const orderItemResponseSchema: z.ZodObject<{
     quantity: number;
     productId: string;
     productName: string;
+    variantName: string | null;
+    variantOptions: {
+        optionId: string;
+        optionNameEn: string;
+        optionNameAr: string;
+        valueId: string;
+        valueEn: string;
+        valueAr: string;
+    }[];
+    imageReference: string | null;
     sku: string;
     price: number;
     discount: number;
@@ -229,6 +263,16 @@ export declare const orderItemResponseSchema: z.ZodObject<{
     quantity: number;
     productId: string;
     productName: string;
+    variantName: string | null;
+    variantOptions: {
+        optionId: string;
+        optionNameEn: string;
+        optionNameAr: string;
+        valueId: string;
+        valueEn: string;
+        valueAr: string;
+    }[];
+    imageReference: string | null;
     sku: string;
     price: number;
     discount: number;
@@ -311,6 +355,30 @@ export declare const invoiceResponseSchema: z.ZodObject<{
         productId: z.ZodString;
         variantId: z.ZodString;
         productName: z.ZodString;
+        variantName: z.ZodNullable<z.ZodString>;
+        variantOptions: z.ZodArray<z.ZodObject<{
+            optionId: z.ZodString;
+            optionNameEn: z.ZodString;
+            optionNameAr: z.ZodString;
+            valueId: z.ZodString;
+            valueEn: z.ZodString;
+            valueAr: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }, {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }>, "many">;
+        imageReference: z.ZodNullable<z.ZodString>;
         sku: z.ZodString;
         price: z.ZodNumber;
         quantity: z.ZodNumber;
@@ -324,6 +392,16 @@ export declare const invoiceResponseSchema: z.ZodObject<{
         quantity: number;
         productId: string;
         productName: string;
+        variantName: string | null;
+        variantOptions: {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }[];
+        imageReference: string | null;
         sku: string;
         price: number;
         discount: number;
@@ -336,6 +414,16 @@ export declare const invoiceResponseSchema: z.ZodObject<{
         quantity: number;
         productId: string;
         productName: string;
+        variantName: string | null;
+        variantOptions: {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }[];
+        imageReference: string | null;
         sku: string;
         price: number;
         discount: number;
@@ -369,6 +457,16 @@ export declare const invoiceResponseSchema: z.ZodObject<{
         quantity: number;
         productId: string;
         productName: string;
+        variantName: string | null;
+        variantOptions: {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }[];
+        imageReference: string | null;
         sku: string;
         price: number;
         discount: number;
@@ -404,6 +502,16 @@ export declare const invoiceResponseSchema: z.ZodObject<{
         quantity: number;
         productId: string;
         productName: string;
+        variantName: string | null;
+        variantOptions: {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }[];
+        imageReference: string | null;
         sku: string;
         price: number;
         discount: number;
@@ -721,6 +829,30 @@ export declare const orderResponseSchema: z.ZodObject<{
         productId: z.ZodString;
         variantId: z.ZodString;
         productName: z.ZodString;
+        variantName: z.ZodNullable<z.ZodString>;
+        variantOptions: z.ZodArray<z.ZodObject<{
+            optionId: z.ZodString;
+            optionNameEn: z.ZodString;
+            optionNameAr: z.ZodString;
+            valueId: z.ZodString;
+            valueEn: z.ZodString;
+            valueAr: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }, {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }>, "many">;
+        imageReference: z.ZodNullable<z.ZodString>;
         sku: z.ZodString;
         price: z.ZodNumber;
         quantity: z.ZodNumber;
@@ -734,6 +866,16 @@ export declare const orderResponseSchema: z.ZodObject<{
         quantity: number;
         productId: string;
         productName: string;
+        variantName: string | null;
+        variantOptions: {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }[];
+        imageReference: string | null;
         sku: string;
         price: number;
         discount: number;
@@ -746,6 +888,16 @@ export declare const orderResponseSchema: z.ZodObject<{
         quantity: number;
         productId: string;
         productName: string;
+        variantName: string | null;
+        variantOptions: {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }[];
+        imageReference: string | null;
         sku: string;
         price: number;
         discount: number;
@@ -784,6 +936,30 @@ export declare const orderResponseSchema: z.ZodObject<{
             productId: z.ZodString;
             variantId: z.ZodString;
             productName: z.ZodString;
+            variantName: z.ZodNullable<z.ZodString>;
+            variantOptions: z.ZodArray<z.ZodObject<{
+                optionId: z.ZodString;
+                optionNameEn: z.ZodString;
+                optionNameAr: z.ZodString;
+                valueId: z.ZodString;
+                valueEn: z.ZodString;
+                valueAr: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }, {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }>, "many">;
+            imageReference: z.ZodNullable<z.ZodString>;
             sku: z.ZodString;
             price: z.ZodNumber;
             quantity: z.ZodNumber;
@@ -797,6 +973,16 @@ export declare const orderResponseSchema: z.ZodObject<{
             quantity: number;
             productId: string;
             productName: string;
+            variantName: string | null;
+            variantOptions: {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }[];
+            imageReference: string | null;
             sku: string;
             price: number;
             discount: number;
@@ -809,6 +995,16 @@ export declare const orderResponseSchema: z.ZodObject<{
             quantity: number;
             productId: string;
             productName: string;
+            variantName: string | null;
+            variantOptions: {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }[];
+            imageReference: string | null;
             sku: string;
             price: number;
             discount: number;
@@ -842,6 +1038,16 @@ export declare const orderResponseSchema: z.ZodObject<{
             quantity: number;
             productId: string;
             productName: string;
+            variantName: string | null;
+            variantOptions: {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }[];
+            imageReference: string | null;
             sku: string;
             price: number;
             discount: number;
@@ -877,6 +1083,16 @@ export declare const orderResponseSchema: z.ZodObject<{
             quantity: number;
             productId: string;
             productName: string;
+            variantName: string | null;
+            variantOptions: {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }[];
+            imageReference: string | null;
             sku: string;
             price: number;
             discount: number;
@@ -1073,6 +1289,16 @@ export declare const orderResponseSchema: z.ZodObject<{
         quantity: number;
         productId: string;
         productName: string;
+        variantName: string | null;
+        variantOptions: {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }[];
+        imageReference: string | null;
         sku: string;
         price: number;
         discount: number;
@@ -1110,6 +1336,16 @@ export declare const orderResponseSchema: z.ZodObject<{
             quantity: number;
             productId: string;
             productName: string;
+            variantName: string | null;
+            variantOptions: {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }[];
+            imageReference: string | null;
             sku: string;
             price: number;
             discount: number;
@@ -1227,6 +1463,16 @@ export declare const orderResponseSchema: z.ZodObject<{
         quantity: number;
         productId: string;
         productName: string;
+        variantName: string | null;
+        variantOptions: {
+            optionId: string;
+            optionNameEn: string;
+            optionNameAr: string;
+            valueId: string;
+            valueEn: string;
+            valueAr: string;
+        }[];
+        imageReference: string | null;
         sku: string;
         price: number;
         discount: number;
@@ -1264,6 +1510,16 @@ export declare const orderResponseSchema: z.ZodObject<{
             quantity: number;
             productId: string;
             productName: string;
+            variantName: string | null;
+            variantOptions: {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }[];
+            imageReference: string | null;
             sku: string;
             price: number;
             discount: number;
@@ -1489,6 +1745,30 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             productId: z.ZodString;
             variantId: z.ZodString;
             productName: z.ZodString;
+            variantName: z.ZodNullable<z.ZodString>;
+            variantOptions: z.ZodArray<z.ZodObject<{
+                optionId: z.ZodString;
+                optionNameEn: z.ZodString;
+                optionNameAr: z.ZodString;
+                valueId: z.ZodString;
+                valueEn: z.ZodString;
+                valueAr: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }, {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }>, "many">;
+            imageReference: z.ZodNullable<z.ZodString>;
             sku: z.ZodString;
             price: z.ZodNumber;
             quantity: z.ZodNumber;
@@ -1502,6 +1782,16 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             quantity: number;
             productId: string;
             productName: string;
+            variantName: string | null;
+            variantOptions: {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }[];
+            imageReference: string | null;
             sku: string;
             price: number;
             discount: number;
@@ -1514,6 +1804,16 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             quantity: number;
             productId: string;
             productName: string;
+            variantName: string | null;
+            variantOptions: {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }[];
+            imageReference: string | null;
             sku: string;
             price: number;
             discount: number;
@@ -1552,6 +1852,30 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 productId: z.ZodString;
                 variantId: z.ZodString;
                 productName: z.ZodString;
+                variantName: z.ZodNullable<z.ZodString>;
+                variantOptions: z.ZodArray<z.ZodObject<{
+                    optionId: z.ZodString;
+                    optionNameEn: z.ZodString;
+                    optionNameAr: z.ZodString;
+                    valueId: z.ZodString;
+                    valueEn: z.ZodString;
+                    valueAr: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }, {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }>, "many">;
+                imageReference: z.ZodNullable<z.ZodString>;
                 sku: z.ZodString;
                 price: z.ZodNumber;
                 quantity: z.ZodNumber;
@@ -1565,6 +1889,16 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 quantity: number;
                 productId: string;
                 productName: string;
+                variantName: string | null;
+                variantOptions: {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }[];
+                imageReference: string | null;
                 sku: string;
                 price: number;
                 discount: number;
@@ -1577,6 +1911,16 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 quantity: number;
                 productId: string;
                 productName: string;
+                variantName: string | null;
+                variantOptions: {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }[];
+                imageReference: string | null;
                 sku: string;
                 price: number;
                 discount: number;
@@ -1610,6 +1954,16 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 quantity: number;
                 productId: string;
                 productName: string;
+                variantName: string | null;
+                variantOptions: {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }[];
+                imageReference: string | null;
                 sku: string;
                 price: number;
                 discount: number;
@@ -1645,6 +1999,16 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 quantity: number;
                 productId: string;
                 productName: string;
+                variantName: string | null;
+                variantOptions: {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }[];
+                imageReference: string | null;
                 sku: string;
                 price: number;
                 discount: number;
@@ -1865,6 +2229,16 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 quantity: number;
                 productId: string;
                 productName: string;
+                variantName: string | null;
+                variantOptions: {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }[];
+                imageReference: string | null;
                 sku: string;
                 price: number;
                 discount: number;
@@ -2006,6 +2380,16 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 quantity: number;
                 productId: string;
                 productName: string;
+                variantName: string | null;
+                variantOptions: {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }[];
+                imageReference: string | null;
                 sku: string;
                 price: number;
                 discount: number;
@@ -2171,6 +2555,16 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 quantity: number;
                 productId: string;
                 productName: string;
+                variantName: string | null;
+                variantOptions: {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }[];
+                imageReference: string | null;
                 sku: string;
                 price: number;
                 discount: number;
@@ -2322,6 +2716,16 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 quantity: number;
                 productId: string;
                 productName: string;
+                variantName: string | null;
+                variantOptions: {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }[];
+                imageReference: string | null;
                 sku: string;
                 price: number;
                 discount: number;
@@ -2616,6 +3020,30 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             productId: z.ZodString;
             variantId: z.ZodString;
             productName: z.ZodString;
+            variantName: z.ZodNullable<z.ZodString>;
+            variantOptions: z.ZodArray<z.ZodObject<{
+                optionId: z.ZodString;
+                optionNameEn: z.ZodString;
+                optionNameAr: z.ZodString;
+                valueId: z.ZodString;
+                valueEn: z.ZodString;
+                valueAr: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }, {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }>, "many">;
+            imageReference: z.ZodNullable<z.ZodString>;
             sku: z.ZodString;
             price: z.ZodNumber;
             quantity: z.ZodNumber;
@@ -2629,6 +3057,16 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             quantity: number;
             productId: string;
             productName: string;
+            variantName: string | null;
+            variantOptions: {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }[];
+            imageReference: string | null;
             sku: string;
             price: number;
             discount: number;
@@ -2641,6 +3079,16 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             quantity: number;
             productId: string;
             productName: string;
+            variantName: string | null;
+            variantOptions: {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }[];
+            imageReference: string | null;
             sku: string;
             price: number;
             discount: number;
@@ -2679,6 +3127,30 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 productId: z.ZodString;
                 variantId: z.ZodString;
                 productName: z.ZodString;
+                variantName: z.ZodNullable<z.ZodString>;
+                variantOptions: z.ZodArray<z.ZodObject<{
+                    optionId: z.ZodString;
+                    optionNameEn: z.ZodString;
+                    optionNameAr: z.ZodString;
+                    valueId: z.ZodString;
+                    valueEn: z.ZodString;
+                    valueAr: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }, {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }>, "many">;
+                imageReference: z.ZodNullable<z.ZodString>;
                 sku: z.ZodString;
                 price: z.ZodNumber;
                 quantity: z.ZodNumber;
@@ -2692,6 +3164,16 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 quantity: number;
                 productId: string;
                 productName: string;
+                variantName: string | null;
+                variantOptions: {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }[];
+                imageReference: string | null;
                 sku: string;
                 price: number;
                 discount: number;
@@ -2704,6 +3186,16 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 quantity: number;
                 productId: string;
                 productName: string;
+                variantName: string | null;
+                variantOptions: {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }[];
+                imageReference: string | null;
                 sku: string;
                 price: number;
                 discount: number;
@@ -2737,6 +3229,16 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 quantity: number;
                 productId: string;
                 productName: string;
+                variantName: string | null;
+                variantOptions: {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }[];
+                imageReference: string | null;
                 sku: string;
                 price: number;
                 discount: number;
@@ -2772,6 +3274,16 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 quantity: number;
                 productId: string;
                 productName: string;
+                variantName: string | null;
+                variantOptions: {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }[];
+                imageReference: string | null;
                 sku: string;
                 price: number;
                 discount: number;
@@ -2968,6 +3480,16 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             quantity: number;
             productId: string;
             productName: string;
+            variantName: string | null;
+            variantOptions: {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }[];
+            imageReference: string | null;
             sku: string;
             price: number;
             discount: number;
@@ -3005,6 +3527,16 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 quantity: number;
                 productId: string;
                 productName: string;
+                variantName: string | null;
+                variantOptions: {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }[];
+                imageReference: string | null;
                 sku: string;
                 price: number;
                 discount: number;
@@ -3122,6 +3654,16 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             quantity: number;
             productId: string;
             productName: string;
+            variantName: string | null;
+            variantOptions: {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }[];
+            imageReference: string | null;
             sku: string;
             price: number;
             discount: number;
@@ -3159,6 +3701,16 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 quantity: number;
                 productId: string;
                 productName: string;
+                variantName: string | null;
+                variantOptions: {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }[];
+                imageReference: string | null;
                 sku: string;
                 price: number;
                 discount: number;
@@ -3367,6 +3919,16 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             quantity: number;
             productId: string;
             productName: string;
+            variantName: string | null;
+            variantOptions: {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }[];
+            imageReference: string | null;
             sku: string;
             price: number;
             discount: number;
@@ -3404,6 +3966,16 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 quantity: number;
                 productId: string;
                 productName: string;
+                variantName: string | null;
+                variantOptions: {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }[];
+                imageReference: string | null;
                 sku: string;
                 price: number;
                 discount: number;
@@ -3554,6 +4126,16 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             quantity: number;
             productId: string;
             productName: string;
+            variantName: string | null;
+            variantOptions: {
+                optionId: string;
+                optionNameEn: string;
+                optionNameAr: string;
+                valueId: string;
+                valueEn: string;
+                valueAr: string;
+            }[];
+            imageReference: string | null;
             sku: string;
             price: number;
             discount: number;
@@ -3591,6 +4173,16 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 quantity: number;
                 productId: string;
                 productName: string;
+                variantName: string | null;
+                variantOptions: {
+                    optionId: string;
+                    optionNameEn: string;
+                    optionNameAr: string;
+                    valueId: string;
+                    valueEn: string;
+                    valueAr: string;
+                }[];
+                imageReference: string | null;
                 sku: string;
                 price: number;
                 discount: number;

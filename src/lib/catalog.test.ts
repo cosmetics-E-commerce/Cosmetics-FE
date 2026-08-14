@@ -26,6 +26,7 @@ const product = {
     sortOrder: 0,
   },
   brand: null,
+  options: [],
   variants: [
     {
       id: "33333333-3333-4333-8333-333333333333",
@@ -33,7 +34,10 @@ const product = {
       nameEn: "30 ml",
       nameAr: "٣٠ مل",
       price: 12500,
+      compareAtPrice: null,
       shadeHex: null,
+      optionValues: [],
+      images: [],
       stock: 3,
     },
   ],
