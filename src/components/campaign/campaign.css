@@ -64,9 +64,13 @@
   max-width: none;
 }
 
-.campaign-card[data-presentation="BOTTOM_SHEET"][data-animation="LIFT"] {
+/* LIFT starts 18px below the resting place, so any presentation pinned to a
+   viewport edge would sit outside the fold for the first frames. Those settle
+   in place instead of travelling. */
+.campaign-card[data-presentation="BOTTOM_SHEET"][data-animation="LIFT"],
+.campaign-card[data-presentation="BOTTOM_BANNER"][data-animation="LIFT"] {
   transform-origin: bottom center;
-  animation-name: campaign-sheet-lift-in;
+  animation-name: campaign-settle-in;
 }
 
 .campaign-card[data-presentation="TOP_BANNER"],
@@ -103,6 +107,14 @@
 }
 .campaign-card[data-presentation="SIDE_PANEL_LEFT"] {
   inset-inline-start: 0;
+}
+
+/* Side panels span the full viewport height and FULLSCREEN keeps a 16px inset,
+   so neither has the 18px of headroom LIFT needs. */
+.campaign-card[data-presentation="SIDE_PANEL_RIGHT"][data-animation="LIFT"],
+.campaign-card[data-presentation="SIDE_PANEL_LEFT"][data-animation="LIFT"],
+.campaign-card[data-presentation="FULLSCREEN"][data-animation="LIFT"] {
+  animation-name: campaign-settle-in;
 }
 
 .campaign-card--ink {
@@ -498,7 +510,7 @@
     scale: 0.985;
   }
 }
-@keyframes campaign-sheet-lift-in {
+@keyframes campaign-settle-in {
   from {
     opacity: 0;
     scale: 0.985;
@@ -528,6 +540,11 @@
     inset: auto 8px max(8px, env(safe-area-inset-bottom));
     width: auto;
     transform: none;
+  }
+  /* Bottom-anchored here, so it loses the headroom LIFT needs. */
+  .campaign-card[data-presentation="CENTER_MODAL"][data-animation="LIFT"] {
+    transform-origin: bottom center;
+    animation-name: campaign-settle-in;
   }
   .campaign-card[data-presentation="BOTTOM_SHEET"] {
     inset: auto 0 0;
