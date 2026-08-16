@@ -208,6 +208,15 @@ export function useBrands(initialData?: Awaited<ReturnType<typeof listBrands>>) 
   });
 }
 
+export function useAllBrands(initialData?: Awaited<ReturnType<typeof listBrands>>) {
+  return useQuery({
+    queryKey: ["brands", "all"],
+    queryFn: listBrands,
+    initialData,
+    staleTime: 300_000,
+  });
+}
+
 export async function loadCatalog(
   params: Record<string, string | number | undefined> = {},
   locale: Locale = "en",
@@ -240,6 +249,10 @@ export async function loadCategories() {
 
 export async function loadBrands() {
   return filterEntitiesWithProducts(await listBrands());
+}
+
+export async function loadAllBrands() {
+  return listBrands();
 }
 
 function filterEntitiesWithProducts<T extends { productCount: number }>(entities: T[]) {

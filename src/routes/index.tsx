@@ -11,7 +11,7 @@ import {
   BeautyDifference,
 } from "@/components/home/Sections";
 import { BrandMarquee } from "@/components/home/BrandMarquee";
-import { loadBrands, loadCatalog, loadCategories } from "@/lib/catalog";
+import { loadAllBrands, loadCatalog, loadCategories } from "@/lib/catalog";
 import { images } from "@/lib/products";
 import { absoluteUrl, canonicalUrl, createSeoHead, itemListSchema, jsonLd } from "@/lib/seo";
 
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/")({
         context.locale === "ar" ? "ar" : "en",
       ),
       loadCategories(),
-      loadBrands(),
+      loadAllBrands(),
     ]);
     return {
       products,

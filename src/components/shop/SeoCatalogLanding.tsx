@@ -55,7 +55,7 @@ export function SeoCatalogLanding({
             width={120}
             height={80}
             loading="eager"
-            className="mx-auto mb-6 h-16 w-28 object-contain"
+            className="sf-brand-landing-logo mx-auto mb-6 h-16 w-28 object-contain"
           />
         ) : null}
         <p className="label-xs text-gold">
@@ -91,6 +91,26 @@ export function SeoCatalogLanding({
             <ProductCard key={product.slug} product={product} compact layout="grid" />
           ))}
         </div>
+        {meta.total === 0 ? (
+          <div className="sf-catalog-empty" role="status">
+            <p className="label-xs text-gold">{locale === "ar" ? "قريباً" : "Coming soon"}</p>
+            <h2>
+              {kind === "brand"
+                ? locale === "ar"
+                  ? `لا توجد منتجات متاحة من ${name} حالياً.`
+                  : `No ${name} products are available yet.`
+                : locale === "ar"
+                  ? "لا توجد منتجات متاحة في هذا القسم حالياً."
+                  : "No products are available in this category yet."}
+            </h2>
+            <p>
+              {locale === "ar"
+                ? "تصفّحي المجموعة الكاملة الآن، وعودي قريباً لرؤية المنتجات الجديدة."
+                : "Explore the full collection now, and check back soon for new arrivals."}
+            </p>
+            <Link to="/shop">{locale === "ar" ? "تصفّح كل المنتجات" : "Shop all products"}</Link>
+          </div>
+        ) : null}
         {meta.totalPages > 1 ? (
           <LandingPagination
             kind={kind}

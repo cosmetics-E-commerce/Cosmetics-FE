@@ -437,7 +437,7 @@ export function Header({
               to={accountTo}
               search={user ? { section: "wishlist" } : { returnTo: undefined }}
               aria-label={`${copy.wishlist}, ${wishlist.length}`}
-              className="header-action relative hidden h-11 w-11 place-items-center sm:grid"
+              className="header-action header-action--wishlist relative hidden h-11 w-11 place-items-center sm:grid"
             >
               <Heart strokeWidth={1.25} className="size-[18px]" aria-hidden="true" />
               {wishlist.length > 0 && <span className="header-dot" aria-hidden="true" />}
@@ -446,7 +446,7 @@ export function Header({
               type="button"
               onClick={() => setCartOpen(true)}
               aria-label={`${t("nav.bag")}, ${count}`}
-              className="header-action relative grid h-11 w-11 place-items-center"
+              className="header-action header-action--cart relative grid h-11 w-11 place-items-center"
             >
               <ShoppingBag strokeWidth={1.25} className="size-[18px]" aria-hidden="true" />
               {count > 0 && (
