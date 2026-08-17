@@ -67,6 +67,10 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
     arabic ? product.descriptionAr : product.descriptionEn,
     arabic ? product.descriptionEn : product.descriptionAr,
   );
+  const shortDescription = firstNonEmpty(
+    arabic ? product.shortDescriptionAr : product.shortDescriptionEn,
+    arabic ? product.shortDescriptionEn : product.shortDescriptionAr,
+  );
   return {
     id: product.id,
     categoryId: category.id,
@@ -78,6 +82,7 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
     category: categoryName,
     type: product.brand?.name ?? categoryName,
     benefit: skinType.length ? skinType.map(prettyEnum).join(" · ") : "",
+    shortDescription,
     description,
     price: (product.basePrice ?? 0) / 100,
     rating: product.rating ?? 0,

@@ -418,6 +418,7 @@ function Checkout() {
                               >
                                 <input
                                   type="radio"
+                                  data-form-control="choice-input"
                                   name="delivery-address"
                                   checked={selectedAddress === address.id}
                                   disabled={!ready}
@@ -571,6 +572,7 @@ function Checkout() {
                           >
                             <input
                               type="radio"
+                              data-form-control="choice-input"
                               name={`gift-${gift.promotionId}`}
                               checked={giftVariantIds.includes(gift.variantId)}
                               onChange={() =>
@@ -639,6 +641,7 @@ function Checkout() {
                         <span className="sf-checkout-payment-option__inner">
                           <input
                             type="radio"
+                            data-form-control="choice-input"
                             checked={method === option.value}
                             onChange={() => setMethod(option.value)}
                           />

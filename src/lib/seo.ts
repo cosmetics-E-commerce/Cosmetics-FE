@@ -264,7 +264,8 @@ export function productSchema(
     url,
   };
 
-  if (product.description) schema["description"] = metaDescription(product.description);
+  const description = product.shortDescription || product.description;
+  if (description) schema["description"] = metaDescription(description);
   if (product.brand?.name) schema["brand"] = { "@type": "Brand", name: product.brand.name };
   const sku = product.sizes.find((variant) => variant.sku)?.sku;
   if (sku) schema["sku"] = sku;

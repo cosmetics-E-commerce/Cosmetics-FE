@@ -10,6 +10,7 @@ const InputOTP = React.forwardRef<
 >(({ className, containerClassName, ...props }, ref) => (
   <OTPInput
     ref={ref}
+    data-form-control="otp"
     containerClassName={cn(
       "flex items-center gap-2 has-[:disabled]:opacity-50",
       containerClassName,
@@ -44,7 +45,7 @@ const InputOTPSlot = React.forwardRef<
       ref={ref}
       className={cn(
         "relative flex h-12 w-11 items-center justify-center border-y border-e border-input text-base shadow-sm transition-[border-color,background-color,box-shadow] duration-150 first:border-s",
-        isActive && "z-10 border-ring bg-ivory ring-1 ring-ring",
+        isActive && "z-10 border-ring bg-ivory ring-[3px] ring-ring/15",
         className,
       )}
       {...props}

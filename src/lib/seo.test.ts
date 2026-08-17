@@ -22,6 +22,7 @@ const product: Product = {
   category: "Skin Care",
   type: "Real Brand",
   benefit: "Dry Skin",
+  shortDescription: "A concise product summary.",
   description: "A catalog description supplied by the business.",
   price: 125,
   rating: 4.5,
@@ -91,6 +92,19 @@ describe("SEO metadata", () => {
       "كريم السيراميد لدعم حاجز البشرة",
     );
   });
+
+  it("normalizes authored line breaks only for metadata", () => {
+    const head = createSeoHead({
+      title: "Glass Skin Serum",
+      description: "First paragraph.\n\nSecond paragraph.",
+      path: "/product/glass-skin-serum",
+      type: "product",
+    });
+
+    expect(head.meta.find((meta) => meta["name"] === "description")?.["content"]).toBe(
+      "First paragraph. Second paragraph.",
+    );
+  });
 });
 
 describe("structured data", () => {
@@ -126,6 +140,17 @@ describe("structured data", () => {
         }),
       ]),
     );
+  });
+
+  it("prefers concise product copy in structured data and falls back to full copy", () => {
+    expect((productSchema(product) as Record<string, unknown>)["description"]).toBe(
+      "A concise product summary.",
+    );
+    expect(
+      (productSchema({ ...product, shortDescription: "" }) as Record<string, unknown>)[
+        "description"
+      ],
+    ).toBe("A catalog description supplied by the business.");
   });
 
   it("does not invent a brand, rating, or SKU when data is absent", () => {

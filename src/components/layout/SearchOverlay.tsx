@@ -250,6 +250,7 @@ export function SearchOverlay() {
           <form className="search-command" onSubmit={submit} role="search">
             <Search strokeWidth={1.2} className="search-command__icon" aria-hidden="true" />
             <input
+              data-form-control="search-input"
               ref={inputRef}
               type="search"
               inputMode="search"

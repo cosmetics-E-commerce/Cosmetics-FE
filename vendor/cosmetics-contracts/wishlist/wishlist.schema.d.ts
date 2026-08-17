@@ -44,6 +44,8 @@ export declare const wishlistItemSchema: z.ZodObject<{
         slug: z.ZodString;
         nameEn: z.ZodString;
         nameAr: z.ZodString;
+        shortDescriptionEn: z.ZodNullable<z.ZodString>;
+        shortDescriptionAr: z.ZodNullable<z.ZodString>;
         descriptionEn: z.ZodNullable<z.ZodString>;
         descriptionAr: z.ZodNullable<z.ZodString>;
         ingredients: z.ZodNullable<z.ZodString>;
@@ -350,6 +352,8 @@ export declare const wishlistItemSchema: z.ZodObject<{
         slug: string;
         descriptionEn: string | null;
         descriptionAr: string | null;
+        shortDescriptionEn: string | null;
+        shortDescriptionAr: string | null;
         nameEn: string;
         nameAr: string;
         compareAtPrice: number | null;
@@ -448,6 +452,8 @@ export declare const wishlistItemSchema: z.ZodObject<{
         slug: string;
         descriptionEn: string | null;
         descriptionAr: string | null;
+        shortDescriptionEn: string | null;
+        shortDescriptionAr: string | null;
         nameEn: string;
         nameAr: string;
         compareAtPrice: number | null;
@@ -552,6 +558,8 @@ export declare const wishlistItemSchema: z.ZodObject<{
         slug: string;
         descriptionEn: string | null;
         descriptionAr: string | null;
+        shortDescriptionEn: string | null;
+        shortDescriptionAr: string | null;
         nameEn: string;
         nameAr: string;
         compareAtPrice: number | null;
@@ -656,6 +664,8 @@ export declare const wishlistItemSchema: z.ZodObject<{
         slug: string;
         descriptionEn: string | null;
         descriptionAr: string | null;
+        shortDescriptionEn: string | null;
+        shortDescriptionAr: string | null;
         nameEn: string;
         nameAr: string;
         compareAtPrice: number | null;
@@ -754,6 +764,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             slug: z.ZodString;
             nameEn: z.ZodString;
             nameAr: z.ZodString;
+            shortDescriptionEn: z.ZodNullable<z.ZodString>;
+            shortDescriptionAr: z.ZodNullable<z.ZodString>;
             descriptionEn: z.ZodNullable<z.ZodString>;
             descriptionAr: z.ZodNullable<z.ZodString>;
             ingredients: z.ZodNullable<z.ZodString>;
@@ -1060,6 +1072,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             slug: string;
             descriptionEn: string | null;
             descriptionAr: string | null;
+            shortDescriptionEn: string | null;
+            shortDescriptionAr: string | null;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -1158,6 +1172,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             slug: string;
             descriptionEn: string | null;
             descriptionAr: string | null;
+            shortDescriptionEn: string | null;
+            shortDescriptionAr: string | null;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -1262,6 +1278,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             slug: string;
             descriptionEn: string | null;
             descriptionAr: string | null;
+            shortDescriptionEn: string | null;
+            shortDescriptionAr: string | null;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -1366,6 +1384,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             slug: string;
             descriptionEn: string | null;
             descriptionAr: string | null;
+            shortDescriptionEn: string | null;
+            shortDescriptionAr: string | null;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -1480,6 +1500,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             slug: string;
             descriptionEn: string | null;
             descriptionAr: string | null;
+            shortDescriptionEn: string | null;
+            shortDescriptionAr: string | null;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -1594,6 +1616,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             slug: string;
             descriptionEn: string | null;
             descriptionAr: string | null;
+            shortDescriptionEn: string | null;
+            shortDescriptionAr: string | null;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -1697,6 +1721,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 slug: z.ZodString;
                 nameEn: z.ZodString;
                 nameAr: z.ZodString;
+                shortDescriptionEn: z.ZodNullable<z.ZodString>;
+                shortDescriptionAr: z.ZodNullable<z.ZodString>;
                 descriptionEn: z.ZodNullable<z.ZodString>;
                 descriptionAr: z.ZodNullable<z.ZodString>;
                 ingredients: z.ZodNullable<z.ZodString>;
@@ -2003,6 +2029,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 slug: string;
                 descriptionEn: string | null;
                 descriptionAr: string | null;
+                shortDescriptionEn: string | null;
+                shortDescriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -2101,6 +2129,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 slug: string;
                 descriptionEn: string | null;
                 descriptionAr: string | null;
+                shortDescriptionEn: string | null;
+                shortDescriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -2205,6 +2235,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 slug: string;
                 descriptionEn: string | null;
                 descriptionAr: string | null;
+                shortDescriptionEn: string | null;
+                shortDescriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -2309,6 +2341,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 slug: string;
                 descriptionEn: string | null;
                 descriptionAr: string | null;
+                shortDescriptionEn: string | null;
+                shortDescriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -2423,6 +2457,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 slug: string;
                 descriptionEn: string | null;
                 descriptionAr: string | null;
+                shortDescriptionEn: string | null;
+                shortDescriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -2537,6 +2573,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 slug: string;
                 descriptionEn: string | null;
                 descriptionAr: string | null;
+                shortDescriptionEn: string | null;
+                shortDescriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -2632,6 +2670,8 @@ export declare const wishlistSchema: z.ZodObject<{
             slug: z.ZodString;
             nameEn: z.ZodString;
             nameAr: z.ZodString;
+            shortDescriptionEn: z.ZodNullable<z.ZodString>;
+            shortDescriptionAr: z.ZodNullable<z.ZodString>;
             descriptionEn: z.ZodNullable<z.ZodString>;
             descriptionAr: z.ZodNullable<z.ZodString>;
             ingredients: z.ZodNullable<z.ZodString>;
@@ -2938,6 +2978,8 @@ export declare const wishlistSchema: z.ZodObject<{
             slug: string;
             descriptionEn: string | null;
             descriptionAr: string | null;
+            shortDescriptionEn: string | null;
+            shortDescriptionAr: string | null;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -3036,6 +3078,8 @@ export declare const wishlistSchema: z.ZodObject<{
             slug: string;
             descriptionEn: string | null;
             descriptionAr: string | null;
+            shortDescriptionEn: string | null;
+            shortDescriptionAr: string | null;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -3140,6 +3184,8 @@ export declare const wishlistSchema: z.ZodObject<{
             slug: string;
             descriptionEn: string | null;
             descriptionAr: string | null;
+            shortDescriptionEn: string | null;
+            shortDescriptionAr: string | null;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -3244,6 +3290,8 @@ export declare const wishlistSchema: z.ZodObject<{
             slug: string;
             descriptionEn: string | null;
             descriptionAr: string | null;
+            shortDescriptionEn: string | null;
+            shortDescriptionAr: string | null;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -3353,6 +3401,8 @@ export declare const wishlistSchema: z.ZodObject<{
             slug: string;
             descriptionEn: string | null;
             descriptionAr: string | null;
+            shortDescriptionEn: string | null;
+            shortDescriptionAr: string | null;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -3465,6 +3515,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 slug: string;
                 descriptionEn: string | null;
                 descriptionAr: string | null;
+                shortDescriptionEn: string | null;
+                shortDescriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -3576,6 +3628,8 @@ export declare const wishlistSchema: z.ZodObject<{
             slug: string;
             descriptionEn: string | null;
             descriptionAr: string | null;
+            shortDescriptionEn: string | null;
+            shortDescriptionAr: string | null;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -3688,6 +3742,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 slug: string;
                 descriptionEn: string | null;
                 descriptionAr: string | null;
+                shortDescriptionEn: string | null;
+                shortDescriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -3797,6 +3853,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 slug: z.ZodString;
                 nameEn: z.ZodString;
                 nameAr: z.ZodString;
+                shortDescriptionEn: z.ZodNullable<z.ZodString>;
+                shortDescriptionAr: z.ZodNullable<z.ZodString>;
                 descriptionEn: z.ZodNullable<z.ZodString>;
                 descriptionAr: z.ZodNullable<z.ZodString>;
                 ingredients: z.ZodNullable<z.ZodString>;
@@ -4103,6 +4161,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 slug: string;
                 descriptionEn: string | null;
                 descriptionAr: string | null;
+                shortDescriptionEn: string | null;
+                shortDescriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -4201,6 +4261,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 slug: string;
                 descriptionEn: string | null;
                 descriptionAr: string | null;
+                shortDescriptionEn: string | null;
+                shortDescriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -4305,6 +4367,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 slug: string;
                 descriptionEn: string | null;
                 descriptionAr: string | null;
+                shortDescriptionEn: string | null;
+                shortDescriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -4409,6 +4473,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 slug: string;
                 descriptionEn: string | null;
                 descriptionAr: string | null;
+                shortDescriptionEn: string | null;
+                shortDescriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -4526,6 +4592,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 slug: string;
                 descriptionEn: string | null;
                 descriptionAr: string | null;
+                shortDescriptionEn: string | null;
+                shortDescriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -4640,6 +4708,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 slug: string;
                 descriptionEn: string | null;
                 descriptionAr: string | null;
+                shortDescriptionEn: string | null;
+                shortDescriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -4759,6 +4829,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 slug: string;
                 descriptionEn: string | null;
                 descriptionAr: string | null;
+                shortDescriptionEn: string | null;
+                shortDescriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -4878,6 +4950,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 slug: string;
                 descriptionEn: string | null;
                 descriptionAr: string | null;
+                shortDescriptionEn: string | null;
+                shortDescriptionAr: string | null;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
