@@ -145,7 +145,7 @@ test("keeps one accessible campaign inside every supported viewport", async ({ p
 
   for (const viewport of viewports) {
     await page.setViewportSize(viewport);
-    await page.goto(`/privacy?campaign_width=${viewport.width}`);
+    await page.goto(`/privacy-policy?campaign_width=${viewport.width}`);
     await page.keyboard.press("Tab");
 
     const dialog = page.getByRole("dialog");
@@ -200,7 +200,7 @@ test("critical priority deterministically suppresses lower campaigns", async ({ 
       },
     });
   });
-  await page.goto("/privacy?collision=1");
+  await page.goto("/privacy-policy?collision=1");
   await page.keyboard.press("Tab");
   await expect(page.getByRole("heading", { name: "Important store notice" })).toBeVisible();
   await expect(page.getByText("A quieter ritual starts here")).toHaveCount(0);
@@ -227,7 +227,7 @@ test("renders Arabic direction and mobile presentation natively", async ({ page 
   });
   await mockCampaignApi(page, [arabicCampaign]);
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/privacy?lang=ar&campaign_rtl=1");
+  await page.goto("/privacy-policy?lang=ar&campaign_rtl=1");
 
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
@@ -250,7 +250,7 @@ test("submits a validated lead form and shows its success state", async ({ page 
   });
   await mockCampaignApi(page, [formCampaign], submissions);
   await page.setViewportSize({ width: 320, height: 568 });
-  await page.goto("/privacy?campaign_form=1");
+  await page.goto("/privacy-policy?campaign_form=1");
 
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
@@ -267,6 +267,6 @@ test("submits a validated lead form and shows its success state", async ({ page 
     phone: "+201001234567",
     consent: true,
     device: "mobile",
-    page: "/privacy?campaign_form=1",
+    page: "/privacy-policy?campaign_form=1",
   });
 });

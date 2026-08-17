@@ -13,6 +13,14 @@ export default defineConfig({
       port: 5173,
       strictPort: true,
     },
+    // The shared contracts package is emitted as CommonJS. It is a local file
+    // dependency, so Vite otherwise treats it as source and evaluates its
+    // `exports` calls inside the ESM SSR runner. Let Node load it through the
+    // package boundary instead; browser builds still use Vite's dependency
+    // optimizer.
+    ssr: {
+      external: ["@cosmetics/contracts"],
+    },
   },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).

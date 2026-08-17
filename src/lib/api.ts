@@ -1111,6 +1111,14 @@ export const requestPhoneChangeOtp = () =>
   });
 export const updateProfile = (body: Record<string, unknown>) =>
   rawRequest<UserProfileResponse>("/users/me", { method: "PATCH", body });
+export function uploadProfileImage(file: File) {
+  const body = new FormData();
+  body.set("file", file);
+  return rawRequest<UserProfileResponse>("/users/me/profile-image", {
+    method: "POST",
+    body,
+  });
+}
 export const listAddresses = () => rawRequest<AddressResponse[]>("/users/addresses");
 export const createAddress = (body: CreateAddressInput) =>
   rawRequest<AddressResponse>("/users/addresses", { method: "POST", body });

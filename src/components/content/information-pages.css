@@ -1,0 +1,511 @@
+.bio-information-page {
+  --info-ink: #211d19;
+  --info-muted: #736b63;
+  --info-line: color-mix(in srgb, var(--border) 82%, #b99a68 18%);
+  min-height: 70dvh;
+  padding: clamp(2rem, 4vw, 4.5rem) clamp(1rem, 4vw, 3rem) clamp(5rem, 8vw, 8rem);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--background) 95%, #c9a873 5%) 0,
+    var(--background) 22rem
+  );
+  color: var(--info-ink);
+}
+
+.bio-information-page__shell {
+  width: min(100%, 75rem);
+  margin-inline: auto;
+}
+
+.bio-information-page__breadcrumb {
+  margin-bottom: clamp(2.75rem, 6vw, 5.25rem);
+}
+
+.bio-information-page__breadcrumb ol {
+  color: var(--info-muted);
+  font-size: 0.78rem;
+}
+
+.bio-information-page__header {
+  max-width: 52rem;
+  padding-bottom: clamp(3rem, 6vw, 5.5rem);
+}
+
+.bio-information-page__eyebrow {
+  margin: 0;
+  color: var(--gold);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.bio-information-page__header h1 {
+  max-width: 13ch;
+  margin: 1.15rem 0 0;
+  color: var(--info-ink);
+  font-family: var(--font-serif);
+  font-size: clamp(2.75rem, 6vw, 5.4rem);
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+.bio-information-page__intro {
+  max-width: 46rem;
+  margin: clamp(1.5rem, 3vw, 2.25rem) 0 0;
+  color: var(--info-muted);
+  font-size: clamp(1rem, 1.4vw, 1.16rem);
+  line-height: 1.8;
+  text-wrap: pretty;
+}
+
+.bio-information-page__layout {
+  border-top: 1px solid var(--info-line);
+}
+
+.bio-information-page__layout--with-nav {
+  display: grid;
+  grid-template-columns: minmax(10rem, 13rem) minmax(0, 1fr);
+  gap: clamp(3rem, 8vw, 8rem);
+}
+
+.bio-information-page__contents {
+  align-self: start;
+  padding-top: 2rem;
+}
+
+.bio-information-page__contents > p {
+  margin: 0 0 1rem;
+  color: var(--info-ink);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.bio-information-page__contents ol {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bio-information-page__contents a {
+  color: var(--info-muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.bio-information-page__contents a:hover,
+.bio-information-page__contents a:focus-visible {
+  color: var(--gold);
+}
+
+.bio-information-page__contents a:focus-visible,
+.bio-customer-care-phone:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+.bio-information-page__body {
+  min-width: 0;
+}
+
+.bio-information-section {
+  scroll-margin-top: calc(var(--store-header-offset, 6.5rem) + 2rem);
+  padding: clamp(2.75rem, 6vw, 5.25rem) 0;
+  border-bottom: 1px solid var(--info-line);
+}
+
+.bio-information-section h2 {
+  max-width: 19ch;
+  margin: 0;
+  color: var(--info-ink);
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.bio-information-section__lead {
+  max-width: 43rem;
+  margin: 1.25rem 0 0;
+  color: var(--info-ink);
+  font-size: 1rem;
+  line-height: 1.75;
+}
+
+.bio-information-section__content {
+  max-width: 45rem;
+  margin-top: 1.5rem;
+  color: var(--info-muted);
+  font-size: 0.96rem;
+  line-height: 1.8;
+}
+
+.bio-information-section__content > :first-child {
+  margin-top: 0;
+}
+
+.bio-information-section__content > :last-child {
+  margin-bottom: 0;
+}
+
+.bio-information-section__content p {
+  margin: 1rem 0;
+}
+
+.bio-policy-list {
+  display: grid;
+  gap: 0.85rem;
+  margin: 1.35rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bio-policy-list li {
+  position: relative;
+  padding-inline-start: 1.65rem;
+}
+
+.bio-policy-list li::before {
+  position: absolute;
+  inset-block-start: 0.68em;
+  inset-inline-start: 0;
+  width: 0.35rem;
+  height: 0.35rem;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  color: #a4885e;
+  content: "";
+}
+
+.bio-policy-list--positive li::before {
+  border: 0;
+  background: #8e7956;
+  box-shadow: 0 0 0 0.25rem color-mix(in srgb, #8e7956 11%, transparent);
+}
+
+.bio-policy-list--restricted li::before {
+  border-radius: 0;
+  transform: rotate(45deg);
+  color: #8d7568;
+}
+
+.bio-customer-care-phone {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-top: 1.2rem;
+  padding: 1rem 0;
+  border-block: 1px solid var(--info-line);
+  color: var(--info-ink);
+  text-decoration: none;
+}
+
+.bio-customer-care-phone span {
+  color: var(--info-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.bio-customer-care-phone strong {
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.03em;
+  transition: color 180ms ease;
+}
+
+.bio-customer-care-phone:hover strong {
+  color: var(--gold);
+}
+
+.bio-delivery-windows {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 1.75rem 0;
+  background: var(--info-line);
+  border-block: 1px solid var(--info-line);
+}
+
+.bio-delivery-window {
+  min-width: 0;
+  padding: 1.65rem;
+  background: var(--background);
+}
+
+.bio-delivery-window span {
+  display: block;
+  color: var(--info-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.bio-delivery-window strong {
+  display: block;
+  margin-top: 0.65rem;
+  color: var(--info-ink);
+  font-family: var(--font-serif);
+  font-size: clamp(1.55rem, 3vw, 2.15rem);
+  font-weight: 500;
+}
+
+.bio-policy-emphasis {
+  display: inline-block;
+  margin: 0.35rem 0;
+  color: var(--info-ink);
+  font-family: var(--font-serif);
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.bio-return-steps {
+  display: grid;
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bio-return-step {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  gap: clamp(1rem, 3vw, 2rem);
+  padding: 2rem 0;
+  border-top: 1px solid var(--info-line);
+}
+
+.bio-return-step:last-child {
+  border-bottom: 1px solid var(--info-line);
+}
+
+.bio-return-step__number {
+  color: var(--gold);
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.bio-return-step h3 {
+  margin: 0;
+  color: var(--info-ink);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.bio-return-step p {
+  margin: 0.8rem 0 0;
+}
+
+.bio-return-step .bio-policy-list {
+  margin-top: 1rem;
+}
+
+.bio-faq-list {
+  border-top: 1px solid var(--info-line);
+}
+
+.bio-faq-list [data-radix-collection-item] {
+  min-height: 5rem;
+  padding-block: 1.5rem;
+  color: var(--info-ink);
+  font-family: var(--font-serif);
+  font-size: clamp(1.25rem, 2.3vw, 1.7rem);
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.bio-faq-list [data-radix-collection-item] svg {
+  color: var(--gold);
+}
+
+.bio-faq-list [data-radix-collection-item]:disabled {
+  cursor: default;
+}
+
+.bio-faq-answer {
+  max-width: 44rem;
+  padding-bottom: 2rem;
+  color: var(--info-muted);
+  font-size: 0.96rem;
+  line-height: 1.8;
+}
+
+.bio-faq-answer p {
+  margin: 0 0 1rem;
+}
+
+.bio-faq-answer .bio-policy-list {
+  margin-block: 1rem 1.25rem;
+}
+
+.bio-philosophy {
+  padding-bottom: clamp(4rem, 8vw, 8rem);
+}
+
+.bio-philosophy__hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(18rem, 0.72fr);
+  gap: clamp(2rem, 7vw, 7rem);
+  align-items: stretch;
+  padding-bottom: clamp(4rem, 8vw, 7rem);
+  border-bottom: 1px solid var(--info-line);
+}
+
+.bio-philosophy__statement {
+  align-self: center;
+}
+
+.bio-philosophy__statement h1 {
+  max-width: 12ch;
+  margin: 1.35rem 0 0;
+  color: var(--info-ink);
+  font-family: var(--font-serif);
+  font-size: clamp(3.15rem, 7vw, 7.2rem);
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 0.96;
+  text-wrap: balance;
+}
+
+.bio-philosophy__media {
+  min-height: 30rem;
+  overflow: hidden;
+  background: #eadfce;
+}
+
+.bio-philosophy__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bio-philosophy__manifesto {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.55fr) minmax(0, 1fr);
+  gap: clamp(2.5rem, 8vw, 8rem);
+  padding-top: clamp(4rem, 8vw, 7rem);
+}
+
+.bio-philosophy__manifesto h2 {
+  margin: 0;
+  color: var(--gold);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.bio-philosophy__copy {
+  max-width: 44rem;
+}
+
+.bio-philosophy__copy p {
+  margin: 0 0 1.35rem;
+  color: var(--info-muted);
+  font-size: clamp(1rem, 1.45vw, 1.14rem);
+  line-height: 1.85;
+  text-wrap: pretty;
+}
+
+.bio-philosophy__closing {
+  margin-top: clamp(3rem, 6vw, 5rem) !important;
+  padding-top: clamp(2rem, 4vw, 3rem);
+  border-top: 1px solid var(--info-line);
+  color: var(--info-ink) !important;
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 3.4vw, 3rem) !important;
+  line-height: 1.2 !important;
+}
+
+@media (min-width: 981px) {
+  .bio-information-page__contents {
+    position: sticky;
+    top: calc(var(--store-header-offset, 6.5rem) + 2rem);
+  }
+}
+
+@media (max-width: 980px) {
+  .bio-information-page__layout--with-nav {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .bio-information-page__contents {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--info-line);
+  }
+
+  .bio-information-page__contents ol {
+    display: flex;
+    gap: 0.6rem 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .bio-philosophy__hero {
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.65fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .bio-information-page {
+    padding-inline: 1rem;
+  }
+
+  .bio-information-page__breadcrumb {
+    margin-bottom: 2.75rem;
+  }
+
+  .bio-information-page__header h1 {
+    max-width: 11ch;
+  }
+
+  .bio-delivery-windows,
+  .bio-philosophy__hero,
+  .bio-philosophy__manifesto {
+    grid-template-columns: 1fr;
+  }
+
+  .bio-philosophy__hero {
+    gap: 2.5rem;
+  }
+
+  .bio-philosophy__statement h1 {
+    font-size: clamp(3rem, 15vw, 4.6rem);
+  }
+
+  .bio-philosophy__media {
+    min-height: 0;
+    aspect-ratio: 4 / 5;
+  }
+
+  .bio-return-step {
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+  }
+
+  .bio-customer-care-phone {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bio-information-page__contents a,
+  .bio-customer-care-phone strong {
+    transition-duration: 1ms;
+  }
+}

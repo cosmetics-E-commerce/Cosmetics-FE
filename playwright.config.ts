@@ -11,7 +11,7 @@ export default defineConfig({
     env: { VITE_API_BASE_URL: "http://127.0.0.1:4173/api/v1" },
     // The home route intentionally waits for the catalog API during SSR; use a
     // static legal route for server readiness so API outages cannot stall CI.
-    url: "http://127.0.0.1:4173/privacy",
+    url: "http://127.0.0.1:4173/privacy-policy",
     reuseExistingServer: !process.env.CI,
   },
   projects: [

@@ -9,7 +9,7 @@ test("product media keeps mixed aspect-ratio gallery images in one stable frame"
   const runtimeIssues: string[] = [];
   page.on("pageerror", (error) => runtimeIssues.push(error.message));
   await page.route("**/api/v1/**", (route) => route.fulfill({ json: { success: true, data: [] } }));
-  await page.goto("/privacy", { waitUntil: "networkidle" });
+  await page.goto("/privacy-policy", { waitUntil: "networkidle" });
   await mountProductCardFixture(page);
 
   const card = page.locator(".sf-product-card");

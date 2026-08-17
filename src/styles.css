@@ -830,7 +830,7 @@ html[data-motion-ready="true"]
   animation-delay: 90ms;
 }
 
-.product-gallery-active {
+.product-gallery-active > .image-reveal-shell {
   animation: product-image-change 280ms var(--ease-reveal) both;
 }
 

@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("motion never hides content in reduced-motion mode", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/privacy");
+  await page.goto("/privacy-policy");
 
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await expect
@@ -32,7 +32,7 @@ test("motion never hides content in reduced-motion mode", async ({ page }) => {
 
 test("touch projects keep native scrolling", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "Native touch behavior is a mobile assertion");
-  await page.goto("/privacy");
+  await page.goto("/privacy-policy");
   await expect
     .poll(() => page.evaluate(() => document.documentElement.dataset["smoothScroll"] ?? null))
     .toBeNull();

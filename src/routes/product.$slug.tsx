@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { PolishedImage } from "@/components/ui/polished-image";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { ProductImageZoom } from "@/components/shop/ProductImageZoom";
 import { ProductReviews } from "@/components/shop/ProductReviews";
 import { IngredientExplorer } from "@/components/shop/IngredientExplorer";
 import { WishlistPicker } from "@/components/shop/WishlistPicker";
@@ -456,19 +457,11 @@ function ProductPage() {
 
         <section className="product-reference-layout">
           <Reveal variant="scale" duration={480} distance={0} className="product-reference-gallery">
-            <div key={activeImage} className="product-gallery-active product-reference-main-image">
-              <PolishedImage
-                src={activeImage}
-                alt={activeImageAlt}
-                width={1200}
-                height={1500}
-                loading="eager"
-                fetchPriority="high"
-                sizes="(min-width: 1200px) 49vw, 100vw"
-                wrapperClassName="product-reference-image-shell"
-                className="size-full object-contain"
-              />
-            </div>
+            <ProductImageZoom
+              src={activeImage}
+              alt={activeImageAlt}
+              resetKey={`${product.id}:${variant?.id ?? "product"}:${activeMedia[imageIndex]?.id ?? activeImage}`}
+            />
             <div className="product-reference-thumbs">
               {activeMedia.map((image, index) => (
                 <button

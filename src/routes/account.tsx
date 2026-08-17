@@ -1,4 +1,11 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -31,6 +38,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AddressForm } from "@/components/forms/AddressForm";
+import { CustomerAvatar } from "@/components/account/CustomerAvatar";
 import { ReviewLibrary } from "@/components/account/ReviewLibrary";
 import { WishlistStudio } from "@/components/account/WishlistStudio";
 import {
@@ -48,10 +56,12 @@ import {
   requestPhoneChangeOtp,
   setDefaultAddress,
   updateProfile,
+  uploadProfileImage,
   uploadPaymentProof,
   type AddressResponse,
   type OrderSummary,
   type OrderTracking,
+  type UserProfileResponse,
 } from "@/lib/api";
 import { formatPrice } from "@/lib/products";
 import { mapProduct } from "@/lib/catalog";
@@ -60,6 +70,7 @@ import { useStore } from "@/lib/store";
 import { Reveal } from "@/components/motion/Primitives";
 import { getOrderStatusCopy } from "@/lib/i18n";
 import { createNoindexHead } from "@/lib/seo";
+import { resolveAvatarImage } from "@/lib/avatar";
 export const Route = createFileRoute("/account")({
   validateSearch: (raw: Record<string, unknown>) => ({
     section:
@@ -105,9 +116,11 @@ function Account() {
     ttlSeconds: number;
   } | null>(null);
   const [phoneOtp, setPhoneOtp] = useState("");
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const accountNavScrollerRef = useRef<HTMLUListElement>(null);
+  const profileQueryKey = ["account", "profile", user?.id] as const;
   const profile = useQuery({
-    queryKey: ["account", "profile"],
+    queryKey: profileQueryKey,
     queryFn: getProfile,
     enabled: Boolean(user),
   });
@@ -141,13 +154,42 @@ function Account() {
   });
   const profileMutation = useMutation({
     mutationFn: updateProfile,
-    onSuccess: () => {
+    onSuccess: (nextProfile) => {
+      client.setQueryData(profileQueryKey, nextProfile);
       toast(locale === "ar" ? "تم تحديث الحساب" : "Profile updated");
       setPhoneOtpStage(null);
       setPhoneOtp("");
-      void client.invalidateQueries({ queryKey: ["account", "profile"] });
     },
     onError: (error) => toast.error(apiErrorMessage(error, locale)),
+  });
+  const profileImageMutation = useMutation({
+    mutationFn: (input: File | null) =>
+      input ? uploadProfileImage(input) : updateProfile({ profileImage: null }),
+    onMutate: async (input) => {
+      if (input) return undefined;
+      await client.cancelQueries({ queryKey: profileQueryKey });
+      const previous = client.getQueryData<UserProfileResponse>(profileQueryKey);
+      if (previous) client.setQueryData(profileQueryKey, { ...previous, profileImage: null });
+      return { previous };
+    },
+    onSuccess: (nextProfile, file) => {
+      client.setQueryData(profileQueryKey, nextProfile);
+      setAvatarPreview(null);
+      toast(
+        locale === "ar"
+          ? file
+            ? "تم تحديث صورة الحساب"
+            : "تم حذف صورة الحساب"
+          : file
+            ? "Profile photo updated"
+            : "Profile photo removed",
+      );
+    },
+    onError: (error, _input, context) => {
+      if (context?.previous) client.setQueryData(profileQueryKey, context.previous);
+      setAvatarPreview(null);
+      toast.error(apiErrorMessage(error, locale));
+    },
   });
   const phoneOtpMutation = useMutation({
     mutationFn: requestPhoneChangeOtp,
@@ -189,6 +231,12 @@ function Account() {
       window.removeEventListener("resize", revealActiveTab);
     };
   }, [authHydrated, locale, tab, user?.id]);
+  useEffect(
+    () => () => {
+      if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+    },
+    [avatarPreview],
+  );
   if (!authHydrated)
     return (
       <div className="grid min-h-[60vh] place-items-center">
@@ -199,9 +247,12 @@ function Account() {
     return (
       <main className="sf-account-page account-page account-page--guest">
         <section className="account-guest-card">
-          <span className="account-profile-avatar account-profile-avatar--hero">
-            <AccountGirlAvatar name="BIOREZA" />
-          </span>
+          <CustomerAvatar
+            name="BIOREZA"
+            size="lg"
+            decorative
+            className="account-profile-avatar account-profile-avatar--hero"
+          />
           <p className="account-eyebrow">Your BIOREZA account</p>
           <h1>Your private account</h1>
           <p>Sign in to view orders, addresses and saved products.</p>
@@ -218,6 +269,7 @@ function Account() {
     : `${user.firstName} ${user.lastName}`;
   const firstName = profile.data?.firstName || user.firstName;
   const currentPhone = profile.data?.phone ?? user.phone;
+  const hasProfileImage = Boolean(resolveAvatarImage(profile.data?.profileImage));
   const recentOrders = [...(orders.data ?? [])]
     .sort((left, right) => Date.parse(right.placedAt) - Date.parse(left.placedAt))
     .slice(0, 3);
@@ -261,6 +313,30 @@ function Account() {
     }
   };
 
+  const handleProfileImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.currentTarget.files?.[0];
+    event.currentTarget.value = "";
+    if (!file) return;
+    if (!new Set(["image/jpeg", "image/png", "image/webp"]).has(file.type)) {
+      toast.error(
+        locale === "ar"
+          ? "اختاري صورة بصيغة JPG أو PNG أو WebP."
+          : "Choose a JPG, PNG, or WebP image.",
+      );
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error(
+        locale === "ar"
+          ? "يجب ألا يزيد حجم الصورة عن 5 ميجابايت."
+          : "Photo must be 5 MB or smaller.",
+      );
+      return;
+    }
+    setAvatarPreview(URL.createObjectURL(file));
+    profileImageMutation.mutate(file);
+  };
+
   const handleDeleteAddress = async () => {
     if (!addressToDelete || deletingAddress) return;
     setDeletingAddress(true);
@@ -293,9 +369,14 @@ function Account() {
         >
           <div className="account-hero__person">
             <dt>
-              <span className="account-profile-avatar account-profile-avatar--hero">
-                <AccountGirlAvatar name={name} />
-              </span>
+              <CustomerAvatar
+                name={name}
+                profileImage={profile.data?.profileImage}
+                size="lg"
+                loading={profile.isLoading}
+                decorative
+                className="account-profile-avatar account-profile-avatar--hero"
+              />
               <span>{locale === "ar" ? "تم تسجيل الدخول باسم" : "Signed in as"}</span>
             </dt>
             <dd>{name}</dd>
@@ -674,14 +755,54 @@ function Account() {
               />
               <div className="account-settings__layout">
                 <aside className="account-settings__identity">
-                  <span aria-hidden="true">
-                    {name
-                      .split(" ")
-                      .slice(0, 2)
-                      .map((part) => part.charAt(0))
-                      .join("")
-                      .toUpperCase()}
-                  </span>
+                  <CustomerAvatar
+                    name={name}
+                    profileImage={profile.data?.profileImage}
+                    previewUrl={avatarPreview}
+                    size="lg"
+                    loading={profile.isLoading}
+                    decorative
+                    className="account-settings__avatar"
+                  />
+                  <div className="account-settings__photo-actions">
+                    <label
+                      className="account-settings__photo-button"
+                      data-disabled={profileImageMutation.isPending || undefined}
+                    >
+                      <Upload aria-hidden="true" />
+                      <span>{locale === "ar" ? "تغيير الصورة" : "Change photo"}</span>
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        disabled={profileImageMutation.isPending}
+                        aria-label={
+                          locale === "ar" ? "اختيار صورة حساب جديدة" : "Choose a new profile photo"
+                        }
+                        onChange={handleProfileImageChange}
+                      />
+                    </label>
+                    {hasProfileImage && !avatarPreview ? (
+                      <button
+                        type="button"
+                        className="account-settings__photo-button account-settings__photo-button--remove"
+                        disabled={profileImageMutation.isPending}
+                        aria-label={locale === "ar" ? "حذف صورة الحساب" : "Remove profile photo"}
+                        onClick={() => profileImageMutation.mutate(null)}
+                      >
+                        <Trash2 aria-hidden="true" />
+                        <span>{locale === "ar" ? "حذف" : "Remove"}</span>
+                      </button>
+                    ) : null}
+                  </div>
+                  <p className="account-settings__photo-status" aria-live="polite">
+                    {profileImageMutation.isPending
+                      ? locale === "ar"
+                        ? "جارٍ تحديث الصورة…"
+                        : "Updating photo…"
+                      : locale === "ar"
+                        ? "JPG أو PNG أو WebP، بحد أقصى 5 ميجابايت."
+                        : "JPG, PNG or WebP, up to 5 MB."}
+                  </p>
                   <h3>{name}</h3>
                   <p>{profile.data?.email ?? user.email}</p>
                   <small>
@@ -1461,56 +1582,6 @@ function PaymentContinuation({ order, locale }: { order: OrderSummary; locale: "
         </Button>
       )}
     </section>
-  );
-}
-
-function AccountGirlAvatar({ name }: { name: string }) {
-  const initials =
-    name
-      .split(" ")
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part.charAt(0))
-      .join("")
-      .toUpperCase() || "BR";
-
-  return (
-    <svg viewBox="0 0 112 112" focusable="false" aria-hidden="true">
-      <defs>
-        <linearGradient id="account-avatar-skin" x1="28" x2="86" y1="16" y2="96">
-          <stop stopColor="#f8ddc7" />
-          <stop offset="1" stopColor="#c88f65" />
-        </linearGradient>
-        <linearGradient id="account-avatar-hair" x1="20" x2="90" y1="10" y2="96">
-          <stop stopColor="#6d4229" />
-          <stop offset="1" stopColor="#241511" />
-        </linearGradient>
-      </defs>
-      <circle cx="56" cy="56" r="54" fill="#fff" />
-      <path
-        d="M24 53c0-22 13-38 33-38 21 0 34 16 34 38 0 14-4 25-12 33l9 17H24l10-17c-7-8-10-19-10-33Z"
-        fill="url(#account-avatar-hair)"
-      />
-      <path
-        d="M35 50c8 2 20-2 29-12 6 8 13 12 22 12-2 21-14 36-26 36-13 0-23-15-25-36Z"
-        fill="url(#account-avatar-skin)"
-      />
-      <path d="M38 88c7 8 33 8 42 0l10 15H27l11-15Z" fill="#f7efe5" />
-      <circle cx="46" cy="57" r="2.5" fill="#2c1d17" />
-      <circle cx="69" cy="57" r="2.5" fill="#2c1d17" />
-      <path d="M50 72c4 4 11 4 15 0" fill="none" stroke="#7d4b36" strokeWidth="3" />
-      <text
-        x="56"
-        y="106"
-        textAnchor="middle"
-        fontFamily="Arial, sans-serif"
-        fontSize="11"
-        fontWeight="800"
-        fill="#8a5a2c"
-      >
-        {initials.slice(0, 2)}
-      </text>
-    </svg>
   );
 }
 

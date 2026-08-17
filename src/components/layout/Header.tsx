@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import {
   ChevronDown,
   ChevronRight,
@@ -43,13 +44,15 @@ import type { PublicBrandListItemResponse, PublicCategoryResponse } from "@/lib/
 import { useStore } from "@/lib/store";
 import { GlobalBannerSlot } from "@/components/banner/GlobalBannerSlot";
 import { useI18n, type MessageKey } from "@/lib/i18n";
+import { CustomerAvatar } from "@/components/account/CustomerAvatar";
+import { getProfile } from "@/lib/api";
 
 const homeNavItem = { id: "home", label: "common.home" as MessageKey, to: "/" as const };
 
 const utilityNav = [
   { id: "new", label: "nav.new" as MessageKey, to: "/shop" as const },
   { id: "offers", label: "nav.offers" as MessageKey, to: "/offers" as const },
-  { id: "about", label: "nav.about" as MessageKey, to: "/journal" as const },
+  { id: "about", label: "nav.about" as MessageKey, to: "/about" as const },
   { id: "contact", label: "footer.contact" as MessageKey, to: "/contact" as const },
 ];
 
@@ -143,6 +146,12 @@ export function Header({
   const { pathname, search } = useLocation();
   const categories = useCategories();
   const brands = useBrands();
+  const accountProfile = useQuery({
+    queryKey: ["account", "profile", user?.id],
+    queryFn: getProfile,
+    enabled: Boolean(user),
+    staleTime: 60_000,
+  });
   const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu] = useState(false);
   const [megaMenu, setMegaMenu] = useState<MegaMenuValue | "">("");
@@ -156,7 +165,7 @@ export function Header({
       ? "home"
       : pathname === "/offers"
         ? "offers"
-        : pathname === "/journal"
+        : pathname === "/about" || pathname === "/journal"
           ? "about"
           : pathname === "/contact"
             ? "contact"
@@ -224,15 +233,10 @@ export function Header({
   }, []);
 
   const accountTo = user ? ("/account" as const) : ("/sign-in" as const);
-  const accountName = user ? `${user.firstName} ${user.lastName}`.trim() : "";
-  const accountInitials =
-    accountName
-      .split(" ")
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((part) => part.charAt(0))
-      .join("")
-      .toUpperCase() || "BR";
+  const accountIdentity = accountProfile.data ?? user;
+  const accountName = accountIdentity
+    ? `${accountIdentity.firstName} ${accountIdentity.lastName}`.trim()
+    : "";
   const closeMegaMenu = useCallback(() => setMegaMenu(""), []);
   const closeMobileMenu = useCallback(() => setMenu(false), []);
   const navInteractionProps = (id: string) => ({ "data-nav-id": id });
@@ -391,16 +395,31 @@ export function Header({
                   aria-label={t("nav.account")}
                   className="header-action header-account-trigger grid h-11 w-11 place-items-center"
                 >
-                  <span className="header-account-avatar" aria-hidden="true">
-                    <HeaderAccountAvatar initials={accountInitials} />
-                  </span>
+                  <CustomerAvatar
+                    firstName={accountIdentity?.firstName}
+                    lastName={accountIdentity?.lastName}
+                    profileImage={accountProfile.data?.profileImage}
+                    size="sm"
+                    loading={accountProfile.isLoading}
+                    decorative
+                    className="header-account-avatar"
+                  />
                 </Link>
                 <div className="header-account-dropdown" role="menu">
                   <div className="header-account-dropdown__head">
-                    <HeaderAccountAvatar initials={accountInitials} />
+                    <CustomerAvatar
+                      firstName={accountIdentity?.firstName}
+                      lastName={accountIdentity?.lastName}
+                      profileImage={accountProfile.data?.profileImage}
+                      size="md"
+                      loading={accountProfile.isLoading}
+                      decorative
+                    />
                     <div>
                       <strong>{accountName || t("nav.account")}</strong>
-                      <small>{user.email ?? user.phone ?? "BIOREZA"}</small>
+                      <small>
+                        {accountProfile.data?.email ?? user.email ?? user.phone ?? "BIOREZA"}
+                      </small>
                     </div>
                   </div>
                   <Link to="/account" search={{ section: undefined }} role="menuitem">
@@ -562,7 +581,19 @@ export function Header({
                     onClick={closeMobileMenu}
                     className="mobile-nav__utility-link"
                   >
-                    <User strokeWidth={1.25} className="size-4" aria-hidden="true" />
+                    {user ? (
+                      <CustomerAvatar
+                        firstName={accountIdentity?.firstName}
+                        lastName={accountIdentity?.lastName}
+                        profileImage={accountProfile.data?.profileImage}
+                        size="sm"
+                        loading={accountProfile.isLoading}
+                        decorative
+                        className="mobile-nav__account-avatar"
+                      />
+                    ) : (
+                      <User strokeWidth={1.25} className="size-4" aria-hidden="true" />
+                    )}
                     {t("nav.account")}
                   </Link>
                 </li>
@@ -604,39 +635,6 @@ export function Header({
         </SheetContent>
       </Sheet>
     </header>
-  );
-}
-
-function HeaderAccountAvatar({ initials }: { initials: string }) {
-  return (
-    <svg viewBox="0 0 48 48" focusable="false" aria-hidden="true">
-      <defs>
-        <linearGradient id="header-avatar-gold" x1="10" x2="39" y1="6" y2="42">
-          <stop stopColor="#f6ddb5" />
-          <stop offset="1" stopColor="#9b642d" />
-        </linearGradient>
-      </defs>
-      <circle cx="24" cy="24" r="23" fill="#fff" />
-      <path
-        d="M14.5 23.2c0-7 4.2-12.4 10.2-12.4 6.6 0 10.8 5.4 10.8 12.4 0 4.4-1.6 8.1-4.1 10.3l3.8 6.4H12.7l4-6.5c-1.4-2.1-2.2-5.3-2.2-10.2Z"
-        fill="url(#header-avatar-gold)"
-      />
-      <path
-        d="M18 25.8c2.2.5 4.7-.2 6.6-2.1 2.8 2.7 6.1 3 8.7 2.2-.7 4.8-3.9 8.3-7.7 8.3-3.7 0-6.8-3.4-7.6-8.4Z"
-        fill="#fff7ec"
-      />
-      <text
-        x="24"
-        y="42"
-        textAnchor="middle"
-        fontSize="8"
-        fontWeight="800"
-        fill="#4d351f"
-        fontFamily="Arial, sans-serif"
-      >
-        {initials.slice(0, 2)}
-      </text>
-    </svg>
   );
 }
 

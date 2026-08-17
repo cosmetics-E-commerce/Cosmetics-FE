@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   canonicalUrl,
   createSeoHead,
+  faqPageSchema,
   jsonLd,
   pageTitle,
   productSchema,
@@ -93,6 +94,25 @@ describe("SEO metadata", () => {
 });
 
 describe("structured data", () => {
+  it("builds FAQ structured data from the visible questions and answers", () => {
+    expect(
+      faqPageSchema([
+        { question: "How do I pay?", answer: "Choose one of the listed payment methods." },
+      ]),
+    ).toEqual(
+      expect.objectContaining({
+        "@type": "FAQPage",
+        mainEntity: [
+          expect.objectContaining({
+            "@type": "Question",
+            name: "How do I pay?",
+            acceptedAnswer: expect.objectContaining({ "@type": "Answer" }),
+          }),
+        ],
+      }),
+    );
+  });
+
   it("uses actual SKUs, brand, price and per-variant stock", () => {
     const schema = productSchema(product) as Record<string, unknown>;
     expect(schema["sku"]).toBe("SKU-REAL-1");

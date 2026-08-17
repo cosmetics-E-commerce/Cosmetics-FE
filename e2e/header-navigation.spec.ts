@@ -6,7 +6,7 @@ test("desktop navigation keeps exactly one active item through menus and routes"
   test.setTimeout(60_000);
   test.skip(testInfo.project.name !== "chromium", "The primary navigation is desktop-only");
 
-  await page.goto("/journal");
+  await page.goto("/about");
   // Vite transforms route chunks on demand in development. Wait for a
   // client-only layer so interactions cannot race React hydration.
   await expect(page.locator('section[aria-label^="Notifications"]')).toBeAttached({

@@ -104,7 +104,9 @@ function applyResponsePolicy(request: Request, response: Response) {
     } else if (response.status >= 400) {
       headers.set("Cache-Control", "public, max-age=0, s-maxage=60");
     } else if (
-      /^\/(?:privacy|terms|returns|shipping-policy|cookies|journal|contact)\/?$/.test(url.pathname)
+      /^\/(?:about|faq|privacy-policy|terms|returns|shipping-policy|cookies|contact)\/?$/.test(
+        url.pathname,
+      )
     ) {
       headers.set(
         "Cache-Control",
