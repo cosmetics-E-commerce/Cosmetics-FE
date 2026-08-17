@@ -42,19 +42,27 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
   const gallery = (product.images ?? [])
     .slice()
     .sort((a, b) => a.sortOrder - b.sortOrder)
-    .map((image) => image.url.trim())
-    .filter(Boolean);
+    .map((image) => renderableImage(image.url))
+    .filter((url): url is string => Boolean(url));
   const media = (product.images ?? [])
     .slice()
     .sort((a, b) => a.sortOrder - b.sortOrder)
-    .filter((image) => Boolean(image.url.trim()))
-    .map((image) => ({
-      id: image.id,
-      url: image.url.trim(),
-      altText: image.altText?.trim() || (arabic ? product.nameAr : product.nameEn),
-    }));
-  const primary = product.imageUrl?.trim() || gallery[0] || categoryFallback;
-  const primaryImage = (product.images ?? []).find((image) => image.url.trim() === primary);
+    .flatMap((image) => {
+      const url = renderableImage(image.url);
+      return url
+        ? [
+            {
+              id: image.id,
+              url,
+              altText: image.altText?.trim() || (arabic ? product.nameAr : product.nameEn),
+            },
+          ]
+        : [];
+    });
+  const primary = renderableImage(product.imageUrl) || gallery[0] || categoryFallback;
+  const primaryImage = (product.images ?? []).find(
+    (image) => renderableImage(image.url) === primary,
+  );
   const description = firstNonEmpty(
     arabic ? product.descriptionAr : product.descriptionEn,
     arabic ? product.descriptionEn : product.descriptionAr,
@@ -101,11 +109,18 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
         id: value.id,
         label: arabic ? value.valueAr : value.valueEn,
       })),
-      media: variant.images.map((image) => ({
-        id: image.id,
-        url: image.url,
-        altText: image.altText?.trim() || (arabic ? product.nameAr : product.nameEn),
-      })),
+      media: variant.images.flatMap((image) => {
+        const url = renderableImage(image.url);
+        return url
+          ? [
+              {
+                id: image.id,
+                url,
+                altText: image.altText?.trim() || (arabic ? product.nameAr : product.nameEn),
+              },
+            ]
+          : [];
+      }),
       ...(variant.stock !== undefined ? { stock: variant.stock } : {}),
     })),
     ...(stock !== undefined ? { stock } : {}),
@@ -270,6 +285,10 @@ function prettyEnum(value: string) {
 
 function firstNonEmpty(...values: Array<string | null | undefined>) {
   return values.find((value) => value?.trim())?.trim() ?? "";
+}
+
+function renderableImage(value: string | null | undefined): string | null {
+  return value?.trim() || null;
 }
 
 async function promotionalPrices(products: PublicProductResponse[]) {

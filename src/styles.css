@@ -919,6 +919,33 @@ html[data-motion-ready="true"]
     center / contain no-repeat;
 }
 
+.image-reveal-shell[data-has-fallback="true"]::before {
+  content: none;
+}
+
+.image-reveal-fallback {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-content: center;
+  padding: 0.75rem;
+  color: currentColor;
+  text-align: center;
+}
+
+.sf-brand-landing-logo-shell {
+  background: transparent;
+}
+
+.sf-brand-landing-logo-fallback {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
 .choice-card {
   transition:
     border-color var(--motion-micro) var(--ease-premium),

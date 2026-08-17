@@ -20,5 +20,6 @@ export * from "./analytics/analytics.schema";
 export * from "./reviews/review.schema";
 export * from "./store/store.schema";
 export * from "./media/media.schema";
+export * from "./media/image-reference.schema";
 export * from "./campaigns/popup-campaign.schema";
 //# sourceMappingURL=index.d.ts.map

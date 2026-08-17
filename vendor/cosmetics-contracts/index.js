@@ -39,5 +39,6 @@ __exportStar(require("./analytics/analytics.schema"), exports);
 __exportStar(require("./reviews/review.schema"), exports);
 __exportStar(require("./store/store.schema"), exports);
 __exportStar(require("./media/media.schema"), exports);
+__exportStar(require("./media/image-reference.schema"), exports);
 __exportStar(require("./campaigns/popup-campaign.schema"), exports);
 //# sourceMappingURL=index.js.map
