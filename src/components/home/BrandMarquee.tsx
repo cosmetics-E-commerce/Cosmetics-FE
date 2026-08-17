@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useMemo, type CSSProperties } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 
 import type { PublicBrandListItemResponse } from "@/lib/api";
 import { useAllBrands } from "@/lib/catalog";
@@ -8,6 +8,10 @@ import { useStore } from "@/lib/store";
 type BrandMarqueeProps = {
   initialBrands?: PublicBrandListItemResponse[];
 };
+
+const marqueeSecondsPerBrand = 4.6;
+const minimumMarqueeDuration = 36;
+const priorityLogoCount = 10;
 
 export function BrandMarquee({ initialBrands }: BrandMarqueeProps) {
   const { locale } = useStore();
@@ -24,7 +28,10 @@ export function BrandMarquee({ initialBrands }: BrandMarqueeProps) {
 
   const moving = brands.length > 1;
   const style = {
-    "--brand-marquee-duration": `${Math.min(72, Math.max(28, brands.length * 5))}s`,
+    "--brand-marquee-duration": `${Math.max(
+      minimumMarqueeDuration,
+      brands.length * marqueeSecondsPerBrand,
+    )}s`,
   } as CSSProperties;
   const heading = locale === "ar" ? "العلامات التجارية المتاحة" : "Available brands";
 
@@ -36,8 +43,8 @@ export function BrandMarquee({ initialBrands }: BrandMarqueeProps) {
       <div className="sf-brand-marquee__viewport">
         <div className="sf-brand-marquee__track" data-static={!moving || undefined}>
           <div className="sf-brand-marquee__group">
-            {brands.map((brand) => (
-              <BrandLink key={brand.id} brand={brand} />
+            {brands.map((brand, index) => (
+              <BrandLink key={brand.id} brand={brand} priority={index < priorityLogoCount} />
             ))}
           </div>
 
@@ -60,19 +67,22 @@ export function BrandMarquee({ initialBrands }: BrandMarqueeProps) {
 function BrandLink({
   brand,
   decorative = false,
+  priority = false,
 }: {
   brand: PublicBrandListItemResponse;
   decorative?: boolean;
+  priority?: boolean;
 }) {
   return (
     <Link
       to="/brands/$slug"
       params={{ slug: brand.slug }}
       className="sf-brand-marquee__item"
+      aria-label={decorative ? undefined : brand.name}
       title={decorative ? undefined : brand.name}
       tabIndex={decorative ? -1 : undefined}
     >
-      <BrandMark brand={brand} decorative={decorative} />
+      <BrandMark brand={brand} decorative={decorative} priority={priority} />
     </Link>
   );
 }
@@ -80,22 +90,32 @@ function BrandLink({
 function BrandMark({
   brand,
   decorative = false,
+  priority = false,
 }: {
   brand: PublicBrandListItemResponse;
   decorative?: boolean;
+  priority?: boolean;
 }) {
   const logoUrl = brand.logoUrl?.trim();
+  const [imageFailed, setImageFailed] = useState(false);
 
-  return logoUrl ? (
-    <img
-      src={logoUrl}
-      alt={decorative ? "" : brand.name}
-      width={144}
-      height={42}
-      loading="lazy"
-      decoding="async"
-    />
-  ) : (
-    <span className="sf-brand-marquee__name">{brand.name}</span>
+  return (
+    <span className="sf-brand-marquee__logo">
+      {logoUrl && !imageFailed ? (
+        <img
+          src={logoUrl}
+          alt={decorative ? "" : brand.name}
+          width={190}
+          height={66}
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "low"}
+          decoding="async"
+          draggable={false}
+          onError={() => setImageFailed(true)}
+        />
+      ) : (
+        <span className="sf-brand-marquee__name">{brand.name}</span>
+      )}
+    </span>
   );
 }
