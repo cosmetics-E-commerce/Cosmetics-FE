@@ -53,10 +53,10 @@ export function SeoCatalogLanding({
           <PolishedImage
             src={logo}
             alt={`${name} logo`}
-            width={120}
-            height={80}
+            width={288}
+            height={136}
             loading="eager"
-            wrapperClassName="sf-brand-landing-logo-shell mx-auto mb-6 h-16 w-28"
+            wrapperClassName="sf-brand-landing-logo-shell mx-auto"
             className="sf-brand-landing-logo h-full w-full object-contain"
             fallback={<span className="sf-brand-landing-logo-fallback">{name}</span>}
           />
