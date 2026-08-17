@@ -1,6 +1,6 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { SeoCatalogLanding } from "@/components/shop/SeoCatalogLanding";
-import { loadBrands, loadCatalogPage } from "@/lib/catalog";
+import { loadAllBrands, loadCatalogPage } from "@/lib/catalog";
 import {
   breadcrumbSchema,
   absoluteUrl,
@@ -24,15 +24,11 @@ export const Route = createFileRoute("/brands/$slug")({
     const locale: SeoLocale = context.locale === "ar" ? "ar" : "en";
     const page = deps.page ?? 1;
     const [brands, catalog] = await Promise.all([
-      loadBrands(),
+      loadAllBrands(),
       loadCatalogPage({ brandSlug: params.slug, page, limit: PAGE_SIZE }, locale),
     ]);
     const brand = brands.find((item) => item.slug === params.slug);
-    if (
-      !brand ||
-      brand.productCount < 1 ||
-      (catalog.meta.total > 0 && page > catalog.meta.totalPages)
-    ) {
+    if (!brand || (page > 1 && page > catalog.meta.totalPages)) {
       throw notFound();
     }
     return { brand, catalog, locale };

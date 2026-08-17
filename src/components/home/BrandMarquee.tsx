@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useMemo, type CSSProperties } from "react";
 
 import type { PublicBrandListItemResponse } from "@/lib/api";
-import { useBrands } from "@/lib/catalog";
+import { useAllBrands } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 
 type BrandMarqueeProps = {
@@ -11,14 +11,12 @@ type BrandMarqueeProps = {
 
 export function BrandMarquee({ initialBrands }: BrandMarqueeProps) {
   const { locale } = useStore();
-  const { data } = useBrands(initialBrands);
+  const { data } = useAllBrands(initialBrands);
   const brands = useMemo(
     () =>
-      [...(data ?? [])]
-        .filter((brand) => brand.productCount > 0)
-        .sort((left, right) =>
-          left.name.localeCompare(right.name, locale, { sensitivity: "base" }),
-        ),
+      [...(data ?? [])].sort((left, right) =>
+        left.name.localeCompare(right.name, locale, { sensitivity: "base" }),
+      ),
     [data, locale],
   );
 
