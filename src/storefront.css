@@ -372,7 +372,7 @@ body:has(.sf-product-page) .store-header .nav-link[data-state="open"] {
 body:has(.sf-shop-page) .store-header .header-action:hover,
 body:has(.sf-product-page) .store-header .header-action:hover {
   background: #f5f5f5;
-  color: #1f1f1f;
+  color: var(--sf-gold-fill);
 }
 
 body:has(.sf-shop-page) .header-actions__divider,
@@ -524,7 +524,7 @@ body:has(.sf-product-page) .header-actions__divider {
 
 .store-header .header-action:is(:hover, :focus-visible) {
   background: color-mix(in srgb, currentColor 5%, transparent);
-  color: inherit;
+  color: var(--sf-gold-fill);
   opacity: 1;
 }
 
@@ -6479,7 +6479,7 @@ body:has(.sf-checkout-page) .store-header .nav-link[data-state="open"] {
 
 body:has(.sf-checkout-page) .store-header .header-action:hover {
   background: #f5f5f5;
-  color: #1f1f1f;
+  color: var(--sf-gold-fill);
 }
 
 body:has(.sf-checkout-page) .header-actions__divider {
@@ -10157,7 +10157,10 @@ body:has(.sf-offers-page) .store-header[data-transparent] .brand-logo__wordmark 
 }
 
 body:has(.sf-offers-page) .header-action:hover,
-body:has(.sf-offers-page) .header-action:focus-visible,
+body:has(.sf-offers-page) .header-action:focus-visible {
+  color: var(--sf-gold-fill);
+}
+
 body:has(.sf-offers-page) .store-header .nav-link[aria-current="page"] {
   color: #171717;
 }
@@ -16249,9 +16252,13 @@ body:has(.account-page) .header-action {
   color: #575757 !important;
 }
 
-body:has(.account-page) .store-header .nav-link[data-active="true"],
-body:has(.account-page) .header-action:hover {
+body:has(.account-page) .store-header .nav-link[data-active="true"] {
   color: #1f1f1f !important;
+}
+
+body:has(.account-page) .header-action:hover,
+body:has(.account-page) .header-action:focus-visible {
+  color: var(--sf-gold-fill) !important;
 }
 
 body:has(.account-page) .store-header .nav-link:hover,
