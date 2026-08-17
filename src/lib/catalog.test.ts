@@ -71,6 +71,42 @@ describe("mapProduct", () => {
     expect(mapped.gallery).toEqual([mapped.image]);
   });
 
+  it("preserves external image URLs with transformation query parameters", () => {
+    const externalUrl = "https://cdn.example.com/serum.webp?id=123&w=800";
+    const mapped = mapProduct(
+      {
+        ...product,
+        imageUrl: externalUrl,
+        images: [
+          {
+            id: "44444444-4444-4444-8444-444444444444",
+            variantId: null,
+            url: externalUrl,
+            altText: "Serum bottle",
+            sortOrder: 0,
+            isPrimary: true,
+          },
+        ],
+      },
+      "en",
+    );
+
+    expect(mapped.image).toBe(externalUrl);
+    expect(mapped.gallery).toEqual([externalUrl]);
+  });
+
+  it("keeps backward-compatible storage-key image references renderable", () => {
+    const mapped = mapProduct(
+      {
+        ...product,
+        imageUrl: "products/test/test.webp",
+      },
+      "en",
+    );
+
+    expect(mapped.image).toBe("products/test/test.webp");
+  });
+
   it("tolerates legacy wishlist products with sparse catalog fields", () => {
     const mapped = mapProduct(
       {

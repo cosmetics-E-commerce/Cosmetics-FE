@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { apiErrorMessage, createSupportRequest } from "@/lib/api";
 import { useStore } from "@/lib/store";
 import { createSeoHead } from "@/lib/seo";
+import { customerCareTelHref, siteConfig } from "@/lib/site-config";
 
 const MAX_ATTACHMENT_BYTES = 5 * 1024 * 1024;
 const ACCEPTED_ATTACHMENT_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
@@ -72,6 +73,10 @@ function Contact() {
               : "For questions about an order, product, return, or payment, send the details and our team will reply."}
           </p>
           <div className="sf-contact-details">
+            <div className="sf-contact-detail">
+              <span>{ar ? "الهاتف" : "Phone"}</span>
+              <a href={customerCareTelHref()}>{siteConfig.customerCare.phoneDisplay}</a>
+            </div>
             <div className="sf-contact-detail">
               <span>{ar ? "البريد الإلكتروني" : "Email"}</span>
               <a href="mailto:hello@bioreza.com">hello@bioreza.com</a>

@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { PolishedImage } from "@/components/ui/polished-image";
 import type { PaginationMeta } from "@/lib/api";
 import type { Product } from "@/lib/products";
 
@@ -26,6 +27,8 @@ export function SeoCatalogLanding({
   parent,
   logo,
 }: Props) {
+  const hasBrandLogo = kind === "brand" && Boolean(logo);
+
   return (
     <div className="sf-shop-page sf-shop-page--minimal">
       <nav
@@ -48,14 +51,16 @@ export function SeoCatalogLanding({
       </nav>
 
       <header className="mx-auto max-w-3xl px-5 pb-10 pt-14 text-center md:px-10 md:pb-14 md:pt-20">
-        {kind === "brand" && logo ? (
-          <img
+        {hasBrandLogo && logo ? (
+          <PolishedImage
             src={logo}
             alt={`${name} logo`}
-            width={120}
-            height={80}
+            width={288}
+            height={136}
             loading="eager"
-            className="sf-brand-landing-logo mx-auto mb-6 h-16 w-28 object-contain"
+            wrapperClassName="sf-brand-landing-logo-shell mx-auto"
+            className="sf-brand-landing-logo h-full w-full object-contain"
+            fallback={<span className="sf-brand-landing-logo-fallback">{name}</span>}
           />
         ) : null}
         <p className="label-xs text-gold">
@@ -67,8 +72,14 @@ export function SeoCatalogLanding({
               ? "القسم"
               : "Category"}
         </p>
-        <h1 className="display mt-4 text-[clamp(2.5rem,6vw,5rem)]">{name}</h1>
-        <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-muted-foreground">
+        <h1 className={hasBrandLogo ? "sr-only" : "display mt-4 text-[clamp(2.5rem,6vw,5rem)]"}>
+          {name}
+        </h1>
+        <p
+          className={`mx-auto max-w-2xl text-sm leading-7 text-muted-foreground ${
+            hasBrandLogo ? "mt-5" : "mt-6"
+          }`}
+        >
           {description}
         </p>
       </header>

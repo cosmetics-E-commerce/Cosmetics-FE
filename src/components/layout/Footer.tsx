@@ -45,7 +45,7 @@ const socialLinks = [
   },
   {
     label: "WhatsApp",
-    href: "https://wa.me/201027347292",
+    href: "https://wa.me/201037376443",
     icon: WhatsAppLogo,
     platform: "whatsapp",
   },
@@ -64,21 +64,24 @@ const socialLinks = [
 ] as const;
 
 const careLinks = [
-  { label: "footer.contact" as const, to: "/contact" as const },
+  { label: "footer.faq" as const, to: "/faq" as const },
   { label: "footer.shipping" as const, to: "/shipping-policy" as const },
   { label: "footer.returns" as const, to: "/returns" as const },
-  { label: "footer.privacy" as const, to: "/privacy" as const },
+  { label: "footer.privacy" as const, to: "/privacy-policy" as const },
+  { label: "footer.contact" as const, to: "/contact" as const },
+];
+
+const legalLinks = [
   { label: "footer.terms" as const, to: "/terms" as const },
   { label: "footer.cookies" as const, to: "/cookies" as const },
 ];
-
-const legalLinks = careLinks.slice(3);
 
 const shopLinks = [
   { label: "nav.shop" as const, to: "/shop" as const },
   { label: "nav.categories" as const, to: "/shop" as const },
   { label: "nav.new" as const, to: "/shop" as const },
   { label: "nav.offers" as const, to: "/offers" as const },
+  { label: "nav.about" as const, to: "/about" as const },
 ];
 
 const servicePillars = [
@@ -180,14 +183,11 @@ export function Footer() {
               <div className="site-footer__link-group">
                 <h2>{t("footer.care")}</h2>
                 <ul className="site-footer__primary-links">
-                  {careLinks.slice(0, 3).map((link) => (
+                  {careLinks.map((link) => (
                     <li key={link.to}>
                       <Link to={link.to}>{t(link.label)}</Link>
                     </li>
                   ))}
-                  <li>
-                    <Link to="/journal">{t("nav.about")}</Link>
-                  </li>
                 </ul>
               </div>
             </nav>

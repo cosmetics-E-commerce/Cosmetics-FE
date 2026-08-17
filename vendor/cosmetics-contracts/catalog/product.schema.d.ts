@@ -107,7 +107,7 @@ export type ProductVariantInput = z.infer<typeof productVariantInputSchema>;
 export declare const productImageInputSchema: z.ZodObject<{
     id: z.ZodOptional<z.ZodString>;
     variantId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-    objectKey: z.ZodString;
+    objectKey: z.ZodEffects<z.ZodString, string, string>;
     altText: z.ZodOptional<z.ZodString>;
     sortOrder: z.ZodDefault<z.ZodNumber>;
     isPrimary: z.ZodDefault<z.ZodBoolean>;
@@ -349,7 +349,7 @@ export declare const createProductSchema: z.ZodEffects<z.ZodObject<{
     images: z.ZodDefault<z.ZodArray<z.ZodObject<{
         id: z.ZodOptional<z.ZodString>;
         variantId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-        objectKey: z.ZodString;
+        objectKey: z.ZodEffects<z.ZodString, string, string>;
         altText: z.ZodOptional<z.ZodString>;
         sortOrder: z.ZodDefault<z.ZodNumber>;
         isPrimary: z.ZodDefault<z.ZodBoolean>;
@@ -1017,7 +1017,7 @@ export declare const updateProductSchema: z.ZodObject<{
     images: z.ZodOptional<z.ZodArray<z.ZodObject<{
         id: z.ZodOptional<z.ZodString>;
         variantId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-        objectKey: z.ZodString;
+        objectKey: z.ZodEffects<z.ZodString, string, string>;
         altText: z.ZodOptional<z.ZodString>;
         sortOrder: z.ZodDefault<z.ZodNumber>;
         isPrimary: z.ZodDefault<z.ZodBoolean>;
@@ -1221,6 +1221,21 @@ export declare const updateProductSchema: z.ZodObject<{
     }[] | undefined;
 }>;
 export type UpdateProductInput = z.infer<typeof updateProductSchema>;
+export declare const reassignArchivedProductSchema: z.ZodObject<{
+    categoryId: z.ZodString;
+}, "strict", z.ZodTypeAny, {
+    categoryId: string;
+}, {
+    categoryId: string;
+}>;
+export type ReassignArchivedProductInput = z.infer<typeof reassignArchivedProductSchema>;
+export declare const reassignArchivedCategoryProductsSchema: z.ZodObject<{
+    targetCategoryId: z.ZodOptional<z.ZodString>;
+}, "strict", z.ZodTypeAny, {
+    targetCategoryId?: string | undefined;
+}, {
+    targetCategoryId?: string | undefined;
+}>;
 /** Receiving stock — expiry is mandatory for cosmetics. PLAN.md §10.2. */
 export declare const receiveBatchSchema: z.ZodEffects<z.ZodEffects<z.ZodObject<{
     variantId: z.ZodString;
@@ -1466,7 +1481,7 @@ export declare const createCategorySchema: z.ZodObject<{
     slug: z.ZodOptional<z.ZodString>;
     nameEn: z.ZodString;
     nameAr: z.ZodString;
-    imageKey: z.ZodOptional<z.ZodString>;
+    imageKey: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
     sortOrder: z.ZodDefault<z.ZodNumber>;
     isActive: z.ZodDefault<z.ZodBoolean>;
 }, "strict", z.ZodTypeAny, {
@@ -1492,7 +1507,7 @@ export declare const updateCategorySchema: z.ZodEffects<z.ZodObject<{
     slug: z.ZodOptional<z.ZodString>;
     nameEn: z.ZodOptional<z.ZodString>;
     nameAr: z.ZodOptional<z.ZodString>;
-    imageKey: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    imageKey: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>>;
     sortOrder: z.ZodOptional<z.ZodNumber>;
     isActive: z.ZodOptional<z.ZodBoolean>;
 }, "strict", z.ZodTypeAny, {
@@ -1570,7 +1585,7 @@ export type PublicBrandListItemResponse = z.infer<typeof publicBrandListItemSche
 export declare const createBrandSchema: z.ZodObject<{
     slug: z.ZodOptional<z.ZodString>;
     name: z.ZodString;
-    logoKey: z.ZodOptional<z.ZodString>;
+    logoKey: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
     isActive: z.ZodDefault<z.ZodBoolean>;
 }, "strict", z.ZodTypeAny, {
     name: string;
@@ -1587,7 +1602,7 @@ export type CreateBrandInput = z.infer<typeof createBrandSchema>;
 export declare const updateBrandSchema: z.ZodEffects<z.ZodObject<{
     slug: z.ZodOptional<z.ZodString>;
     name: z.ZodOptional<z.ZodString>;
-    logoKey: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    logoKey: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>>;
     isActive: z.ZodOptional<z.ZodBoolean>;
 }, "strict", z.ZodTypeAny, {
     name?: string | undefined;

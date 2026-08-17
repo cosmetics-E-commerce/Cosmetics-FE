@@ -1,5 +1,6 @@
 import type { ProductReview } from "@/lib/api";
 import type { Product } from "@/lib/products";
+import { siteConfig } from "@/lib/site-config";
 
 export type SeoLocale = "en" | "ar";
 export type SeoPageType = "website" | "article" | "product";
@@ -173,6 +174,7 @@ export function organizationGraph() {
           "@type": "ContactPoint",
           contactType: "customer support",
           email: "hello@bioreza.com",
+          telephone: siteConfig.customerCare.phoneE164,
           availableLanguage: ["English", "Arabic"],
         },
       },
@@ -205,6 +207,21 @@ export function breadcrumbSchema(items: Breadcrumb[], locale: SeoLocale = "en") 
       position: index + 1,
       name: item.name,
       item: canonicalUrl(item.path, locale),
+    })),
+  };
+}
+
+export function faqPageSchema(items: ReadonlyArray<{ question: string; answer: string }>) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
     })),
   };
 }

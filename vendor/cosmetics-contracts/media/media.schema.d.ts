@@ -34,4 +34,29 @@ export declare const mediaUploadMetadataSchema: z.ZodObject<{
     folder?: string | undefined;
 }>;
 export type MediaUploadMetadata = z.infer<typeof mediaUploadMetadataSchema>;
+export declare const resolveImageReferenceQuerySchema: z.ZodObject<{
+    reference: z.ZodEffects<z.ZodString, string, string>;
+}, "strip", z.ZodTypeAny, {
+    reference: string;
+}, {
+    reference: string;
+}>;
+export type ResolveImageReferenceQuery = z.infer<typeof resolveImageReferenceQuerySchema>;
+export declare const resolvedImageReferenceSchema: z.ZodObject<{
+    reference: z.ZodEffects<z.ZodString, string, string>;
+    source: z.ZodEnum<["storage_key", "external_url"]>;
+    url: z.ZodString;
+    ownedByApplication: z.ZodBoolean;
+}, "strip", z.ZodTypeAny, {
+    url: string;
+    source: "storage_key" | "external_url";
+    reference: string;
+    ownedByApplication: boolean;
+}, {
+    url: string;
+    source: "storage_key" | "external_url";
+    reference: string;
+    ownedByApplication: boolean;
+}>;
+export type ResolvedImageReference = z.infer<typeof resolvedImageReferenceSchema>;
 //# sourceMappingURL=media.schema.d.ts.map

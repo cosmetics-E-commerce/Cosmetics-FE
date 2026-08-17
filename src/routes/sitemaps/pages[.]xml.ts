@@ -5,9 +5,10 @@ import { sitemapFailure, sitemapResponse, urlsetXml } from "@/lib/sitemap";
 const PUBLIC_PAGES = [
   "/",
   "/shop",
-  "/journal",
+  "/about",
+  "/faq",
   "/contact",
-  "/privacy",
+  "/privacy-policy",
   "/terms",
   "/returns",
   "/shipping-policy",

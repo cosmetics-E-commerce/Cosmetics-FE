@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.adminProductSchema = exports.adminProductImageSchema = exports.adminProductVariantSchema = exports.publicProductSchema = exports.publicProductVariantSchema = exports.publicProductOptionSchema = exports.publicProductOptionValueSchema = exports.publicProductImageSchema = exports.updateBrandSchema = exports.createBrandSchema = exports.publicBrandListItemSchema = exports.publicBrandSchema = exports.updateCategorySchema = exports.createCategorySchema = exports.publicCategorySchema = exports.adminProductQuerySchema = exports.publicBrandQuerySchema = exports.publicCatalogQuerySchema = exports.receiveBatchSchema = exports.updateProductSchema = exports.productVariantUpdateSchema = exports.createProductSchema = exports.productDimensionsInputSchema = exports.productOptionInputSchema = exports.productOptionValueInputSchema = exports.productImageInputSchema = exports.productVariantInputSchema = exports.variantOpeningStockSchema = exports.PRODUCT_VARIANT_LIMIT = exports.PRODUCT_OPTION_VALUE_LIMIT = exports.PRODUCT_OPTION_LIMIT = exports.PRODUCT_GALLERY_LIMIT = exports.skinTypeEnum = void 0;
+exports.adminProductSchema = exports.adminProductImageSchema = exports.adminProductVariantSchema = exports.publicProductSchema = exports.publicProductVariantSchema = exports.publicProductOptionSchema = exports.publicProductOptionValueSchema = exports.publicProductImageSchema = exports.updateBrandSchema = exports.createBrandSchema = exports.publicBrandListItemSchema = exports.publicBrandSchema = exports.updateCategorySchema = exports.createCategorySchema = exports.publicCategorySchema = exports.adminProductQuerySchema = exports.publicBrandQuerySchema = exports.publicCatalogQuerySchema = exports.receiveBatchSchema = exports.reassignArchivedCategoryProductsSchema = exports.reassignArchivedProductSchema = exports.updateProductSchema = exports.productVariantUpdateSchema = exports.createProductSchema = exports.productDimensionsInputSchema = exports.productOptionInputSchema = exports.productOptionValueInputSchema = exports.productImageInputSchema = exports.productVariantInputSchema = exports.variantOpeningStockSchema = exports.PRODUCT_VARIANT_LIMIT = exports.PRODUCT_OPTION_VALUE_LIMIT = exports.PRODUCT_OPTION_LIMIT = exports.PRODUCT_GALLERY_LIMIT = exports.skinTypeEnum = void 0;
 const zod_1 = require("zod");
+const image_reference_schema_1 = require("../media/image-reference.schema");
 const primitives_1 = require("../common/primitives");
 const pagination_1 = require("../common/pagination");
 const ingredient_schema_1 = require("../ingredients/ingredient.schema");
@@ -58,7 +59,7 @@ exports.productVariantInputSchema = zod_1.z.object({
 exports.productImageInputSchema = zod_1.z.object({
     id: primitives_1.uuidSchema.optional(),
     variantId: primitives_1.uuidSchema.nullable().optional(),
-    objectKey: zod_1.z.string().trim().min(1).max(2048),
+    objectKey: image_reference_schema_1.imageReferenceValueSchema,
     altText: zod_1.z.string().trim().max(180).optional(),
     sortOrder: zod_1.z.number().int().min(0).default(0),
     isPrimary: zod_1.z.boolean().default(false),
@@ -180,6 +181,12 @@ exports.updateProductSchema = zod_1.z.object({
         .optional(),
     ingredientLinks: zod_1.z.array(ingredient_schema_1.productIngredientInputSchema).max(300).optional(),
 });
+exports.reassignArchivedProductSchema = zod_1.z
+    .object({ categoryId: primitives_1.uuidSchema })
+    .strict();
+exports.reassignArchivedCategoryProductsSchema = zod_1.z
+    .object({ targetCategoryId: primitives_1.uuidSchema.optional() })
+    .strict();
 /** Receiving stock — expiry is mandatory for cosmetics. PLAN.md §10.2. */
 exports.receiveBatchSchema = zod_1.z
     .object({
@@ -256,7 +263,7 @@ exports.createCategorySchema = zod_1.z
     slug: primitives_1.slugSchema.optional(),
     nameEn: zod_1.z.string().trim().min(2).max(140),
     nameAr: zod_1.z.string().trim().min(2).max(140),
-    imageKey: zod_1.z.string().trim().min(1).max(2048).optional(),
+    imageKey: image_reference_schema_1.imageReferenceValueSchema.optional(),
     sortOrder: zod_1.z.number().int().min(0).default(0),
     isActive: zod_1.z.boolean().default(true),
 })
@@ -267,7 +274,7 @@ exports.updateCategorySchema = zod_1.z
     slug: primitives_1.slugSchema.optional(),
     nameEn: zod_1.z.string().trim().min(2).max(140).optional(),
     nameAr: zod_1.z.string().trim().min(2).max(140).optional(),
-    imageKey: zod_1.z.string().trim().min(1).max(2048).nullable().optional(),
+    imageKey: image_reference_schema_1.imageReferenceValueSchema.nullable().optional(),
     sortOrder: zod_1.z.number().int().min(0).optional(),
     isActive: zod_1.z.boolean().optional(),
 })
@@ -286,7 +293,7 @@ exports.createBrandSchema = zod_1.z
     .object({
     slug: primitives_1.slugSchema.optional(),
     name: zod_1.z.string().trim().min(2).max(140),
-    logoKey: zod_1.z.string().trim().min(1).max(2048).optional(),
+    logoKey: image_reference_schema_1.imageReferenceValueSchema.optional(),
     isActive: zod_1.z.boolean().default(true),
 })
     .strict();
@@ -294,7 +301,7 @@ exports.updateBrandSchema = zod_1.z
     .object({
     slug: primitives_1.slugSchema.optional(),
     name: zod_1.z.string().trim().min(2).max(140).optional(),
-    logoKey: zod_1.z.string().trim().min(1).max(2048).nullable().optional(),
+    logoKey: image_reference_schema_1.imageReferenceValueSchema.nullable().optional(),
     isActive: zod_1.z.boolean().optional(),
 })
     .strict()

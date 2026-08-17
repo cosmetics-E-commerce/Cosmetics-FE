@@ -5,15 +5,17 @@ import {
   useRef,
   useState,
   type ImgHTMLAttributes,
+  type ReactNode,
 } from "react";
 import { cn } from "@/lib/utils";
 
 type PolishedImageProps = ImgHTMLAttributes<HTMLImageElement> & {
   wrapperClassName?: string;
+  fallback?: ReactNode;
 };
 
 export const PolishedImage = forwardRef<HTMLImageElement, PolishedImageProps>(
-  ({ className, wrapperClassName, alt, onLoad, onError, src, ...props }, ref) => {
+  ({ className, wrapperClassName, fallback, alt, onLoad, onError, src, ...props }, ref) => {
     const [loaded, setLoaded] = useState(false);
     const [failed, setFailed] = useState(false);
     const imageRef = useRef<HTMLImageElement | null>(null);
@@ -40,6 +42,7 @@ export const PolishedImage = forwardRef<HTMLImageElement, PolishedImageProps>(
         className={cn("image-reveal-shell", wrapperClassName)}
         data-loaded={loaded}
         data-failed={failed}
+        data-has-fallback={failed && fallback ? true : undefined}
       >
         <img
           ref={assignRef}
@@ -57,6 +60,11 @@ export const PolishedImage = forwardRef<HTMLImageElement, PolishedImageProps>(
           }}
           {...props}
         />
+        {failed && fallback ? (
+          <span className="image-reveal-fallback" role="img" aria-label={`${alt} unavailable`}>
+            {fallback}
+          </span>
+        ) : null}
       </span>
     );
   },

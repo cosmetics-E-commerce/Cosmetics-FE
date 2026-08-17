@@ -767,7 +767,7 @@ export function BrandStory() {
               <span>{ar ? "دعم واضح" : "Clear support"}</span>
             </div>
           </div>
-          <Link to="/journal" className="sf-text-link">
+          <Link to="/about" className="sf-text-link">
             {ar ? "تعرفي على بيوريزا" : "Discover our approach"}
             <ArrowRight className="size-4" aria-hidden="true" />
           </Link>
