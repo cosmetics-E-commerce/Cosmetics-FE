@@ -27,6 +27,8 @@ export function SeoCatalogLanding({
   parent,
   logo,
 }: Props) {
+  const hasBrandLogo = kind === "brand" && Boolean(logo);
+
   return (
     <div className="sf-shop-page sf-shop-page--minimal">
       <nav
@@ -49,7 +51,7 @@ export function SeoCatalogLanding({
       </nav>
 
       <header className="mx-auto max-w-3xl px-5 pb-10 pt-14 text-center md:px-10 md:pb-14 md:pt-20">
-        {kind === "brand" && logo ? (
+        {hasBrandLogo && logo ? (
           <PolishedImage
             src={logo}
             alt={`${name} logo`}
@@ -70,8 +72,14 @@ export function SeoCatalogLanding({
               ? "القسم"
               : "Category"}
         </p>
-        <h1 className="display mt-4 text-[clamp(2.5rem,6vw,5rem)]">{name}</h1>
-        <p className="mx-auto mt-6 max-w-2xl text-sm leading-7 text-muted-foreground">
+        <h1 className={hasBrandLogo ? "sr-only" : "display mt-4 text-[clamp(2.5rem,6vw,5rem)]"}>
+          {name}
+        </h1>
+        <p
+          className={`mx-auto max-w-2xl text-sm leading-7 text-muted-foreground ${
+            hasBrandLogo ? "mt-5" : "mt-6"
+          }`}
+        >
           {description}
         </p>
       </header>
