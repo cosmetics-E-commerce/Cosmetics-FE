@@ -219,11 +219,13 @@ export const Route = createFileRoute("/product/$slug")({
         alternates: false,
       });
     }
-    const description = product.description
-      ? product.description
-      : locale === "ar"
-        ? `${product.name} ضمن قسم ${product.category}. اطلعي على السعر الحالي وخيارات المنتج وحالة التوفر.`
-        : `${product.name} in ${product.category}. View its current price, available variants and stock status.`;
+    const description = product.shortDescription
+      ? product.shortDescription
+      : product.description
+        ? product.description
+        : locale === "ar"
+          ? `${product.name} ضمن قسم ${product.category}. اطلعي على السعر الحالي وخيارات المنتج وحالة التوفر.`
+          : `${product.name} in ${product.category}. View its current price, available variants and stock status.`;
     const path = `/product/${encodeURIComponent(product.slug)}`;
     const seo = createSeoHead({
       title: productTitle(product.name, product.brand?.name),
@@ -383,11 +385,11 @@ function ProductPage() {
       {
         id: "description",
         label: labels.descriptionTab,
-        content: product.details || product.description,
+        content: product.description,
       },
+      { id: "custom", label: labels.customTab, content: product.howToUse },
       { id: "delivery", label: labels.deliveryPolicy, content: labels.ordersShip },
       { id: "returns", label: labels.shippingReturn, content: labels.returnPolicyCopy },
-      { id: "custom", label: labels.customTab, content: product.howToUse },
     ] satisfies Array<{ id: ProductTab; label: string; content: string }>
   ).filter((tab) => Boolean(tab.content.trim()));
   const selectedTab = detailTabs.some((tab) => tab.id === activeTab)
@@ -426,7 +428,11 @@ function ProductPage() {
   };
 
   const shareProduct = async () => {
-    const shareData = { title: product.name, text: product.description, url: window.location.href };
+    const shareData = {
+      title: product.name,
+      text: product.shortDescription || product.description,
+      url: window.location.href,
+    };
     if (navigator.share) {
       await navigator.share(shareData).catch(() => undefined);
       return;
@@ -518,8 +524,8 @@ function ProductPage() {
               )}
             </div>
 
-            {product.description ? (
-              <p className="product-reference-description">{product.description}</p>
+            {product.shortDescription ? (
+              <p className="product-reference-short-description">{product.shortDescription}</p>
             ) : null}
 
             <dl className="product-reference-meta">
@@ -823,7 +829,13 @@ function ProductPage() {
               role="tabpanel"
               hidden={selectedTab !== tab.id}
             >
-              <p>{tab.content}</p>
+              <p
+                className={
+                  tab.id === "description" ? "product-reference-description-copy" : undefined
+                }
+              >
+                {tab.content}
+              </p>
               {tab.id === "description" && product.benefits.length > 0 ? (
                 <ul>
                   {product.benefits.map((benefit) => (

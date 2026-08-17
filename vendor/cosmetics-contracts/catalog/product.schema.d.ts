@@ -216,6 +216,8 @@ export declare const createProductSchema: z.ZodEffects<z.ZodObject<{
     slug: z.ZodOptional<z.ZodString>;
     nameEn: z.ZodString;
     nameAr: z.ZodString;
+    shortDescriptionEn: z.ZodOptional<z.ZodString>;
+    shortDescriptionAr: z.ZodOptional<z.ZodString>;
     descriptionEn: z.ZodOptional<z.ZodString>;
     descriptionAr: z.ZodOptional<z.ZodString>;
     /** Allergen disclosure — a regulatory expectation for cosmetics. */
@@ -445,6 +447,8 @@ export declare const createProductSchema: z.ZodEffects<z.ZodObject<{
     slug?: string | undefined;
     descriptionEn?: string | undefined;
     descriptionAr?: string | undefined;
+    shortDescriptionEn?: string | undefined;
+    shortDescriptionAr?: string | undefined;
     compareAtPrice?: number | undefined;
     brandId?: string | undefined;
     ingredients?: string | undefined;
@@ -500,6 +504,8 @@ export declare const createProductSchema: z.ZodEffects<z.ZodObject<{
     slug?: string | undefined;
     descriptionEn?: string | undefined;
     descriptionAr?: string | undefined;
+    shortDescriptionEn?: string | undefined;
+    shortDescriptionAr?: string | undefined;
     compareAtPrice?: number | undefined;
     brandId?: string | undefined;
     ingredients?: string | undefined;
@@ -573,6 +579,8 @@ export declare const createProductSchema: z.ZodEffects<z.ZodObject<{
     slug?: string | undefined;
     descriptionEn?: string | undefined;
     descriptionAr?: string | undefined;
+    shortDescriptionEn?: string | undefined;
+    shortDescriptionAr?: string | undefined;
     compareAtPrice?: number | undefined;
     brandId?: string | undefined;
     ingredients?: string | undefined;
@@ -628,6 +636,8 @@ export declare const createProductSchema: z.ZodEffects<z.ZodObject<{
     slug?: string | undefined;
     descriptionEn?: string | undefined;
     descriptionAr?: string | undefined;
+    shortDescriptionEn?: string | undefined;
+    shortDescriptionAr?: string | undefined;
     compareAtPrice?: number | undefined;
     brandId?: string | undefined;
     ingredients?: string | undefined;
@@ -805,6 +815,8 @@ export declare const updateProductSchema: z.ZodObject<{
     slug: z.ZodOptional<z.ZodString>;
     nameEn: z.ZodOptional<z.ZodString>;
     nameAr: z.ZodOptional<z.ZodString>;
+    shortDescriptionEn: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    shortDescriptionAr: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     descriptionEn: z.ZodOptional<z.ZodString>;
     descriptionAr: z.ZodOptional<z.ZodString>;
     ingredients: z.ZodOptional<z.ZodString>;
@@ -1077,6 +1089,8 @@ export declare const updateProductSchema: z.ZodObject<{
     slug?: string | undefined;
     descriptionEn?: string | undefined;
     descriptionAr?: string | undefined;
+    shortDescriptionEn?: string | null | undefined;
+    shortDescriptionAr?: string | null | undefined;
     nameEn?: string | undefined;
     nameAr?: string | undefined;
     compareAtPrice?: number | null | undefined;
@@ -1159,6 +1173,8 @@ export declare const updateProductSchema: z.ZodObject<{
     slug?: string | undefined;
     descriptionEn?: string | undefined;
     descriptionAr?: string | undefined;
+    shortDescriptionEn?: string | null | undefined;
+    shortDescriptionAr?: string | null | undefined;
     nameEn?: string | undefined;
     nameAr?: string | undefined;
     compareAtPrice?: number | null | undefined;
@@ -1825,6 +1841,8 @@ export declare const publicProductSchema: z.ZodObject<{
     slug: z.ZodString;
     nameEn: z.ZodString;
     nameAr: z.ZodString;
+    shortDescriptionEn: z.ZodNullable<z.ZodString>;
+    shortDescriptionAr: z.ZodNullable<z.ZodString>;
     descriptionEn: z.ZodNullable<z.ZodString>;
     descriptionAr: z.ZodNullable<z.ZodString>;
     ingredients: z.ZodNullable<z.ZodString>;
@@ -2131,6 +2149,8 @@ export declare const publicProductSchema: z.ZodObject<{
     slug: string;
     descriptionEn: string | null;
     descriptionAr: string | null;
+    shortDescriptionEn: string | null;
+    shortDescriptionAr: string | null;
     nameEn: string;
     nameAr: string;
     compareAtPrice: number | null;
@@ -2229,6 +2249,8 @@ export declare const publicProductSchema: z.ZodObject<{
     slug: string;
     descriptionEn: string | null;
     descriptionAr: string | null;
+    shortDescriptionEn: string | null;
+    shortDescriptionAr: string | null;
     nameEn: string;
     nameAr: string;
     compareAtPrice: number | null;
@@ -2455,6 +2477,8 @@ export declare const adminProductSchema: z.ZodObject<{
     slug: z.ZodString;
     nameEn: z.ZodString;
     nameAr: z.ZodString;
+    shortDescriptionEn: z.ZodNullable<z.ZodString>;
+    shortDescriptionAr: z.ZodNullable<z.ZodString>;
     descriptionEn: z.ZodNullable<z.ZodString>;
     descriptionAr: z.ZodNullable<z.ZodString>;
     ingredients: z.ZodNullable<z.ZodString>;
@@ -2795,6 +2819,8 @@ export declare const adminProductSchema: z.ZodObject<{
     slug: string;
     descriptionEn: string | null;
     descriptionAr: string | null;
+    shortDescriptionEn: string | null;
+    shortDescriptionAr: string | null;
     nameEn: string;
     nameAr: string;
     compareAtPrice: number | null;
@@ -2907,6 +2933,8 @@ export declare const adminProductSchema: z.ZodObject<{
     slug: string;
     descriptionEn: string | null;
     descriptionAr: string | null;
+    shortDescriptionEn: string | null;
+    shortDescriptionAr: string | null;
     nameEn: string;
     nameAr: string;
     compareAtPrice: number | null;

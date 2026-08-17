@@ -18,8 +18,9 @@ const SelectTrigger = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
+    data-form-control="select"
     className={cn(
-      "flex h-9 w-full cursor-pointer items-center justify-between whitespace-nowrap rounded-[var(--radius-lg)] border border-input bg-[var(--color-input-background)] px-3 py-2 text-sm text-foreground shadow-none ring-offset-background transition-[border-color,box-shadow,background-color,color] data-[placeholder]:text-[var(--color-text-muted)] hover:border-[var(--color-border-strong)] focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring/35 disabled:cursor-not-allowed disabled:bg-[var(--color-surface-muted)] disabled:opacity-70 [&>span]:line-clamp-1",
+      "flex h-11 w-full cursor-pointer items-center justify-between whitespace-nowrap rounded-[var(--radius-lg)] border border-input bg-[var(--color-input-background)] px-3 py-2 text-sm text-foreground shadow-none transition-[border-color,box-shadow,background-color,color] data-[placeholder]:text-[var(--color-text-muted)] hover:border-[var(--color-border-strong)] focus:border-ring focus:outline-none focus-visible:ring-[3px] focus-visible:ring-ring/15 aria-invalid:border-destructive aria-invalid:focus:border-destructive aria-invalid:focus-visible:ring-destructive/15 disabled:cursor-not-allowed disabled:bg-[var(--color-surface-muted)] disabled:text-[var(--color-text-muted)] disabled:opacity-70 disabled:hover:border-input [&>span]:line-clamp-1",
       className,
     )}
     {...props}

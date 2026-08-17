@@ -66,6 +66,7 @@ export type Product = {
   category: string;
   type: string;
   benefit: string;
+  shortDescription: string;
   description: string;
   price: number;
   originalPrice?: number;

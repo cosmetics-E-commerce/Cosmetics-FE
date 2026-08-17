@@ -72,21 +72,26 @@ export function AuthField({
   const [visible, setVisible] = useState(false);
   const password = type === "password";
   return (
-    <div>
-      <label htmlFor={id} className="label-xs text-taupe">
+    <div className="sf-auth-field">
+      <label htmlFor={id} className="sf-auth-field__label label-xs text-taupe">
         {label}
       </label>
-      <div className="relative mt-2">
+      <div
+        className="sf-auth-control"
+        data-invalid={error ? "true" : undefined}
+        data-disabled={inputProps.disabled ? "true" : undefined}
+      >
         <input
           id={id}
           name={id}
+          data-form-control="auth-input"
           type={password && visible ? "text" : type}
           required={required}
           autoComplete={autoComplete}
           inputMode={type === "tel" ? "tel" : type === "email" ? "email" : undefined}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
-          className="h-12 w-full border border-input bg-warm-white px-4 pe-12 text-base outline-none transition-[border-color,box-shadow] duration-150 hover:border-taupe focus:border-gold focus:shadow-[0_0_0_1px_var(--color-gold-soft)] aria-invalid:border-destructive disabled:cursor-not-allowed disabled:opacity-55 md:text-sm"
+          className="sf-auth-control__input"
           {...inputProps}
         />
         {password && (
@@ -95,18 +100,19 @@ export function AuthField({
             onClick={() => setVisible((current) => !current)}
             aria-label={visible ? "Hide password" : "Show password"}
             aria-pressed={visible}
-            className="absolute inset-y-0 end-0 grid w-12 place-items-center text-taupe transition-colors hover:text-gold"
+            data-form-control="auth-action"
+            className="sf-auth-control__action"
           >
             {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
           </button>
         )}
       </div>
       {error ? (
-        <p id={`${id}-error`} className="mt-2 text-xs text-destructive">
+        <p id={`${id}-error`} className="sf-auth-field__message text-destructive">
           {error}
         </p>
       ) : hint ? (
-        <p id={`${id}-hint`} className="mt-2 text-xs text-muted-foreground">
+        <p id={`${id}-hint`} className="sf-auth-field__message text-muted-foreground">
           {hint}
         </p>
       ) : null}

@@ -88,7 +88,8 @@ function Forgot() {
                 <select
                   id="channel"
                   name="channel"
-                  className="mt-2 h-12 w-full border border-input bg-warm-white px-4"
+                  data-form-control="auth-select"
+                  className="sf-auth-select"
                 >
                   <option value="EMAIL">Email</option>
                   <option value="SMS">SMS</option>

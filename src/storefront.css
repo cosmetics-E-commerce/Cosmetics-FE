@@ -101,7 +101,7 @@ h4,
   color: var(--color-text-primary);
 }
 
-:focus-visible {
+:where(a, button, summary, [role="button"], [tabindex]):not([data-form-control]):focus-visible {
   outline: 2px solid var(--sf-gold);
   outline-offset: 3px;
 }
@@ -3121,6 +3121,274 @@ body:has(.account-page) .header-nav-indicator {
   }
 }
 
+/* Unified form-control finishing layer.
+   Standalone controls own their focus halo; compound auth/search shells own it instead. */
+:is(
+    input[data-form-control="input"],
+    textarea[data-form-control="textarea"],
+    button[data-form-control="select"]
+  ):focus {
+  border-color: var(--sf-gold);
+  outline: none;
+}
+
+:is(
+    input[data-form-control="input"],
+    textarea[data-form-control="textarea"],
+    button[data-form-control="select"]
+  ):focus-visible {
+  border-color: var(--sf-gold);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sf-gold) 16%, transparent);
+}
+
+:is(
+    input[data-form-control="input"],
+    textarea[data-form-control="textarea"],
+    button[data-form-control="select"]
+  )[aria-invalid="true"]:focus-visible {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-error) 14%, transparent);
+}
+
+.sf-contact-form :is(input[data-form-control="input"], textarea[data-form-control="textarea"]):focus-visible {
+  border-color: var(--sf-gold);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sf-gold) 16%, transparent);
+}
+
+:is(.sf-checkout-choice, .sf-checkout-payment-option):has(input:focus-visible) {
+  border-color: var(--sf-gold);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sf-gold) 14%, transparent);
+}
+
+:is(.sf-checkout-choice, .sf-checkout-payment-option) input:focus-visible {
+  outline: none;
+}
+
+:where(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+        [type="file"]
+      ):not([type="color"]):not([type="hidden"]),
+    select,
+    textarea
+  ):not([data-form-control]) {
+  transition:
+    border-color var(--motion-micro) var(--ease-premium),
+    background-color var(--motion-micro) var(--ease-premium),
+    box-shadow var(--motion-micro) var(--ease-premium),
+    color var(--motion-micro) var(--ease-premium);
+}
+
+:where(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+        [type="file"]
+      ):not([type="color"]):not([type="hidden"]),
+    select,
+    textarea
+  ):not([data-form-control]):focus {
+  border-color: var(--sf-gold);
+  outline: none;
+}
+
+:where(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+        [type="file"]
+      ):not([type="color"]):not([type="hidden"]),
+    select,
+    textarea
+  ):not([data-form-control]):focus-visible {
+  border-color: var(--sf-gold);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sf-gold) 16%, transparent);
+}
+
+:where(input, select, textarea)[aria-invalid="true"] {
+  border-color: var(--color-error-border);
+}
+
+:where(input, select, textarea)[aria-invalid="true"]:focus-visible {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-error) 14%, transparent);
+}
+
+:where(input, select, textarea):disabled {
+  cursor: not-allowed;
+}
+
+:where(input, textarea):read-only:not(:disabled) {
+  cursor: default;
+}
+
+.sf-auth-field {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.sf-auth-field__label {
+  display: block;
+  color: var(--sf-taupe);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.sf-auth-control,
+.sf-auth-select {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--input);
+  border-radius: var(--radius-lg);
+  background: var(--color-input-background);
+  color: var(--foreground);
+  transition:
+    border-color var(--motion-micro) var(--ease-premium),
+    background-color var(--motion-micro) var(--ease-premium),
+    box-shadow var(--motion-micro) var(--ease-premium);
+}
+
+.sf-auth-control {
+  display: flex;
+  align-items: center;
+  overflow: visible;
+}
+
+.sf-auth-control:hover:not([data-disabled="true"]):not([data-invalid="true"]),
+.sf-auth-select:hover:not(:disabled) {
+  border-color: var(--color-border-strong);
+}
+
+.sf-auth-control:focus-within,
+.sf-auth-select:focus {
+  border-color: var(--sf-gold);
+  outline: none;
+}
+
+.sf-auth-control:has(.sf-auth-control__input:focus-visible),
+.sf-auth-select:focus-visible {
+  border-color: var(--sf-gold);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sf-gold) 16%, transparent);
+}
+
+.sf-auth-control[data-invalid="true"] {
+  border-color: var(--color-error-border);
+}
+
+.sf-auth-control[data-invalid="true"]:focus-within {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-error) 14%, transparent);
+}
+
+.sf-auth-control__input {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  color: var(--foreground);
+  padding: 0 14px;
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1;
+  outline: none;
+  box-shadow: none;
+}
+
+.sf-auth-control__input::placeholder {
+  color: var(--color-text-muted);
+  opacity: 0.8;
+}
+
+.sf-auth-control__input:focus,
+.sf-auth-control__input:focus-visible,
+.sf-auth-control__input[aria-invalid="true"]:focus-visible {
+  border: 0;
+  outline: none;
+  box-shadow: none;
+}
+
+.sf-auth-control__input:disabled {
+  color: var(--color-text-muted);
+}
+
+.sf-auth-control__action {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  margin-inline-end: 4px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--sf-taupe);
+  cursor: pointer;
+  transition:
+    background-color var(--motion-micro) var(--ease-premium),
+    box-shadow var(--motion-micro) var(--ease-premium),
+    color var(--motion-micro) var(--ease-premium);
+}
+
+.sf-auth-control__action:hover {
+  background: color-mix(in srgb, var(--sf-gold) 8%, transparent);
+  color: var(--sf-gold);
+}
+
+.sf-auth-control__action:focus-visible {
+  outline: none;
+  background: color-mix(in srgb, var(--sf-gold) 9%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--sf-gold) 48%, transparent);
+  color: var(--sf-gold);
+}
+
+.sf-auth-select {
+  display: block;
+  margin-block-start: 8px;
+  padding-inline: 14px 38px;
+  font: inherit;
+  font-size: 1rem;
+}
+
+.sf-auth-field__message {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+:where(input, textarea):-webkit-autofill {
+  -webkit-text-fill-color: var(--foreground);
+  caret-color: var(--foreground);
+  box-shadow: inset 0 0 0 1000px var(--color-input-background);
+  transition: background-color 9999s ease-out 0s;
+}
+
+.sf-auth-control__input:-webkit-autofill,
+.sf-auth-control__input:-webkit-autofill:focus {
+  border: 0;
+  -webkit-text-fill-color: var(--foreground);
+  box-shadow: inset 0 0 0 1000px var(--color-input-background);
+}
+
+[dir="rtl"] .sf-auth-control__input,
+[dir="rtl"] .sf-auth-select {
+  text-align: start;
+}
+
+@media (max-width: 640px) {
+  .sf-auth-control,
+  .sf-auth-select {
+    min-height: 50px;
+  }
+
+  .sf-auth-control__input,
+  .sf-auth-select {
+    font-size: 1rem;
+  }
+}
+
 @media (max-width: 380px) {
   .sf-offers-page .offer-card a {
     padding-inline: 10px;
@@ -5904,13 +6172,14 @@ body:has(.product-template-white) {
   padding: 0 14px;
 }
 
-.product-reference-description {
+.product-reference-short-description {
   max-width: 760px;
   margin-top: 20px;
   color: var(--product-muted);
   font-size: 1.02rem;
   font-weight: 500;
   line-height: 1.75;
+  overflow-wrap: anywhere;
 }
 
 .product-reference-meta {
@@ -6325,6 +6594,11 @@ body:has(.product-template-white) {
 
 .product-reference-tab-panel p {
   max-width: 1700px;
+}
+
+.product-reference-description-copy {
+  overflow-wrap: anywhere;
+  white-space: pre-line;
 }
 
 .product-reference-tab-panel ul {
@@ -18375,4 +18649,74 @@ body:has(.account-page) .header-nav-indicator {
     min-width: 42px;
     min-height: 42px;
   }
+}
+
+/* Final form-state cascade bridge.
+   Late route themes may change surfaces and radii, but focus/error ownership remains singular. */
+:where(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+        [type="file"]
+      ):not([type="color"]):not([type="hidden"]),
+    select,
+    textarea
+  ):not([data-form-control]):focus {
+  border-color: var(--sf-gold) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+:where(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+        [type="file"]
+      ):not([type="color"]):not([type="hidden"]),
+    select,
+    textarea
+  ):not([data-form-control]):focus-visible,
+:where(
+    input[data-form-control="input"],
+    textarea[data-form-control="textarea"],
+    button[data-form-control="select"]
+  ):focus-visible {
+  border-color: var(--sf-gold) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sf-gold) 16%, transparent) !important;
+}
+
+:where(input, select, textarea)[aria-invalid="true"]:focus-visible {
+  border-color: var(--color-error) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-error) 14%, transparent) !important;
+}
+
+:is(.sf-checkout-choice, .sf-checkout-payment-option):has(input:focus-visible) {
+  border-color: var(--sf-gold);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--sf-gold) 14%, transparent);
+}
+
+:is(.sf-checkout-choice, .sf-checkout-payment-option) input:focus-visible {
+  outline: none;
+}
+
+:where(input, textarea):-webkit-autofill {
+  -webkit-text-fill-color: var(--foreground) !important;
+  caret-color: var(--foreground);
+  box-shadow: inset 0 0 0 1000px var(--color-input-background) !important;
+}
+
+:where(
+    input:not([data-form-control="auth-input"]):not([data-form-control="search-input"]),
+    textarea
+  ):-webkit-autofill:focus-visible {
+  box-shadow:
+    inset 0 0 0 1000px var(--color-input-background),
+    0 0 0 3px color-mix(in srgb, var(--sf-gold) 16%, transparent) !important;
+}
+
+.sf-auth-control__input:-webkit-autofill,
+.sf-auth-control__input:-webkit-autofill:hover,
+.sf-auth-control__input:-webkit-autofill:focus,
+.sf-auth-control__input:-webkit-autofill:focus-visible {
+  -webkit-text-fill-color: var(--foreground) !important;
+  box-shadow: inset 0 0 0 1000px var(--color-input-background) !important;
 }
