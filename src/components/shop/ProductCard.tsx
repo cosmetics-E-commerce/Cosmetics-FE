@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { Heart } from "lucide-react";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Stars } from "@/components/brand/Stars";
 import { PolishedImage } from "@/components/ui/polished-image";
 import { QuickAddToolbar } from "@/components/shop/QuickAddToolbar";
+import { selectProductCardImages } from "@/components/shop/product-card-media";
 import { formatPrice, type Product } from "@/lib/products";
 import { useStore } from "@/lib/store";
 
@@ -23,8 +24,19 @@ export function ProductCard({
   const stock = product.id ? product.stock : undefined;
   const outOfStock = product.inStock === false || stock === 0;
   const lowStock = stock !== undefined && stock > 0 && stock < 10;
-  const secondaryImage = product.gallery.find((image) => image !== product.image);
+  const { primary: primaryImage, secondary: secondaryImage } = selectProductCardImages(product);
+  const secondaryImageRef = useRef<HTMLImageElement>(null);
   const [secondaryReady, setSecondaryReady] = useState(false);
+
+  useEffect(() => {
+    const image = secondaryImageRef.current;
+    setSecondaryReady(
+      Boolean(
+        secondaryImage && image?.complete && image.naturalWidth > 0 && image.naturalHeight > 0,
+      ),
+    );
+  }, [secondaryImage]);
+
   return (
     <article
       className={`product-card sf-product-card group relative h-full ${
@@ -36,11 +48,16 @@ export function ProductCard({
     >
       <div
         className="product-card-media sf-product-card__media relative overflow-hidden"
+        data-has-secondary={secondaryImage ? "true" : "false"}
         data-secondary-ready={secondaryReady ? "true" : "false"}
       >
-        <ProductLink product={product} ariaLabel={product.name} className="relative block">
+        <ProductLink
+          product={product}
+          ariaLabel={product.name}
+          className="product-card-media__link"
+        >
           <PolishedImage
-            src={product.image}
+            src={primaryImage}
             alt={product.imageAlt || product.name}
             width={800}
             height={1000}
@@ -51,11 +68,12 @@ export function ProductCard({
                 ? "(min-width: 640px) 12rem, 7rem"
                 : "(min-width: 1280px) 24vw, (min-width: 768px) 33vw, 50vw"
             }
-            wrapperClassName="product-card-primary aspect-[4/5]"
-            className="product-card-image product-card-image--primary size-full object-cover"
+            wrapperClassName="product-card-layer product-card-primary"
+            className="product-card-image product-card-image--primary"
           />
           {secondaryImage ? (
             <PolishedImage
+              ref={secondaryImageRef}
               src={secondaryImage}
               alt=""
               aria-hidden="true"
@@ -63,15 +81,20 @@ export function ProductCard({
               height={1000}
               loading="lazy"
               decoding="async"
+              fetchPriority="low"
               sizes={
                 layout === "list"
                   ? "(min-width: 640px) 12rem, 7rem"
                   : "(min-width: 1280px) 24vw, (min-width: 768px) 33vw, 50vw"
               }
-              onLoad={(event) => setSecondaryReady(event.currentTarget.naturalWidth > 0)}
+              onLoad={(event) =>
+                setSecondaryReady(
+                  event.currentTarget.naturalWidth > 0 && event.currentTarget.naturalHeight > 0,
+                )
+              }
               onError={() => setSecondaryReady(false)}
-              wrapperClassName="product-card-secondary absolute inset-0"
-              className="product-card-image product-card-image--secondary size-full object-cover"
+              wrapperClassName="product-card-layer product-card-secondary"
+              className="product-card-image product-card-image--secondary"
             />
           ) : null}
         </ProductLink>

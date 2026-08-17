@@ -1,8 +1,43 @@
 .product-card-media {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
   isolation: isolate;
 }
 
+.product-card-media__link,
+.product-card-media .product-card-layer {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.product-card-media__link {
+  z-index: 1;
+}
+
+.product-card-media .product-card-primary {
+  z-index: 1;
+  opacity: 1;
+}
+
+.product-card-media .product-card-secondary {
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .product-card-image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
   transition:
     transform 360ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 240ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -12,9 +47,8 @@
   transform: scale(1.001);
 }
 
-.product-card-secondary {
-  opacity: 0;
-  transition: opacity 240ms cubic-bezier(0.22, 1, 0.36, 1);
+.product-card-layer {
+  transition: opacity 320ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .quick-add {
@@ -168,17 +202,15 @@
 
 @media (hover: hover) and (pointer: fine) {
   .product-card-media:hover .image-reveal-shell[data-loaded="true"] .product-card-image,
-  .product-card-media:focus-within .image-reveal-shell[data-loaded="true"] .product-card-image {
-    transform: scale(1.035);
+  .product-card-media:focus-within .product-card-primary[data-loaded="true"] .product-card-image {
+    transform: scale(1.018);
   }
 
-  .product-card-media[data-secondary-ready="true"]:hover .product-card-secondary,
-  .product-card-media[data-secondary-ready="true"]:focus-within .product-card-secondary {
+  .product-card-media[data-secondary-ready="true"]:hover .product-card-secondary {
     opacity: 1;
   }
 
-  .product-card-media[data-secondary-ready="true"]:hover .product-card-primary,
-  .product-card-media[data-secondary-ready="true"]:focus-within .product-card-primary {
+  .product-card-media[data-secondary-ready="true"]:hover .product-card-primary {
     opacity: 0;
   }
 
@@ -240,6 +272,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .product-card-image,
+  .product-card-layer,
   .quick-add,
   .quick-add__content,
   .quick-add__quantity button,
