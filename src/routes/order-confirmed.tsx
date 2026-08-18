@@ -30,7 +30,7 @@ function Confirmed() {
       stagger
       staggerMs={45}
       distance={20}
-      className="mx-auto max-w-2xl px-5 py-28 text-center md:px-10"
+      className="sf-order-confirmation mx-auto max-w-2xl px-5 py-28 text-center md:px-10"
     >
       <span className="mx-auto grid size-16 place-items-center rounded-full border border-gold text-gold">
         <Check className="size-6" />

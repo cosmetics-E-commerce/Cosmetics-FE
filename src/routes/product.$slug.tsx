@@ -442,7 +442,7 @@ function ProductPage() {
   };
 
   return (
-    <div className="sf-product-page product-template-white pb-24 lg:pb-0">
+    <div className="sf-product-page product-template-white">
       <div className="product-shell">
         <Reveal as="nav" variant="fade" distance={0} className="product-reference-breadcrumb">
           <Link to="/">{labels.home}</Link>
@@ -828,23 +828,15 @@ function ProductPage() {
         </section>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-warm-white px-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.4)] lg:hidden">
-        <div className="mx-auto flex max-w-lg items-center gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="truncate font-serif text-lg">{product.name}</p>
-            <p className="font-serif text-gold">
-              {formatPrice(variant?.price ?? product.price)}
-              {variant?.originalPrice && variant.originalPrice > variant.price && (
-                <span className="ms-2 text-sm text-taupe line-through">
-                  {formatPrice(variant.originalPrice)}
-                </span>
-              )}
-            </p>
-          </div>
+      <div className="product-mobile-purchase">
+        <div className="product-mobile-purchase__inner">
+          <p className="product-mobile-purchase__price">
+            {formatPrice(variant?.price ?? product.price)}
+          </p>
           <Button
             variant="solid"
             size="pill"
-            className="h-12 shrink-0 px-6"
+            className="product-mobile-purchase__action"
             loading={adding}
             disabled={!variant?.id || outOfStock}
             onClick={() => void addToBag()}

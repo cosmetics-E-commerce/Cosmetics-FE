@@ -39,6 +39,7 @@ import { trackCommerceEvent } from "@/lib/analytics";
 import { Reveal } from "@/components/motion/Primitives";
 import { useI18n } from "@/lib/i18n";
 import { createNoindexHead } from "@/lib/seo";
+import { randomUuid } from "@/lib/uuid";
 export const Route = createFileRoute("/checkout")({
   head: ({ match }) =>
     createNoindexHead(
@@ -116,7 +117,7 @@ function Checkout() {
   const placingOrder = useRef(false);
   const preparingPayment = useRef(false);
   const idempotencyKey = (ref: { current: string | null }) => {
-    ref.current ??= crypto.randomUUID();
+    ref.current ??= randomUuid();
     return ref.current;
   };
   const paymentSetup = useMutation({

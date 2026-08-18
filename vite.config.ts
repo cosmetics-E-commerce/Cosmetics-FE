@@ -6,12 +6,24 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+const apiProxyTarget = process.env["VITE_API_PROXY_TARGET"]?.trim() || "http://127.0.0.1:3000";
+
 export default defineConfig({
   vite: {
     server: {
       host: "127.0.0.1",
       port: 5173,
       strictPort: true,
+      // Local phones and browsers cannot call the production API directly
+      // because its CORS policy only trusts deployed storefront origins.
+      // Keep development requests same-origin and let Vite forward them.
+      proxy: {
+        "/api/v1": {
+          target: apiProxyTarget,
+          changeOrigin: true,
+          secure: true,
+        },
+      },
     },
     // The shared contracts package is emitted as CommonJS. It is a local file
     // dependency, so Vite otherwise treats it as source and evaluates its

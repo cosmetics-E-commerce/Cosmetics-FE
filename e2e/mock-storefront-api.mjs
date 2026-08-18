@@ -1,0 +1,159 @@
+import { createServer } from "node:http";
+
+const host = "127.0.0.1";
+const port = Number.parseInt(process.env.E2E_MOCK_API_PORT || "4174", 10);
+
+const category = {
+  id: "20000000-0000-4000-8000-000000000001",
+  parentId: null,
+  slug: "skincare",
+  nameEn: "Skincare",
+  nameAr: "العناية بالبشرة",
+  imageUrl: "/bioreza-logo.png",
+  sortOrder: 1,
+  productCount: 1,
+};
+
+const brands = [
+  {
+    id: "30000000-0000-4000-8000-000000000001",
+    name: "La Roche-Posay",
+    slug: "la-roche-posay",
+    logoUrl: "/bioreza-logo.png",
+    productCount: 1,
+  },
+  {
+    id: "30000000-0000-4000-8000-000000000002",
+    name: "Bobai",
+    slug: "bobai",
+    logoUrl: "/bioreza-logo.png",
+    productCount: 1,
+  },
+  {
+    id: "30000000-0000-4000-8000-000000000003",
+    name: "Vichy",
+    slug: "vichy",
+    logoUrl: "/bioreza-logo.png",
+    productCount: 1,
+  },
+];
+
+const product = {
+  id: "10000000-0000-4000-8000-000000000001",
+  slug: "acm-depiwhite-eye-contour-gel-15ml",
+  nameEn: "ACM Depiwhite Advanced Intensive Anti-Pigmentation Eye Contour Cream 40ML",
+  nameAr: "كريم ACM ديبي وايت المكثف لمحيط العين 40 مل",
+  shortDescriptionEn: "Targeted care for the delicate eye contour.",
+  shortDescriptionAr: "عناية مخصصة لمنطقة محيط العين الحساسة.",
+  descriptionEn: "A lightweight eye-contour treatment for an even-looking complexion.",
+  descriptionAr: "عناية خفيفة لمحيط العين تساعد على توحيد مظهر البشرة.",
+  ingredients: "Aqua, Glycerin",
+  ingredientDetails: [],
+  howToUse: "Apply a small amount around the eye contour.",
+  skinType: ["ALL_SKIN_TYPES"],
+  basePrice: 41900,
+  compareAtPrice: null,
+  rating: 4.8,
+  reviewCount: 12,
+  imageUrl: "/bioreza-logo.png",
+  category,
+  brand: brands[0],
+  options: [],
+  variants: [
+    {
+      id: "10000000-0000-4000-8000-000000000002",
+      sku: "ACM-DEPIWHITE-40",
+      nameEn: "40 ml",
+      nameAr: "40 مل",
+      price: 41900,
+      compareAtPrice: null,
+      shadeHex: null,
+      optionValues: [],
+      images: [],
+      stock: 8,
+    },
+  ],
+  images: [
+    {
+      id: "10000000-0000-4000-8000-000000000003",
+      url: "/bioreza-logo.png",
+      altText: "ACM Depiwhite eye contour cream",
+      sortOrder: 0,
+    },
+  ],
+};
+
+const emptyCart = {
+  cartId: "40000000-0000-4000-8000-000000000001",
+  owner: "GUEST",
+  items: [],
+  subtotal: 0,
+  discountTotal: 0,
+  estimatedTotal: 0,
+  totalSavings: 0,
+  couponCode: null,
+  appliedPromotions: [],
+  promotionMessages: [],
+  giftOptions: [],
+  totalQuantity: 0,
+  hasIssues: false,
+  updatedAt: "2026-08-18T00:00:00.000Z",
+};
+
+const server = createServer((request, response) => {
+  const url = new URL(request.url || "/", `http://${host}:${port}`);
+  const path = url.pathname.replace(/^\/api\/v1/, "");
+
+  if (url.pathname === "/health") return json(response, 200, { ok: true });
+  if (path === `/products/${product.slug}`) return success(response, product);
+  if (path === `/products/${product.id}/reviews`) {
+    return success(response, {
+      items: [],
+      summary: { average: 0, count: 0, distribution: {} },
+      meta: { page: 1, totalPages: 0, total: 0 },
+    });
+  }
+  if (path === "/products") {
+    return json(response, 200, {
+      success: true,
+      data: [product],
+      meta: { page: 1, limit: 24, total: 1, totalPages: 1, hasNext: false, hasPrev: false },
+    });
+  }
+  if (path === "/categories") return success(response, [category]);
+  if (path === "/brands") return success(response, brands);
+  if (path === "/promotions/prices") return success(response, []);
+  if (path === "/cart") return success(response, emptyCart);
+  if (path === "/campaigns/eligible") {
+    return success(response, { campaigns: [], serverTime: "2026-08-18T00:00:00.000Z" });
+  }
+  if (path === "/campaigns/events") {
+    return success(response, { accepted: 0, duplicates: 0, rejected: 0 });
+  }
+  if (path === "/banners/active" || path === "/promotions/offers") {
+    return success(response, []);
+  }
+
+  return json(response, 404, {
+    code: "NOT_MOCKED",
+    message: `${request.method || "GET"} ${path}`,
+  });
+});
+
+server.listen(port, host);
+
+for (const signal of ["SIGINT", "SIGTERM"]) {
+  process.on(signal, () => server.close(() => process.exit(0)));
+}
+
+function success(response, data) {
+  return json(response, 200, { success: true, data });
+}
+
+function json(response, status, body) {
+  response.writeHead(status, {
+    "content-type": "application/json; charset=utf-8",
+    "cache-control": "no-store",
+  });
+  response.end(JSON.stringify(body));
+}

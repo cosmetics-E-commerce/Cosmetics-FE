@@ -302,6 +302,20 @@ function Shop() {
             {t("shop.filters")}
             {activeFilters.length > 0 && <span>{activeFilters.length}</span>}
           </button>
+          <select
+            aria-label={locale === "ar" ? "ترتيب المنتجات" : "Sort products"}
+            value={search.sort ?? ""}
+            onChange={(event) =>
+              navigate({
+                search: resetPageSearch({ ...search, sort: event.target.value || undefined }),
+              })
+            }
+            className="sf-shop-sort sf-shop-sort--mobile"
+          >
+            <option value="">{t("shop.sortNewest")}</option>
+            <option value="price-asc">{t("shop.sortLow")}</option>
+            <option value="price-desc">{t("shop.sortHigh")}</option>
+          </select>
         </div>
         <div className="sf-shop-meta">
           <h2 id="shop-products-title">

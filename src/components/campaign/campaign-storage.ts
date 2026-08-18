@@ -1,4 +1,5 @@
 import type { PopupPublishedCampaign } from "@/lib/campaign-api";
+import { randomUuid } from "@/lib/uuid";
 
 const VISITOR_KEY = "bioreza.campaign.visitor";
 const SESSION_KEY = "bioreza.campaign.session";
@@ -34,7 +35,7 @@ export type CampaignAttribution = {
 export function visitState(path: string): CampaignVisit {
   const visitorId = uuid(localStorage, VISITOR_KEY);
   const existingSession = sessionStorage.getItem(SESSION_KEY);
-  const sessionId = existingSession || crypto.randomUUID();
+  const sessionId = existingSession || randomUuid();
   if (!existingSession) sessionStorage.setItem(SESSION_KEY, sessionId);
   const persistedVisit = localStorage.getItem(VISIT_KEY);
   const firstVisitKey = "bioreza.campaign.first-visit";
@@ -174,7 +175,7 @@ function elapsed(value: string | null, now: Date, hours: number) {
 function uuid(storage: Storage, key: string) {
   const existing = storage.getItem(key);
   if (existing) return existing;
-  const next = crypto.randomUUID();
+  const next = randomUuid();
   storage.setItem(key, next);
   return next;
 }

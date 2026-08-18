@@ -2,6 +2,12 @@
   --info-ink: #211d19;
   --info-muted: #736b63;
   --info-line: color-mix(in srgb, var(--border) 82%, #b99a68 18%);
+  --legal-selector-height: 0px;
+  --legal-section-anchor-gap: 48px;
+  /* The document-level scroll-padding reserves the fixed header. This local
+     margin adds only the sticky selector and section breathing room, so the
+     header is never counted twice. */
+  --legal-page-scroll-offset: calc(var(--legal-selector-height) + var(--legal-section-anchor-gap));
   min-height: 70dvh;
   padding: clamp(2rem, 4vw, 4.5rem) clamp(1rem, 4vw, 3rem) clamp(5rem, 8vw, 8rem);
   background: linear-gradient(
@@ -102,7 +108,8 @@
 }
 
 .bio-information-page__contents a:hover,
-.bio-information-page__contents a:focus-visible {
+.bio-information-page__contents a:focus-visible,
+.bio-information-page__contents a[aria-current="location"] {
   color: var(--gold);
 }
 
@@ -116,8 +123,102 @@
   min-width: 0;
 }
 
+.bio-information-page__mobile-selector {
+  display: none;
+}
+
+.bio-information-page__selector-trigger {
+  display: flex;
+  width: 100%;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid var(--info-line);
+  background: color-mix(in srgb, var(--background) 94%, white 6%);
+  padding: 0.75rem 0.875rem;
+  color: var(--info-ink);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: start;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.bio-information-page__selector-trigger > span {
+  min-width: 0;
+  white-space: normal;
+}
+
+.bio-information-page__selector-trigger svg {
+  width: 1rem;
+  height: 1rem;
+  flex: 0 0 auto;
+  color: var(--gold);
+  transition: transform 180ms ease;
+}
+
+.bio-information-page__selector-trigger[data-state="open"] svg {
+  transform: rotate(180deg);
+}
+
+.bio-information-page__selector-trigger:hover {
+  border-color: color-mix(in srgb, var(--gold) 58%, var(--info-line));
+}
+
+.bio-information-page__selector-trigger:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.bio-information-page__selector-menu {
+  width: var(--radix-dropdown-menu-trigger-width);
+  max-width: calc(100vw - 2.5rem);
+  max-height: min(
+    var(--radix-dropdown-menu-content-available-height),
+    calc(100dvh - var(--store-header-height, 4rem) - 1rem)
+  );
+  padding: 0.375rem;
+  border-color: var(--border);
+  border-radius: 0;
+  background: var(--popover);
+  box-shadow: 0 18px 48px var(--color-shadow-medium);
+}
+
+.bio-information-page__selector-option {
+  display: grid;
+  min-height: 2.75rem;
+  grid-template-columns: minmax(0, 1fr) 1rem;
+  gap: 0.75rem;
+  align-items: center;
+  border-radius: 0;
+  padding: 0.625rem 0.75rem;
+  color: var(--muted-foreground);
+  font-size: 0.86rem;
+  line-height: 1.45;
+  white-space: normal;
+}
+
+.bio-information-page__selector-option > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.bio-information-page__selector-option svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  color: var(--gold);
+}
+
+.bio-information-page__selector-option:is(:focus, [aria-current="location"]) {
+  background: var(--secondary);
+  color: var(--foreground);
+}
+
 .bio-information-section {
-  scroll-margin-top: calc(var(--store-header-offset, 6.5rem) + 2rem);
+  scroll-margin-top: var(--legal-page-scroll-offset);
   padding: clamp(2.75rem, 6vw, 5.25rem) 0;
   border-bottom: 1px solid var(--info-line);
 }
@@ -460,17 +561,89 @@
   }
 }
 
+@media (min-width: 701px) and (max-width: 980px) {
+  .bio-information-page__header h1,
+  .bio-philosophy__statement h1 {
+    max-width: 14ch;
+    font-size: clamp(2.8rem, 6.4vw, 3.35rem);
+    line-height: 1.04;
+    text-wrap: balance;
+  }
+
+  [dir="rtl"] .bio-information-page__header h1,
+  [dir="rtl"] .bio-philosophy__statement h1 {
+    line-height: 1.22;
+  }
+}
+
 @media (max-width: 700px) {
   .bio-information-page {
-    padding-inline: 1rem;
+    padding: 1.5rem 1.25rem 4.5rem;
   }
 
   .bio-information-page__breadcrumb {
-    margin-bottom: 2.75rem;
+    margin-bottom: 1.875rem;
   }
 
   .bio-information-page__header h1 {
-    max-width: 11ch;
+    max-width: 13ch;
+    font-size: clamp(2.15rem, 9.5vw, 2.6rem);
+    line-height: 1.03;
+  }
+
+  .bio-information-page__header {
+    padding-bottom: 2.375rem;
+  }
+
+  .bio-information-page__intro {
+    margin-top: 1.125rem;
+    font-size: 0.94rem;
+    line-height: 1.72;
+  }
+
+  .bio-information-page__contents {
+    position: sticky;
+    z-index: 5;
+    top: var(--store-header-height, 4rem);
+    margin-inline: 0;
+    overflow: visible;
+    padding: 0.625rem 0 0.75rem;
+    border-block: 1px solid var(--info-line);
+    background: color-mix(in srgb, var(--background) 94%, transparent);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  .bio-information-page__contents > p {
+    margin-bottom: 0.5rem;
+  }
+
+  .bio-information-page__contents ol {
+    display: none;
+  }
+
+  .bio-information-page__mobile-selector {
+    display: block;
+  }
+
+  .bio-information-section {
+    padding-block: 2.5rem;
+  }
+
+  .bio-information-section h2 {
+    font-size: clamp(1.6rem, 7vw, 1.95rem);
+  }
+
+  .bio-information-section__content,
+  .bio-faq-answer {
+    font-size: 0.92rem;
+    line-height: 1.72;
+  }
+
+  .bio-faq-list [data-radix-collection-item] {
+    min-height: 4rem;
+    padding-block: 1rem;
+    font-size: 1.18rem;
   }
 
   .bio-delivery-windows,
@@ -480,16 +653,31 @@
   }
 
   .bio-philosophy__hero {
-    gap: 2.5rem;
+    gap: 1.875rem;
+    padding-bottom: 3rem;
   }
 
   .bio-philosophy__statement h1 {
-    font-size: clamp(3rem, 15vw, 4.6rem);
+    max-width: 13ch;
+    margin-top: 0.875rem;
+    font-size: clamp(2.15rem, 9.5vw, 2.6rem);
+    letter-spacing: -0.035em;
+    line-height: 1.03;
   }
 
   .bio-philosophy__media {
     min-height: 0;
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 4 / 3;
+  }
+
+  .bio-philosophy__manifesto {
+    gap: 1.5rem;
+    padding-top: 3rem;
+  }
+
+  .bio-philosophy__closing {
+    margin-top: 2.25rem !important;
+    font-size: 1.65rem !important;
   }
 
   .bio-return-step {

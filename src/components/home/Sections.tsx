@@ -49,7 +49,7 @@ const heroSlides = [
   {
     id: "radiance",
     image: images.heroSlide1,
-    position: "center center",
+    position: { desktop: "center center", mobile: "52% center" },
     eyebrow: {
       en: "Curated beauty",
       ar: "اختيارات جمال منتقاة",
@@ -74,7 +74,7 @@ const heroSlides = [
   {
     id: "serum",
     image: images.heroSlide2,
-    position: "center center",
+    position: { desktop: "center center", mobile: "66% center" },
     eyebrow: {
       en: "Skincare essentials",
       ar: "أساسيات العناية بالبشرة",
@@ -99,7 +99,7 @@ const heroSlides = [
   {
     id: "minimal",
     image: images.heroSlide3,
-    position: "center center",
+    position: { desktop: "center center", mobile: "69% center" },
     eyebrow: {
       en: "Beauty with confidence",
       ar: "جمال بثقة",
@@ -155,8 +155,14 @@ export function Hero() {
           <div
             key={slide.id}
             className="sf-hero__media"
+            data-slide-id={slide.id}
             data-active={activeSlide === index || undefined}
-            style={{ "--hero-image-position": slide.position } as CSSProperties}
+            style={
+              {
+                "--hero-image-position": slide.position.desktop,
+                "--hero-image-position-mobile": slide.position.mobile,
+              } as CSSProperties
+            }
           >
             <ParallaxMedia className="size-full" strength={activeSlide === index ? 18 : 0}>
               <img

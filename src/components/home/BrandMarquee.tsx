@@ -4,6 +4,7 @@ import { useMemo, useState, type CSSProperties } from "react";
 import type { PublicBrandListItemResponse } from "@/lib/api";
 import { useAllBrands } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
+import { useDraggableMarquee } from "./useDraggableMarquee";
 
 type BrandMarqueeProps = {
   initialBrands?: PublicBrandListItemResponse[];
@@ -23,10 +24,13 @@ export function BrandMarquee({ initialBrands }: BrandMarqueeProps) {
       ),
     [data, locale],
   );
+  const moving = brands.length > 1;
+  const marquee = useDraggableMarquee({
+    enabled: moving,
+    direction: locale === "ar" ? 1 : -1,
+  });
 
   if (!brands.length) return null;
-
-  const moving = brands.length > 1;
   const style = {
     "--brand-marquee-duration": `${Math.max(
       minimumMarqueeDuration,
@@ -36,13 +40,22 @@ export function BrandMarquee({ initialBrands }: BrandMarqueeProps) {
   const heading = locale === "ar" ? "العلامات التجارية المتاحة" : "Available brands";
 
   return (
-    <section className="sf-brand-marquee" aria-labelledby="brand-marquee-title" style={style}>
+    <section
+      ref={marquee.rootRef}
+      className="sf-brand-marquee"
+      aria-labelledby="brand-marquee-title"
+      style={style}
+    >
       <h2 id="brand-marquee-title" className="sr-only">
         {heading}
       </h2>
-      <div className="sf-brand-marquee__viewport">
-        <div className="sf-brand-marquee__track" data-static={!moving || undefined}>
-          <div className="sf-brand-marquee__group">
+      <div ref={marquee.viewportRef} className="sf-brand-marquee__viewport">
+        <div
+          ref={marquee.trackRef}
+          className="sf-brand-marquee__track"
+          data-static={!moving || undefined}
+        >
+          <div ref={marquee.groupRef} className="sf-brand-marquee__group">
             {brands.map((brand, index) => (
               <BrandLink key={brand.id} brand={brand} priority={index < priorityLogoCount} />
             ))}
