@@ -215,7 +215,8 @@ export function useCategories(initialData?: Awaited<ReturnType<typeof listCatego
     queryKey: ["categories"],
     queryFn: async () => filterEntitiesWithProducts(await listCategories()),
     initialData: initialData ? filterEntitiesWithProducts(initialData) : undefined,
-    staleTime: 300_000,
+    staleTime: 60_000,
+    refetchOnWindowFocus: "always",
   });
 }
 
@@ -224,7 +225,8 @@ export function useBrands(initialData?: Awaited<ReturnType<typeof listBrands>>) 
     queryKey: ["brands"],
     queryFn: async () => filterEntitiesWithProducts(await listBrands()),
     initialData: initialData ? filterEntitiesWithProducts(initialData) : undefined,
-    staleTime: 300_000,
+    staleTime: 60_000,
+    refetchOnWindowFocus: "always",
   });
 }
 
@@ -233,7 +235,8 @@ export function useAllBrands(initialData?: Awaited<ReturnType<typeof listBrands>
     queryKey: ["brands", "all"],
     queryFn: listBrands,
     initialData,
-    staleTime: 300_000,
+    staleTime: 60_000,
+    refetchOnWindowFocus: "always",
   });
 }
 
