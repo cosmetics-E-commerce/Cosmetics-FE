@@ -6,6 +6,8 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+const apiProxyTarget = process.env["VITE_API_PROXY_TARGET"]?.trim() || "http://127.0.0.1:3000";
+
 export default defineConfig({
   vite: {
     server: {
@@ -17,7 +19,7 @@ export default defineConfig({
       // Keep development requests same-origin and let Vite forward them.
       proxy: {
         "/api/v1": {
-          target: "http://127.0.0.1:3000",
+          target: apiProxyTarget,
           changeOrigin: true,
           secure: true,
         },
