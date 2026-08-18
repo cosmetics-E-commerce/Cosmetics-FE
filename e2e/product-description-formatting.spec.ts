@@ -43,8 +43,10 @@ async function mountDescriptionFixture(page: Page) {
   await page.locator("#main-content").evaluate((main, text) => {
     main.innerHTML = `
       <article style="max-width: 760px; margin: 40px auto; padding-inline: 20px">
-        <section class="product-reference-tab-panel">
-          <p class="product-reference-description-copy"></p>
+        <section class="product-info-accordion__body">
+          <div class="product-info-accordion__copy">
+            <p class="product-reference-description-copy"></p>
+          </div>
         </section>
       </article>`;
     main.querySelectorAll("p").forEach((paragraph) => {

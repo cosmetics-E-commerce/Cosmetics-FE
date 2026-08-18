@@ -19,6 +19,10 @@ import { Button } from "@/components/ui/button";
 import { PolishedImage } from "@/components/ui/polished-image";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { ProductImageZoom } from "@/components/shop/ProductImageZoom";
+import {
+  ProductInfoAccordion,
+  type ProductInfoSection,
+} from "@/components/shop/ProductInfoAccordion";
 import { ProductReviews } from "@/components/shop/ProductReviews";
 import { IngredientExplorer } from "@/components/shop/IngredientExplorer";
 import { WishlistPicker } from "@/components/shop/WishlistPicker";
@@ -162,7 +166,7 @@ const productCopy = {
     descriptionTab: "الوصف",
     deliveryPolicy: "سياسة التوصيل",
     shippingReturn: "الشحن والاسترجاع",
-    customTab: "معلومات إضافية",
+    customTab: "طريقة الاستخدام",
     freeShipping: "توصيل داخل مصر",
     freeShippingCopy: "توصيل داخل مصر برسوم واضحة عند إتمام الطلب.",
     returnPolicy: "سياسة الاسترجاع",
@@ -172,8 +176,6 @@ const productCopy = {
     related: "منتجات مشابهة",
   },
 } as const;
-
-type ProductTab = "description" | "delivery" | "returns" | "custom";
 
 export const Route = createFileRoute("/product/$slug")({
   loader: async ({ params, context }) => {
@@ -271,7 +273,6 @@ function ProductPage() {
   const [added, setAdded] = useState(false);
   const [buyNowLoading, setBuyNowLoading] = useState(false);
   const [shared, setShared] = useState(false);
-  const [activeTab, setActiveTab] = useState<ProductTab>("description");
   const firstAvailableVariant =
     product?.sizes.findIndex((item) => item.stock === undefined || item.stock > 0) ?? -1;
 
@@ -380,21 +381,19 @@ function ProductPage() {
   const tags = [product.type, product.category].filter(Boolean).join(", ");
   const categoryLine = [product.category, ...product.concerns].filter(Boolean).join(", ");
   const sku = variant?.sku;
-  const detailTabs = (
+  const detailSections = (
     [
       {
         id: "description",
         label: labels.descriptionTab,
         content: product.description,
+        benefits: product.benefits,
       },
       { id: "custom", label: labels.customTab, content: product.howToUse },
       { id: "delivery", label: labels.deliveryPolicy, content: labels.ordersShip },
       { id: "returns", label: labels.shippingReturn, content: labels.returnPolicyCopy },
-    ] satisfies Array<{ id: ProductTab; label: string; content: string }>
-  ).filter((tab) => Boolean(tab.content.trim()));
-  const selectedTab = detailTabs.some((tab) => tab.id === activeTab)
-    ? activeTab
-    : detailTabs[0]?.id;
+    ] satisfies ProductInfoSection[]
+  ).filter((section) => Boolean(section.content.trim()) || section.benefits?.length);
 
   const addToBag = async () => {
     if (!variant?.id || outOfStock) return false;
@@ -809,42 +808,7 @@ function ProductPage() {
         ) : null}
 
         <section id="product-details" className="product-reference-details">
-          <div className="product-reference-tabs" role="tablist" aria-label={labels.details}>
-            {detailTabs.map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                role="tab"
-                aria-selected={selectedTab === tab.id}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-          {detailTabs.map((tab) => (
-            <div
-              key={tab.id}
-              className="product-reference-tab-panel"
-              role="tabpanel"
-              hidden={selectedTab !== tab.id}
-            >
-              <p
-                className={
-                  tab.id === "description" ? "product-reference-description-copy" : undefined
-                }
-              >
-                {tab.content}
-              </p>
-              {tab.id === "description" && product.benefits.length > 0 ? (
-                <ul>
-                  {product.benefits.map((benefit) => (
-                    <li key={benefit}>{benefit}</li>
-                  ))}
-                </ul>
-              ) : null}
-            </div>
-          ))}
+          <ProductInfoAccordion key={product.id} sections={detailSections} label={labels.details} />
         </section>
 
         <section className="product-reference-service-strip" aria-label={labels.benefitsTitle}>

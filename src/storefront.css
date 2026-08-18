@@ -335,6 +335,39 @@ h4,
   --brand-gap: 0.74rem;
 }
 
+/* Header interaction contract ---------------------------------------------
+   Cursor ownership lives on the semantic interactive root, never on the SVG
+   or on the whole navigation surface. This keeps links, Radix triggers and
+   icon buttons consistent while labels, dividers and empty space stay neutral. */
+.brand-logo,
+.store-header .nav-link,
+.store-header .header-action,
+.mobile-nav .header-action,
+.header-mega-all,
+.header-mega-popular a,
+.brand-directory__link,
+.category-mega__parent,
+.category-mega__rail-all,
+.category-mega__column-links a,
+.category-mega__brand,
+.category-mega__brands-all,
+.category-mega__promo a,
+.header-account-dropdown a,
+.header-account-dropdown button,
+.mobile-nav__link,
+.mobile-nav__sublink,
+.mobile-nav__subaction,
+.mobile-category-nav__trigger,
+.mobile-nav__utility-link,
+.mobile-nav__locale button {
+  cursor: pointer;
+}
+
+.store-header :is(button:disabled, [aria-disabled="true"]),
+.mobile-nav :is(button:disabled, [aria-disabled="true"]) {
+  cursor: not-allowed;
+}
+
 body:has(.sf-shop-page) .store-header,
 body:has(.sf-product-page) .store-header {
   color: #202020;
@@ -6560,40 +6593,119 @@ body:has(.product-template-white) {
 }
 
 .product-reference-details {
-  margin-top: clamp(80px, 8vw, 130px);
+  margin-top: clamp(64px, 7vw, 96px);
 }
 
-.product-reference-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: clamp(34px, 6vw, 96px);
-  border-bottom: 1px solid transparent;
+.product-info-accordion {
+  width: 100%;
+  border-top: 1px solid var(--product-line);
 }
 
-.product-reference-tabs button {
+.product-info-accordion__item {
+  border-bottom: 1px solid var(--product-line);
+}
+
+.product-info-accordion__trigger {
+  width: 100%;
+  min-height: 72px;
+  gap: 28px;
+  padding: 22px 2px;
   color: var(--product-ink);
-  font-size: clamp(1.45rem, 2vw, 2.25rem);
-  font-weight: 760;
-  line-height: 1.1;
-  transition: color 180ms ease;
+  font-family: var(--font-sans);
+  font-size: clamp(1.05rem, 1.35vw, 1.3rem);
+  font-weight: 720;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  text-decoration: none;
+  transition:
+    color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    padding-inline 200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.product-reference-tabs button:hover,
-.product-reference-tabs button[aria-selected="true"] {
+.product-info-accordion__trigger:hover,
+.product-info-accordion__trigger[data-state="open"] {
   color: var(--product-accent);
 }
 
-.product-reference-tab-panel {
-  max-width: 1900px;
-  padding-top: 58px;
-  color: var(--product-muted);
-  font-size: 1.08rem;
-  font-weight: 500;
-  line-height: 1.75;
+.product-info-accordion__trigger:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid color-mix(in srgb, var(--product-accent) 48%, transparent);
+  outline-offset: 4px;
+  box-shadow: none;
 }
 
-.product-reference-tab-panel p {
-  max-width: 1700px;
+.product-info-accordion__indicator {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  color: currentColor;
+}
+
+.product-info-accordion__indicator::before,
+.product-info-accordion__indicator::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 1.5px;
+  background: currentColor;
+  content: "";
+  transform: translate(-50%, -50%);
+  transform-origin: center;
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 180ms ease;
+}
+
+.product-info-accordion__indicator::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.product-info-accordion__trigger[data-state="open"]
+  .product-info-accordion__indicator::after {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(90deg) scaleX(0);
+}
+
+.product-info-accordion__content {
+  display: grid;
+  overflow: hidden;
+  visibility: hidden;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  animation: none !important;
+  transition:
+    grid-template-rows 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 180ms ease,
+    visibility 0s linear 220ms;
+}
+
+.product-info-accordion__content[data-state="open"] {
+  visibility: visible;
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.product-info-accordion__body {
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.product-info-accordion__copy {
+  max-width: 820px;
+  padding: 6px 2px 34px;
+  color: var(--product-muted);
+  font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+  font-weight: 500;
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.product-info-accordion__copy p {
+  max-width: 72ch;
 }
 
 .product-reference-description-copy {
@@ -6601,17 +6713,21 @@ body:has(.product-template-white) {
   white-space: pre-line;
 }
 
-.product-reference-tab-panel ul {
+.product-info-accordion__copy ul {
   display: grid;
   gap: 9px;
-  margin-top: 42px;
-  padding-left: 32px;
+  margin-top: 26px;
+  padding-inline-start: 24px;
   list-style: disc;
 }
 
-[dir="rtl"] .product-reference-tab-panel ul {
-  padding-right: 32px;
-  padding-left: 0;
+@media (prefers-reduced-motion: reduce) {
+  .product-info-accordion__trigger,
+  .product-info-accordion__indicator::before,
+  .product-info-accordion__indicator::after,
+  .product-info-accordion__content {
+    transition-duration: 1ms;
+  }
 }
 
 .product-reference-service-strip {
@@ -6756,12 +6872,17 @@ body:has(.product-template-white) {
     grid-template-columns: 1fr;
   }
 
-  .product-reference-tabs {
-    gap: 20px;
+  .product-info-accordion__trigger {
+    min-height: 62px;
+    gap: 18px;
+    padding-block: 18px;
+    font-size: 1.02rem;
   }
 
-  .product-reference-tabs button {
-    font-size: 1.2rem;
+  .product-info-accordion__copy {
+    padding-bottom: 28px;
+    font-size: 0.94rem;
+    line-height: 1.75;
   }
 }
 
@@ -16142,23 +16263,9 @@ body:has(.sf-contact-page) .store-header[data-scrolled] .store-header__bar {
 }
 
 .product-reference-details {
-  margin-top: 60px;
-  border-top: 1px solid #dedede;
-  padding-top: 40px;
-}
-
-.product-reference-tabs {
-  gap: clamp(26px, 4vw, 64px);
-}
-
-.product-reference-tabs button {
-  font-size: clamp(1rem, 1.45vw, 1.3rem);
-}
-
-.product-reference-tab-panel {
-  max-width: 920px;
-  padding-top: 28px;
-  font-size: 0.95rem;
+  margin-top: clamp(56px, 6vw, 84px);
+  border-top: 0;
+  padding-top: 0;
 }
 
 .product-reference-service-strip {
