@@ -36,6 +36,7 @@ WORKDIR /app
 FROM base AS deps
 
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml* ./
+COPY vendor ./vendor
 
 RUN --mount=type=cache,id=pnpm-fe,target=/pnpm/store \
     if [ -f pnpm-lock.yaml ]; then \
