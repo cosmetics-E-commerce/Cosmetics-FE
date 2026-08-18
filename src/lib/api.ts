@@ -18,6 +18,7 @@ import type {
   WishlistCollectionResponse,
   WishlistResponse,
 } from "../../vendor/cosmetics-contracts/index.js";
+import { randomUuid } from "@/lib/uuid";
 
 export type {
   AuthSession,
@@ -333,7 +334,7 @@ function guestCartId() {
   if (typeof window === "undefined") return "00000000-0000-4000-8000-000000000000";
   const saved = browserValue(CART_KEY);
   if (saved) return saved;
-  const id = crypto.randomUUID();
+  const id = randomUuid();
   setBrowserValue(CART_KEY, id);
   return id;
 }
@@ -608,7 +609,7 @@ async function withBrowserRefreshLock<T>(task: () => Promise<T>): Promise<T> {
 
 async function withStorageRefreshLease<T>(task: () => Promise<T>): Promise<T> {
   if (typeof window === "undefined" || !window.localStorage) return task();
-  const owner = crypto.randomUUID();
+  const owner = randomUuid();
 
   for (;;) {
     const now = Date.now();
@@ -1165,7 +1166,7 @@ export const checkout = (
   paymentMethod: string,
   notes?: string,
   giftVariantIds: string[] = [],
-  idempotencyKey: string = crypto.randomUUID(),
+  idempotencyKey: string = randomUuid(),
 ) =>
   rawRequest<CheckoutResult>("/orders/checkout", {
     method: "POST",
@@ -1175,7 +1176,7 @@ export const checkout = (
 export const createPayment = (
   orderId: string,
   method: string,
-  idempotencyKey: string = crypto.randomUUID(),
+  idempotencyKey: string = randomUuid(),
 ) =>
   rawRequest<Payment>("/payments", {
     method: "POST",
@@ -1196,7 +1197,7 @@ export function uploadPaymentProof(
   body.set("amountClaimed", String(amountClaimed));
   return rawRequest<Payment>(`/payments/${paymentId}/proof/file`, {
     method: "POST",
-    headers: { "Idempotency-Key": crypto.randomUUID() },
+    headers: { "Idempotency-Key": randomUuid() },
     body,
   });
 }

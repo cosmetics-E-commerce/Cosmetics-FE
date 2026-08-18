@@ -1,5 +1,6 @@
 import { rawRequest } from "@/lib/api";
 import { recordProductView } from "@/components/campaign/campaign-storage";
+import { randomUuid } from "@/lib/uuid";
 
 export type CommerceEventName =
   | "product_viewed"
@@ -58,7 +59,7 @@ function sessionId() {
   if (typeof window === "undefined") return "00000000-0000-4000-8000-000000000000";
   const current = window.sessionStorage.getItem(SESSION_KEY);
   if (current) return current;
-  const next = crypto.randomUUID();
+  const next = randomUuid();
   window.sessionStorage.setItem(SESSION_KEY, next);
   return next;
 }

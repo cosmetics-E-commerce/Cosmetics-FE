@@ -14,6 +14,7 @@ import {
   type PopupStorefrontContext,
 } from "@/lib/campaign-api";
 import { useStore } from "@/lib/store";
+import { randomUuid } from "@/lib/uuid";
 import { CampaignRenderer } from "./CampaignRenderer";
 import { flushCampaignEvents, queueCampaignEvent } from "./campaign-analytics";
 import {
@@ -258,7 +259,7 @@ export default function CampaignEngine() {
         const attribution = attributableCampaign();
         if (attribution && !history(attribution.campaignId).completed) {
           queueCampaignEvent({
-            eventId: crypto.randomUUID(),
+            eventId: randomUuid(),
             campaignId: attribution.campaignId,
             variantId: attribution.variantId,
             type: "CONVERSION",
@@ -580,7 +581,7 @@ function track(
   context: PopupStorefrontContext,
 ) {
   queueCampaignEvent({
-    eventId: crypto.randomUUID(),
+    eventId: randomUuid(),
     campaignId: campaign.id,
     variantId: campaign.variantId,
     type,

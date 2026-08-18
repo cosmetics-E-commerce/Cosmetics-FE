@@ -3,6 +3,12 @@ import type { SVGProps } from "react";
 import { RotateCcw, ShieldCheck, Truck } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { Reveal } from "@/components/motion/Primitives";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 function FacebookLogo(props: SVGProps<SVGSVGElement>) {
   return (
@@ -170,26 +176,18 @@ export function Footer() {
             </div>
 
             <nav className="site-footer__navigation" aria-label="Footer navigation">
-              <div className="site-footer__link-group">
-                <h2>{ar ? "تسوقي" : "Explore"}</h2>
-                <ul className="site-footer__primary-links">
-                  {shopLinks.map((link) => (
-                    <li key={`${link.label}-${link.to}`}>
-                      <Link to={link.to}>{t(link.label)}</Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="site-footer__link-group">
-                <h2>{t("footer.care")}</h2>
-                <ul className="site-footer__primary-links">
-                  {careLinks.map((link) => (
-                    <li key={link.to}>
-                      <Link to={link.to}>{t(link.label)}</Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <Accordion type="multiple" className="site-footer__accordion">
+                <FooterLinkGroup
+                  value="explore"
+                  title={ar ? "تسوقي" : "Explore"}
+                  links={shopLinks.map((link) => ({ ...link, text: t(link.label) }))}
+                />
+                <FooterLinkGroup
+                  value="care"
+                  title={t("footer.care")}
+                  links={careLinks.map((link) => ({ ...link, text: t(link.label) }))}
+                />
+              </Accordion>
             </nav>
 
             <div className="site-footer__connect">
@@ -254,5 +252,39 @@ export function Footer() {
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterLinkGroup({
+  value,
+  title,
+  links,
+}: {
+  value: string;
+  title: string;
+  links: Array<{
+    to: (typeof shopLinks)[number]["to"] | (typeof careLinks)[number]["to"];
+    text: string;
+  }>;
+}) {
+  return (
+    <AccordionItem value={value} className="site-footer__link-group">
+      <h2 className="site-footer__desktop-heading">{title}</h2>
+      <AccordionTrigger
+        className="site-footer__accordion-trigger"
+        indicator={<span className="site-footer__accordion-mark" aria-hidden="true" />}
+      >
+        {title}
+      </AccordionTrigger>
+      <AccordionContent forceMount contentClassName="site-footer__accordion-panel">
+        <ul className="site-footer__primary-links">
+          {links.map((link) => (
+            <li key={`${link.text}-${link.to}`}>
+              <Link to={link.to}>{link.text}</Link>
+            </li>
+          ))}
+        </ul>
+      </AccordionContent>
+    </AccordionItem>
   );
 }

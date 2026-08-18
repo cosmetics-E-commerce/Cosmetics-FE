@@ -3001,6 +3001,7 @@ body:has(.account-page) .header-nav-indicator {
 }
 
 .sf-brand-marquee__viewport {
+  contain: paint;
   overflow: hidden;
   touch-action: pan-y;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent);
@@ -3010,9 +3011,9 @@ body:has(.account-page) .header-nav-indicator {
 .sf-brand-marquee__track {
   display: flex;
   width: max-content;
-  backface-visibility: hidden;
   transform: translate3d(0, 0, 0);
   will-change: transform;
+  user-select: none;
 }
 
 .sf-brand-marquee__group {
@@ -3036,7 +3037,7 @@ body:has(.account-page) .header-nav-indicator {
   color: var(--sf-carbon);
   cursor: pointer;
   opacity: 0.68;
-  transform: translate3d(0, 0, 0) scale(1);
+  transform: none;
   transition:
     opacity 340ms var(--ease-premium),
     transform 420ms var(--ease-premium);
@@ -3060,7 +3061,7 @@ body:has(.account-page) .header-nav-indicator {
   object-position: center;
   mix-blend-mode: multiply;
   filter: grayscale(1) saturate(0);
-  transform: translateZ(0);
+  image-rendering: auto;
   transition: filter 400ms var(--ease-premium);
 }
 
@@ -3090,7 +3091,7 @@ body:has(.account-page) .header-nav-indicator {
 .sf-brand-marquee__item:is(:hover, :focus-visible) {
   opacity: 1;
   outline: none;
-  transform: translate3d(0, -1.5px, 0) scale(1.025);
+  transform: translateY(-1.5px) scale(1.025);
 }
 
 .sf-brand-marquee__item:focus-visible {
@@ -3109,11 +3110,11 @@ body:has(.account-page) .header-nav-indicator {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .sf-brand-marquee__track:not([data-static]) {
+  .sf-brand-marquee__track:not([data-static]):not([data-enhanced]) {
     animation: sf-brand-marquee var(--brand-marquee-duration) linear infinite both;
   }
 
-  [dir="rtl"] .sf-brand-marquee__track:not([data-static]) {
+  [dir="rtl"] .sf-brand-marquee__track:not([data-static]):not([data-enhanced]) {
     animation-direction: reverse;
   }
 
@@ -3121,6 +3122,20 @@ body:has(.account-page) .header-nav-indicator {
   .sf-brand-marquee:focus-within .sf-brand-marquee__track {
     animation-play-state: paused;
   }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sf-brand-marquee__viewport {
+    cursor: grab;
+  }
+
+  .sf-brand-marquee__viewport[data-dragging] {
+    cursor: grabbing;
+  }
+}
+
+.sf-brand-marquee__viewport[data-dragging] {
+  user-select: none;
 }
 
 @keyframes sf-brand-marquee {
@@ -3433,7 +3448,7 @@ body:has(.account-page) .header-nav-indicator {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .sf-brand-marquee__viewport {
+  .sf-brand-marquee:not([data-enhanced]) .sf-brand-marquee__viewport {
     overflow-x: auto;
     -webkit-mask-image: none;
     mask-image: none;
@@ -3443,22 +3458,22 @@ body:has(.account-page) .header-nav-indicator {
     touch-action: pan-x pan-y;
   }
 
-  .sf-brand-marquee__viewport::-webkit-scrollbar {
+  .sf-brand-marquee:not([data-enhanced]) .sf-brand-marquee__viewport::-webkit-scrollbar {
     display: none;
   }
 
-  .sf-brand-marquee__track {
+  .sf-brand-marquee:not([data-enhanced]) .sf-brand-marquee__track {
     width: max-content;
     transform: none;
     will-change: auto;
   }
 
-  .sf-brand-marquee__group {
+  .sf-brand-marquee:not([data-enhanced]) .sf-brand-marquee__group {
     min-width: max-content;
     justify-content: flex-start;
   }
 
-  .sf-brand-marquee__group--clone {
+  .sf-brand-marquee:not([data-enhanced]) .sf-brand-marquee__group--clone {
     display: none;
   }
 }

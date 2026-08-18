@@ -46,6 +46,13 @@ test("official customer-care pages are discoverable and interactive", async ({ p
   await expect(page.locator('a[href="tel:+201036836683"]').first()).toBeVisible();
 
   const footer = page.locator("footer");
+  await page.waitForLoadState("networkidle");
+  await footer.scrollIntoViewIfNeeded();
+  const customerCareDisclosure = footer.getByRole("button", { name: "Customer care" });
+  if (await customerCareDisclosure.isVisible()) {
+    await customerCareDisclosure.click();
+    await expect(customerCareDisclosure).toHaveAttribute("aria-expanded", "true");
+  }
   await expect(footer.getByRole("link", { name: "FAQ" })).toHaveAttribute("href", "/faq");
   await expect(footer.getByRole("link", { name: "Returns & exchanges" })).toHaveAttribute(
     "href",
