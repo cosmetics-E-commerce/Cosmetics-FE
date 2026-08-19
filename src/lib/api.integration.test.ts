@@ -3,6 +3,7 @@ import {
   clearSession,
   createSupportRequest,
   getWishlist,
+  listAllBrands,
   listProductsPage,
   listMyReviews,
   listProductReviews,
@@ -150,6 +151,52 @@ describe("catalog pagination API", () => {
       },
     });
     expect(String(fetchMock.mock.calls[0]?.[0])).toContain("/products?page=2&limit=24");
+  });
+
+  it("loads every brand page without duplicating records", async () => {
+    const firstPage = Array.from({ length: 100 }, (_, index) => ({
+      id: `brand-${index + 1}`,
+      name: `Brand ${index + 1}`,
+      slug: `brand-${index + 1}`,
+      logoUrl: null,
+      productCount: 1,
+    }));
+    const finalBrand = {
+      id: "brand-101",
+      name: "Brand 101",
+      slug: "brand-101",
+      logoUrl: null,
+      productCount: 0,
+    };
+    const fetchMock = vi.fn((input: string | URL | Request) => {
+      const page = new URL(String(input)).searchParams.get("page");
+      const data = page === "2" ? [firstPage.at(-1)!, finalBrand] : firstPage;
+      return Promise.resolve(
+        new Response(
+          JSON.stringify({
+            success: true,
+            data,
+            meta: {
+              page: Number(page),
+              limit: 100,
+              total: 101,
+              totalPages: 2,
+              hasNext: page === "1",
+              hasPrev: page === "2",
+            },
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        ),
+      );
+    });
+    vi.stubGlobal("fetch", fetchMock);
+
+    const brands = await listAllBrands();
+
+    expect(brands).toHaveLength(101);
+    expect(brands.at(-1)).toEqual(finalBrand);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(String(fetchMock.mock.calls[1]?.[0])).toContain("page=2");
   });
 });
 

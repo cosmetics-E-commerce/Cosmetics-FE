@@ -23,7 +23,7 @@ const copy = {
     add: "أضف إلى الحقيبة",
     adding: "جارٍ الإضافة",
     added: "تمت الإضافة",
-    out: "نفد المخزون",
+    out: "غير متوفر",
     choose: "اختر الخيارات",
     unavailable: "غير متاح",
     decrease: "تقليل الكمية",
@@ -31,6 +31,8 @@ const copy = {
     quantity: "الكمية",
   },
 } as const;
+
+type QuickAddLabels = (typeof copy)[keyof typeof copy];
 
 export function QuickAddToolbar({
   product,
@@ -41,8 +43,43 @@ export function QuickAddToolbar({
   variant: ProductVariant | undefined;
   outOfStock: boolean;
 }) {
-  const { add, locale, pendingVariants } = useStore();
+  const { locale } = useStore();
   const labels = copy[locale];
+
+  if (outOfStock) return <OutOfStockAction product={product} label={labels.out} />;
+
+  return <PurchasableProductAction product={product} variant={variant} labels={labels} />;
+}
+
+function OutOfStockAction({ product, label }: { product: Product; label: string }) {
+  return (
+    <div
+      className="quick-add quick-add--unavailable"
+      aria-label={`${label}: ${product.name}`}
+      onClick={(event) => event.stopPropagation()}
+    >
+      <button
+        type="button"
+        className="quick-add__unavailable"
+        aria-label={`${label}: ${product.name}`}
+        disabled
+      >
+        {label}
+      </button>
+    </div>
+  );
+}
+
+function PurchasableProductAction({
+  product,
+  variant,
+  labels,
+}: {
+  product: Product;
+  variant: ProductVariant | undefined;
+  labels: QuickAddLabels;
+}) {
+  const { add, pendingVariants } = useStore();
   const [quantity, setQuantity] = useState(1);
   const [state, setState] = useState<AddState>("idle");
   const feedbackTimer = useRef<number | null>(null);
@@ -73,7 +110,7 @@ export function QuickAddToolbar({
 
   const addToCart = async (event: MouseEvent<HTMLButtonElement>) => {
     stop(event);
-    if (!variant?.id || !product.id || busy || outOfStock || requiresSelection) return;
+    if (!variant?.id || !product.id || busy || requiresSelection) return;
     setState("adding");
     const added = await add({
       variantId: variant.id,
@@ -96,7 +133,7 @@ export function QuickAddToolbar({
     }
   };
 
-  const disabled = busy || outOfStock || !variant?.id || !product.id;
+  const disabled = busy || !variant?.id || !product.id;
 
   return (
     <div className="quick-add" aria-label={`${labels.quantity}: ${quantity}`} onClick={stop}>
@@ -122,6 +159,8 @@ export function QuickAddToolbar({
             <Plus aria-hidden="true" />
           </button>
         </div>
+
+        <span className="quick-add__divider" aria-hidden="true" />
 
         {requiresSelection ? (
           product.id ? (
@@ -152,7 +191,7 @@ export function QuickAddToolbar({
           <button
             type="button"
             className="quick-add__action"
-            aria-label={`${outOfStock ? labels.out : labels.add}: ${product.name}`}
+            aria-label={`${labels.add}: ${product.name}`}
             aria-busy={busy || undefined}
             disabled={disabled}
             onClick={addToCart}
@@ -165,15 +204,13 @@ export function QuickAddToolbar({
               <ShoppingBag aria-hidden="true" />
             )}
             <span>
-              {outOfStock
-                ? labels.out
-                : !variant?.id || !product.id
-                  ? labels.unavailable
-                  : state === "added"
-                    ? labels.added
-                    : busy
-                      ? labels.adding
-                      : labels.add}
+              {!variant?.id || !product.id
+                ? labels.unavailable
+                : state === "added"
+                  ? labels.added
+                  : busy
+                    ? labels.adding
+                    : labels.add}
             </span>
           </button>
         )}

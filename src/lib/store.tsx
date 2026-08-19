@@ -315,27 +315,24 @@ export function StoreProvider({
 
   const setQty = useCallback(
     async (variantId: string, sizeOrQty: string | number, optionalQty?: number) => {
+      const quantity = typeof sizeOrQty === "number" ? sizeOrQty : (optionalQty ?? 1);
+      if (quantity <= 0) {
+        await remove(variantId);
+        return;
+      }
       if (pendingVariantIds.current.has(variantId)) return;
       markPending(variantId, true);
-      const quantity = typeof sizeOrQty === "number" ? sizeOrQty : (optionalQty ?? 1);
       const previous = queryClient.getQueryData<CommerceCartResponse>(["cart"]);
       if (previous) {
-        const items =
-          quantity <= 0
-            ? previous.items.filter((item) => item.variantId !== variantId)
-            : previous.items.map((item) =>
-                item.variantId === variantId
-                  ? { ...item, quantity, lineTotal: item.unitPrice * quantity }
-                  : item,
-              );
+        const items = previous.items.map((item) =>
+          item.variantId === variantId
+            ? { ...item, quantity, lineTotal: item.unitPrice * quantity }
+            : item,
+        );
         commitCart(recalculateCart(previous, items));
       }
       try {
-        commitCart(
-          quantity <= 0
-            ? await removeCartItem(variantId)
-            : await updateCartItem(variantId, quantity),
-        );
+        commitCart(await updateCartItem(variantId, quantity));
       } catch (error) {
         if (previous) commitCart(previous);
         fail(error);
@@ -343,7 +340,7 @@ export function StoreProvider({
         markPending(variantId, false);
       }
     },
-    [commitCart, fail, markPending, queryClient],
+    [commitCart, fail, markPending, queryClient, remove],
   );
 
   const clear = useCallback(async () => {

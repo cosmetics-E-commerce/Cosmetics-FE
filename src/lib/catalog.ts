@@ -3,6 +3,7 @@ import type { PublicProductResponse } from "@/lib/api";
 import {
   getProduct,
   getPromotionPrices,
+  listAllBrands,
   listBrands,
   listCategories,
   listProductsPage,
@@ -230,10 +231,10 @@ export function useBrands(initialData?: Awaited<ReturnType<typeof listBrands>>) 
   });
 }
 
-export function useAllBrands(initialData?: Awaited<ReturnType<typeof listBrands>>) {
+export function useAllBrands(initialData?: Awaited<ReturnType<typeof listAllBrands>>) {
   return useQuery({
     queryKey: ["brands", "all"],
-    queryFn: listBrands,
+    queryFn: ({ signal }) => listAllBrands(signal),
     initialData,
     staleTime: 60_000,
     refetchOnWindowFocus: "always",
@@ -275,7 +276,7 @@ export async function loadBrands() {
 }
 
 export async function loadAllBrands() {
-  return listBrands();
+  return listAllBrands();
 }
 
 function filterEntitiesWithProducts<T extends { productCount: number }>(entities: T[]) {

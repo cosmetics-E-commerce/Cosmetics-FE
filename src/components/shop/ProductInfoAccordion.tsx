@@ -54,7 +54,11 @@ export function ProductInfoAccordion({
               {section.content ? (
                 <p
                   className={
-                    section.id === "description" ? "product-reference-description-copy" : undefined
+                    section.id === "description"
+                      ? "product-reference-description-copy"
+                      : section.id === "custom"
+                        ? "product-how-to-use-copy"
+                        : undefined
                   }
                 >
                   {section.content}

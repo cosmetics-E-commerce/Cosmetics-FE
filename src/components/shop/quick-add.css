@@ -65,6 +65,7 @@
   color: var(--color-text-primary);
   opacity: 0;
   pointer-events: none;
+  container-type: inline-size;
   transition:
     transform 190ms cubic-bezier(0.22, 1, 0.36, 1),
     opacity 120ms ease;
@@ -73,7 +74,7 @@
 .quick-add__content {
   display: grid;
   min-height: 52px;
-  grid-template-columns: minmax(0, 38fr) minmax(0, 62fr);
+  grid-template-columns: minmax(84px, 38fr) 9px minmax(0, 62fr);
   align-items: stretch;
   opacity: 0;
   transform: translateY(4px);
@@ -82,26 +83,62 @@
     transform 150ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+.quick-add__unavailable {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  min-height: inherit;
+  place-items: center;
+  margin: 0;
+  padding-inline: 12px;
+  border: 0;
+  border-radius: inherit;
+  background: var(--color-surface-muted);
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.035em;
+  line-height: 1;
+  text-align: center;
+  text-transform: none;
+  white-space: nowrap;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+[dir="rtl"] .quick-add__unavailable {
+  font-family: var(--font-arabic);
+  font-size: 0.72rem;
+  letter-spacing: 0;
+}
+
 .quick-add__quantity {
   display: grid;
-  grid-template-columns: minmax(30px, 1fr) minmax(24px, 0.7fr) minmax(30px, 1fr);
+  min-width: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: center;
-  border-inline-end: 1px solid var(--color-border);
 }
 
 .quick-add__quantity button,
 .quick-add__action {
   min-width: 0;
+  margin: 0;
+  padding: 0;
   border: 0;
   border-radius: 0;
   background: transparent;
   color: inherit;
+  font: inherit;
+  line-height: 1;
 }
 
 .quick-add__quantity button {
   display: grid;
+  width: 100%;
   height: 100%;
   min-height: 44px;
+  flex-shrink: 0;
   place-items: center;
   transition:
     color 160ms ease,
@@ -130,13 +167,26 @@
 }
 
 .quick-add__quantity output {
+  display: grid;
+  min-width: 0;
+  height: 100%;
+  place-items: center;
   overflow: hidden;
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
   letter-spacing: 0.04em;
+  line-height: 1;
   text-align: center;
   text-overflow: ellipsis;
+}
+
+.quick-add__divider {
+  width: 1px;
+  height: 24px;
+  place-self: center;
+  background: var(--color-border);
+  pointer-events: none;
 }
 
 .quick-add__action {
@@ -159,6 +209,13 @@
     background-color 180ms ease,
     color 180ms ease,
     transform 100ms ease;
+}
+
+.quick-add__action span {
+  min-width: 0;
+  line-height: 1.2;
+  overflow-wrap: normal;
+  text-wrap: balance;
 }
 
 .quick-add__action:hover:not(:disabled) {
@@ -244,13 +301,8 @@
 
   .quick-add__content {
     min-height: 48px;
-    grid-template-columns: 1fr;
     transform: none;
     opacity: 1;
-  }
-
-  .quick-add__quantity {
-    display: none;
   }
 
   .quick-add__action {
@@ -260,7 +312,7 @@
 }
 
 .product-card[data-layout="list"] .quick-add__content {
-  grid-template-columns: minmax(0, 44fr) minmax(0, 56fr);
+  grid-template-columns: minmax(84px, 44fr) 9px minmax(0, 56fr);
 }
 
 .product-card[data-layout="list"] .quick-add__action {
@@ -268,6 +320,25 @@
   padding-inline: 5px;
   font-size: 10px;
   letter-spacing: 0.05em;
+}
+
+@container (max-width: 240px) {
+  .quick-add__content,
+  .product-card[data-layout="list"] .quick-add__content {
+    grid-template-columns: min(120px, calc(100cqi - 57px)) 5px minmax(52px, 1fr);
+  }
+
+  .product-card .quick-add__content .quick-add__action {
+    gap: 2px;
+    padding-inline: 1px;
+    font-size: 0.58rem;
+    letter-spacing: 0;
+  }
+
+  .product-card .quick-add__content .quick-add__action svg {
+    width: 11px;
+    height: 11px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

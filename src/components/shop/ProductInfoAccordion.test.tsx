@@ -13,7 +13,7 @@ const sections: ProductInfoSection[] = [
   {
     id: "custom",
     label: "How to use",
-    content: "Apply after cleansing.",
+    content: "Apply   after cleansing.\n  Pat dry.",
   },
   {
     id: "delivery",
@@ -43,6 +43,9 @@ describe("ProductInfoAccordion", () => {
     fireEvent.click(howToUse);
     expect(description).toHaveAttribute("aria-expanded", "false");
     expect(howToUse).toHaveAttribute("aria-expanded", "true");
+    expect(document.querySelector(".product-how-to-use-copy")?.textContent).toBe(
+      "Apply   after cleansing.\n  Pat dry.",
+    );
 
     fireEvent.click(howToUse);
     expect(howToUse).toHaveAttribute("aria-expanded", "false");

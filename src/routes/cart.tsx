@@ -146,7 +146,7 @@ function CartPage() {
                       <div className="flex border border-border">
                         <button
                           type="button"
-                          disabled={pending || line.qty <= 1}
+                          disabled={pending}
                           onClick={() => void setQty(line.variantId, line.qty - 1)}
                           aria-label={`Decrease quantity of ${line.name}`}
                           className="grid size-11 place-items-center disabled:opacity-40"

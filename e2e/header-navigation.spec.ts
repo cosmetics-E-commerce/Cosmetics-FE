@@ -6,12 +6,8 @@ test("desktop navigation keeps exactly one active item through menus and routes"
   test.setTimeout(60_000);
   test.skip(testInfo.project.name !== "chromium", "The primary navigation is desktop-only");
 
-  await page.goto("/about");
-  // Vite transforms route chunks on demand in development. Wait for a
-  // client-only layer so interactions cannot race React hydration.
-  await expect(page.locator('section[aria-label^="Notifications"]')).toBeAttached({
-    timeout: 15_000,
-  });
+  // Let Vite finish transforming the route chunks before testing interactions.
+  await page.goto("/about", { waitUntil: "networkidle" });
   const nav = page.getByRole("navigation", { name: "Primary" });
   const categories = nav.getByRole("button", { name: "Categories", exact: true });
   const brands = nav.getByRole("button", { name: "Brands", exact: true });
@@ -21,11 +17,11 @@ test("desktop navigation keeps exactly one active item through menus and routes"
   await expect(nav.locator('.nav-link[data-active="true"]')).toHaveCount(1);
   await expect(about).toHaveAttribute("aria-current", "page");
 
-  await brands.click();
+  await brands.hover();
   await expect(brands).toHaveAttribute("data-state", "open");
-  await expect(page.getByText("Brand directory")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Brands", exact: true })).toBeVisible();
 
-  await categories.click();
+  await categories.hover();
   await expect(categories).toHaveAttribute("data-state", "open");
   await expect(page.getByText("All Categories")).toBeVisible();
   await contact.hover();

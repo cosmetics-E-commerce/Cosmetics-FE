@@ -183,7 +183,6 @@ function DeferredInteractiveLayers() {
   const { cartOpen, searchOpen } = useStore();
   const [cartMounted, setCartMounted] = useState(cartOpen);
   const [searchMounted, setSearchMounted] = useState(searchOpen);
-  const [toasterMounted, setToasterMounted] = useState(false);
   const [campaignsMounted, setCampaignsMounted] = useState(false);
 
   useEffect(() => {
@@ -192,17 +191,6 @@ function DeferredInteractiveLayers() {
   useEffect(() => {
     if (searchOpen) setSearchMounted(true);
   }, [searchOpen]);
-  useEffect(() => {
-    const mountToaster = () => setToasterMounted(true);
-    const timer = window.setTimeout(() => setToasterMounted(true), 1_000);
-    window.addEventListener("pointerdown", mountToaster, { once: true, passive: true });
-    window.addEventListener("keydown", mountToaster, { once: true });
-    return () => {
-      window.clearTimeout(timer);
-      window.removeEventListener("pointerdown", mountToaster);
-      window.removeEventListener("keydown", mountToaster);
-    };
-  }, []);
   useEffect(() => {
     const mount = () => setCampaignsMounted(true);
     const timer = window.setTimeout(mount, 900);
@@ -220,7 +208,7 @@ function DeferredInteractiveLayers() {
       <Suspense fallback={null}>{cartMounted ? <LazyCartDrawer /> : null}</Suspense>
       <Suspense fallback={null}>{searchMounted ? <LazySearchOverlay /> : null}</Suspense>
       <Suspense fallback={null}>
-        {toasterMounted ? <LazyToaster position="bottom-right" /> : null}
+        <LazyToaster position="bottom-right" />
       </Suspense>
       <Suspense fallback={null}>{campaignsMounted ? <LazyCampaignEngine /> : null}</Suspense>
     </>

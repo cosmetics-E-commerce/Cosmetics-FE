@@ -49,7 +49,7 @@ const product = {
   descriptionAr: "عناية خفيفة لمحيط العين تساعد على توحيد مظهر البشرة.",
   ingredients: "Aqua, Glycerin",
   ingredientDetails: [],
-  howToUse: "Apply a small amount around the eye contour.",
+  howToUse: "Apply   a small amount around the eye contour.\n  Massage gently until absorbed.",
   skinType: ["ALL_SKIN_TYPES"],
   basePrice: 41900,
   compareAtPrice: null,
@@ -114,9 +114,41 @@ const server = createServer((request, response) => {
     });
   }
   if (path === "/products") {
+    const search = url.searchParams.get("search");
+    const stockBySearch = new Map([
+      ["out-of-stock", 0],
+      ["stock-one", 1],
+      ["stock-ten", 10],
+    ]);
+    const requestedStock = search ? stockBySearch.get(search) : undefined;
+    const catalogProduct =
+      search === "variant-stock"
+        ? {
+            ...product,
+            slug: "variant-stock-product",
+            nameEn: "Variant stock product",
+            variants: [
+              { ...product.variants[0], nameEn: "Variant A", stock: 10 },
+              {
+                ...product.variants[0],
+                id: "10000000-0000-4000-8000-000000000004",
+                sku: "ACM-DEPIWHITE-SOLD-OUT",
+                nameEn: "Variant B",
+                stock: 0,
+              },
+            ],
+          }
+        : requestedStock !== undefined
+          ? {
+              ...product,
+              slug: `${search}-product`,
+              nameEn: `${search} product`,
+              variants: product.variants.map((variant) => ({ ...variant, stock: requestedStock })),
+            }
+          : product;
     return json(response, 200, {
       success: true,
-      data: [product],
+      data: [catalogProduct],
       meta: { page: 1, limit: 24, total: 1, totalPages: 1, hasNext: false, hasPrev: false },
     });
   }

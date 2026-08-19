@@ -59,6 +59,18 @@ describe("mapProduct", () => {
     });
   });
 
+  it("treats an existing zero-stock variant as out of stock", () => {
+    const mapped = mapProduct(
+      {
+        ...product,
+        variants: product.variants.map((variant) => ({ ...variant, stock: 0 })),
+      },
+      "en",
+    );
+
+    expect(mapped).toMatchObject({ stock: 0, inStock: false });
+  });
+
   it("selects Arabic contract fields", () => {
     expect(mapProduct(product, "ar")).toMatchObject({
       name: "سيروم",

@@ -1,0 +1,210 @@
+import { expect, test, type Locator, type Page } from "@playwright/test";
+
+const mobileWidths = [320, 360, 375, 390, 393, 414, 430];
+
+test("mobile grid cards keep the quantity stepper symmetric and isolated", async ({ page }) => {
+  await page.goto("/shop", { waitUntil: "networkidle" });
+
+  for (const width of mobileWidths) {
+    await page.setViewportSize({ width, height: 900 });
+    const toolbar = page.locator(".sf-shop-page .quick-add").first();
+    await expect(toolbar).toBeVisible();
+    const geometry = await measureToolbar(toolbar);
+
+    assertStableToolbar(geometry);
+    expect(geometry.documentOverflow).toBeLessThanOrEqual(0.5);
+    expect(geometry.labelLines).toBeLessThanOrEqual(2.1);
+    expect(geometry.minus.height).toBeGreaterThanOrEqual(44);
+    expect(geometry.plus.height).toBeGreaterThanOrEqual(44);
+    if (width === 430) {
+      expect(geometry.minus.width).toBeGreaterThanOrEqual(39.5);
+      expect(geometry.plus.width).toBeGreaterThanOrEqual(39.5);
+    }
+  }
+});
+
+test("quantity digits and stock states do not move the stepper zones", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 900 });
+  await page.goto("/shop", { waitUntil: "networkidle" });
+  const toolbar = page.locator(".sf-shop-page .quick-add").first();
+  const decrement = toolbar.getByRole("button", { name: /Decrease quantity/ });
+  const increment = toolbar.getByRole("button", { name: /Increase quantity/ });
+  const output = toolbar.locator("output");
+
+  await expect(output).toHaveText("1");
+  await expect(decrement).toBeDisabled();
+  await increment.click();
+  await expect(output).toHaveText("2");
+  await expect(decrement).toBeEnabled();
+
+  for (let quantity = 3; quantity <= 8; quantity += 1) await increment.click();
+  await expect(output).toHaveText("8");
+  await expect(increment).toBeDisabled();
+  await expect(page.locator(".sf-product-card__badge--low").first()).toBeVisible();
+
+  const stableButtons = await buttonGeometry(toolbar);
+  for (const quantity of [1, 2, 9, 10]) {
+    await output.evaluate((element, value) => {
+      element.textContent = String(value);
+    }, quantity);
+    expect(await buttonGeometry(toolbar)).toEqual(stableButtons);
+  }
+
+  await page.goto("/shop?search=out-of-stock", { waitUntil: "networkidle" });
+  const unavailableToolbar = page.locator(".sf-shop-page .quick-add").first();
+  await expect(unavailableToolbar.getByRole("button", { name: /^Out of stock:/ })).toBeDisabled();
+  await expect(unavailableToolbar.locator(".quick-add__quantity")).toHaveCount(0);
+  await expect(unavailableToolbar.locator(".quick-add__divider")).toHaveCount(0);
+  await expect(unavailableToolbar.locator("svg")).toHaveCount(0);
+});
+
+test("list view and Arabic RTL preserve the same logical separation", async ({ page }) => {
+  for (const scenario of [
+    { url: "/shop?view=list", width: 320, direction: "ltr" },
+    { url: "/shop?view=list&lang=ar", width: 390, direction: "rtl" },
+  ]) {
+    await page.setViewportSize({ width: scenario.width, height: 900 });
+    await page.goto(scenario.url, { waitUntil: "networkidle" });
+    const toolbar = page.locator(".sf-shop-page .quick-add").first();
+    await expect(toolbar).toBeVisible();
+    const geometry = await measureToolbar(toolbar);
+
+    assertStableToolbar(geometry);
+    expect(geometry.direction).toBe(scenario.direction);
+    expect(geometry.minus.width).toBeGreaterThanOrEqual(38.5);
+    expect(geometry.plus.width).toBeGreaterThanOrEqual(38.5);
+    expect(geometry.documentOverflow).toBeLessThanOrEqual(0.5);
+
+    await page.locator("html").evaluate((element) => element.classList.add("dark"));
+    assertStableToolbar(await measureToolbar(toolbar));
+  }
+});
+
+test("desktop grid and list cards keep the toolbar inside the product media", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+
+  for (const url of ["/shop", "/shop?view=list"]) {
+    await page.goto(url, { waitUntil: "networkidle" });
+    const card = page.locator(".sf-product-card").first();
+    await card.hover();
+    const toolbar = card.locator(".quick-add");
+    await expect(toolbar).toBeVisible();
+    const geometry = await measureToolbar(toolbar);
+    const media = await box(card.locator(".sf-product-card__media"));
+
+    assertStableToolbar(geometry);
+    expect(geometry.root.left).toBeGreaterThanOrEqual(media.left);
+    expect(geometry.root.right).toBeLessThanOrEqual(media.right);
+    expect(geometry.root.top).toBeGreaterThanOrEqual(media.top);
+    expect(geometry.root.bottom).toBeLessThanOrEqual(media.bottom);
+  }
+});
+
+type Rect = {
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+  width: number;
+  height: number;
+};
+
+type ToolbarGeometry = {
+  direction: string;
+  documentOverflow: number;
+  labelLines: number;
+  root: Rect;
+  content: Rect;
+  quantity: Rect;
+  minus: Rect;
+  output: Rect;
+  plus: Rect;
+  divider: Rect;
+  action: Rect;
+};
+
+function assertStableToolbar(geometry: ToolbarGeometry) {
+  expect(geometry.root.width).toBeGreaterThan(0);
+  expect(geometry.root.height).toBeGreaterThanOrEqual(42);
+  expect(geometry.minus.height).toBeGreaterThanOrEqual(40);
+  expect(geometry.plus.height).toBeGreaterThanOrEqual(40);
+  expect(geometry.action.height).toBeGreaterThanOrEqual(40);
+  expect(geometry.minus.width).toBeCloseTo(geometry.output.width, 1);
+  expect(geometry.output.width).toBeCloseTo(geometry.plus.width, 1);
+  expect(center(geometry.minus, "x") - center(geometry.output, "x")).toBeCloseTo(
+    center(geometry.output, "x") - center(geometry.plus, "x"),
+    1,
+  );
+
+  for (const item of [geometry.minus, geometry.output, geometry.plus, geometry.action]) {
+    expect(center(item, "y")).toBeCloseTo(center(geometry.content, "y"), 1);
+  }
+
+  expect(geometry.minus.right).toBeLessThanOrEqual(geometry.output.left + 0.5);
+  expect(geometry.output.right).toBeLessThanOrEqual(geometry.plus.left + 0.5);
+  const outerZones = [geometry.quantity, geometry.divider, geometry.action].sort(
+    (first, second) => first.left - second.left,
+  );
+  expect(outerZones[0]!.right).toBeLessThanOrEqual(outerZones[1]!.left - 1.5);
+  expect(outerZones[1]!.right).toBeLessThanOrEqual(outerZones[2]!.left - 1.5);
+}
+
+async function measureToolbar(toolbar: Locator): Promise<ToolbarGeometry> {
+  return toolbar.evaluate((root) => {
+    const rect = (element: Element): Rect => {
+      const value = element.getBoundingClientRect();
+      return {
+        left: value.left,
+        right: value.right,
+        top: value.top,
+        bottom: value.bottom,
+        width: value.width,
+        height: value.height,
+      };
+    };
+    const quantity = root.querySelector(".quick-add__quantity")!;
+    const buttons = quantity.querySelectorAll("button");
+    const label = root.querySelector(".quick-add__action span")!;
+    const labelStyles = getComputedStyle(label);
+    return {
+      direction: getComputedStyle(root).direction,
+      documentOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      labelLines: label.getBoundingClientRect().height / Number.parseFloat(labelStyles.lineHeight),
+      root: rect(root),
+      content: rect(root.querySelector(".quick-add__content")!),
+      quantity: rect(quantity),
+      minus: rect(buttons[0]!),
+      output: rect(quantity.querySelector("output")!),
+      plus: rect(buttons[1]!),
+      divider: rect(root.querySelector(".quick-add__divider")!),
+      action: rect(root.querySelector(".quick-add__action")!),
+    };
+  });
+}
+
+async function buttonGeometry(toolbar: Locator) {
+  return toolbar.locator(".quick-add__quantity").evaluate((quantity) =>
+    [...quantity.querySelectorAll("button")].map((button) => {
+      const rect = button.getBoundingClientRect();
+      return { left: rect.left, width: rect.width };
+    }),
+  );
+}
+
+async function box(locator: Locator): Promise<Rect> {
+  return locator.evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return {
+      left: rect.left,
+      right: rect.right,
+      top: rect.top,
+      bottom: rect.bottom,
+      width: rect.width,
+      height: rect.height,
+    };
+  });
+}
+
+function center(rect: Rect, axis: "x" | "y") {
+  return axis === "x" ? rect.left + rect.width / 2 : rect.top + rect.height / 2;
+}
