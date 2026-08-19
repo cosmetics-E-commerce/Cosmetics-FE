@@ -4,6 +4,7 @@ import { useMemo, useState, type CSSProperties } from "react";
 import type { PublicBrandListItemResponse } from "@/lib/api";
 import { useAllBrands } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
+import { sortBrands } from "@/components/layout/brand-directory-data";
 import { useDraggableMarquee } from "./useDraggableMarquee";
 
 type BrandMarqueeProps = {
@@ -17,13 +18,7 @@ const priorityLogoCount = 10;
 export function BrandMarquee({ initialBrands }: BrandMarqueeProps) {
   const { locale } = useStore();
   const { data } = useAllBrands(initialBrands);
-  const brands = useMemo(
-    () =>
-      [...(data ?? [])].sort((left, right) =>
-        left.name.localeCompare(right.name, locale, { sensitivity: "base" }),
-      ),
-    [data, locale],
-  );
+  const brands = useMemo(() => sortBrands(data ?? [], locale), [data, locale]);
   const moving = brands.length > 1;
   const marquee = useDraggableMarquee({
     enabled: moving,

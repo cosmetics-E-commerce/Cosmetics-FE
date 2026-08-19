@@ -23,7 +23,7 @@ test("desktop navbar exposes a pointer cursor on every visible interactive root"
 
   const primaryNavigation = page.getByRole("navigation", { name: "Primary" });
   await primaryNavigation.getByRole("button", { name: "Brands", exact: true }).click();
-  await expect(page.getByText("Brand directory")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Brands", exact: true })).toBeVisible();
   await expectVisibleControlsToUsePointer(headerControls);
 
   await primaryNavigation.getByRole("button", { name: "Categories", exact: true }).click();

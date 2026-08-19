@@ -35,6 +35,13 @@ describe("BrandMarquee", () => {
       <BrandMarquee
         initialBrands={[
           {
+            id: "empty",
+            name: "Empty Brand",
+            slug: "empty-brand",
+            logoUrl: "https://cdn.example.com/empty-brand.png",
+            productCount: 0,
+          },
+          {
             id: "one",
             name: "Brand One",
             slug: "brand-one",
@@ -42,13 +49,6 @@ describe("BrandMarquee", () => {
             productCount: 4,
           },
           { id: "two", name: "Brand Two", slug: "brand-two", logoUrl: null, productCount: 7 },
-          {
-            id: "empty",
-            name: "Empty Brand",
-            slug: "empty-brand",
-            logoUrl: "https://cdn.example.com/empty-brand.png",
-            productCount: 0,
-          },
         ]}
       />,
     );
@@ -64,6 +64,14 @@ describe("BrandMarquee", () => {
       "Brand One",
     );
     expect(container.querySelectorAll(".sf-brand-marquee__logo")).toHaveLength(6);
+    expect(
+      Array.from(
+        container.querySelectorAll(
+          ".sf-brand-marquee__group:not(.sf-brand-marquee__group--clone) a",
+        ),
+        (link) => link.getAttribute("aria-label"),
+      ),
+    ).toEqual(["Brand One", "Brand Two", "Empty Brand"]);
     expect(
       container.querySelector(".sf-brand-marquee__group:not(.sf-brand-marquee__group--clone) img"),
     ).toHaveAttribute("loading", "eager");

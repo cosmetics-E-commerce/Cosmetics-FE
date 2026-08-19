@@ -177,6 +177,7 @@ exports.updateProductSchema = zod_1.z.object({
         .optional(),
     variants: zod_1.z
         .array(exports.productVariantUpdateSchema)
+        .min(1, "A product needs at least one variant")
         .max(exports.PRODUCT_VARIANT_LIMIT)
         .optional(),
     images: zod_1.z

@@ -1,45 +1,52 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
-const brandNames = [
-  ["ACM", 2],
-  ["Alejon", 1],
-  ["Aloketa", 4],
-  ["Anua", 1],
-  ["Avène", 4],
-  ["Axe", 5],
-  ["Axis-Y", 3],
-  ["Beauty of Joseon", 1],
-  ["Beesline", 9],
-  ["Bioderma", 3],
-  ["Clinique", 6],
-  ["COSRX", 8],
-  ["Dior", 4],
-  ["Dr. Jart+", 2],
-  ["Eucerin", 7],
-  ["Fenty Beauty", 3],
-  ["Garnier", 5],
-  ["Huda Beauty", 4],
-  ["Isntree", 2],
-  ["Kérastase", 3],
-  ["La Roche-Posay", 8],
-  ["Mizon", 2],
-  ["Nuxe", 3],
-  ["البيوتي", 10],
-] as const;
+type Brand = {
+  id: string;
+  name: string;
+  productCount: number;
+  slug: string;
+  logoUrl: null;
+};
 
-const brands = brandNames.map(([name, productCount], index) => ({
-  id: `brand-${index + 1}`,
-  name,
-  productCount,
-  slug: `brand-${index + 1}`,
-  logoUrl: null,
-}));
+const TEST_LETTERS = "ABCDEFGHIJKLMNOPRSTUVWXYZ";
 
-async function mockBrands(page: Page) {
+function createBrands(count: number): Brand[] {
+  return Array.from({ length: count }, (_, index) => {
+    const number = index + 1;
+    const name =
+      number === count
+        ? "Avène Maison de Beauté Internationale"
+        : number === count - 1
+          ? "البيوتي العربية"
+          : number === 1
+            ? "Brand 001"
+            : `${TEST_LETTERS[(number - 1) % TEST_LETTERS.length]} Brand ${String(number).padStart(3, "0")}`;
+    return {
+      id: `brand-${number}`,
+      name,
+      productCount: (number * 7) % 19,
+      slug: `brand-${number}`,
+      logoUrl: null,
+    };
+  }).reverse();
+}
+
+async function mockBrands(page: Page, current: { brands: Brand[] }) {
   await page.route(/\/api\/v1\/brands(?:\?|$)/, async (route) => {
     await route.fulfill({
       contentType: "application/json",
-      body: JSON.stringify({ success: true, data: brands }),
+      body: JSON.stringify({
+        success: true,
+        data: current.brands,
+        meta: {
+          page: 1,
+          limit: 100,
+          total: current.brands.length,
+          totalPages: 1,
+          hasNext: false,
+          hasPrev: false,
+        },
+      }),
     });
   });
 }
@@ -58,136 +65,218 @@ async function expectNoPageOverflow(page: Page) {
   ).toBe(true);
 }
 
-test("desktop brand directory uses an open editorial index across supported widths", async ({
+async function expectAlphabetical(names: Locator, locale: "ar" | "en" = "en") {
+  const actual = (await names.allTextContents()).map((name) => name.trim());
+  const collator = new Intl.Collator(locale, { numeric: true, sensitivity: "base" });
+  const expected = [...actual].sort(
+    (left, right) => collator.compare(left, right) || (left < right ? -1 : left > right ? 1 : 0),
+  );
+  expect(actual).toEqual(expected);
+}
+
+test("desktop brands menu stays compact and adapts from 2 to 100 brands", async ({
   page,
 }, testInfo) => {
-  test.setTimeout(90_000);
+  test.setTimeout(120_000);
   test.skip(testInfo.project.name !== "chromium", "Desktop-only brand mega-menu");
-  await mockBrands(page);
-  await page.setViewportSize({ width: 1920, height: 1080 });
-  await page.goto("/about");
-  await waitForHydration(page);
+  const current = { brands: createBrands(2) };
+  await mockBrands(page, current);
+  await page.setViewportSize({ width: 1440, height: 900 });
 
-  const nav = page.getByRole("navigation", { name: "Primary" });
-  const brandTrigger = nav.getByRole("button", { name: "Brands", exact: true });
-  await brandTrigger.click();
-  const directory = page.locator(".brand-index--mega");
-  await expect(directory).toBeVisible();
-  await expect(directory.locator(".brand-index__popular li")).toHaveCount(5);
-  await expect(directory.locator(".brand-index__rank").first()).toHaveText("01");
-  await expect(directory.locator(".brand-index__group")).toHaveCount(14);
-  await expect(directory.locator(".brand-index__letter", { hasText: "ا" })).toBeVisible();
-  await expect(directory.locator('.brand-index__link[href="/brands/brand-9"]')).toHaveAttribute(
-    "aria-label",
-    "Beesline — 9 products",
-  );
+  for (const count of [2, 6, 15, 30, 100]) {
+    current.brands = createBrands(count);
+    await page.goto(`/about?catalogue=${count}`);
+    await waitForHydration(page);
+    const nav = page.getByRole("navigation", { name: "Primary" });
+    const trigger = nav.getByRole("button", { name: "Brands", exact: true });
+    await trigger.click();
 
-  for (const viewport of [
-    { width: 1920, height: 1080, columns: "4" },
-    { width: 1600, height: 900, columns: "4" },
-    { width: 1440, height: 900, columns: "3" },
-    { width: 1366, height: 768, columns: "3" },
-    { width: 1309, height: 818, columns: "3" },
-    { width: 1280, height: 800, columns: "3" },
-  ]) {
-    await page.setViewportSize(viewport);
-    if ((await brandTrigger.getAttribute("data-state")) !== "open") await brandTrigger.click();
-    await expect(directory).toBeVisible();
-    await expect(directory.locator(".brand-index__groups")).toHaveCSS(
-      "column-count",
-      viewport.columns,
-    );
-    const box = await page.locator(".header-mega-viewport").boundingBox();
+    const menu = page.locator(".brand-menu--mega");
+    await expect(menu).toBeVisible();
+    await expect(menu.locator(".brand-menu__alphabet-link")).toHaveCount(count);
+    await expect(menu.getByPlaceholder("Search brands…")).toHaveCount(count >= 25 ? 1 : 0);
+    const groups = menu.locator(".brand-menu__alphabet-group");
+    for (let index = 0; index < (await groups.count()); index += 1) {
+      await expectAlphabetical(groups.nth(index).locator(".brand-menu__alphabet-link"));
+    }
+    await expectAlphabetical(menu.locator(".brand-menu__alphabet-link"));
+
+    const panel = page.locator(".header-mega-panel--brands");
+    const box = await panel.boundingBox();
     expect(box).not.toBeNull();
-    expect(box!.x).toBeGreaterThanOrEqual(0);
-    expect(box!.x + box!.width).toBeLessThanOrEqual(viewport.width + 1);
+    expect(box!.width).toBeLessThanOrEqual(1120);
+    expect(box!.height).toBeLessThanOrEqual(650);
+    if (count <= 15) {
+      expect(
+        await menu
+          .locator(".brand-menu__alphabet-scroll")
+          .evaluate((element) => element.scrollHeight <= element.clientHeight + 1),
+      ).toBe(true);
+    }
+    await expect(menu.getByRole("link", { name: /View all brands/ })).toHaveAttribute(
+      "href",
+      "/brands",
+    );
     await expectNoPageOverflow(page);
   }
 
-  if ((await brandTrigger.getAttribute("data-state")) !== "open") await brandTrigger.click();
-  await expect(directory).toBeVisible();
-  const groupStyle = await directory
-    .locator(".brand-index__group")
-    .first()
-    .evaluate((element) => {
-      const style = getComputedStyle(element);
-      return { border: style.borderTopWidth, radius: style.borderRadius, shadow: style.boxShadow };
-    });
-  expect(groupStyle).toEqual({ border: "0px", radius: "0px", shadow: "none" });
-  const firstBrandLink = directory.locator(".brand-index__link").first();
-  await firstBrandLink.focus();
-  await page.keyboard.press("Shift+Tab");
-  await page.keyboard.press("Tab");
-  await expect(firstBrandLink).toBeFocused();
-  await expect(firstBrandLink).toHaveCSS("outline-style", "solid");
+  const menu = page.locator(".brand-menu--mega");
+  const groupHeadings = menu.locator(".brand-menu__alphabet-group h3");
+  await expect(groupHeadings.nth(0)).toHaveText("A");
+  await expect(groupHeadings.nth(1)).toHaveText("B");
+  await expect(groupHeadings.nth(2)).toHaveText("C");
+  await expect(groupHeadings.nth(3)).toHaveText("D");
+  await expect(groupHeadings.filter({ hasText: /^Q$/ })).toHaveCount(0);
+  const search = menu.getByPlaceholder("Search brands…");
+  await search.fill("brand");
+  await expectAlphabetical(menu.locator(".brand-menu__alphabet-link"));
+  await search.fill("avene");
+  await expect(menu.locator(".brand-menu__alphabet-link")).toHaveCount(1);
+  await expect(menu.getByText("Avène Maison de Beauté Internationale")).toBeVisible();
+  await search.fill("not a brand");
+  await expect(menu.getByText("No brands match your search.")).toBeVisible();
+  await menu.getByRole("button", { name: "Clear brand search" }).click();
+  await expect(search).toHaveValue("");
 
-  await page.setViewportSize({ width: 1440, height: 900 });
-  if ((await brandTrigger.getAttribute("data-state")) !== "open") await brandTrigger.click();
-  await expect(directory).toBeVisible();
-  await page.screenshot({ path: testInfo.outputPath("brand-directory-desktop.png") });
+  for (const viewport of [
+    { width: 1280, height: 800 },
+    { width: 1440, height: 900 },
+    { width: 1920, height: 1080 },
+  ]) {
+    await page.setViewportSize(viewport);
+    const trigger = page
+      .getByRole("navigation", { name: "Primary" })
+      .getByRole("button", { name: "Brands", exact: true });
+    await page.keyboard.press("Escape");
+    await trigger.click();
+    const viewportElement = page.locator(".header-mega-viewport");
+    await expect(viewportElement).toBeVisible();
+    const box = await viewportElement.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.x).toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(viewport.width + 1);
+    const columns = await page
+      .locator(".brand-menu__alphabet-grid")
+      .evaluate(
+        (element) =>
+          getComputedStyle(element).gridTemplateColumns.split(" ").filter(Boolean).length,
+      );
+    expect(columns).toBe(viewport.width < 1440 ? 3 : 4);
+    await expectNoPageOverflow(page);
+  }
 });
 
-test("mobile and tablet brand directories remain responsive, touch-safe, and RTL-aware", async ({
-  page,
-}, testInfo) => {
+test("mobile and tablet use a capped touch-first brands disclosure", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "Mobile drawer coverage");
-  await mockBrands(page);
-  await page.setViewportSize({ width: 430, height: 932 });
+  const current = { brands: createBrands(100) };
+  await mockBrands(page, current);
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/about");
   await waitForHydration(page);
 
   await page.locator(".store-header .header-brand-slot > button").click();
   await page.locator(".mobile-nav__list > li").nth(1).locator(".mobile-nav__link").click();
-  const directory = page.locator(".brand-index--mobile");
-  await expect(directory).toBeVisible();
-  await expect(directory.locator(".brand-index__groups")).toHaveCSS("column-count", "1");
-  expect(
-    await directory
-      .locator(".brand-index__link")
-      .first()
-      .evaluate((element) => Number.parseFloat(getComputedStyle(element).minHeight)),
-  ).toBeGreaterThanOrEqual(44);
+  const menu = page.locator(".brand-menu--mobile");
+  await expect(menu).toBeVisible();
+  await expect(menu.locator(".brand-menu__brand-link")).toHaveCount(8);
+  await expectAlphabetical(menu.locator(".brand-menu__brand-name"));
+  await expect(menu.getByRole("link", { name: /View all brands/ })).toHaveAttribute(
+    "href",
+    "/brands",
+  );
+
+  await menu.getByPlaceholder("Search brands…").fill("avene");
+  await expect(menu.locator(".brand-menu__brand-link")).toHaveCount(1);
 
   for (const viewport of [
-    { width: 1024, height: 768, columns: "2" },
-    { width: 1152, height: 720, columns: "2" },
-    { width: 820, height: 1180, columns: "2" },
-    { width: 768, height: 1024, columns: "2" },
-    { width: 430, height: 932, columns: "1" },
-    { width: 414, height: 896, columns: "1" },
-    { width: 393, height: 852, columns: "1" },
-    { width: 390, height: 844, columns: "1" },
-    { width: 375, height: 812, columns: "1" },
-    { width: 360, height: 800, columns: "1" },
-    { width: 320, height: 568, columns: "1" },
+    { width: 320, height: 568 },
+    { width: 360, height: 800 },
+    { width: 390, height: 844 },
+    { width: 430, height: 932 },
+    { width: 768, height: 1024 },
+    { width: 1024, height: 768 },
   ]) {
     await page.setViewportSize(viewport);
-    await expect(directory).toBeVisible();
-    await expect(directory.locator(".brand-index__groups")).toHaveCSS(
-      "column-count",
-      viewport.columns,
-    );
-    const box = await directory.boundingBox();
+    const box = await page.locator(".mobile-nav").boundingBox();
     expect(box).not.toBeNull();
     expect(box!.x).toBeGreaterThanOrEqual(0);
     expect(box!.x + box!.width).toBeLessThanOrEqual(viewport.width + 1);
     await expectNoPageOverflow(page);
   }
-
-  await page.setViewportSize({ width: 820, height: 1180 });
-  await page.screenshot({ path: testInfo.outputPath("brand-directory-tablet.png") });
-  await page.setViewportSize({ width: 393, height: 852 });
-  await page.screenshot({ path: testInfo.outputPath("brand-directory-mobile.png") });
 
   await page.goto("/about?lang=ar");
   await waitForHydration(page);
-  await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
   await page.locator(".store-header .header-brand-slot > button").click();
   await page.locator(".mobile-nav__list > li").nth(1).locator(".mobile-nav__link").click();
-  const rtlDirectory = page.locator(".brand-index--mobile");
-  await expect(rtlDirectory).toHaveAttribute("dir", "rtl");
-  await expect(rtlDirectory.getByRole("heading", { name: "ا", exact: true })).toBeVisible();
-  await expect(rtlDirectory.getByRole("heading", { name: "#", exact: true })).toHaveCount(0);
+  await expect(page.locator(".brand-menu--mobile")).toHaveAttribute("dir", "rtl");
+  await expectAlphabetical(page.locator(".brand-menu--mobile .brand-menu__brand-name"), "ar");
   await expectNoPageOverflow(page);
-  await page.screenshot({ path: testInfo.outputPath("brand-directory-mobile-rtl.png") });
+});
+
+test("the dedicated brands page owns full search and alphabet exploration", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "chromium", "One cross-viewport route pass is enough");
+  const current = { brands: createBrands(100) };
+  await mockBrands(page, current);
+  await page.goto("/about", { waitUntil: "networkidle" });
+  const brandsTrigger = page
+    .getByRole("navigation", { name: "Primary" })
+    .getByRole("button", { name: "Brands", exact: true });
+  await brandsTrigger.click();
+  await page
+    .locator(".brand-menu--mega")
+    .getByRole("link", { name: /View all brands/ })
+    .click();
+  await expect(page).toHaveURL(/\/brands$/);
+
+  await expect(page.getByRole("heading", { name: "Beauty, by name." })).toBeVisible();
+  await expect(page.getByText("100 brands")).toBeVisible();
+  await expect(page.locator(".brands-page__group")).not.toHaveCount(0);
+  await expect(page.locator('.brands-page__alphabet button[aria-label="B"]')).toBeEnabled();
+  await expect(page.locator('.brands-page__alphabet button[aria-label="Q"]')).toBeDisabled();
+  await expect(page.locator(".brands-page__group > h3", { hasText: /^Q$/ })).toHaveCount(0);
+  await expect(page.locator(".brands-page__group > h3").nth(0)).toHaveText("A");
+  await expect(page.locator(".brands-page__group > h3").nth(1)).toHaveText("B");
+  await expect(page.locator(".brands-page__group > h3").nth(2)).toHaveText("C");
+  await expect(page.locator(".brands-page__group > h3").nth(3)).toHaveText("D");
+  await expect(page.locator(".brands-page__group > h3").last()).toHaveText("ا");
+  const directoryGroups = page.locator(".brands-page__group");
+  for (let index = 0; index < (await directoryGroups.count()); index += 1) {
+    await expectAlphabetical(directoryGroups.nth(index).locator("a > span:first-child"));
+  }
+
+  const search = page.getByPlaceholder("Search all brands");
+  await search.fill("brand");
+  await expectAlphabetical(page.locator(".brands-page__group a > span:first-child"));
+  await search.fill("AVENE");
+  await expect(page.locator(".brands-page__group a")).toHaveCount(1);
+  await expect(page.getByText("Avène Maison de Beauté Internationale")).toBeVisible();
+  await search.fill("missing");
+  await expect(page.getByText("No brands match that search.")).toBeVisible();
+  await page.getByRole("button", { name: "Clear brand search" }).click();
+
+  for (const viewport of [
+    { width: 320, height: 568 },
+    { width: 360, height: 800 },
+    { width: 390, height: 844 },
+    { width: 430, height: 932 },
+    { width: 768, height: 1024 },
+    { width: 1024, height: 768 },
+    { width: 1280, height: 800 },
+    { width: 1440, height: 900 },
+    { width: 1920, height: 1080 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await expectNoPageOverflow(page);
+  }
+
+  await page.getByRole("link", { name: /Brand 001/ }).click();
+  await expect(page).toHaveURL(/\/brands\/brand-1$/);
+  await expect(page.getByRole("heading", { name: "Brand 001" })).toBeVisible();
+
+  await page.goto("/brands?lang=ar");
+  await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(page.getByRole("heading", { name: "الجمال، بالاسم." })).toBeVisible();
+  await expect(page.locator(".brands-page")).toHaveAttribute("dir", "rtl");
 });

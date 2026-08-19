@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { Check, Grid2X2, Grid3X3, List, SlidersHorizontal, X } from "lucide-react";
 import { ProductCard } from "@/components/shop/ProductCard";
@@ -15,6 +15,7 @@ import {
 } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
+import { sortBrands } from "@/components/layout/brand-directory-data";
 import {
   breadcrumbSchema,
   createSeoHead,
@@ -158,6 +159,7 @@ function Shop() {
   const catalog = useCatalogPage(catalogParams(search, page), locale, initial.catalog);
   const categories = useCategories(initial.categories);
   const brands = useBrands(initial.brands);
+  const sortedBrands = useMemo(() => sortBrands(brands.data ?? [], locale), [brands.data, locale]);
   const activeFilters = [
     search.brand ? { key: "brand" as const, label: search.brand } : null,
     search.category ? { key: "category" as const, label: search.category } : null,
@@ -236,13 +238,13 @@ function Shop() {
           </li>
         ))}
       </ul>
-      {brands.data && brands.data.length > 0 && (
+      {sortedBrands.length > 0 && (
         <div className="sf-shop-filter-panel__group sf-shop-filter-panel__group--divided">
           <p className="sf-shop-filter-panel__eyebrow">
             {locale === "ar" ? "العلامة التجارية" : "Brand"}
           </p>
           <ul className="sf-shop-filter-panel__list">
-            {brands.data
+            {sortedBrands
               .filter((brand) => brand.productCount > 0)
               .map((brand) => (
                 <li key={brand.id}>

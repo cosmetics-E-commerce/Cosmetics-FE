@@ -3,6 +3,7 @@
 @import "tw-animate-css";
 @import "./components/banner/banner.css";
 @import "./components/shop/quick-add.css";
+@import "./components/brand/brands-directory.css";
 
 @custom-variant dark (&:is(.dark *));
 

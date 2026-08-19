@@ -19,7 +19,7 @@ test("desktop navigation keeps exactly one active item through menus and routes"
 
   await brands.hover();
   await expect(brands).toHaveAttribute("data-state", "open");
-  await expect(page.getByText("Brand directory")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Brands", exact: true })).toBeVisible();
 
   await categories.hover();
   await expect(categories).toHaveAttribute("data-state", "open");

@@ -832,7 +832,10 @@ export async function listBrands() {
   return normalizeList(result);
 }
 
-export async function listBrandsPage(params: Record<string, string | number | undefined> = {}) {
+export async function listBrandsPage(
+  params: Record<string, string | number | undefined> = {},
+  signal?: AbortSignal,
+) {
   const query = new URLSearchParams();
   Object.entries(params).forEach(
     ([key, value]) => value !== undefined && value !== "" && query.set(key, String(value)),
@@ -844,8 +847,29 @@ export async function listBrandsPage(params: Record<string, string | number | un
         data?: PublicBrandListItemResponse[];
         meta?: unknown;
       }
-  >(`/brands${query.size ? `?${query}` : ""}`, { auth: false });
+  >(`/brands${query.size ? `?${query}` : ""}`, {
+    auth: false,
+    ...(signal ? { signal } : {}),
+  });
   return normalizePaginatedList(result.data, result.meta, params);
+}
+
+export async function listAllBrands(signal?: AbortSignal) {
+  const brands = new Map<string, PublicBrandListItemResponse>();
+  let page = 1;
+  let totalPages = 1;
+
+  do {
+    const result = await listBrandsPage(
+      { page, limit: 100, sortBy: "name", sortOrder: "asc" },
+      signal,
+    );
+    result.items.forEach((brand) => brands.set(brand.id, brand));
+    totalPages = Math.max(result.meta.totalPages, 1);
+    page += 1;
+  } while (page <= totalPages);
+
+  return Array.from(brands.values());
 }
 
 export const subscribeNewsletter = (email: string, locale: "en" | "ar") =>

@@ -5,6 +5,7 @@ import { sitemapFailure, sitemapResponse, urlsetXml } from "@/lib/sitemap";
 const PUBLIC_PAGES = [
   "/",
   "/shop",
+  "/brands",
   "/about",
   "/faq",
   "/contact",

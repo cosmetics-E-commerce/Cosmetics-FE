@@ -38,7 +38,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { useBrands, useCategories } from "@/lib/catalog";
+import { useAllBrands, useCategories } from "@/lib/catalog";
 import type { PublicBrandListItemResponse, PublicCategoryResponse } from "@/lib/api";
 import { useStore } from "@/lib/store";
 import { GlobalBannerSlot } from "@/components/banner/GlobalBannerSlot";
@@ -46,6 +46,7 @@ import { useI18n, type MessageKey } from "@/lib/i18n";
 import { CustomerAvatar } from "@/components/account/CustomerAvatar";
 import { getProfile } from "@/lib/api";
 import { BrandDirectory } from "@/components/layout/BrandDirectory";
+import { sortBrands } from "@/components/layout/brand-directory-data";
 
 const homeNavItem = { id: "home", label: "common.home" as MessageKey, to: "/" as const };
 
@@ -60,9 +61,12 @@ const utilityNav = [
    holding navigation labels only. */
 const headerCopy = {
   en: {
-    brandDirectory: "Brand directory",
-    popular: "Popular brands",
+    brandDirectory: "Brands",
     viewAllBrands: "View all brands",
+    searchBrands: "Search brands…",
+    clearSearch: "Clear brand search",
+    noBrandMatches: "No brands match your search.",
+    brandsUnavailable: "Brand discovery is temporarily unavailable.",
     categoryDirectory: "Shop by category",
     viewAllProducts: "View all products",
     allCategories: "All Categories",
@@ -90,9 +94,12 @@ const headerCopy = {
     products: (count: number) => `${count} ${count === 1 ? "product" : "products"}`,
   },
   ar: {
-    brandDirectory: "دليل العلامات",
-    popular: "العلامات الأكثر رواجاً",
+    brandDirectory: "العلامات التجارية",
     viewAllBrands: "عرض كل العلامات",
+    searchBrands: "ابحثي عن علامة…",
+    clearSearch: "مسح بحث العلامات",
+    noBrandMatches: "لا توجد علامات مطابقة للبحث.",
+    brandsUnavailable: "دليل العلامات غير متاح مؤقتاً.",
     categoryDirectory: "تسوقي حسب الفئة",
     viewAllProducts: "عرض كل المنتجات",
     allCategories: "كل الفئات",
@@ -145,7 +152,7 @@ export function Header({
   } = useStore();
   const { pathname, search } = useLocation();
   const categories = useCategories();
-  const brands = useBrands();
+  const brands = useAllBrands();
   const accountProfile = useQuery({
     queryKey: ["account", "profile", user?.id],
     queryFn: getProfile,
@@ -169,7 +176,7 @@ export function Header({
           ? "about"
           : pathname === "/contact"
             ? "contact"
-            : pathname.startsWith("/brands/")
+            : pathname === "/brands" || pathname.startsWith("/brands/")
               ? "brands"
               : pathname.startsWith("/categories/")
                 ? "categories"
@@ -179,13 +186,7 @@ export function Header({
                     : "categories"
                   : null;
   const transparentHeader = pathname === "/" && !scrolled;
-  const visibleBrands = useMemo(
-    () =>
-      (brands.data ?? [])
-        .filter((brand) => brand.productCount > 0)
-        .sort((a, b) => a.name.localeCompare(b.name, locale)),
-    [brands.data, locale],
-  );
+  const visibleBrands = useMemo(() => sortBrands(brands.data ?? [], locale), [brands.data, locale]);
 
   useEffect(() => {
     let observer: IntersectionObserver | undefined;
@@ -310,6 +311,7 @@ export function Header({
                     <BrandsMegaMenu
                       brands={visibleBrands}
                       loading={brands.isLoading}
+                      error={brands.isError}
                       locale={locale}
                       onNavigate={closeMegaMenu}
                     />
@@ -518,6 +520,7 @@ export function Header({
                     <BrandDirectory
                       brands={visibleBrands}
                       loading={brands.isLoading}
+                      error={brands.isError}
                       locale={locale}
                       onNavigate={closeMobileMenu}
                       copy={copy}
@@ -627,11 +630,13 @@ export function Header({
 const BrandsMegaMenu = memo(function BrandsMegaMenu({
   brands,
   loading,
+  error,
   locale,
   onNavigate,
 }: {
   brands: PublicBrandListItemResponse[];
   loading: boolean;
+  error: boolean;
   locale: "ar" | "en";
   onNavigate: () => void;
 }) {
@@ -641,6 +646,7 @@ const BrandsMegaMenu = memo(function BrandsMegaMenu({
       <BrandDirectory
         brands={brands}
         loading={loading}
+        error={error}
         locale={locale}
         onNavigate={onNavigate}
         copy={copy}
@@ -812,7 +818,7 @@ const CategoriesMegaMenu = memo(function CategoriesMegaMenu({
                 <span>{copy.brandsEmpty}</span>
               )}
             </div>
-            <Link to="/shop" onClick={onNavigate} className="category-mega__brands-all">
+            <Link to="/brands" onClick={onNavigate} className="category-mega__brands-all">
               {copy.viewAllBrands}
             </Link>
           </aside>
