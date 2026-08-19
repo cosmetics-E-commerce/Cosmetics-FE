@@ -8,6 +8,21 @@ import { selectProductCardImages } from "@/components/shop/product-card-media";
 import { formatPrice, type Product } from "@/lib/products";
 import { useStore } from "@/lib/store";
 
+const cardCopy = {
+  en: {
+    out: "Out of stock",
+    low: "Low stock",
+    wishAdd: (name: string) => `Add ${name} to wishlist`,
+    wishRemove: (name: string) => `Remove ${name} from wishlist`,
+  },
+  ar: {
+    out: "غير متوفر",
+    low: "مخزون منخفض",
+    wishAdd: (name: string) => `إضافة ${name} إلى المفضلة`,
+    wishRemove: (name: string) => `إزالة ${name} من المفضلة`,
+  },
+} as const;
+
 export function ProductCard({
   product,
   compact = false,
@@ -17,13 +32,14 @@ export function ProductCard({
   compact?: boolean;
   layout?: "grid" | "list";
 }) {
-  const { wishlist, toggleWish } = useStore();
+  const { locale, wishlist, toggleWish } = useStore();
+  const labels = cardCopy[locale];
   const wished = wishlist.includes(product.slug);
   const variant =
     product.sizes.find((item) => item.stock === undefined || item.stock > 0) ?? product.sizes[0];
   const stock = product.id ? product.stock : undefined;
-  const outOfStock = product.inStock === false || stock === 0;
-  const lowStock = stock !== undefined && stock > 0 && stock < 10;
+  const outOfStock = product.inStock === false || !variant || variant.stock === 0;
+  const lowStock = !outOfStock && stock !== undefined && stock > 0 && stock < 10;
   const { primary: primaryImage, secondary: secondaryImage } = selectProductCardImages(product);
   const secondaryImageRef = useRef<HTMLImageElement>(null);
   const [secondaryReady, setSecondaryReady] = useState(false);
@@ -46,87 +62,89 @@ export function ProductCard({
       }`}
       data-layout={layout}
     >
-      <div
-        className="product-card-media sf-product-card__media relative overflow-hidden"
-        data-has-secondary={secondaryImage ? "true" : "false"}
-        data-secondary-ready={secondaryReady ? "true" : "false"}
-      >
-        <ProductLink
-          product={product}
-          ariaLabel={product.name}
-          className="product-card-media__link"
+      <div className="product-card__purchase relative min-w-0">
+        <div
+          className="product-card-media sf-product-card__media relative overflow-hidden"
+          data-has-secondary={secondaryImage ? "true" : "false"}
+          data-secondary-ready={secondaryReady ? "true" : "false"}
         >
-          <PolishedImage
-            src={primaryImage}
-            alt={product.imageAlt || product.name}
-            width={800}
-            height={1000}
-            loading="lazy"
-            decoding="async"
-            sizes={
-              layout === "list"
-                ? "(min-width: 640px) 12rem, 7rem"
-                : "(min-width: 1280px) 24vw, (min-width: 768px) 33vw, 50vw"
-            }
-            wrapperClassName="product-card-layer product-card-primary"
-            className="product-card-image product-card-image--primary"
-          />
-          {secondaryImage ? (
+          <ProductLink
+            product={product}
+            ariaLabel={product.name}
+            className="product-card-media__link"
+          >
             <PolishedImage
-              ref={secondaryImageRef}
-              src={secondaryImage}
-              alt=""
-              aria-hidden="true"
+              src={primaryImage}
+              alt={product.imageAlt || product.name}
               width={800}
               height={1000}
               loading="lazy"
               decoding="async"
-              fetchPriority="low"
               sizes={
                 layout === "list"
                   ? "(min-width: 640px) 12rem, 7rem"
                   : "(min-width: 1280px) 24vw, (min-width: 768px) 33vw, 50vw"
               }
-              onLoad={(event) =>
-                setSecondaryReady(
-                  event.currentTarget.naturalWidth > 0 && event.currentTarget.naturalHeight > 0,
-                )
-              }
-              onError={() => setSecondaryReady(false)}
-              wrapperClassName="product-card-layer product-card-secondary"
-              className="product-card-image product-card-image--secondary"
+              wrapperClassName="product-card-layer product-card-primary"
+              className="product-card-image product-card-image--primary"
             />
-          ) : null}
-        </ProductLink>
-        {product.id && (
-          <button
-            type="button"
-            onClick={() => void toggleWish(product.id!, product.slug)}
-            aria-label={wished ? `Remove ${product.name} from wishlist` : `Save ${product.name}`}
-            aria-pressed={wished}
-            className="sf-product-card__wish absolute end-3 top-3 grid size-11 place-items-center text-taupe"
-          >
-            <Heart
-              strokeWidth={1}
-              className={wished ? "pop size-[18px] fill-gold text-gold" : "size-[18px]"}
-            />
-          </button>
-        )}
-        {outOfStock && (
-          <span className="sf-product-card__badge sf-product-card__badge--stock absolute start-3 top-3">
-            Out of stock
-          </span>
-        )}
-        {lowStock && (
-          <span className="sf-product-card__badge sf-product-card__badge--low absolute start-3 top-3">
-            Low stock
-          </span>
-        )}
-        {product.promotionBadge && !outOfStock && !lowStock && (
-          <span className="sf-product-card__badge sf-product-card__badge--sale absolute start-3 top-3">
-            {product.promotionBadge}
-          </span>
-        )}
+            {secondaryImage ? (
+              <PolishedImage
+                ref={secondaryImageRef}
+                src={secondaryImage}
+                alt=""
+                aria-hidden="true"
+                width={800}
+                height={1000}
+                loading="lazy"
+                decoding="async"
+                fetchPriority="low"
+                sizes={
+                  layout === "list"
+                    ? "(min-width: 640px) 12rem, 7rem"
+                    : "(min-width: 1280px) 24vw, (min-width: 768px) 33vw, 50vw"
+                }
+                onLoad={(event) =>
+                  setSecondaryReady(
+                    event.currentTarget.naturalWidth > 0 && event.currentTarget.naturalHeight > 0,
+                  )
+                }
+                onError={() => setSecondaryReady(false)}
+                wrapperClassName="product-card-layer product-card-secondary"
+                className="product-card-image product-card-image--secondary"
+              />
+            ) : null}
+          </ProductLink>
+          {product.id && (
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                void toggleWish(product.id!, product.slug);
+              }}
+              aria-label={wished ? labels.wishRemove(product.name) : labels.wishAdd(product.name)}
+              aria-pressed={wished}
+              className="sf-product-card__wish"
+            >
+              <Heart className="sf-product-card__wish-icon" strokeWidth={1.8} aria-hidden="true" />
+            </button>
+          )}
+          {outOfStock && (
+            <span className="sf-product-card__badge sf-product-card__badge--stock absolute start-3 top-3">
+              {labels.out}
+            </span>
+          )}
+          {lowStock && (
+            <span className="sf-product-card__badge sf-product-card__badge--low absolute start-3 top-3">
+              {labels.low}
+            </span>
+          )}
+          {product.promotionBadge && !outOfStock && !lowStock && (
+            <span className="sf-product-card__badge sf-product-card__badge--sale absolute start-3 top-3">
+              {product.promotionBadge}
+            </span>
+          )}
+        </div>
         <QuickAddToolbar product={product} variant={variant} outOfStock={outOfStock} />
       </div>
       <div

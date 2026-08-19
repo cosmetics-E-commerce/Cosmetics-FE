@@ -5,7 +5,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type CSSProperties,
   type RefObject,
   type ReactNode,
 } from "react";
@@ -46,6 +45,7 @@ import { GlobalBannerSlot } from "@/components/banner/GlobalBannerSlot";
 import { useI18n, type MessageKey } from "@/lib/i18n";
 import { CustomerAvatar } from "@/components/account/CustomerAvatar";
 import { getProfile } from "@/lib/api";
+import { BrandDirectory } from "@/components/layout/BrandDirectory";
 
 const homeNavItem = { id: "home", label: "common.home" as MessageKey, to: "/" as const };
 
@@ -61,7 +61,7 @@ const utilityNav = [
 const headerCopy = {
   en: {
     brandDirectory: "Brand directory",
-    popular: "Popular",
+    popular: "Popular brands",
     viewAllBrands: "View all brands",
     categoryDirectory: "Shop by category",
     viewAllProducts: "View all products",
@@ -91,7 +91,7 @@ const headerCopy = {
   },
   ar: {
     brandDirectory: "دليل العلامات",
-    popular: "الأكثر رواجاً",
+    popular: "العلامات الأكثر رواجاً",
     viewAllBrands: "عرض كل العلامات",
     categoryDirectory: "تسوقي حسب الفئة",
     viewAllProducts: "عرض كل المنتجات",
@@ -515,28 +515,14 @@ export function Header({
 
                 <li>
                   <MobileCatalogGroup id="brands" label={t("nav.brands")}>
-                    {visibleBrands.length ? (
-                      <ul className="mobile-nav__sublist">
-                        {visibleBrands.map((brand) => (
-                          <li key={brand.id}>
-                            <Link
-                              to="/brands/$slug"
-                              params={{ slug: brand.slug }}
-                              onClick={closeMobileMenu}
-                              className="mobile-nav__sublink"
-                            >
-                              <span>{brand.name}</span>
-                              <small>{brand.productCount}</small>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="mobile-nav__empty">{copy.brandsEmpty}</p>
-                    )}
-                    <Link to="/shop" onClick={closeMobileMenu} className="mobile-nav__subaction">
-                      {copy.viewAllBrands}
-                    </Link>
+                    <BrandDirectory
+                      brands={visibleBrands}
+                      loading={brands.isLoading}
+                      locale={locale}
+                      onNavigate={closeMobileMenu}
+                      copy={copy}
+                      surface="mobile"
+                    />
                   </MobileCatalogGroup>
                 </li>
 
@@ -638,14 +624,6 @@ export function Header({
   );
 }
 
-type BrandGroup = [letter: string, brands: PublicBrandListItemResponse[]];
-
-/** Columns are derived from the catalogue size so the panel never opens wider —
- *  or emptier — than the number of brands justifies. */
-function directoryColumns(entries: number, groups: number) {
-  return Math.min(4, Math.max(2, Math.ceil(entries / 5)), Math.max(1, groups));
-}
-
 const BrandsMegaMenu = memo(function BrandsMegaMenu({
   brands,
   loading,
@@ -658,112 +636,16 @@ const BrandsMegaMenu = memo(function BrandsMegaMenu({
   onNavigate: () => void;
 }) {
   const copy = headerCopy[locale];
-  const groups = useMemo<BrandGroup[]>(() => {
-    const grouped = new Map<string, PublicBrandListItemResponse[]>();
-    for (const brand of brands) {
-      const first = brand.name.trim().charAt(0).toLocaleUpperCase(locale);
-      const key = /[A-Z0-9]/i.test(first) ? first : "#";
-      grouped.set(key, [...(grouped.get(key) ?? []), brand]);
-    }
-    return Array.from(grouped.entries()).sort(([a], [b]) => a.localeCompare(b, locale));
-  }, [brands, locale]);
-
-  // Only surface a shortlist when it is genuinely a shortlist of the catalogue.
-  const popular = useMemo(
-    () =>
-      brands.length >= 6
-        ? [...brands].sort((a, b) => b.productCount - a.productCount).slice(0, 5)
-        : [],
-    [brands],
-  );
-
-  const columns = directoryColumns(brands.length, groups.length);
-
-  // Fill the shortest column first so the directory stays balanced instead of
-  // leaving one column empty when a letter carries most of the catalogue.
-  const columnGroups = useMemo(() => {
-    const filled: BrandGroup[][] = Array.from({ length: columns }, () => []);
-    const weights = new Array<number>(columns).fill(0);
-    for (const group of groups) {
-      let target = 0;
-      for (let index = 1; index < columns; index += 1) {
-        if ((weights[index] ?? 0) < (weights[target] ?? 0)) target = index;
-      }
-      filled[target]?.push(group);
-      weights[target] = (weights[target] ?? 0) + group[1].length + 1.5;
-    }
-    return filled.filter((column) => column.length > 0);
-  }, [columns, groups]);
-
   return (
-    <div
-      className="header-mega-panel header-mega-panel--brands"
-      dir={locale === "ar" ? "rtl" : "ltr"}
-      style={{ "--mega-columns": columnGroups.length || 1 } as CSSProperties}
-    >
-      <div className="header-mega-heading">
-        <p className="header-mega-eyebrow">{copy.brandDirectory}</p>
-        <Link to="/shop" onClick={onNavigate} className="header-mega-all">
-          {copy.viewAllBrands}
-          <ChevronDown className="size-3 -rotate-90 rtl:rotate-90" aria-hidden="true" />
-        </Link>
-      </div>
-
-      {loading ? (
-        <MegaMenuSkeleton rows={6} />
-      ) : groups.length ? (
-        <>
-          {popular.length > 0 && (
-            <section className="header-mega-popular" aria-label={copy.popular}>
-              <h3>{copy.popular}</h3>
-              <ul>
-                {popular.map((brand) => (
-                  <li key={brand.id}>
-                    <Link to="/brands/$slug" params={{ slug: brand.slug }} onClick={onNavigate}>
-                      {brand.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-
-          <div className="brand-directory">
-            {columnGroups.map((column, index) => (
-              <div key={column[0]?.[0] ?? index} className="brand-directory__column">
-                {column.map(([letter, entries]) => (
-                  <section
-                    key={letter}
-                    className="brand-directory__group"
-                    aria-labelledby={`brand-${letter}`}
-                  >
-                    <h3 id={`brand-${letter}`} className="brand-directory__letter">
-                      {letter}
-                    </h3>
-                    <ul>
-                      {entries.map((brand) => (
-                        <li key={brand.id}>
-                          <Link
-                            to="/brands/$slug"
-                            params={{ slug: brand.slug }}
-                            onClick={onNavigate}
-                            className="brand-directory__link"
-                          >
-                            <span>{brand.name}</span>
-                            <small>{brand.productCount}</small>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                ))}
-              </div>
-            ))}
-          </div>
-        </>
-      ) : (
-        <p className="header-mega-empty">{copy.brandsEmpty}</p>
-      )}
+    <div className="header-mega-panel header-mega-panel--brands">
+      <BrandDirectory
+        brands={brands}
+        loading={loading}
+        locale={locale}
+        onNavigate={onNavigate}
+        copy={copy}
+        surface="mega"
+      />
     </div>
   );
 });
