@@ -20,7 +20,7 @@ test("legal surface and support submission work", async ({ page }) => {
   await page.getByLabel("Subject").fill("Order delivery");
   await page.getByLabel("Message").fill("Please help me locate my order delivery.");
   await page.getByRole("button", { name: "Send request" }).click();
-  await expect(page.getByText(/Request received/)).toBeVisible();
+  await expect(page.getByRole("status")).toContainText("Request received");
 
   await page.goto("/privacy-policy");
   await expect(page.getByRole("heading", { name: "Privacy policy" })).toBeVisible();
