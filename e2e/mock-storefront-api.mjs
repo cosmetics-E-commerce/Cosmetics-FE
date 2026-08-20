@@ -14,6 +14,70 @@ const category = {
   productCount: 1,
 };
 
+const categories = [
+  category,
+  {
+    ...category,
+    id: "20000000-0000-4000-8000-000000000002",
+    slug: "makeup",
+    nameEn: "Makeup",
+    nameAr: "المكياج",
+    imageUrl: null,
+    sortOrder: 2,
+    productCount: 7,
+  },
+  {
+    ...category,
+    id: "20000000-0000-4000-8000-000000000003",
+    slug: "haircare",
+    nameEn: "Haircare",
+    nameAr: "العناية بالشعر",
+    imageUrl: null,
+    sortOrder: 3,
+    productCount: 5,
+  },
+  {
+    ...category,
+    id: "20000000-0000-4000-8000-000000000004",
+    slug: "fragrance",
+    nameEn: "Fragrance",
+    nameAr: "العطور",
+    imageUrl: null,
+    sortOrder: 4,
+    productCount: 4,
+  },
+  {
+    ...category,
+    id: "20000000-0000-4000-8000-000000000005",
+    slug: "body-moisturizer",
+    nameEn: "Body Moisturizer and Intensive Daily Care",
+    nameAr: "مرطبات الجسم والعناية اليومية المكثفة",
+    imageUrl: "/missing-category-cover.jpg",
+    sortOrder: 5,
+    productCount: 9,
+  },
+  {
+    ...category,
+    id: "20000000-0000-4000-8000-000000000006",
+    slug: "sun-care",
+    nameEn: "Sun Care",
+    nameAr: "العناية من الشمس",
+    imageUrl: "/bioreza-logo.png",
+    sortOrder: 6,
+    productCount: 6,
+  },
+  {
+    ...category,
+    id: "20000000-0000-4000-8000-000000000007",
+    slug: "cleansers",
+    nameEn: "Cleansers",
+    nameAr: "منظفات البشرة",
+    imageUrl: "/bioreza-logo.png",
+    sortOrder: 7,
+    productCount: 3,
+  },
+];
+
 const brands = [
   {
     id: "30000000-0000-4000-8000-000000000001",
@@ -152,7 +216,7 @@ const server = createServer((request, response) => {
       meta: { page: 1, limit: 24, total: 1, totalPages: 1, hasNext: false, hasPrev: false },
     });
   }
-  if (path === "/categories") return success(response, [category]);
+  if (path === "/categories") return success(response, categories);
   if (path === "/brands") return success(response, brands);
   if (path === "/promotions/prices") return success(response, []);
   if (path === "/cart") return success(response, emptyCart);

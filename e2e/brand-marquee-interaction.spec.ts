@@ -193,4 +193,85 @@ test.describe("brand presentation", () => {
     expect(desktopDimensions.width).toBeGreaterThanOrEqual(340);
     expect(desktopDimensions.height).toBeGreaterThanOrEqual(170);
   });
+
+  test("the shared brand landing stays content-driven across storefront viewports", async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "chromium", "One browser can cover the responsive matrix");
+
+    const viewports = [
+      { width: 375, height: 812 },
+      { width: 390, height: 844 },
+      { width: 768, height: 1024 },
+      { width: 1024, height: 768 },
+      { width: 1366, height: 768 },
+      { width: 1440, height: 900 },
+      { width: 1600, height: 900 },
+      { width: 1920, height: 1080 },
+    ];
+
+    for (const viewport of viewports) {
+      await page.setViewportSize(viewport);
+      await page.goto("/brands/la-roche-posay", { waitUntil: "domcontentloaded" });
+      const layout = await page.locator(".sf-shop-page--brand").evaluate((pageElement) => {
+        const breadcrumb = pageElement.querySelector(".sf-shop-breadcrumb")!;
+        const intro = pageElement.querySelector(".sf-catalog-landing-intro")!;
+        const logo = pageElement.querySelector(".sf-brand-landing-logo-shell")!;
+        const label = intro.querySelector(":scope > .label-xs")!;
+        const description = intro.querySelector(":scope > p:last-child")!;
+        const catalog = pageElement.querySelector(".sf-shop-catalog")!;
+        const meta = pageElement.querySelector(".sf-shop-meta")!;
+        const grid = pageElement.querySelector(".sf-shop-products")!;
+        const firstProduct = grid.firstElementChild!;
+        const rect = (element: Element) => element.getBoundingClientRect();
+        const breadcrumbRect = rect(breadcrumb);
+        const introRect = rect(intro);
+        const logoRect = rect(logo);
+        const labelRect = rect(label);
+        const descriptionRect = rect(description);
+        const metaRect = rect(meta);
+        const gridRect = rect(grid);
+        const productRect = rect(firstProduct);
+        const introStyle = getComputedStyle(intro);
+        const catalogStyle = getComputedStyle(catalog);
+        const metaStyle = getComputedStyle(meta);
+        return {
+          introHeight: introRect.height,
+          introMinHeight: introStyle.minHeight,
+          introPaddingTop: Number.parseFloat(introStyle.paddingTop),
+          introPaddingBottom: Number.parseFloat(introStyle.paddingBottom),
+          catalogMinHeight: catalogStyle.minHeight,
+          catalogMarginTop: Number.parseFloat(catalogStyle.marginTop),
+          metaMarginTop: Number.parseFloat(metaStyle.marginTop),
+          metaPaddingTop: Number.parseFloat(metaStyle.paddingTop),
+          breadcrumbToLogo: logoRect.top - breadcrumbRect.bottom,
+          logoToLabel: labelRect.top - logoRect.bottom,
+          labelToDescription: descriptionRect.top - labelRect.bottom,
+          descriptionToMeta: metaRect.top - descriptionRect.bottom,
+          metaToGrid: gridRect.top - metaRect.bottom,
+          productTop: productRect.top,
+        };
+      });
+
+      expect(layout.introMinHeight).toBe("0px");
+      expect(layout.catalogMinHeight).toBe("0px");
+      expect(layout.catalogMarginTop).toBe(0);
+      expect(layout.metaMarginTop).toBe(0);
+      expect(layout.metaPaddingTop).toBe(0);
+      expect(layout.introHeight).toBeLessThan(460);
+      expect(layout.breadcrumbToLogo).toBeGreaterThanOrEqual(viewport.width < 768 ? 32 : 47);
+      expect(layout.breadcrumbToLogo).toBeLessThanOrEqual(viewport.width < 768 ? 36 : 65);
+      expect(layout.logoToLabel).toBeGreaterThanOrEqual(21);
+      expect(layout.logoToLabel).toBeLessThanOrEqual(37);
+      expect(layout.labelToDescription).toBeGreaterThanOrEqual(18);
+      expect(layout.labelToDescription).toBeLessThanOrEqual(22);
+      expect(layout.descriptionToMeta).toBeGreaterThanOrEqual(viewport.width < 768 ? 36 : 43);
+      expect(layout.descriptionToMeta).toBeLessThanOrEqual(viewport.width < 768 ? 40 : 57);
+      expect(layout.metaToGrid).toBeGreaterThanOrEqual(23);
+      expect(layout.metaToGrid).toBeLessThanOrEqual(33);
+      expect(layout.productTop).toBeLessThan(
+        viewport.height * (viewport.width >= 1024 ? 0.82 : 0.9),
+      );
+    }
+  });
 });

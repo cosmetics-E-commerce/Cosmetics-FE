@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   Hero,
   Benefits,
-  CategoryGrid,
   Featured,
   CollectionFeature,
   Concerns,
@@ -10,6 +9,7 @@ import {
   BrandStory,
   BeautyDifference,
 } from "@/components/home/Sections";
+import { CategoryShowcase } from "@/components/home/CategoryShowcase";
 import { BrandMarquee } from "@/components/home/BrandMarquee";
 import { loadAllBrands, loadCatalog, loadCategories } from "@/lib/catalog";
 import { images } from "@/lib/products";
@@ -79,7 +79,7 @@ function Index() {
       <Hero />
       <BrandMarquee initialBrands={brands} />
       <Benefits />
-      <CategoryGrid initialCategories={categories} />
+      <CategoryShowcase initialCategories={categories} />
       <Featured initialProducts={products.slice(0, 5)} />
       <CollectionFeature />
       <Concerns />
