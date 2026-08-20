@@ -401,20 +401,6 @@
     padding-block: var(--mobile-section-gap-md);
   }
 
-  .sf-category-orbits {
-    gap: 12px;
-    margin-top: 28px;
-  }
-
-  .sf-category-orbit__link {
-    border-radius: 12px;
-  }
-
-  .sf-category-orbit__title {
-    font-size: clamp(0.98rem, 4.4vw, 1.12rem);
-    line-height: 1.16;
-  }
-
   .sf-arrivals-hero__copy {
     padding: 28px var(--mobile-card-padding-lg);
   }
@@ -481,6 +467,25 @@
   .sf-shop-breadcrumb {
     min-height: 24px;
     font-size: 0.76rem;
+  }
+
+  .sf-catalog-landing-intro {
+    height: auto;
+    min-height: 0;
+    padding: 34px 20px 38px;
+  }
+
+  .sf-shop-page--brand .sf-shop-catalog {
+    margin-top: 0;
+  }
+
+  .sf-shop-page--brand .sf-shop-meta {
+    margin-top: 0;
+    padding-block: 0;
+  }
+
+  .sf-shop-page--brand .sf-shop-products {
+    margin-top: 24px;
   }
 
   .sf-shop-hero {

@@ -24,13 +24,11 @@ import {
   useState,
   type CSSProperties,
   type PointerEvent as ReactPointerEvent,
-  type ReactNode,
 } from "react";
 import { toast } from "sonner";
 
 import { ProductCard } from "@/components/shop/ProductCard";
 import { Button } from "@/components/ui/button";
-import { PolishedImage } from "@/components/ui/polished-image";
 import {
   ImageReveal,
   Magnetic,
@@ -39,7 +37,7 @@ import {
   TextReveal,
 } from "@/components/motion/Primitives";
 import { useMotionPreferences } from "@/components/motion/motion-context";
-import { apiErrorMessage, subscribeNewsletter, type PublicCategoryResponse } from "@/lib/api";
+import { apiErrorMessage, subscribeNewsletter } from "@/lib/api";
 import { useCatalog, useCategories } from "@/lib/catalog";
 import { useI18n } from "@/lib/i18n";
 import { concerns, images, type Product } from "@/lib/products";
@@ -278,108 +276,6 @@ export function Benefits() {
         </Reveal>
       </div>
     </section>
-  );
-}
-
-export function CategoryGrid({
-  initialCategories,
-}: {
-  initialCategories?: PublicCategoryResponse[];
-}) {
-  const { locale } = useStore();
-  const categories = useCategories(initialCategories).data ?? [];
-  const ar = locale === "ar";
-  const categoryTiles: Array<{
-    id: string;
-    slug: string | null;
-    name: string;
-    image: string;
-    productCount: number;
-  }> = categories.slice(0, 4).map((category) => ({
-    id: category.id,
-    slug: category.slug,
-    name: ar ? category.nameAr : category.nameEn,
-    image: categoryImage(category),
-    productCount: category.productCount,
-  }));
-
-  if (categoryTiles.length < 4) {
-    categoryTiles.push({
-      id: "all-products",
-      slug: null,
-      name: ar ? "كل المنتجات" : "All beauty",
-      image: images.collection,
-      productCount: categories.reduce((total, category) => total + category.productCount, 0),
-    });
-  }
-
-  return (
-    <section className="sf-categories" aria-labelledby="category-grid-title">
-      <div className="sf-shell">
-        <Reveal className="sf-section-head sf-category-head" stagger>
-          <div className="sf-section-intro">
-            <p className="sf-kicker">{ar ? "تسوقي حسب الفئة" : "Shop by category"}</p>
-            <h2 id="category-grid-title" className="sf-display sf-section-title">
-              {ar ? "اختاري روتينك بسرعة." : "Choose your ritual faster."}
-            </h2>
-          </div>
-          <Link to="/shop" className="sf-text-link">
-            {ar ? "كل المنتجات" : "View all"}
-            <ArrowRight className="size-4" aria-hidden="true" />
-          </Link>
-        </Reveal>
-        <Reveal as="ul" stagger staggerMs={45} distance={18} className="sf-category-orbits">
-          {categoryTiles.map((category) => (
-            <li key={category.id} className="sf-category-orbit">
-              <CategoryTileLink slug={category.slug} className="sf-category-orbit__link">
-                <span className="sf-category-orbit__media">
-                  <PolishedImage
-                    src={category.image}
-                    alt={category.name}
-                    width={640}
-                    height={640}
-                    loading="lazy"
-                    decoding="async"
-                    sizes="(max-width: 640px) 42vw, (max-width: 900px) 31vw, 260px"
-                    wrapperClassName="sf-category-orbit__image-shell"
-                    className="sf-category-orbit__image"
-                  />
-                </span>
-                <strong className="sf-category-orbit__title">{category.name}</strong>
-                <small className="sf-category-orbit__count">
-                  {category.productCount}{" "}
-                  {ar ? "منتج" : category.productCount === 1 ? "product" : "products"}
-                </small>
-                <span className="sf-category-orbit__cta">
-                  {ar ? "تسوقي الآن" : "Shop now"}
-                  <ArrowRight className="size-3.5" aria-hidden="true" />
-                </span>
-              </CategoryTileLink>
-            </li>
-          ))}
-        </Reveal>
-      </div>
-    </section>
-  );
-}
-
-function CategoryTileLink({
-  slug,
-  className,
-  children,
-}: {
-  slug: string | null;
-  className: string;
-  children: ReactNode;
-}) {
-  return slug ? (
-    <Link to="/categories/$slug" params={{ slug }} className={className}>
-      {children}
-    </Link>
-  ) : (
-    <Link to="/shop" className={className}>
-      {children}
-    </Link>
   );
 }
 
@@ -979,18 +875,5 @@ export function Newsletter() {
         </form>
       </div>
     </section>
-  );
-}
-
-function categoryImage(category: PublicCategoryResponse) {
-  return (
-    category.imageUrl?.trim() ||
-    {
-      skincare: images.catSkincare,
-      makeup: images.catMakeup,
-      haircare: images.catHaircare,
-      fragrance: images.catFragrance,
-    }[category.slug.toLowerCase()] ||
-    images.collection
   );
 }

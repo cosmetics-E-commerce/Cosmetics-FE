@@ -30,7 +30,7 @@ export function SeoCatalogLanding({
   const hasBrandLogo = kind === "brand" && Boolean(logo);
 
   return (
-    <div className="sf-shop-page sf-shop-page--minimal">
+    <div className={`sf-shop-page sf-shop-page--minimal sf-shop-page--${kind}`}>
       <nav
         aria-label={locale === "ar" ? "مسار الصفحة" : "Breadcrumb"}
         className="sf-shop-breadcrumb"
@@ -50,7 +50,13 @@ export function SeoCatalogLanding({
         <span aria-current="page">{name}</span>
       </nav>
 
-      <header className="mx-auto max-w-3xl px-5 pb-10 pt-14 text-center md:px-10 md:pb-14 md:pt-20">
+      <header
+        className={
+          kind === "brand"
+            ? "sf-catalog-landing-intro"
+            : "mx-auto max-w-3xl px-5 pb-10 pt-14 text-center md:px-10 md:pb-14 md:pt-20"
+        }
+      >
         {hasBrandLogo && logo ? (
           <PolishedImage
             src={logo}
