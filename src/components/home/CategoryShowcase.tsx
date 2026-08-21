@@ -41,6 +41,8 @@ type PointerOrigin = {
   y: number;
 };
 
+const CAROUSEL_DURATION = 24;
+
 const fallbackImages: Record<string, string> = {
   skincare: images.catSkincare,
   makeup: images.catMakeup,
@@ -61,6 +63,8 @@ export function CategoryShowcase({ initialCategories }: CategoryShowcaseProps) {
   const [activeIndex, setActiveIndex] = useState(startIndex);
   const [canScrollPrevious, setCanScrollPrevious] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const activeIndexRef = useRef(startIndex);
   const pointerOrigin = useRef<PointerOrigin | null>(null);
   const suppressClick = useRef(false);
   const suppressClickTimer = useRef<number | null>(null);
@@ -69,7 +73,7 @@ export function CategoryShowcase({ initialCategories }: CategoryShowcaseProps) {
     containScroll: false,
     direction: rtl ? "rtl" : "ltr",
     dragFree: false,
-    duration: reducedMotion ? 0 : 32,
+    duration: reducedMotion ? 20 : CAROUSEL_DURATION,
     skipSnaps: false,
     startIndex,
     watchDrag: categories.length > 1,
@@ -101,29 +105,77 @@ export function CategoryShowcase({ initialCategories }: CategoryShowcaseProps) {
     [rtl],
   );
 
+  const setCarouselMoving = useCallback((moving: boolean) => {
+    if (moving) carouselRef.current?.setAttribute("data-moving", "true");
+    else carouselRef.current?.removeAttribute("data-moving");
+  }, []);
+
+  const warmAdjacentImages = useCallback((api: EmblaCarouselType) => {
+    const selectedIndex = api.selectedScrollSnap();
+    const slides = api.slideNodes();
+
+    for (const index of [selectedIndex - 1, selectedIndex, selectedIndex + 1]) {
+      const image = slides[index]?.querySelector("img");
+      if (!image || image.complete) continue;
+      image.loading = "eager";
+      void image.decode?.().catch(() => undefined);
+    }
+  }, []);
+
   const syncCarouselState = useCallback((api: EmblaCarouselType) => {
-    setActiveIndex(api.selectedScrollSnap());
+    const selectedIndex = api.selectedScrollSnap();
+    activeIndexRef.current = selectedIndex;
+    setActiveIndex(selectedIndex);
     setCanScrollPrevious(api.canScrollPrev());
     setCanScrollNext(api.canScrollNext());
   }, []);
 
   useEffect(() => {
     if (!emblaApi) return;
-    syncCarouselState(emblaApi);
-    emblaApi.on("select", syncCarouselState);
-    emblaApi.on("reInit", syncCarouselState);
-    return () => {
-      emblaApi.off("select", syncCarouselState);
-      emblaApi.off("reInit", syncCarouselState);
+
+    const handleSelect = (api: EmblaCarouselType) => {
+      setCarouselMoving(true);
+      syncCarouselState(api);
+      warmAdjacentImages(api);
     };
-  }, [emblaApi, syncCarouselState]);
+    const handleReInit = (api: EmblaCarouselType) => {
+      setCarouselMoving(false);
+      syncCarouselState(api);
+      warmAdjacentImages(api);
+    };
+    const handlePointerDown = () => setCarouselMoving(true);
+    const handleSettle = () => setCarouselMoving(false);
+    const handleVisibilityChange = () => {
+      if (!document.hidden) return;
+      emblaApi.scrollTo(emblaApi.selectedScrollSnap(), true);
+      setCarouselMoving(false);
+    };
+
+    handleReInit(emblaApi);
+    emblaApi.on("select", handleSelect);
+    emblaApi.on("reInit", handleReInit);
+    emblaApi.on("pointerDown", handlePointerDown);
+    emblaApi.on("settle", handleSettle);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      emblaApi.off("select", handleSelect);
+      emblaApi.off("reInit", handleReInit);
+      emblaApi.off("pointerDown", handlePointerDown);
+      emblaApi.off("settle", handleSettle);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      setCarouselMoving(false);
+    };
+  }, [emblaApi, setCarouselMoving, syncCarouselState, warmAdjacentImages]);
 
   useEffect(() => {
     if (!categories.length) return;
-    const safeIndex = Math.min(activeIndex, categories.length - 1);
-    if (safeIndex !== activeIndex) setActiveIndex(safeIndex);
+    const safeIndex = Math.min(activeIndexRef.current, categories.length - 1);
+    if (safeIndex === activeIndexRef.current) return;
+    activeIndexRef.current = safeIndex;
+    setActiveIndex(safeIndex);
     emblaApi?.scrollTo(safeIndex, true);
-  }, [activeIndex, categories.length, emblaApi]);
+  }, [categories.length, emblaApi]);
 
   useEffect(
     () => () => {
@@ -134,13 +186,27 @@ export function CategoryShowcase({ initialCategories }: CategoryShowcaseProps) {
     [],
   );
 
-  const movePrevious = useCallback(
-    () => emblaApi?.scrollTo(Math.max(0, activeIndex - 1)),
-    [activeIndex, emblaApi],
-  );
-  const moveNext = useCallback(
-    () => emblaApi?.scrollTo(Math.min(categories.length - 1, activeIndex + 1)),
-    [activeIndex, categories.length, emblaApi],
+  const movePrevious = useCallback(() => {
+    if (!emblaApi) return;
+    setCarouselMoving(true);
+    emblaApi.scrollPrev(reducedMotion);
+    if (reducedMotion) setCarouselMoving(false);
+  }, [emblaApi, reducedMotion, setCarouselMoving]);
+  const moveNext = useCallback(() => {
+    if (!emblaApi) return;
+    setCarouselMoving(true);
+    emblaApi.scrollNext(reducedMotion);
+    if (reducedMotion) setCarouselMoving(false);
+  }, [emblaApi, reducedMotion, setCarouselMoving]);
+
+  const moveTo = useCallback(
+    (index: number) => {
+      if (!emblaApi) return;
+      setCarouselMoving(true);
+      emblaApi.scrollTo(index, reducedMotion);
+      if (reducedMotion) setCarouselMoving(false);
+    },
+    [emblaApi, reducedMotion, setCarouselMoving],
   );
 
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -185,7 +251,7 @@ export function CategoryShowcase({ initialCategories }: CategoryShowcaseProps) {
     }
     if (index !== activeIndex) {
       event.preventDefault();
-      emblaApi?.scrollTo(index);
+      moveTo(index);
     }
   };
 
@@ -220,6 +286,7 @@ export function CategoryShowcase({ initialCategories }: CategoryShowcaseProps) {
 
       <Reveal className="sf-category-showcase__stage" distance={16}>
         <div
+          ref={carouselRef}
           className="sf-category-showcase__carousel"
           role="region"
           aria-roledescription="carousel"
@@ -330,7 +397,7 @@ export function CategoryShowcase({ initialCategories }: CategoryShowcaseProps) {
                       aria-label={`${labels.choose} ${name}`}
                       aria-current={index === activeIndex ? "true" : undefined}
                       data-active={index === activeIndex || undefined}
-                      onClick={() => emblaApi?.scrollTo(index)}
+                      onClick={() => moveTo(index)}
                     />
                   );
                 })}

@@ -102,6 +102,18 @@ const brands = [
   },
 ];
 
+const longProductDescription = Array.from(
+  { length: 18 },
+  (_, index) =>
+    `Clinical detail ${index + 1}. This intentionally long authored paragraph explains texture, application, compatibility, and expected use without relying on artificial spacer elements.`,
+).join("\n\n");
+
+const longProductDescriptionAr = Array.from(
+  { length: 18 },
+  (_, index) =>
+    `تفاصيل المنتج ${index + 1}. فقرة عربية طويلة لاختبار ثبات موضع أقسام تفاصيل المنتج عند الفتح والإغلاق.`,
+).join("\n\n");
+
 const product = {
   id: "10000000-0000-4000-8000-000000000001",
   slug: "acm-depiwhite-eye-contour-gel-15ml",
@@ -109,8 +121,8 @@ const product = {
   nameAr: "كريم ACM ديبي وايت المكثف لمحيط العين 40 مل",
   shortDescriptionEn: "Targeted care for the delicate eye contour.",
   shortDescriptionAr: "عناية مخصصة لمنطقة محيط العين الحساسة.",
-  descriptionEn: "A lightweight eye-contour treatment for an even-looking complexion.",
-  descriptionAr: "عناية خفيفة لمحيط العين تساعد على توحيد مظهر البشرة.",
+  descriptionEn: longProductDescription,
+  descriptionAr: longProductDescriptionAr,
   ingredients: "Aqua, Glycerin",
   ingredientDetails: [],
   howToUse: "Apply   a small amount around the eye contour.\n  Massage gently until absorbed.",

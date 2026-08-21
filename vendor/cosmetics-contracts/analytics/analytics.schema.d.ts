@@ -20,9 +20,13 @@ export declare const businessAnalyticsQuerySchema: z.ZodObject<{
     page: z.ZodDefault<z.ZodNumber>;
     search: z.ZodOptional<z.ZodString>;
     metric: z.ZodOptional<z.ZodString>;
+    sortBy: z.ZodDefault<z.ZodEnum<["nameEn", "category", "brand", "revenue", "units", "growth", "conversion", "views", "stock"]>>;
+    sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
 }, "strip", z.ZodTypeAny, {
     page: number;
     limit: number;
+    sortBy: "revenue" | "nameEn" | "stock" | "category" | "brand" | "units" | "growth" | "conversion" | "views";
+    sortOrder: "asc" | "desc";
     timezone: string;
     customerType: "all" | "returning" | "new" | "guest" | "registered";
     range: "all" | "7d" | "30d" | "today" | "yesterday" | "14d" | "90d" | "this_week" | "last_week" | "this_month" | "last_month" | "this_year" | "last_year";
@@ -44,6 +48,8 @@ export declare const businessAnalyticsQuerySchema: z.ZodObject<{
 }, {
     page?: number | undefined;
     limit?: number | undefined;
+    sortBy?: "revenue" | "nameEn" | "stock" | "category" | "brand" | "units" | "growth" | "conversion" | "views" | undefined;
+    sortOrder?: "asc" | "desc" | undefined;
     search?: string | undefined;
     productIds?: string | undefined;
     variantIds?: string | undefined;

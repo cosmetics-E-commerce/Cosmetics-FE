@@ -52,6 +52,20 @@ exports.businessAnalyticsQuerySchema = zod_1.z.object({
     page: zod_1.z.coerce.number().int().min(1).default(1),
     search: zod_1.z.string().trim().max(160).optional(),
     metric: zod_1.z.string().trim().max(64).optional(),
+    sortBy: zod_1.z
+        .enum([
+        "nameEn",
+        "category",
+        "brand",
+        "revenue",
+        "units",
+        "growth",
+        "conversion",
+        "views",
+        "stock",
+    ])
+        .default("revenue"),
+    sortOrder: zod_1.z.enum(["asc", "desc"]).default("desc"),
 });
 exports.commerceEventNames = [
     "product_viewed",

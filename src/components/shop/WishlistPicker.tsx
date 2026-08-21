@@ -58,7 +58,7 @@ export function WishlistPicker({
         <Heart className={wished ? "pop" : ""} />
       </button>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="wishlist-picker-dialog">
+        <DialogContent className="wishlist-picker-dialog" closeLabel={ar ? "إغلاق" : "Close"}>
           <DialogHeader>
             <DialogTitle>{ar ? "احفظيه في قائمة" : "Save to collections"}</DialogTitle>
             <DialogDescription>

@@ -1,3 +1,5 @@
+import { useId } from "react";
+
 import {
   Accordion,
   AccordionContent,
@@ -19,6 +21,7 @@ export function ProductInfoAccordion({
   sections: ProductInfoSection[];
   label: string;
 }) {
+  const accordionId = useId();
   const availableSections = sections.filter(
     (section) => section.content.trim() || section.benefits?.length,
   );
@@ -31,50 +34,62 @@ export function ProductInfoAccordion({
 
   return (
     <Accordion
-      type="single"
-      collapsible
-      defaultValue={defaultSection}
+      type="multiple"
+      defaultValue={[defaultSection]}
       className="product-info-accordion"
       aria-label={label}
     >
-      {availableSections.map((section) => (
-        <AccordionItem key={section.id} value={section.id} className="product-info-accordion__item">
-          <AccordionTrigger
-            className="product-info-accordion__trigger"
-            indicator={<span className="product-info-accordion__indicator" aria-hidden="true" />}
+      {availableSections.map((section) => {
+        const triggerId = `${accordionId}-${section.id}-trigger`;
+        const panelId = `${accordionId}-${section.id}-panel`;
+
+        return (
+          <AccordionItem
+            key={section.id}
+            value={section.id}
+            className="product-info-accordion__item"
           >
-            <span>{section.label}</span>
-          </AccordionTrigger>
-          <AccordionContent
-            forceMount
-            contentClassName="product-info-accordion__content"
-            className="product-info-accordion__body"
-          >
-            <div className="product-info-accordion__copy">
-              {section.content ? (
-                <p
-                  className={
-                    section.id === "description"
-                      ? "product-reference-description-copy"
-                      : section.id === "custom"
-                        ? "product-how-to-use-copy"
-                        : undefined
-                  }
-                >
-                  {section.content}
-                </p>
-              ) : null}
-              {section.benefits?.length ? (
-                <ul>
-                  {section.benefits.map((benefit) => (
-                    <li key={benefit}>{benefit}</li>
-                  ))}
-                </ul>
-              ) : null}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-      ))}
+            <AccordionTrigger
+              id={triggerId}
+              aria-controls={panelId}
+              className="product-info-accordion__trigger"
+              indicator={<span className="product-info-accordion__indicator" aria-hidden="true" />}
+            >
+              <span>{section.label}</span>
+            </AccordionTrigger>
+            <AccordionContent
+              id={panelId}
+              aria-labelledby={triggerId}
+              forceMount
+              contentClassName="product-info-accordion__content"
+              className="product-info-accordion__body"
+            >
+              <div className="product-info-accordion__copy">
+                {section.content ? (
+                  <p
+                    className={
+                      section.id === "description"
+                        ? "product-reference-description-copy"
+                        : section.id === "custom"
+                          ? "product-how-to-use-copy"
+                          : undefined
+                    }
+                  >
+                    {section.content}
+                  </p>
+                ) : null}
+                {section.benefits?.length ? (
+                  <ul>
+                    {section.benefits.map((benefit) => (
+                      <li key={benefit}>{benefit}</li>
+                    ))}
+                  </ul>
+                ) : null}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        );
+      })}
     </Accordion>
   );
 }

@@ -1508,16 +1508,11 @@
 
   /* Shared overlays: protect small viewports, keyboards, and safe areas. */
   .mobile-adaptive-dialog {
-    inset: auto var(--mobile-page-gutter) 0;
-    width: auto;
-    max-width: none;
-    max-height: calc(100dvh - max(20px, env(safe-area-inset-top)));
-    translate: none;
-    transform: none;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    border-radius: 18px 18px 0 0;
-    padding: 24px var(--mobile-card-padding-lg) max(24px, calc(16px + env(safe-area-inset-bottom)));
+    --dialog-viewport-gap: 16px;
+  }
+
+  .account-signout-dialog {
+    border-radius: 20px;
   }
 
   [data-sonner-toaster][data-y-position="bottom"] {

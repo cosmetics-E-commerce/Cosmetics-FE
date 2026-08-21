@@ -122,16 +122,17 @@ function validateOtpChannelIdentifier(input, ctx) {
         });
     }
 }
-const passwordDeliverySchema = zod_1.z.object({
-    identifier: zod_1.z.string().trim().min(3).max(120),
-    channel: exports.otpDeliveryChannelEnum,
-});
-exports.forgotPasswordSchema = passwordDeliverySchema.superRefine(validateOtpChannelIdentifier);
-exports.verifyPasswordResetOtpSchema = passwordDeliverySchema
+const passwordRecoveryEmailSchema = zod_1.z
+    .object({
+    email: primitives_1.emailSchema,
+})
+    .strict();
+exports.forgotPasswordSchema = passwordRecoveryEmailSchema;
+exports.verifyPasswordResetOtpSchema = passwordRecoveryEmailSchema
     .extend({
     otp: zod_1.z.string().regex(/^[0-9]{6}$/, "OTP must be a 6-digit code"),
 })
-    .superRefine(validateOtpChannelIdentifier);
+    .strict();
 const confirmedPasswordSchema = zod_1.z
     .object({
     newPassword: passwordSchema,
@@ -143,7 +144,7 @@ const confirmedPasswordSchema = zod_1.z
 });
 exports.resetPasswordSchema = zod_1.z
     .object({
-    identifier: zod_1.z.string().trim().min(3).max(120),
+    email: primitives_1.emailSchema,
     token: zod_1.z.string().min(32),
 })
     .and(confirmedPasswordSchema);
