@@ -247,54 +247,34 @@ export declare const verifyOtpSchema: z.ZodEffects<z.ZodObject<{
     purpose?: "PHONE_VERIFICATION" | "EMAIL_VERIFICATION" | "LOGIN" | "PASSWORD_RESET" | "PASSWORD_CHANGE" | "PHONE_CHANGE" | undefined;
 }>;
 export type VerifyOtpInput = z.infer<typeof verifyOtpSchema>;
-export declare const forgotPasswordSchema: z.ZodEffects<z.ZodObject<{
-    identifier: z.ZodString;
-    channel: z.ZodEnum<["SMS", "EMAIL"]>;
-}, "strip", z.ZodTypeAny, {
-    identifier: string;
-    channel: "SMS" | "EMAIL";
+export declare const forgotPasswordSchema: z.ZodObject<{
+    email: z.ZodString;
+}, "strict", z.ZodTypeAny, {
+    email: string;
 }, {
-    identifier: string;
-    channel: "SMS" | "EMAIL";
-}>, {
-    identifier: string;
-    channel: "SMS" | "EMAIL";
-}, {
-    identifier: string;
-    channel: "SMS" | "EMAIL";
+    email: string;
 }>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
-export declare const verifyPasswordResetOtpSchema: z.ZodEffects<z.ZodObject<{
-    identifier: z.ZodString;
-    channel: z.ZodEnum<["SMS", "EMAIL"]>;
+export declare const verifyPasswordResetOtpSchema: z.ZodObject<{
+    email: z.ZodString;
 } & {
     otp: z.ZodString;
-}, "strip", z.ZodTypeAny, {
+}, "strict", z.ZodTypeAny, {
+    email: string;
     otp: string;
-    identifier: string;
-    channel: "SMS" | "EMAIL";
 }, {
+    email: string;
     otp: string;
-    identifier: string;
-    channel: "SMS" | "EMAIL";
-}>, {
-    otp: string;
-    identifier: string;
-    channel: "SMS" | "EMAIL";
-}, {
-    otp: string;
-    identifier: string;
-    channel: "SMS" | "EMAIL";
 }>;
 export type VerifyPasswordResetOtpInput = z.infer<typeof verifyPasswordResetOtpSchema>;
 export declare const resetPasswordSchema: z.ZodIntersection<z.ZodObject<{
-    identifier: z.ZodString;
+    email: z.ZodString;
     token: z.ZodString;
 }, "strip", z.ZodTypeAny, {
-    identifier: string;
+    email: string;
     token: string;
 }, {
-    identifier: string;
+    email: string;
     token: string;
 }>, z.ZodEffects<z.ZodObject<{
     newPassword: z.ZodString;

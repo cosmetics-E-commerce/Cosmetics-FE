@@ -21,7 +21,7 @@ const DialogOverlay = React.forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      "fixed inset-0 z-50 bg-ink/45 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=open]:duration-200 data-[state=closed]:duration-150",
+      "storefront-dialog-overlay fixed inset-0 z-50 bg-ink/45 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=open]:duration-200 data-[state=closed]:duration-150",
       className,
     )}
     {...props}
@@ -34,28 +34,42 @@ const DialogContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
     showCloseButton?: boolean;
     overlayClassName?: string;
+    closeLabel?: string;
   }
->(({ className, children, showCloseButton = true, overlayClassName, ...props }, ref) => (
-  <DialogPortal>
-    <DialogOverlay className={overlayClassName} />
-    <DialogPrimitive.Content
-      ref={ref}
-      className={cn(
-        "mobile-adaptive-dialog fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:duration-220 data-[state=closed]:duration-150 data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-[0.99] data-[state=open]:zoom-in-[0.99] sm:rounded-lg",
-        className,
-      )}
-      {...props}
-    >
-      {children}
-      {showCloseButton && (
-        <DialogPrimitive.Close className="absolute end-4 top-4 grid size-10 cursor-pointer place-items-center rounded-[var(--radius-lg)] opacity-70 ring-offset-background transition-[opacity,transform,background-color,color] duration-200 hover:rotate-90 hover:bg-[var(--color-secondary)] hover:text-foreground hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring/35 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-[var(--color-secondary)] data-[state=open]:text-foreground">
-          <X className="h-4 w-4" />
-          <span className="sr-only">Close</span>
-        </DialogPrimitive.Close>
-      )}
-    </DialogPrimitive.Content>
-  </DialogPortal>
-));
+>(
+  (
+    {
+      className,
+      children,
+      showCloseButton = true,
+      overlayClassName,
+      closeLabel = "Close",
+      ...props
+    },
+    ref,
+  ) => (
+    <DialogPortal>
+      <DialogOverlay className={overlayClassName} />
+      <DialogPrimitive.Content
+        ref={ref}
+        aria-modal="true"
+        className={cn(
+          "mobile-adaptive-dialog fixed z-50 grid gap-4 rounded-[var(--radius-xl)] border bg-background p-6 shadow-lg",
+          className,
+        )}
+        {...props}
+      >
+        {children}
+        {showCloseButton && (
+          <DialogPrimitive.Close className="absolute end-4 top-4 grid size-11 cursor-pointer place-items-center rounded-[var(--radius-lg)] opacity-70 ring-offset-background transition-[opacity,transform,background-color,color] duration-200 hover:rotate-90 hover:bg-[var(--color-secondary)] hover:text-foreground hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring/35 focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-[var(--color-secondary)] data-[state=open]:text-foreground">
+            <X className="h-4 w-4" />
+            <span className="sr-only">{closeLabel}</span>
+          </DialogPrimitive.Close>
+        )}
+      </DialogPrimitive.Content>
+    </DialogPortal>
+  ),
+);
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (

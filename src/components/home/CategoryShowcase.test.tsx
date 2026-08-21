@@ -1,13 +1,14 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import type { AnchorHTMLAttributes, ReactNode } from "react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { CategoryShowcase } from "./CategoryShowcase";
 import { getCategoryCoverflowState } from "./category-coverflow";
 
-vi.mock("embla-carousel-react", () => ({
-  default: () => [() => undefined, undefined],
-}));
+const emblaMock = vi.hoisted(() => ({ useEmblaCarousel: vi.fn() }));
+const motionMock = vi.hoisted(() => ({ reducedMotion: false }));
+
+vi.mock("embla-carousel-react", () => ({ default: emblaMock.useEmblaCarousel }));
 
 vi.mock("@tanstack/react-router", () => ({
   Link: ({
@@ -33,7 +34,10 @@ vi.mock("@/components/motion/Primitives", () => ({
 }));
 
 vi.mock("@/components/motion/motion-context", () => ({
-  useMotionPreferences: () => ({ reducedMotion: false, finePointer: true }),
+  useMotionPreferences: () => ({
+    reducedMotion: motionMock.reducedMotion,
+    finePointer: true,
+  }),
 }));
 
 vi.mock("@/lib/catalog", () => ({
@@ -59,6 +63,12 @@ function category(index: number, overrides: Record<string, unknown> = {}) {
 }
 
 describe("CategoryShowcase", () => {
+  beforeEach(() => {
+    motionMock.reducedMotion = false;
+    emblaMock.useEmblaCarousel.mockReset();
+    emblaMock.useEmblaCarousel.mockReturnValue([() => undefined, undefined]);
+  });
+
   it("derives restrained mirrored coverflow states from the active index", () => {
     expect(getCategoryCoverflowState(3, 3)).toEqual({
       depth: "active",
@@ -126,5 +136,75 @@ describe("CategoryShowcase", () => {
     fireEvent.error(container.querySelector('img[src="/missing.jpg"]')!);
     expect(screen.getByText("BIOREZA")).toBeInTheDocument();
     expect(screen.getByText("Long Body Care Name")).toBeInTheDocument();
+  });
+
+  it("retargets rapid arrow input without forcing a jump after selection", () => {
+    let selectedIndex = 2;
+    const listeners = new Map<string, (...args: unknown[]) => void>();
+    const api = {
+      canScrollNext: vi.fn(() => true),
+      canScrollPrev: vi.fn(() => true),
+      off: vi.fn(),
+      on: vi.fn((event: string, listener: (...args: unknown[]) => void) => {
+        listeners.set(event, listener);
+        return api;
+      }),
+      scrollNext: vi.fn(),
+      scrollPrev: vi.fn(),
+      scrollTo: vi.fn(),
+      selectedScrollSnap: vi.fn(() => selectedIndex),
+      slideNodes: vi.fn(() => []),
+    };
+    emblaMock.useEmblaCarousel.mockReturnValue([() => undefined, api]);
+
+    render(
+      <CategoryShowcase
+        initialCategories={Array.from({ length: 5 }, (_, index) => category(index))}
+      />,
+    );
+
+    api.scrollTo.mockClear();
+    fireEvent.click(screen.getByRole("button", { name: "Next category" }));
+    fireEvent.click(screen.getByRole("button", { name: "Next category" }));
+    fireEvent.click(screen.getByRole("button", { name: "Previous category" }));
+
+    expect(api.scrollNext).toHaveBeenCalledTimes(2);
+    expect(api.scrollPrev).toHaveBeenCalledTimes(1);
+
+    selectedIndex = 3;
+    act(() => listeners.get("select")?.(api));
+    expect(api.scrollTo).not.toHaveBeenCalledWith(3, true);
+    expect(screen.getByRole("button", { name: "Choose Category 3" })).toHaveAttribute(
+      "aria-current",
+      "true",
+    );
+  });
+
+  it("uses immediate semantic navigation for reduced-motion users", () => {
+    motionMock.reducedMotion = true;
+    const api = {
+      canScrollNext: vi.fn(() => true),
+      canScrollPrev: vi.fn(() => true),
+      off: vi.fn(),
+      on: vi.fn(() => api),
+      scrollNext: vi.fn(),
+      scrollPrev: vi.fn(),
+      scrollTo: vi.fn(),
+      selectedScrollSnap: vi.fn(() => 1),
+      slideNodes: vi.fn(() => []),
+    };
+    emblaMock.useEmblaCarousel.mockReturnValue([() => undefined, api]);
+
+    render(
+      <CategoryShowcase
+        initialCategories={Array.from({ length: 3 }, (_, index) => category(index))}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Next category" }));
+
+    expect(api.scrollNext).toHaveBeenCalledWith(true);
+    expect(emblaMock.useEmblaCarousel).toHaveBeenCalledWith(
+      expect.objectContaining({ duration: 20 }),
+    );
   });
 });

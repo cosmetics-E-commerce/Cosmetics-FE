@@ -133,7 +133,7 @@ export function ReviewLibrary({
         </div>
       )}
       <Dialog open={Boolean(editing)} onOpenChange={(open) => !open && setEditing(null)}>
-        <DialogContent className="review-edit-dialog">
+        <DialogContent className="review-edit-dialog" closeLabel={ar ? "إغلاق" : "Close"}>
           <DialogHeader>
             <DialogTitle>{ar ? "تعديل المراجعة" : "Edit your review"}</DialogTitle>
             <DialogDescription>

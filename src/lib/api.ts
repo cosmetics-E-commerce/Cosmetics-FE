@@ -695,20 +695,20 @@ export async function logoutRequest() {
   }
 }
 
-export const forgotPassword = (identifier: string, channel: "EMAIL" | "SMS") =>
-  rawRequest<{ ttlSeconds: number }>("/auth/password/forgot", {
+export const forgotPassword = (email: string) =>
+  rawRequest<{ ttlSeconds: number; resendAvailableInSeconds: number }>("/auth/password/forgot", {
     method: "POST",
     auth: false,
-    body: { identifier, channel },
+    body: { email },
   });
-export const verifyResetOtp = (identifier: string, channel: "EMAIL" | "SMS", otp: string) =>
+export const verifyResetOtp = (email: string, otp: string) =>
   rawRequest<{ token: string; expiresIn: number }>("/auth/password/verify-otp", {
     method: "POST",
     auth: false,
-    body: { identifier, channel, otp },
+    body: { email, otp },
   });
 export const resetPassword = (
-  identifier: string,
+  email: string,
   token: string,
   newPassword: string,
   confirmPassword: string,
@@ -716,7 +716,7 @@ export const resetPassword = (
   rawRequest<{ reset: true }>("/auth/password/reset", {
     method: "POST",
     auth: false,
-    body: { identifier, token, newPassword, confirmPassword },
+    body: { email, token, newPassword, confirmPassword },
   });
 
 function normalizeList<T>(value: T[] | { items?: T[]; data?: T[] }) {

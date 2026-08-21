@@ -28,27 +28,39 @@ const sections: ProductInfoSection[] = [
 ];
 
 describe("ProductInfoAccordion", () => {
-  it("opens Description by default and coordinates one collapsible section", () => {
+  it("opens Description by default and toggles sections independently", () => {
     render(<ProductInfoAccordion sections={sections} label="Product details" />);
 
     const description = screen.getByRole("button", { name: "Description" });
     const howToUse = screen.getByRole("button", { name: "How to use" });
 
+    expect(description).toHaveAttribute("type", "button");
+    expect(howToUse).toHaveAttribute("type", "button");
     expect(description).toHaveAttribute("aria-expanded", "true");
     expect(howToUse).toHaveAttribute("aria-expanded", "false");
+    expect(description).toHaveAttribute("aria-controls");
+    expect(howToUse).toHaveAttribute("aria-controls");
+    expect(description).toHaveAttribute("data-state", "open");
+    expect(howToUse).toHaveAttribute("data-state", "closed");
+    const howToUsePanel = document.getElementById(howToUse.getAttribute("aria-controls")!);
+    expect(howToUsePanel).toHaveAttribute("aria-labelledby", howToUse.id);
     expect(document.querySelector('[role="tablist"]')).not.toBeInTheDocument();
     const descriptionCopy = document.querySelector(".product-reference-description-copy");
     expect(descriptionCopy).toHaveTextContent("First paragraph. Second paragraph.");
 
     fireEvent.click(howToUse);
-    expect(description).toHaveAttribute("aria-expanded", "false");
+    expect(description).toHaveAttribute("aria-expanded", "true");
     expect(howToUse).toHaveAttribute("aria-expanded", "true");
+    expect(description).toHaveAttribute("data-state", "open");
+    expect(howToUse).toHaveAttribute("data-state", "open");
     expect(document.querySelector(".product-how-to-use-copy")?.textContent).toBe(
       "Apply   after cleansing.\n  Pat dry.",
     );
 
     fireEvent.click(howToUse);
+    expect(description).toHaveAttribute("aria-expanded", "true");
     expect(howToUse).toHaveAttribute("aria-expanded", "false");
+    expect(howToUse).toHaveAttribute("data-state", "closed");
   });
 
   it("omits optional sections without authored content", () => {

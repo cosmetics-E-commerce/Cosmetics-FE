@@ -108,6 +108,7 @@ function Account() {
   const [expandedPaymentOrderId, setExpandedPaymentOrderId] = useState<string | null>(null);
   const [signOutOpen, setSignOutOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const signOutTriggerRef = useRef<HTMLButtonElement>(null);
   const [addressToDelete, setAddressToDelete] = useState<AddressResponse | null>(null);
   const [deletingAddress, setDeletingAddress] = useState(false);
   const [phoneOtpStage, setPhoneOtpStage] = useState<{
@@ -431,6 +432,7 @@ function Account() {
             ))}
             <li className="account-nav__signout">
               <button
+                ref={signOutTriggerRef}
                 type="button"
                 onClick={() => setSignOutOpen(true)}
                 className="account-nav__button account-nav__button--signout"
@@ -1003,7 +1005,12 @@ function Account() {
         <DialogContent
           dir={locale === "ar" ? "rtl" : "ltr"}
           showCloseButton={!isSigningOut}
-          className="w-[calc(100%-2rem)] max-w-md gap-0 overflow-hidden rounded-none border-border bg-warm-white p-0 shadow-soft"
+          closeLabel={locale === "ar" ? "إغلاق" : "Close"}
+          onCloseAutoFocus={(event) => {
+            event.preventDefault();
+            signOutTriggerRef.current?.focus();
+          }}
+          className="account-signout-dialog gap-0 rounded-none border-border bg-warm-white p-0 shadow-soft"
         >
           <div className="border-b border-border px-6 pb-6 pt-7 sm:px-8 sm:pb-8 sm:pt-9">
             <p className="label-xs text-gold">{signOutCopy.eyebrow}</p>
@@ -1050,6 +1057,7 @@ function Account() {
         <DialogContent
           dir={locale === "ar" ? "rtl" : "ltr"}
           showCloseButton={!deletingAddress}
+          closeLabel={locale === "ar" ? "إغلاق" : "Close"}
           className="account-confirm-dialog"
         >
           <p className="account-eyebrow">{locale === "ar" ? "دفتر العناوين" : "Address book"}</p>

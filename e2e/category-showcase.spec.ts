@@ -199,6 +199,74 @@ test.describe("homepage category showcase", () => {
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(scrollBefore);
   });
 
+  test("retargets rapid direction changes and settles with cards and dots synchronized", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1366, height: 768 });
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    const showcase = page.locator(".sf-category-showcase");
+    await expect(showcase).toHaveAttribute("data-enhanced", "true");
+
+    await showcase.evaluate((element) => {
+      const next = element.querySelector<HTMLButtonElement>('button[aria-label="Next category"]')!;
+      const previous = element.querySelector<HTMLButtonElement>(
+        'button[aria-label="Previous category"]',
+      )!;
+      next.click();
+      next.click();
+      next.click();
+      previous.click();
+    });
+
+    const carousel = showcase.locator(".sf-category-showcase__carousel");
+    await expect(carousel).not.toHaveAttribute("data-moving", "true", { timeout: 2_000 });
+    await expect(showcase.locator('.sf-category-showcase__card[data-active="true"]')).toHaveCount(
+      1,
+    );
+    await expect(
+      showcase.locator('.sf-category-showcase__indicators [aria-current="true"]'),
+    ).toHaveCount(1);
+
+    const settled = await showcase.evaluate((element) => {
+      const activeCard = element.querySelector<HTMLElement>(
+        '.sf-category-showcase__card[data-active="true"]',
+      )!;
+      const activeSlide = activeCard.closest<HTMLElement>(".sf-category-showcase__slide")!;
+      const activeDot = element.querySelector<HTMLElement>(
+        '.sf-category-showcase__indicators [aria-current="true"]',
+      )!;
+      const slides = Array.from(
+        element.querySelectorAll<HTMLElement>(".sf-category-showcase__slide"),
+      );
+      const dots = Array.from(
+        element.querySelectorAll<HTMLElement>(".sf-category-showcase__indicators button"),
+      );
+      const cardRect = activeCard.getBoundingClientRect();
+      const viewportRect = element
+        .querySelector<HTMLElement>(".sf-category-showcase__viewport")!
+        .getBoundingClientRect();
+      return {
+        activeSlide: slides.indexOf(activeSlide),
+        activeDot: dots.indexOf(activeDot),
+        centerOffset: Math.abs(
+          cardRect.left + cardRect.width / 2 - (viewportRect.left + viewportRect.width / 2),
+        ),
+      };
+    });
+
+    expect(settled.activeSlide).toBe(settled.activeDot);
+    expect(settled.centerOffset).toBeLessThanOrEqual(2);
+
+    await carousel.getByRole("button", { name: "Next category" }).click();
+    await page.setViewportSize({ width: 390, height: 844 });
+    await expect(carousel).not.toHaveAttribute("data-moving", "true", { timeout: 2_000 });
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      ),
+    ).toBeLessThanOrEqual(1);
+  });
+
   test("remains contained at common browser zoom levels", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("/", { waitUntil: "domcontentloaded" });

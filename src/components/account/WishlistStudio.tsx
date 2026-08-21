@@ -407,7 +407,7 @@ export function WishlistStudio({ data, locale }: { data: WishlistResponse; local
         }
       />
       <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogContent className="wishlist-dialog">
+        <DialogContent className="wishlist-dialog" closeLabel={ar ? "إغلاق" : "Close"}>
           <DialogHeader>
             <DialogTitle>{ar ? "حذف هذه القائمة؟" : `Delete ${selected.name}?`}</DialogTitle>
             <DialogDescription>
@@ -470,7 +470,7 @@ function CollectionDialog({
   const [isPrivate, setIsPrivate] = useState(initialPrivate);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="wishlist-dialog">
+      <DialogContent className="wishlist-dialog" closeLabel={ar ? "إغلاق" : "Close"}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>

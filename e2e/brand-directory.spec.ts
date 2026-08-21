@@ -144,11 +144,14 @@ test("desktop brands menu stays compact and adapts from 2 to 100 brands", async 
     { width: 1920, height: 1080 },
   ]) {
     await page.setViewportSize(viewport);
+    await page.goto(`/about?catalogue=100&viewport=${viewport.width}`);
+    await waitForHydration(page);
     const trigger = page
       .getByRole("navigation", { name: "Primary" })
       .getByRole("button", { name: "Brands", exact: true });
-    await page.keyboard.press("Escape");
+    await expect(trigger).toHaveAttribute("data-state", "closed");
     await trigger.click();
+    await expect(trigger).toHaveAttribute("data-state", "open");
     const viewportElement = page.locator(".header-mega-viewport");
     await expect(viewportElement).toBeVisible();
     const box = await viewportElement.boundingBox();
