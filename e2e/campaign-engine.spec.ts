@@ -30,6 +30,7 @@ test.afterEach(async ({ page }) => {
 
 const campaignId = "1ea4ff7b-c507-42e5-bd0b-d3530f7509dd";
 const variantId = "468f5a74-e056-44f6-9d52-20fef8acf55e";
+const campaignServerTime = "2026-08-13T07:30:00.000Z";
 
 const campaign = popupPublishedCampaignSchema.parse({
   id: campaignId,
@@ -113,7 +114,7 @@ async function mockCampaignApi(page: Page, campaigns = [campaign], submissions: 
           success: true,
           data: {
             campaigns,
-            serverTime: "2026-08-13T07:30:00.000Z",
+            serverTime: campaignServerTime,
             freeShippingThreshold: 100_000,
           },
         },
@@ -193,7 +194,7 @@ test("critical priority deterministically suppresses lower campaigns", async ({ 
         data: path.endsWith("/eligible")
           ? {
               campaigns: [campaign, critical],
-              serverTime: new Date().toISOString(),
+              serverTime: campaignServerTime,
               freeShippingThreshold: null,
             }
           : { accepted: 1, duplicates: 0, rejected: 0 },
