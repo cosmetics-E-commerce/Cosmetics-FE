@@ -9,6 +9,7 @@ export * from "./payments/payment-proof.schema";
 export * from "./catalog/product.schema";
 export * from "./cart/cart.schema";
 export * from "./wishlist/wishlist.schema";
+export * from "./navigation/navigation.schema";
 export * from "./inventory/inventory.schema";
 export * from "./shipping/shipping.schema";
 export * from "./permissions/permission.schema";

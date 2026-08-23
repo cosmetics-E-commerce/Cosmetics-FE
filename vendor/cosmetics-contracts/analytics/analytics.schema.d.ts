@@ -28,7 +28,7 @@ export declare const businessAnalyticsQuerySchema: z.ZodObject<{
     sortBy: "revenue" | "nameEn" | "stock" | "category" | "brand" | "units" | "growth" | "conversion" | "views";
     sortOrder: "asc" | "desc";
     timezone: string;
-    customerType: "all" | "returning" | "new" | "guest" | "registered";
+    customerType: "all" | "new" | "returning" | "guest" | "registered";
     range: "all" | "7d" | "30d" | "today" | "yesterday" | "14d" | "90d" | "this_week" | "last_week" | "this_month" | "last_month" | "this_year" | "last_year";
     compare: "none" | "previous_period" | "previous_week" | "previous_month" | "previous_year";
     interval: "auto" | "hour" | "day" | "week" | "month" | "quarter" | "year";
@@ -56,7 +56,7 @@ export declare const businessAnalyticsQuerySchema: z.ZodObject<{
     categoryIds?: string | undefined;
     brandIds?: string | undefined;
     timezone?: string | undefined;
-    customerType?: "all" | "returning" | "new" | "guest" | "registered" | undefined;
+    customerType?: "all" | "new" | "returning" | "guest" | "registered" | undefined;
     range?: "all" | "7d" | "30d" | "today" | "yesterday" | "14d" | "90d" | "this_week" | "last_week" | "this_month" | "last_month" | "this_year" | "last_year" | undefined;
     from?: string | undefined;
     to?: string | undefined;
@@ -136,28 +136,28 @@ export declare const analyticsDashboardSchema: z.ZodObject<{
             type: "KPI" | "LINE" | "BAR" | "TABLE" | "HEATMAP" | "FUNNEL" | "RANKING" | "INSIGHTS";
             id: string;
             title: string;
+            size: "S" | "M" | "L" | "XL";
             metric: string;
             filters: Record<string, unknown>;
             dimension: string;
-            size: "S" | "M" | "L" | "XL";
         }, {
             type: "KPI" | "LINE" | "BAR" | "TABLE" | "HEATMAP" | "FUNNEL" | "RANKING" | "INSIGHTS";
             id: string;
             title: string;
             metric: string;
             dimension: string;
-            filters?: Record<string, unknown> | undefined;
             size?: "S" | "M" | "L" | "XL" | undefined;
+            filters?: Record<string, unknown> | undefined;
         }>, "many">;
     }, "strip", z.ZodTypeAny, {
         widgets: {
             type: "KPI" | "LINE" | "BAR" | "TABLE" | "HEATMAP" | "FUNNEL" | "RANKING" | "INSIGHTS";
             id: string;
             title: string;
+            size: "S" | "M" | "L" | "XL";
             metric: string;
             filters: Record<string, unknown>;
             dimension: string;
-            size: "S" | "M" | "L" | "XL";
         }[];
     }, {
         widgets: {
@@ -166,8 +166,8 @@ export declare const analyticsDashboardSchema: z.ZodObject<{
             title: string;
             metric: string;
             dimension: string;
-            filters?: Record<string, unknown> | undefined;
             size?: "S" | "M" | "L" | "XL" | undefined;
+            filters?: Record<string, unknown> | undefined;
         }[];
     }>;
 }, "strip", z.ZodTypeAny, {
@@ -178,10 +178,10 @@ export declare const analyticsDashboardSchema: z.ZodObject<{
             type: "KPI" | "LINE" | "BAR" | "TABLE" | "HEATMAP" | "FUNNEL" | "RANKING" | "INSIGHTS";
             id: string;
             title: string;
+            size: "S" | "M" | "L" | "XL";
             metric: string;
             filters: Record<string, unknown>;
             dimension: string;
-            size: "S" | "M" | "L" | "XL";
         }[];
     };
 }, {
@@ -193,8 +193,8 @@ export declare const analyticsDashboardSchema: z.ZodObject<{
             title: string;
             metric: string;
             dimension: string;
-            filters?: Record<string, unknown> | undefined;
             size?: "S" | "M" | "L" | "XL" | undefined;
+            filters?: Record<string, unknown> | undefined;
         }[];
     };
     isDefault?: boolean | undefined;

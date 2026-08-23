@@ -38,7 +38,7 @@ import {
 } from "@/components/motion/Primitives";
 import { useMotionPreferences } from "@/components/motion/motion-context";
 import { apiErrorMessage, subscribeNewsletter } from "@/lib/api";
-import { useCatalog, useCategories } from "@/lib/catalog";
+import { useCategories, useMerchandisingCatalog } from "@/lib/catalog";
 import { useI18n } from "@/lib/i18n";
 import { concerns, images, type Product } from "@/lib/products";
 import { useStore } from "@/lib/store";
@@ -282,8 +282,8 @@ export function Benefits() {
 export function Featured({ initialProducts }: { initialProducts?: Product[] }) {
   const { locale } = useStore();
   const products =
-    useCatalog({ limit: 5, sortBy: "createdAt", sortOrder: "desc" }, locale, initialProducts)
-      .data ?? [];
+    useMerchandisingCatalog({ section: "home-arrivals", limit: 5 }, locale, initialProducts).data ??
+    [];
   const categories = useCategories().data ?? [];
   const ar = locale === "ar";
   const tabs = categories.slice(0, 4).map((category) => ({
@@ -584,9 +584,9 @@ export function Concerns() {
 export function BestSellers({ initialProducts }: { initialProducts?: Product[] }) {
   const { locale } = useStore();
   const products =
-    useCatalog({ limit: 8, sortBy: "createdAt", sortOrder: "desc" }, locale, initialProducts)
+    useMerchandisingCatalog({ section: "home-customer-edit", limit: 8 }, locale, initialProducts)
       .data ?? [];
-  const list = [...products].sort((a, b) => b.reviews - a.reviews || b.rating - a.rating);
+  const list = products;
   const trackRef = useRef<HTMLUListElement>(null);
   const ar = locale === "ar";
   const scroll = (direction: 1 | -1) =>

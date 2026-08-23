@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.writeOffInventorySchema = exports.adjustInventorySchema = exports.receiveInventoryBatchSchema = exports.paginatedStockReservationsSchema = exports.paginatedInventoryBatchesSchema = exports.paginatedInventoryStockSchema = exports.stockReservationSchema = exports.inventoryBatchSchema = exports.inventoryStockItemSchema = exports.inventoryBrandSummarySchema = exports.inventoryCategorySummarySchema = exports.inventoryProductSummarySchema = exports.stockReservationQuerySchema = exports.inventoryBatchQuerySchema = exports.inventoryStockQuerySchema = exports.stockStatusEnum = exports.reservationStatusEnum = void 0;
+exports.writeOffInventorySchema = exports.adjustInventorySchema = exports.receiveInventoryBatchSchema = exports.paginatedStockReservationsSchema = exports.paginatedInventoryVariantOptionsSchema = exports.paginatedInventoryBatchesSchema = exports.paginatedInventoryStockSchema = exports.stockReservationSchema = exports.inventoryVariantOptionSchema = exports.inventoryBatchSchema = exports.inventoryStockItemSchema = exports.inventoryBrandSummarySchema = exports.inventoryCategorySummarySchema = exports.inventoryProductSummarySchema = exports.stockReservationQuerySchema = exports.inventoryVariantOptionQuerySchema = exports.inventoryBatchQuerySchema = exports.inventoryStockQuerySchema = exports.stockStatusEnum = exports.reservationStatusEnum = void 0;
 const zod_1 = require("zod");
 const product_schema_1 = require("../catalog/product.schema");
 const pagination_1 = require("../common/pagination");
@@ -32,6 +32,9 @@ exports.inventoryBatchQuerySchema = pagination_1.paginationQuerySchema.extend({
     sortBy: zod_1.z
         .enum(["expiresAt", "receivedAt", "batchNumber", "available"])
         .default("expiresAt"),
+});
+exports.inventoryVariantOptionQuerySchema = pagination_1.paginationQuerySchema.extend({
+    search: zod_1.z.string().trim().min(1).max(120).optional(),
 });
 exports.stockReservationQuerySchema = pagination_1.paginationQuerySchema.extend({
     search: zod_1.z.string().trim().min(1).max(120).optional(),
@@ -95,6 +98,14 @@ exports.inventoryBatchSchema = zod_1.z.object({
         product: exports.inventoryProductSummarySchema,
     }),
 });
+exports.inventoryVariantOptionSchema = zod_1.z.object({
+    id: primitives_1.uuidSchema,
+    sku: zod_1.z.string(),
+    barcode: zod_1.z.string().nullable(),
+    nameEn: zod_1.z.string(),
+    nameAr: zod_1.z.string(),
+    product: exports.inventoryProductSummarySchema,
+});
 exports.stockReservationSchema = zod_1.z.object({
     id: primitives_1.uuidSchema,
     orderId: primitives_1.uuidSchema,
@@ -123,6 +134,10 @@ exports.paginatedInventoryStockSchema = zod_1.z.object({
 });
 exports.paginatedInventoryBatchesSchema = zod_1.z.object({
     data: zod_1.z.array(exports.inventoryBatchSchema),
+    meta: pagination_1.paginationMetaSchema,
+});
+exports.paginatedInventoryVariantOptionsSchema = zod_1.z.object({
+    data: zod_1.z.array(exports.inventoryVariantOptionSchema),
     meta: pagination_1.paginationMetaSchema,
 });
 exports.paginatedStockReservationsSchema = zod_1.z.object({

@@ -31,20 +31,20 @@ export declare const bannerMessageSchema: z.ZodObject<{
         emphasis?: boolean | undefined;
     }>>;
 }, "strip", z.ZodTypeAny, {
-    textEn: string;
-    openInNewTab: boolean;
-    ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
     style: {
         emphasis: boolean;
         textColor?: string | null | undefined;
     };
+    textEn: string;
+    openInNewTab: boolean;
+    ctaStyle: "TEXT" | "OUTLINE" | "UNDERLINE" | "FILLED";
     id?: string | undefined;
     couponCode?: string | null | undefined;
     url?: string | null | undefined;
+    icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
     textAr?: string | null | undefined;
     secondaryTextEn?: string | null | undefined;
     secondaryTextAr?: string | null | undefined;
-    icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
     emoji?: string | null | undefined;
     ctaTextEn?: string | null | undefined;
     ctaTextAr?: string | null | undefined;
@@ -55,21 +55,21 @@ export declare const bannerMessageSchema: z.ZodObject<{
     id?: string | undefined;
     couponCode?: string | null | undefined;
     url?: string | null | undefined;
-    textAr?: string | null | undefined;
-    secondaryTextEn?: string | null | undefined;
-    secondaryTextAr?: string | null | undefined;
-    icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
-    emoji?: string | null | undefined;
-    openInNewTab?: boolean | undefined;
-    ctaTextEn?: string | null | undefined;
-    ctaTextAr?: string | null | undefined;
-    ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
-    couponId?: string | null | undefined;
-    countdownAt?: string | null | undefined;
     style?: {
         textColor?: string | null | undefined;
         emphasis?: boolean | undefined;
     } | undefined;
+    icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+    textAr?: string | null | undefined;
+    secondaryTextEn?: string | null | undefined;
+    secondaryTextAr?: string | null | undefined;
+    emoji?: string | null | undefined;
+    openInNewTab?: boolean | undefined;
+    ctaTextEn?: string | null | undefined;
+    ctaTextAr?: string | null | undefined;
+    ctaStyle?: "TEXT" | "OUTLINE" | "UNDERLINE" | "FILLED" | undefined;
+    couponId?: string | null | undefined;
+    countdownAt?: string | null | undefined;
 }>;
 export declare const bannerDesignSchema: z.ZodObject<{
     backgroundType: z.ZodDefault<z.ZodEnum<["SOLID", "GRADIENT", "IMAGE", "PATTERN"]>>;
@@ -108,9 +108,9 @@ export declare const bannerDesignSchema: z.ZodObject<{
     ctaRadius: z.ZodDefault<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
     textColor: string;
-    backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
+    backgroundType: "SOLID" | "IMAGE" | "GRADIENT" | "PATTERN";
     backgroundColor: string;
-    pattern: "NONE" | "DOTS" | "LINES" | "GRID";
+    pattern: "NONE" | "GRID" | "DOTS" | "LINES";
     backgroundOpacity: number;
     fontFamily: "SANS" | "SERIF";
     fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
@@ -120,7 +120,7 @@ export declare const bannerDesignSchema: z.ZodObject<{
     letterSpacing: number;
     lineHeight: number;
     textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
-    textAlign: "LEFT" | "CENTER" | "RIGHT";
+    textAlign: "CENTER" | "LEFT" | "RIGHT";
     heightDesktop: number;
     heightTablet: number;
     heightMobile: number;
@@ -131,7 +131,7 @@ export declare const bannerDesignSchema: z.ZodObject<{
     borderWidth: number;
     borderColor: string;
     borderStyle: "SOLID" | "DASHED" | "DOTTED";
-    shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
+    shadow: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG";
     zIndex: number;
     ctaBackground: string;
     ctaColor: string;
@@ -143,11 +143,11 @@ export declare const bannerDesignSchema: z.ZodObject<{
     backgroundImage?: string | null | undefined;
 }, {
     textColor?: string | undefined;
-    backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
+    backgroundType?: "SOLID" | "IMAGE" | "GRADIENT" | "PATTERN" | undefined;
     backgroundColor?: string | undefined;
     gradient?: string | null | undefined;
     backgroundImage?: string | null | undefined;
-    pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
+    pattern?: "NONE" | "GRID" | "DOTS" | "LINES" | undefined;
     backgroundOpacity?: number | undefined;
     fontFamily?: "SANS" | "SERIF" | undefined;
     fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
@@ -157,7 +157,7 @@ export declare const bannerDesignSchema: z.ZodObject<{
     letterSpacing?: number | undefined;
     lineHeight?: number | undefined;
     textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
-    textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
+    textAlign?: "CENTER" | "LEFT" | "RIGHT" | undefined;
     heightDesktop?: number | undefined;
     heightTablet?: number | undefined;
     heightMobile?: number | undefined;
@@ -168,7 +168,7 @@ export declare const bannerDesignSchema: z.ZodObject<{
     borderWidth?: number | undefined;
     borderColor?: string | undefined;
     borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-    shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
+    shadow?: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG" | undefined;
     zIndex?: number | undefined;
     ctaBackground?: string | undefined;
     ctaColor?: string | undefined;
@@ -318,10 +318,10 @@ export declare const bannerTargetingSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     productIds: string[];
     categoryIds: string[];
+    devices: ("desktop" | "tablet" | "mobile")[];
     authentication: "ALL" | "GUEST" | "LOGGED_IN";
     customerType: "ALL" | "RETURNING" | "NEW";
-    devices: ("desktop" | "tablet" | "mobile")[];
-    pages: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[];
+    pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
     urlPatterns: string[];
     cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
     cartSubtotalMin: number | null;
@@ -331,10 +331,10 @@ export declare const bannerTargetingSchema: z.ZodObject<{
 }, {
     productIds?: string[] | undefined;
     categoryIds?: string[] | undefined;
+    devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
     authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
     customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-    devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
-    pages?: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[] | undefined;
+    pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
     urlPatterns?: string[] | undefined;
     cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
     cartSubtotalMin?: number | null | undefined;
@@ -461,9 +461,9 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         ctaRadius: z.ZodDefault<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
         textColor: string;
-        backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
+        backgroundType: "SOLID" | "IMAGE" | "GRADIENT" | "PATTERN";
         backgroundColor: string;
-        pattern: "NONE" | "DOTS" | "LINES" | "GRID";
+        pattern: "NONE" | "GRID" | "DOTS" | "LINES";
         backgroundOpacity: number;
         fontFamily: "SANS" | "SERIF";
         fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
@@ -473,7 +473,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         letterSpacing: number;
         lineHeight: number;
         textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
-        textAlign: "LEFT" | "CENTER" | "RIGHT";
+        textAlign: "CENTER" | "LEFT" | "RIGHT";
         heightDesktop: number;
         heightTablet: number;
         heightMobile: number;
@@ -484,7 +484,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth: number;
         borderColor: string;
         borderStyle: "SOLID" | "DASHED" | "DOTTED";
-        shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
+        shadow: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG";
         zIndex: number;
         ctaBackground: string;
         ctaColor: string;
@@ -496,11 +496,11 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         backgroundImage?: string | null | undefined;
     }, {
         textColor?: string | undefined;
-        backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
+        backgroundType?: "SOLID" | "IMAGE" | "GRADIENT" | "PATTERN" | undefined;
         backgroundColor?: string | undefined;
         gradient?: string | null | undefined;
         backgroundImage?: string | null | undefined;
-        pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
+        pattern?: "NONE" | "GRID" | "DOTS" | "LINES" | undefined;
         backgroundOpacity?: number | undefined;
         fontFamily?: "SANS" | "SERIF" | undefined;
         fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
@@ -510,7 +510,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         letterSpacing?: number | undefined;
         lineHeight?: number | undefined;
         textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
-        textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
+        textAlign?: "CENTER" | "LEFT" | "RIGHT" | undefined;
         heightDesktop?: number | undefined;
         heightTablet?: number | undefined;
         heightMobile?: number | undefined;
@@ -521,7 +521,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth?: number | undefined;
         borderColor?: string | undefined;
         borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-        shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
+        shadow?: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG" | undefined;
         zIndex?: number | undefined;
         ctaBackground?: string | undefined;
         ctaColor?: string | undefined;
@@ -671,10 +671,10 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         productIds: string[];
         categoryIds: string[];
+        devices: ("desktop" | "tablet" | "mobile")[];
         authentication: "ALL" | "GUEST" | "LOGGED_IN";
         customerType: "ALL" | "RETURNING" | "NEW";
-        devices: ("desktop" | "tablet" | "mobile")[];
-        pages: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[];
+        pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
         urlPatterns: string[];
         cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
         cartSubtotalMin: number | null;
@@ -684,10 +684,10 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     }, {
         productIds?: string[] | undefined;
         categoryIds?: string[] | undefined;
+        devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
         authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
         customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-        devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
-        pages?: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[] | undefined;
+        pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
         urlPatterns?: string[] | undefined;
         cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
         cartSubtotalMin?: number | null | undefined;
@@ -763,20 +763,20 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
             emphasis?: boolean | undefined;
         }>>;
     }, "strip", z.ZodTypeAny, {
-        textEn: string;
-        openInNewTab: boolean;
-        ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
         style: {
             emphasis: boolean;
             textColor?: string | null | undefined;
         };
+        textEn: string;
+        openInNewTab: boolean;
+        ctaStyle: "TEXT" | "OUTLINE" | "UNDERLINE" | "FILLED";
         id?: string | undefined;
         couponCode?: string | null | undefined;
         url?: string | null | undefined;
+        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
         textAr?: string | null | undefined;
         secondaryTextEn?: string | null | undefined;
         secondaryTextAr?: string | null | undefined;
-        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
         emoji?: string | null | undefined;
         ctaTextEn?: string | null | undefined;
         ctaTextAr?: string | null | undefined;
@@ -787,21 +787,21 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         id?: string | undefined;
         couponCode?: string | null | undefined;
         url?: string | null | undefined;
-        textAr?: string | null | undefined;
-        secondaryTextEn?: string | null | undefined;
-        secondaryTextAr?: string | null | undefined;
-        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
-        emoji?: string | null | undefined;
-        openInNewTab?: boolean | undefined;
-        ctaTextEn?: string | null | undefined;
-        ctaTextAr?: string | null | undefined;
-        ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
-        couponId?: string | null | undefined;
-        countdownAt?: string | null | undefined;
         style?: {
             textColor?: string | null | undefined;
             emphasis?: boolean | undefined;
         } | undefined;
+        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+        textAr?: string | null | undefined;
+        secondaryTextEn?: string | null | undefined;
+        secondaryTextAr?: string | null | undefined;
+        emoji?: string | null | undefined;
+        openInNewTab?: boolean | undefined;
+        ctaTextEn?: string | null | undefined;
+        ctaTextAr?: string | null | undefined;
+        ctaStyle?: "TEXT" | "OUTLINE" | "UNDERLINE" | "FILLED" | undefined;
+        couponId?: string | null | undefined;
+        countdownAt?: string | null | undefined;
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
     sortOrder: number;
@@ -811,28 +811,28 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     priority: number;
     timezone: string;
     messages: {
-        textEn: string;
-        openInNewTab: boolean;
-        ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
         style: {
             emphasis: boolean;
             textColor?: string | null | undefined;
         };
+        textEn: string;
+        openInNewTab: boolean;
+        ctaStyle: "TEXT" | "OUTLINE" | "UNDERLINE" | "FILLED";
         id?: string | undefined;
         couponCode?: string | null | undefined;
         url?: string | null | undefined;
+        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
         textAr?: string | null | undefined;
         secondaryTextEn?: string | null | undefined;
         secondaryTextAr?: string | null | undefined;
-        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
         emoji?: string | null | undefined;
         ctaTextEn?: string | null | undefined;
         ctaTextAr?: string | null | undefined;
         couponId?: string | null | undefined;
         countdownAt?: string | null | undefined;
     }[];
-    internalName: string;
     mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
+    internalName: string;
     recurringSchedule: {
         enabled: boolean;
         weekdays: number[];
@@ -841,9 +841,9 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     } | null;
     design: {
         textColor: string;
-        backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
+        backgroundType: "SOLID" | "IMAGE" | "GRADIENT" | "PATTERN";
         backgroundColor: string;
-        pattern: "NONE" | "DOTS" | "LINES" | "GRID";
+        pattern: "NONE" | "GRID" | "DOTS" | "LINES";
         backgroundOpacity: number;
         fontFamily: "SANS" | "SERIF";
         fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
@@ -853,7 +853,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         letterSpacing: number;
         lineHeight: number;
         textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
-        textAlign: "LEFT" | "CENTER" | "RIGHT";
+        textAlign: "CENTER" | "LEFT" | "RIGHT";
         heightDesktop: number;
         heightTablet: number;
         heightMobile: number;
@@ -864,7 +864,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth: number;
         borderColor: string;
         borderStyle: "SOLID" | "DASHED" | "DOTTED";
-        shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
+        shadow: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG";
         zIndex: number;
         ctaBackground: string;
         ctaColor: string;
@@ -921,10 +921,10 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     targeting: {
         productIds: string[];
         categoryIds: string[];
+        devices: ("desktop" | "tablet" | "mobile")[];
         authentication: "ALL" | "GUEST" | "LOGGED_IN";
         customerType: "ALL" | "RETURNING" | "NEW";
-        devices: ("desktop" | "tablet" | "mobile")[];
-        pages: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[];
+        pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
         urlPatterns: string[];
         cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
         cartSubtotalMin: number | null;
@@ -954,21 +954,21 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         id?: string | undefined;
         couponCode?: string | null | undefined;
         url?: string | null | undefined;
-        textAr?: string | null | undefined;
-        secondaryTextEn?: string | null | undefined;
-        secondaryTextAr?: string | null | undefined;
-        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
-        emoji?: string | null | undefined;
-        openInNewTab?: boolean | undefined;
-        ctaTextEn?: string | null | undefined;
-        ctaTextAr?: string | null | undefined;
-        ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
-        couponId?: string | null | undefined;
-        countdownAt?: string | null | undefined;
         style?: {
             textColor?: string | null | undefined;
             emphasis?: boolean | undefined;
         } | undefined;
+        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+        textAr?: string | null | undefined;
+        secondaryTextEn?: string | null | undefined;
+        secondaryTextAr?: string | null | undefined;
+        emoji?: string | null | undefined;
+        openInNewTab?: boolean | undefined;
+        ctaTextEn?: string | null | undefined;
+        ctaTextAr?: string | null | undefined;
+        ctaStyle?: "TEXT" | "OUTLINE" | "UNDERLINE" | "FILLED" | undefined;
+        couponId?: string | null | undefined;
+        countdownAt?: string | null | undefined;
     }[];
     internalName: string;
     sortOrder?: number | undefined;
@@ -988,11 +988,11 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     } | null | undefined;
     design?: {
         textColor?: string | undefined;
-        backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
+        backgroundType?: "SOLID" | "IMAGE" | "GRADIENT" | "PATTERN" | undefined;
         backgroundColor?: string | undefined;
         gradient?: string | null | undefined;
         backgroundImage?: string | null | undefined;
-        pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
+        pattern?: "NONE" | "GRID" | "DOTS" | "LINES" | undefined;
         backgroundOpacity?: number | undefined;
         fontFamily?: "SANS" | "SERIF" | undefined;
         fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
@@ -1002,7 +1002,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         letterSpacing?: number | undefined;
         lineHeight?: number | undefined;
         textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
-        textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
+        textAlign?: "CENTER" | "LEFT" | "RIGHT" | undefined;
         heightDesktop?: number | undefined;
         heightTablet?: number | undefined;
         heightMobile?: number | undefined;
@@ -1013,7 +1013,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth?: number | undefined;
         borderColor?: string | undefined;
         borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-        shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
+        shadow?: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG" | undefined;
         zIndex?: number | undefined;
         ctaBackground?: string | undefined;
         ctaColor?: string | undefined;
@@ -1068,10 +1068,10 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     targeting?: {
         productIds?: string[] | undefined;
         categoryIds?: string[] | undefined;
+        devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
         authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
         customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-        devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
-        pages?: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[] | undefined;
+        pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
         urlPatterns?: string[] | undefined;
         cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
         cartSubtotalMin?: number | null | undefined;
@@ -1101,28 +1101,28 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     priority: number;
     timezone: string;
     messages: {
-        textEn: string;
-        openInNewTab: boolean;
-        ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
         style: {
             emphasis: boolean;
             textColor?: string | null | undefined;
         };
+        textEn: string;
+        openInNewTab: boolean;
+        ctaStyle: "TEXT" | "OUTLINE" | "UNDERLINE" | "FILLED";
         id?: string | undefined;
         couponCode?: string | null | undefined;
         url?: string | null | undefined;
+        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
         textAr?: string | null | undefined;
         secondaryTextEn?: string | null | undefined;
         secondaryTextAr?: string | null | undefined;
-        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
         emoji?: string | null | undefined;
         ctaTextEn?: string | null | undefined;
         ctaTextAr?: string | null | undefined;
         couponId?: string | null | undefined;
         countdownAt?: string | null | undefined;
     }[];
-    internalName: string;
     mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
+    internalName: string;
     recurringSchedule: {
         enabled: boolean;
         weekdays: number[];
@@ -1131,9 +1131,9 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     } | null;
     design: {
         textColor: string;
-        backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
+        backgroundType: "SOLID" | "IMAGE" | "GRADIENT" | "PATTERN";
         backgroundColor: string;
-        pattern: "NONE" | "DOTS" | "LINES" | "GRID";
+        pattern: "NONE" | "GRID" | "DOTS" | "LINES";
         backgroundOpacity: number;
         fontFamily: "SANS" | "SERIF";
         fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
@@ -1143,7 +1143,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         letterSpacing: number;
         lineHeight: number;
         textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
-        textAlign: "LEFT" | "CENTER" | "RIGHT";
+        textAlign: "CENTER" | "LEFT" | "RIGHT";
         heightDesktop: number;
         heightTablet: number;
         heightMobile: number;
@@ -1154,7 +1154,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth: number;
         borderColor: string;
         borderStyle: "SOLID" | "DASHED" | "DOTTED";
-        shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
+        shadow: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG";
         zIndex: number;
         ctaBackground: string;
         ctaColor: string;
@@ -1211,10 +1211,10 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     targeting: {
         productIds: string[];
         categoryIds: string[];
+        devices: ("desktop" | "tablet" | "mobile")[];
         authentication: "ALL" | "GUEST" | "LOGGED_IN";
         customerType: "ALL" | "RETURNING" | "NEW";
-        devices: ("desktop" | "tablet" | "mobile")[];
-        pages: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[];
+        pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
         urlPatterns: string[];
         cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
         cartSubtotalMin: number | null;
@@ -1244,21 +1244,21 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         id?: string | undefined;
         couponCode?: string | null | undefined;
         url?: string | null | undefined;
-        textAr?: string | null | undefined;
-        secondaryTextEn?: string | null | undefined;
-        secondaryTextAr?: string | null | undefined;
-        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
-        emoji?: string | null | undefined;
-        openInNewTab?: boolean | undefined;
-        ctaTextEn?: string | null | undefined;
-        ctaTextAr?: string | null | undefined;
-        ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
-        couponId?: string | null | undefined;
-        countdownAt?: string | null | undefined;
         style?: {
             textColor?: string | null | undefined;
             emphasis?: boolean | undefined;
         } | undefined;
+        icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+        textAr?: string | null | undefined;
+        secondaryTextEn?: string | null | undefined;
+        secondaryTextAr?: string | null | undefined;
+        emoji?: string | null | undefined;
+        openInNewTab?: boolean | undefined;
+        ctaTextEn?: string | null | undefined;
+        ctaTextAr?: string | null | undefined;
+        ctaStyle?: "TEXT" | "OUTLINE" | "UNDERLINE" | "FILLED" | undefined;
+        couponId?: string | null | undefined;
+        countdownAt?: string | null | undefined;
     }[];
     internalName: string;
     sortOrder?: number | undefined;
@@ -1278,11 +1278,11 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     } | null | undefined;
     design?: {
         textColor?: string | undefined;
-        backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
+        backgroundType?: "SOLID" | "IMAGE" | "GRADIENT" | "PATTERN" | undefined;
         backgroundColor?: string | undefined;
         gradient?: string | null | undefined;
         backgroundImage?: string | null | undefined;
-        pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
+        pattern?: "NONE" | "GRID" | "DOTS" | "LINES" | undefined;
         backgroundOpacity?: number | undefined;
         fontFamily?: "SANS" | "SERIF" | undefined;
         fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
@@ -1292,7 +1292,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         letterSpacing?: number | undefined;
         lineHeight?: number | undefined;
         textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
-        textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
+        textAlign?: "CENTER" | "LEFT" | "RIGHT" | undefined;
         heightDesktop?: number | undefined;
         heightTablet?: number | undefined;
         heightMobile?: number | undefined;
@@ -1303,7 +1303,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth?: number | undefined;
         borderColor?: string | undefined;
         borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-        shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
+        shadow?: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG" | undefined;
         zIndex?: number | undefined;
         ctaBackground?: string | undefined;
         ctaColor?: string | undefined;
@@ -1358,10 +1358,10 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     targeting?: {
         productIds?: string[] | undefined;
         categoryIds?: string[] | undefined;
+        devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
         authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
         customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-        devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
-        pages?: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[] | undefined;
+        pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
         urlPatterns?: string[] | undefined;
         cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
         cartSubtotalMin?: number | null | undefined;
@@ -1490,13 +1490,13 @@ export declare const bannerSettingsSchema: z.ZodObject<{
     defaultConfig: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodUnknown>>;
 }, "strip", z.ZodTypeAny, {
     enabled: boolean;
-    displayStrategy: "HIGHEST_PRIORITY" | "ROTATE" | "STACK" | "SEQUENCE";
+    displayStrategy: "STACK" | "HIGHEST_PRIORITY" | "ROTATE" | "SEQUENCE";
     defaultPosition: "TOP" | "BELOW_HEADER" | "BOTTOM";
     analyticsEnabled: boolean;
     defaultConfig: Record<string, unknown>;
 }, {
     enabled: boolean;
-    displayStrategy: "HIGHEST_PRIORITY" | "ROTATE" | "STACK" | "SEQUENCE";
+    displayStrategy: "STACK" | "HIGHEST_PRIORITY" | "ROTATE" | "SEQUENCE";
     defaultPosition: "TOP" | "BELOW_HEADER" | "BOTTOM";
     analyticsEnabled: boolean;
     defaultConfig?: Record<string, unknown> | undefined;
@@ -1567,9 +1567,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             ctaRadius: z.ZodDefault<z.ZodNumber>;
         }, "strip", z.ZodTypeAny, {
             textColor: string;
-            backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
+            backgroundType: "SOLID" | "IMAGE" | "GRADIENT" | "PATTERN";
             backgroundColor: string;
-            pattern: "NONE" | "DOTS" | "LINES" | "GRID";
+            pattern: "NONE" | "GRID" | "DOTS" | "LINES";
             backgroundOpacity: number;
             fontFamily: "SANS" | "SERIF";
             fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
@@ -1579,7 +1579,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             letterSpacing: number;
             lineHeight: number;
             textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
-            textAlign: "LEFT" | "CENTER" | "RIGHT";
+            textAlign: "CENTER" | "LEFT" | "RIGHT";
             heightDesktop: number;
             heightTablet: number;
             heightMobile: number;
@@ -1590,7 +1590,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth: number;
             borderColor: string;
             borderStyle: "SOLID" | "DASHED" | "DOTTED";
-            shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
+            shadow: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG";
             zIndex: number;
             ctaBackground: string;
             ctaColor: string;
@@ -1602,11 +1602,11 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             backgroundImage?: string | null | undefined;
         }, {
             textColor?: string | undefined;
-            backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
+            backgroundType?: "SOLID" | "IMAGE" | "GRADIENT" | "PATTERN" | undefined;
             backgroundColor?: string | undefined;
             gradient?: string | null | undefined;
             backgroundImage?: string | null | undefined;
-            pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
+            pattern?: "NONE" | "GRID" | "DOTS" | "LINES" | undefined;
             backgroundOpacity?: number | undefined;
             fontFamily?: "SANS" | "SERIF" | undefined;
             fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
@@ -1616,7 +1616,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             letterSpacing?: number | undefined;
             lineHeight?: number | undefined;
             textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
-            textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
+            textAlign?: "CENTER" | "LEFT" | "RIGHT" | undefined;
             heightDesktop?: number | undefined;
             heightTablet?: number | undefined;
             heightMobile?: number | undefined;
@@ -1627,7 +1627,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth?: number | undefined;
             borderColor?: string | undefined;
             borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-            shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
+            shadow?: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG" | undefined;
             zIndex?: number | undefined;
             ctaBackground?: string | undefined;
             ctaColor?: string | undefined;
@@ -1777,10 +1777,10 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             productIds: string[];
             categoryIds: string[];
+            devices: ("desktop" | "tablet" | "mobile")[];
             authentication: "ALL" | "GUEST" | "LOGGED_IN";
             customerType: "ALL" | "RETURNING" | "NEW";
-            devices: ("desktop" | "tablet" | "mobile")[];
-            pages: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[];
+            pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
             urlPatterns: string[];
             cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
             cartSubtotalMin: number | null;
@@ -1790,10 +1790,10 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         }, {
             productIds?: string[] | undefined;
             categoryIds?: string[] | undefined;
+            devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
             authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
             customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-            devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
-            pages?: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[] | undefined;
+            pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
             urlPatterns?: string[] | undefined;
             cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
             cartSubtotalMin?: number | null | undefined;
@@ -1869,20 +1869,20 @@ export declare const bannerTemplateSchema: z.ZodObject<{
                 emphasis?: boolean | undefined;
             }>>;
         }, "strip", z.ZodTypeAny, {
-            textEn: string;
-            openInNewTab: boolean;
-            ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
             style: {
                 emphasis: boolean;
                 textColor?: string | null | undefined;
             };
+            textEn: string;
+            openInNewTab: boolean;
+            ctaStyle: "TEXT" | "OUTLINE" | "UNDERLINE" | "FILLED";
             id?: string | undefined;
             couponCode?: string | null | undefined;
             url?: string | null | undefined;
+            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
             textAr?: string | null | undefined;
             secondaryTextEn?: string | null | undefined;
             secondaryTextAr?: string | null | undefined;
-            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
             emoji?: string | null | undefined;
             ctaTextEn?: string | null | undefined;
             ctaTextAr?: string | null | undefined;
@@ -1893,21 +1893,21 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             id?: string | undefined;
             couponCode?: string | null | undefined;
             url?: string | null | undefined;
-            textAr?: string | null | undefined;
-            secondaryTextEn?: string | null | undefined;
-            secondaryTextAr?: string | null | undefined;
-            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
-            emoji?: string | null | undefined;
-            openInNewTab?: boolean | undefined;
-            ctaTextEn?: string | null | undefined;
-            ctaTextAr?: string | null | undefined;
-            ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
-            couponId?: string | null | undefined;
-            countdownAt?: string | null | undefined;
             style?: {
                 textColor?: string | null | undefined;
                 emphasis?: boolean | undefined;
             } | undefined;
+            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+            textAr?: string | null | undefined;
+            secondaryTextEn?: string | null | undefined;
+            secondaryTextAr?: string | null | undefined;
+            emoji?: string | null | undefined;
+            openInNewTab?: boolean | undefined;
+            ctaTextEn?: string | null | undefined;
+            ctaTextAr?: string | null | undefined;
+            ctaStyle?: "TEXT" | "OUTLINE" | "UNDERLINE" | "FILLED" | undefined;
+            couponId?: string | null | undefined;
+            countdownAt?: string | null | undefined;
         }>, "many">;
     }, "strip", z.ZodTypeAny, {
         sortOrder: number;
@@ -1917,28 +1917,28 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         priority: number;
         timezone: string;
         messages: {
-            textEn: string;
-            openInNewTab: boolean;
-            ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
             style: {
                 emphasis: boolean;
                 textColor?: string | null | undefined;
             };
+            textEn: string;
+            openInNewTab: boolean;
+            ctaStyle: "TEXT" | "OUTLINE" | "UNDERLINE" | "FILLED";
             id?: string | undefined;
             couponCode?: string | null | undefined;
             url?: string | null | undefined;
+            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
             textAr?: string | null | undefined;
             secondaryTextEn?: string | null | undefined;
             secondaryTextAr?: string | null | undefined;
-            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
             emoji?: string | null | undefined;
             ctaTextEn?: string | null | undefined;
             ctaTextAr?: string | null | undefined;
             couponId?: string | null | undefined;
             countdownAt?: string | null | undefined;
         }[];
-        internalName: string;
         mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
+        internalName: string;
         recurringSchedule: {
             enabled: boolean;
             weekdays: number[];
@@ -1947,9 +1947,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         } | null;
         design: {
             textColor: string;
-            backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
+            backgroundType: "SOLID" | "IMAGE" | "GRADIENT" | "PATTERN";
             backgroundColor: string;
-            pattern: "NONE" | "DOTS" | "LINES" | "GRID";
+            pattern: "NONE" | "GRID" | "DOTS" | "LINES";
             backgroundOpacity: number;
             fontFamily: "SANS" | "SERIF";
             fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
@@ -1959,7 +1959,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             letterSpacing: number;
             lineHeight: number;
             textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
-            textAlign: "LEFT" | "CENTER" | "RIGHT";
+            textAlign: "CENTER" | "LEFT" | "RIGHT";
             heightDesktop: number;
             heightTablet: number;
             heightMobile: number;
@@ -1970,7 +1970,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth: number;
             borderColor: string;
             borderStyle: "SOLID" | "DASHED" | "DOTTED";
-            shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
+            shadow: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG";
             zIndex: number;
             ctaBackground: string;
             ctaColor: string;
@@ -2027,10 +2027,10 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         targeting: {
             productIds: string[];
             categoryIds: string[];
+            devices: ("desktop" | "tablet" | "mobile")[];
             authentication: "ALL" | "GUEST" | "LOGGED_IN";
             customerType: "ALL" | "RETURNING" | "NEW";
-            devices: ("desktop" | "tablet" | "mobile")[];
-            pages: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[];
+            pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
             urlPatterns: string[];
             cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
             cartSubtotalMin: number | null;
@@ -2060,21 +2060,21 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             id?: string | undefined;
             couponCode?: string | null | undefined;
             url?: string | null | undefined;
-            textAr?: string | null | undefined;
-            secondaryTextEn?: string | null | undefined;
-            secondaryTextAr?: string | null | undefined;
-            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
-            emoji?: string | null | undefined;
-            openInNewTab?: boolean | undefined;
-            ctaTextEn?: string | null | undefined;
-            ctaTextAr?: string | null | undefined;
-            ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
-            couponId?: string | null | undefined;
-            countdownAt?: string | null | undefined;
             style?: {
                 textColor?: string | null | undefined;
                 emphasis?: boolean | undefined;
             } | undefined;
+            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+            textAr?: string | null | undefined;
+            secondaryTextEn?: string | null | undefined;
+            secondaryTextAr?: string | null | undefined;
+            emoji?: string | null | undefined;
+            openInNewTab?: boolean | undefined;
+            ctaTextEn?: string | null | undefined;
+            ctaTextAr?: string | null | undefined;
+            ctaStyle?: "TEXT" | "OUTLINE" | "UNDERLINE" | "FILLED" | undefined;
+            couponId?: string | null | undefined;
+            countdownAt?: string | null | undefined;
         }[];
         internalName: string;
         sortOrder?: number | undefined;
@@ -2094,11 +2094,11 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         } | null | undefined;
         design?: {
             textColor?: string | undefined;
-            backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
+            backgroundType?: "SOLID" | "IMAGE" | "GRADIENT" | "PATTERN" | undefined;
             backgroundColor?: string | undefined;
             gradient?: string | null | undefined;
             backgroundImage?: string | null | undefined;
-            pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
+            pattern?: "NONE" | "GRID" | "DOTS" | "LINES" | undefined;
             backgroundOpacity?: number | undefined;
             fontFamily?: "SANS" | "SERIF" | undefined;
             fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
@@ -2108,7 +2108,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             letterSpacing?: number | undefined;
             lineHeight?: number | undefined;
             textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
-            textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
+            textAlign?: "CENTER" | "LEFT" | "RIGHT" | undefined;
             heightDesktop?: number | undefined;
             heightTablet?: number | undefined;
             heightMobile?: number | undefined;
@@ -2119,7 +2119,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth?: number | undefined;
             borderColor?: string | undefined;
             borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-            shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
+            shadow?: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG" | undefined;
             zIndex?: number | undefined;
             ctaBackground?: string | undefined;
             ctaColor?: string | undefined;
@@ -2174,10 +2174,10 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         targeting?: {
             productIds?: string[] | undefined;
             categoryIds?: string[] | undefined;
+            devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
             authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
             customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-            devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
-            pages?: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[] | undefined;
+            pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
             urlPatterns?: string[] | undefined;
             cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
             cartSubtotalMin?: number | null | undefined;
@@ -2207,28 +2207,28 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         priority: number;
         timezone: string;
         messages: {
-            textEn: string;
-            openInNewTab: boolean;
-            ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
             style: {
                 emphasis: boolean;
                 textColor?: string | null | undefined;
             };
+            textEn: string;
+            openInNewTab: boolean;
+            ctaStyle: "TEXT" | "OUTLINE" | "UNDERLINE" | "FILLED";
             id?: string | undefined;
             couponCode?: string | null | undefined;
             url?: string | null | undefined;
+            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
             textAr?: string | null | undefined;
             secondaryTextEn?: string | null | undefined;
             secondaryTextAr?: string | null | undefined;
-            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
             emoji?: string | null | undefined;
             ctaTextEn?: string | null | undefined;
             ctaTextAr?: string | null | undefined;
             couponId?: string | null | undefined;
             countdownAt?: string | null | undefined;
         }[];
-        internalName: string;
         mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
+        internalName: string;
         recurringSchedule: {
             enabled: boolean;
             weekdays: number[];
@@ -2237,9 +2237,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         } | null;
         design: {
             textColor: string;
-            backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
+            backgroundType: "SOLID" | "IMAGE" | "GRADIENT" | "PATTERN";
             backgroundColor: string;
-            pattern: "NONE" | "DOTS" | "LINES" | "GRID";
+            pattern: "NONE" | "GRID" | "DOTS" | "LINES";
             backgroundOpacity: number;
             fontFamily: "SANS" | "SERIF";
             fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
@@ -2249,7 +2249,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             letterSpacing: number;
             lineHeight: number;
             textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
-            textAlign: "LEFT" | "CENTER" | "RIGHT";
+            textAlign: "CENTER" | "LEFT" | "RIGHT";
             heightDesktop: number;
             heightTablet: number;
             heightMobile: number;
@@ -2260,7 +2260,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth: number;
             borderColor: string;
             borderStyle: "SOLID" | "DASHED" | "DOTTED";
-            shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
+            shadow: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG";
             zIndex: number;
             ctaBackground: string;
             ctaColor: string;
@@ -2317,10 +2317,10 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         targeting: {
             productIds: string[];
             categoryIds: string[];
+            devices: ("desktop" | "tablet" | "mobile")[];
             authentication: "ALL" | "GUEST" | "LOGGED_IN";
             customerType: "ALL" | "RETURNING" | "NEW";
-            devices: ("desktop" | "tablet" | "mobile")[];
-            pages: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[];
+            pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
             urlPatterns: string[];
             cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
             cartSubtotalMin: number | null;
@@ -2350,21 +2350,21 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             id?: string | undefined;
             couponCode?: string | null | undefined;
             url?: string | null | undefined;
-            textAr?: string | null | undefined;
-            secondaryTextEn?: string | null | undefined;
-            secondaryTextAr?: string | null | undefined;
-            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
-            emoji?: string | null | undefined;
-            openInNewTab?: boolean | undefined;
-            ctaTextEn?: string | null | undefined;
-            ctaTextAr?: string | null | undefined;
-            ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
-            couponId?: string | null | undefined;
-            countdownAt?: string | null | undefined;
             style?: {
                 textColor?: string | null | undefined;
                 emphasis?: boolean | undefined;
             } | undefined;
+            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+            textAr?: string | null | undefined;
+            secondaryTextEn?: string | null | undefined;
+            secondaryTextAr?: string | null | undefined;
+            emoji?: string | null | undefined;
+            openInNewTab?: boolean | undefined;
+            ctaTextEn?: string | null | undefined;
+            ctaTextAr?: string | null | undefined;
+            ctaStyle?: "TEXT" | "OUTLINE" | "UNDERLINE" | "FILLED" | undefined;
+            couponId?: string | null | undefined;
+            countdownAt?: string | null | undefined;
         }[];
         internalName: string;
         sortOrder?: number | undefined;
@@ -2384,11 +2384,11 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         } | null | undefined;
         design?: {
             textColor?: string | undefined;
-            backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
+            backgroundType?: "SOLID" | "IMAGE" | "GRADIENT" | "PATTERN" | undefined;
             backgroundColor?: string | undefined;
             gradient?: string | null | undefined;
             backgroundImage?: string | null | undefined;
-            pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
+            pattern?: "NONE" | "GRID" | "DOTS" | "LINES" | undefined;
             backgroundOpacity?: number | undefined;
             fontFamily?: "SANS" | "SERIF" | undefined;
             fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
@@ -2398,7 +2398,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             letterSpacing?: number | undefined;
             lineHeight?: number | undefined;
             textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
-            textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
+            textAlign?: "CENTER" | "LEFT" | "RIGHT" | undefined;
             heightDesktop?: number | undefined;
             heightTablet?: number | undefined;
             heightMobile?: number | undefined;
@@ -2409,7 +2409,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth?: number | undefined;
             borderColor?: string | undefined;
             borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-            shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
+            shadow?: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG" | undefined;
             zIndex?: number | undefined;
             ctaBackground?: string | undefined;
             ctaColor?: string | undefined;
@@ -2464,10 +2464,10 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         targeting?: {
             productIds?: string[] | undefined;
             categoryIds?: string[] | undefined;
+            devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
             authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
             customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-            devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
-            pages?: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[] | undefined;
+            pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
             urlPatterns?: string[] | undefined;
             cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
             cartSubtotalMin?: number | null | undefined;
@@ -2500,28 +2500,28 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         priority: number;
         timezone: string;
         messages: {
-            textEn: string;
-            openInNewTab: boolean;
-            ctaStyle: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED";
             style: {
                 emphasis: boolean;
                 textColor?: string | null | undefined;
             };
+            textEn: string;
+            openInNewTab: boolean;
+            ctaStyle: "TEXT" | "OUTLINE" | "UNDERLINE" | "FILLED";
             id?: string | undefined;
             couponCode?: string | null | undefined;
             url?: string | null | undefined;
+            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
             textAr?: string | null | undefined;
             secondaryTextEn?: string | null | undefined;
             secondaryTextAr?: string | null | undefined;
-            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
             emoji?: string | null | undefined;
             ctaTextEn?: string | null | undefined;
             ctaTextAr?: string | null | undefined;
             couponId?: string | null | undefined;
             countdownAt?: string | null | undefined;
         }[];
-        internalName: string;
         mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
+        internalName: string;
         recurringSchedule: {
             enabled: boolean;
             weekdays: number[];
@@ -2530,9 +2530,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         } | null;
         design: {
             textColor: string;
-            backgroundType: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN";
+            backgroundType: "SOLID" | "IMAGE" | "GRADIENT" | "PATTERN";
             backgroundColor: string;
-            pattern: "NONE" | "DOTS" | "LINES" | "GRID";
+            pattern: "NONE" | "GRID" | "DOTS" | "LINES";
             backgroundOpacity: number;
             fontFamily: "SANS" | "SERIF";
             fontWeight: "200" | "300" | "400" | "500" | "600" | "700";
@@ -2542,7 +2542,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             letterSpacing: number;
             lineHeight: number;
             textTransform: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE";
-            textAlign: "LEFT" | "CENTER" | "RIGHT";
+            textAlign: "CENTER" | "LEFT" | "RIGHT";
             heightDesktop: number;
             heightTablet: number;
             heightMobile: number;
@@ -2553,7 +2553,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth: number;
             borderColor: string;
             borderStyle: "SOLID" | "DASHED" | "DOTTED";
-            shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
+            shadow: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG";
             zIndex: number;
             ctaBackground: string;
             ctaColor: string;
@@ -2610,10 +2610,10 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         targeting: {
             productIds: string[];
             categoryIds: string[];
+            devices: ("desktop" | "tablet" | "mobile")[];
             authentication: "ALL" | "GUEST" | "LOGGED_IN";
             customerType: "ALL" | "RETURNING" | "NEW";
-            devices: ("desktop" | "tablet" | "mobile")[];
-            pages: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[];
+            pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
             urlPatterns: string[];
             cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
             cartSubtotalMin: number | null;
@@ -2647,21 +2647,21 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             id?: string | undefined;
             couponCode?: string | null | undefined;
             url?: string | null | undefined;
-            textAr?: string | null | undefined;
-            secondaryTextEn?: string | null | undefined;
-            secondaryTextAr?: string | null | undefined;
-            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
-            emoji?: string | null | undefined;
-            openInNewTab?: boolean | undefined;
-            ctaTextEn?: string | null | undefined;
-            ctaTextAr?: string | null | undefined;
-            ctaStyle?: "TEXT" | "UNDERLINE" | "OUTLINE" | "FILLED" | undefined;
-            couponId?: string | null | undefined;
-            countdownAt?: string | null | undefined;
             style?: {
                 textColor?: string | null | undefined;
                 emphasis?: boolean | undefined;
             } | undefined;
+            icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+            textAr?: string | null | undefined;
+            secondaryTextEn?: string | null | undefined;
+            secondaryTextAr?: string | null | undefined;
+            emoji?: string | null | undefined;
+            openInNewTab?: boolean | undefined;
+            ctaTextEn?: string | null | undefined;
+            ctaTextAr?: string | null | undefined;
+            ctaStyle?: "TEXT" | "OUTLINE" | "UNDERLINE" | "FILLED" | undefined;
+            couponId?: string | null | undefined;
+            countdownAt?: string | null | undefined;
         }[];
         internalName: string;
         sortOrder?: number | undefined;
@@ -2681,11 +2681,11 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         } | null | undefined;
         design?: {
             textColor?: string | undefined;
-            backgroundType?: "SOLID" | "GRADIENT" | "IMAGE" | "PATTERN" | undefined;
+            backgroundType?: "SOLID" | "IMAGE" | "GRADIENT" | "PATTERN" | undefined;
             backgroundColor?: string | undefined;
             gradient?: string | null | undefined;
             backgroundImage?: string | null | undefined;
-            pattern?: "NONE" | "DOTS" | "LINES" | "GRID" | undefined;
+            pattern?: "NONE" | "GRID" | "DOTS" | "LINES" | undefined;
             backgroundOpacity?: number | undefined;
             fontFamily?: "SANS" | "SERIF" | undefined;
             fontWeight?: "200" | "300" | "400" | "500" | "600" | "700" | undefined;
@@ -2695,7 +2695,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             letterSpacing?: number | undefined;
             lineHeight?: number | undefined;
             textTransform?: "NONE" | "UPPERCASE" | "LOWERCASE" | "CAPITALIZE" | undefined;
-            textAlign?: "LEFT" | "CENTER" | "RIGHT" | undefined;
+            textAlign?: "CENTER" | "LEFT" | "RIGHT" | undefined;
             heightDesktop?: number | undefined;
             heightTablet?: number | undefined;
             heightMobile?: number | undefined;
@@ -2706,7 +2706,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth?: number | undefined;
             borderColor?: string | undefined;
             borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-            shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
+            shadow?: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG" | undefined;
             zIndex?: number | undefined;
             ctaBackground?: string | undefined;
             ctaColor?: string | undefined;
@@ -2761,10 +2761,10 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         targeting?: {
             productIds?: string[] | undefined;
             categoryIds?: string[] | undefined;
+            devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
             authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
             customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-            devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
-            pages?: ("HOME" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "PRODUCT" | "CATEGORIES" | "CATEGORY" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT" | "OFFERS")[] | undefined;
+            pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
             urlPatterns?: string[] | undefined;
             cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
             cartSubtotalMin?: number | null | undefined;

@@ -2,14 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import type { PublicProductResponse } from "@/lib/api";
 import {
   getProduct,
+  getProductFacets,
   getPromotionPrices,
   listAllBrands,
   listBrands,
   listCategories,
   listProductsPage,
+  listMerchandisingProducts,
   listProducts,
   type PaginationMeta,
 } from "@/lib/api";
+import { categoryProductCount } from "@/lib/category-hierarchy";
 import { images, type Product } from "@/lib/products";
 import { trackCommerceEvent } from "@/lib/analytics";
 
@@ -40,6 +43,10 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
   const categoryName = arabic ? category.nameAr : category.nameEn;
   const categoryFallback = fallbackImages[category.slug.toLowerCase()] ?? images.collection;
   const skinType = product.skinType ?? [];
+  const tagNames = (product.tags ?? []).map((tag) => localizeTagName(tag, locale));
+  const discoveryLabels = tagNames.length
+    ? tagNames
+    : skinType.map((value) => localizedSkinType(value, locale));
   const gallery = (product.images ?? [])
     .slice()
     .sort((a, b) => a.sortOrder - b.sortOrder)
@@ -82,18 +89,24 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
     name: arabic ? product.nameAr : product.nameEn,
     category: categoryName,
     type: product.brand?.name ?? categoryName,
-    benefit: skinType.length ? skinType.map(prettyEnum).join(" · ") : "",
+    benefit: discoveryLabels.join(" · "),
     shortDescription,
     description,
     price: (product.basePrice ?? 0) / 100,
     rating: product.rating ?? 0,
     reviews: product.reviewCount ?? 0,
     image: primary,
-    imageAlt: primaryImage?.altText?.trim() || product.nameEn,
+    imageAlt: primaryImage?.altText?.trim() || (arabic ? product.nameAr : product.nameEn),
     gallery: gallery.length ? gallery : [primary],
     media: media.length
       ? media
-      : [{ id: `legacy-${product.id}`, url: primary, altText: product.nameEn }],
+      : [
+          {
+            id: `legacy-${product.id}`,
+            url: primary,
+            altText: arabic ? product.nameAr : product.nameEn,
+          },
+        ],
     options: (product.options ?? []).map((option) => ({
       id: option.id,
       label: arabic ? option.nameAr : option.nameEn,
@@ -130,14 +143,17 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
       ...(variant.stock !== undefined ? { stock: variant.stock } : {}),
     })),
     ...(stock !== undefined ? { stock } : {}),
-    concerns: skinType.map(prettyEnum),
-    skinTypes: skinType.map(prettyEnum),
+    concerns: discoveryLabels,
+    skinTypes: skinType.map((value) => localizedSkinType(value, locale)),
     inStock: stock === undefined ? variants.length > 0 : stock > 0,
     ingredients: product.ingredients?.trim() ?? "",
     ingredientDetails: product.ingredientDetails,
-    howToUse: product.howToUse?.trim() ?? "",
+    howToUse: firstNonEmpty(
+      arabic ? product.howToUseAr : (product.howToUseEn ?? product.howToUse),
+      arabic ? (product.howToUseEn ?? product.howToUse) : product.howToUseAr,
+    ),
     details: description,
-    benefits: skinType.map((type) => `Suitable for ${prettyEnum(type).toLowerCase()} skin`),
+    benefits: discoveryLabels,
   };
 }
 
@@ -194,6 +210,35 @@ export function useCatalogPage(
     },
     initialData,
     placeholderData: (previous) => previous,
+    staleTime: 60_000,
+  });
+}
+
+export function useCatalogFacets(
+  params: Record<string, string | number | undefined> = {},
+  initialData?: Awaited<ReturnType<typeof getProductFacets>>,
+) {
+  return useQuery({
+    queryKey: ["catalog-facets", params],
+    queryFn: ({ signal }) => getProductFacets(params, signal),
+    initialData,
+    staleTime: 60_000,
+  });
+}
+
+export function useMerchandisingCatalog(
+  params: { section: string; limit?: number; categorySlug?: string; excludeProductId?: string },
+  locale: Locale = "en",
+  initialData?: Product[],
+) {
+  return useQuery({
+    queryKey: ["merchandising", params, locale],
+    queryFn: async ({ signal }) => {
+      const records = await listMerchandisingProducts(params, signal);
+      const prices = await promotionalPrices(records);
+      return records.map((product) => applyPrices(mapProduct(product, locale), prices));
+    },
+    initialData,
     staleTime: 60_000,
   });
 }
@@ -262,6 +307,19 @@ export async function loadCatalogPage(
   };
 }
 
+export async function loadCatalogFacets(params: Record<string, string | number | undefined> = {}) {
+  return getProductFacets(params);
+}
+
+export async function loadMerchandisingCatalog(
+  params: { section: string; limit?: number; categorySlug?: string; excludeProductId?: string },
+  locale: Locale = "en",
+) {
+  const records = await listMerchandisingProducts(params);
+  const prices = await promotionalPrices(records);
+  return records.map((product) => applyPrices(mapProduct(product, locale), prices));
+}
+
 export async function loadProduct(slug: string, locale: Locale = "en") {
   const record = await getProduct(slug);
   return applyPrices(mapProduct(record, locale), await promotionalPrices([record]));
@@ -280,7 +338,7 @@ export async function loadAllBrands() {
 }
 
 function filterEntitiesWithProducts<T extends { productCount: number }>(entities: T[]) {
-  return entities.filter((entity) => entity.productCount > 0);
+  return entities.filter((entity) => categoryProductCount(entity) > 0);
 }
 
 function prettyEnum(value: string) {
@@ -290,6 +348,34 @@ function prettyEnum(value: string) {
       /(^|_)([a-z])/g,
       (_, space, letter: string) => `${space ? " " : ""}${letter.toUpperCase()}`,
     );
+}
+
+const arabicSkinTypes = {
+  ALL: "مناسب لجميع أنواع البشرة",
+  OILY: "البشرة الدهنية",
+  DRY: "البشرة الجافة",
+  COMBINATION: "البشرة المختلطة",
+  SENSITIVE: "البشرة الحساسة",
+  NORMAL: "البشرة العادية",
+} as const satisfies Record<string, string>;
+
+const migratedSkinTagArabic: Record<string, string> = {
+  "all-skin-types": arabicSkinTypes.ALL,
+  "oily-skin": arabicSkinTypes.OILY,
+  "dry-skin": arabicSkinTypes.DRY,
+  "combination-skin": arabicSkinTypes.COMBINATION,
+  "sensitive-skin": arabicSkinTypes.SENSITIVE,
+  "normal-skin": arabicSkinTypes.NORMAL,
+};
+
+function localizedSkinType(value: string, locale: Locale) {
+  const arabicLabel = (arabicSkinTypes as Record<string, string>)[value];
+  return locale === "ar" ? (arabicLabel ?? prettyEnum(value)) : prettyEnum(value);
+}
+
+export function localizeTagName(tag: { name: string; slug: string }, locale: Locale) {
+  if (locale === "ar") return migratedSkinTagArabic[tag.slug] ?? tag.name;
+  return tag.name;
 }
 
 function firstNonEmpty(...values: Array<string | null | undefined>) {

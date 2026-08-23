@@ -28,7 +28,7 @@ const sections: ProductInfoSection[] = [
 ];
 
 describe("ProductInfoAccordion", () => {
-  it("opens Description by default and toggles sections independently", () => {
+  it("starts every section closed and toggles sections independently", () => {
     render(<ProductInfoAccordion sections={sections} label="Product details" />);
 
     const description = screen.getByRole("button", { name: "Description" });
@@ -36,11 +36,11 @@ describe("ProductInfoAccordion", () => {
 
     expect(description).toHaveAttribute("type", "button");
     expect(howToUse).toHaveAttribute("type", "button");
-    expect(description).toHaveAttribute("aria-expanded", "true");
+    expect(description).toHaveAttribute("aria-expanded", "false");
     expect(howToUse).toHaveAttribute("aria-expanded", "false");
     expect(description).toHaveAttribute("aria-controls");
     expect(howToUse).toHaveAttribute("aria-controls");
-    expect(description).toHaveAttribute("data-state", "open");
+    expect(description).toHaveAttribute("data-state", "closed");
     expect(howToUse).toHaveAttribute("data-state", "closed");
     const howToUsePanel = document.getElementById(howToUse.getAttribute("aria-controls")!);
     expect(howToUsePanel).toHaveAttribute("aria-labelledby", howToUse.id);
@@ -49,16 +49,16 @@ describe("ProductInfoAccordion", () => {
     expect(descriptionCopy).toHaveTextContent("First paragraph. Second paragraph.");
 
     fireEvent.click(howToUse);
-    expect(description).toHaveAttribute("aria-expanded", "true");
+    expect(description).toHaveAttribute("aria-expanded", "false");
     expect(howToUse).toHaveAttribute("aria-expanded", "true");
-    expect(description).toHaveAttribute("data-state", "open");
+    expect(description).toHaveAttribute("data-state", "closed");
     expect(howToUse).toHaveAttribute("data-state", "open");
     expect(document.querySelector(".product-how-to-use-copy")?.textContent).toBe(
       "Apply   after cleansing.\n  Pat dry.",
     );
 
     fireEvent.click(howToUse);
-    expect(description).toHaveAttribute("aria-expanded", "true");
+    expect(description).toHaveAttribute("aria-expanded", "false");
     expect(howToUse).toHaveAttribute("aria-expanded", "false");
     expect(howToUse).toHaveAttribute("data-state", "closed");
   });
@@ -76,5 +76,20 @@ describe("ProductInfoAccordion", () => {
     expect(screen.queryByRole("button", { name: "How to use" })).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Delivery policy" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Shipping & Return" })).toBeInTheDocument();
+  });
+
+  it("resets disclosure state when the product identity changes", () => {
+    const { rerender } = render(
+      <ProductInfoAccordion key="product-a" sections={sections} label="Product details" />,
+    );
+    const description = screen.getByRole("button", { name: "Description" });
+    fireEvent.click(description);
+    expect(description).toHaveAttribute("aria-expanded", "true");
+
+    rerender(<ProductInfoAccordion key="product-b" sections={sections} label="Product details" />);
+    expect(screen.getByRole("button", { name: "Description" })).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
   });
 });

@@ -9,7 +9,7 @@
      header is never counted twice. */
   --legal-page-scroll-offset: calc(var(--legal-selector-height) + var(--legal-section-anchor-gap));
   min-height: 70dvh;
-  padding: clamp(2rem, 4vw, 4.5rem) clamp(1rem, 4vw, 3rem) clamp(5rem, 8vw, 8rem);
+  padding: var(--storefront-page-start-space, 1.5rem) clamp(1rem, 4vw, 3rem) clamp(5rem, 8vw, 8rem);
   background: linear-gradient(
     180deg,
     color-mix(in srgb, var(--background) 95%, #c9a873 5%) 0,
@@ -578,7 +578,7 @@
 
 @media (max-width: 700px) {
   .bio-information-page {
-    padding: 1.5rem 1.25rem 4.5rem;
+    padding: var(--storefront-page-start-space, 1rem) 1.25rem 4.5rem;
   }
 
   .bio-information-page__breadcrumb {

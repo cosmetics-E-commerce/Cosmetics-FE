@@ -40,22 +40,20 @@ describe("IngredientExplorer", () => {
   });
 
   it("opens one keyboard-accessible desktop card and dismisses it with Escape", async () => {
-    render(<IngredientExplorer ingredients={ingredients} />);
+    render(<IngredientExplorer ingredients={ingredients} locale="en" />);
     const titanium = screen.getByRole("button", {
       name: "Information about Titanium Dioxide",
     });
     const zinc = screen.getByRole("button", { name: "Information about Zinc Oxide" });
 
     titanium.focus();
-    await screen.findByRole("dialog", { name: "Titanium Dioxide ingredient information" });
+    await screen.findByRole("dialog", { name: "Information about Titanium Dioxide" });
     zinc.focus();
 
     const zincDialog = await screen.findByRole("dialog", {
-      name: "Zinc Oxide ingredient information",
+      name: "Information about Zinc Oxide",
     });
-    expect(
-      screen.queryByRole("dialog", { name: "Titanium Dioxide ingredient information" }),
-    ).toBeNull();
+    expect(screen.queryByRole("dialog", { name: "Information about Titanium Dioxide" })).toBeNull();
     expect(zinc).toHaveAttribute("aria-expanded", "true");
 
     fireEvent.keyDown(zincDialog, { key: "Escape" });
@@ -65,7 +63,7 @@ describe("IngredientExplorer", () => {
 
   it("uses a dismissible sheet instead of hover behavior on touch layouts", async () => {
     testState.mobile = true;
-    render(<IngredientExplorer ingredients={ingredients} />);
+    render(<IngredientExplorer ingredients={ingredients} locale="en" />);
     const zinc = screen.getByRole("button", { name: "Information about Zinc Oxide" });
 
     fireEvent.click(zinc);
@@ -75,6 +73,16 @@ describe("IngredientExplorer", () => {
 
     fireEvent.keyDown(sheet, { key: "Escape" });
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+  });
+
+  it("localizes its customer-facing controls while preserving a deliberate content fallback", async () => {
+    testState.mobile = true;
+    render(<IngredientExplorer ingredients={[ingredients[0]!]} locale="ar" />);
+
+    fireEvent.click(screen.getByRole("button", { name: "معلومات عن Titanium Dioxide" }));
+    const sheet = await screen.findByRole("dialog");
+    expect(sheet).toHaveTextContent("الفوائد");
+    expect(sheet).toHaveTextContent("Titanium Dioxide description");
   });
 });
 

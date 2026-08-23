@@ -40,6 +40,7 @@ import {
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { useAllBrands, useCategories } from "@/lib/catalog";
 import type { PublicBrandListItemResponse, PublicCategoryResponse } from "@/lib/api";
+import { buildCategoryTree, categoryProductCount } from "@/lib/category-hierarchy";
 import { useStore } from "@/lib/store";
 import { GlobalBannerSlot } from "@/components/banner/GlobalBannerSlot";
 import { useI18n, type MessageKey } from "@/lib/i18n";
@@ -47,6 +48,14 @@ import { CustomerAvatar } from "@/components/account/CustomerAvatar";
 import { getProfile } from "@/lib/api";
 import { BrandDirectory } from "@/components/layout/BrandDirectory";
 import { sortBrands } from "@/components/layout/brand-directory-data";
+import type { NavigationPublicSnapshot } from "@cosmetics/contracts";
+import { PublishedMegaMenu, PublishedMobileMenuItem } from "@/components/layout/PublishedMegaMenu";
+import {
+  localizedNavigationText,
+  navigationVisibilityAllows,
+  publishedNavigationIsUsable,
+  publishedNavigationQuery,
+} from "@/lib/navigation";
 
 const homeNavItem = { id: "home", label: "common.home" as MessageKey, to: "/" as const };
 
@@ -128,12 +137,14 @@ const headerCopy = {
   },
 } as const;
 
-type MegaMenuValue = "brands" | "categories";
+type MegaMenuValue = string;
 
 export function Header({
   scrollSentinelRef,
+  initialNavigation,
 }: {
   scrollSentinelRef: RefObject<HTMLSpanElement | null>;
+  initialNavigation: NavigationPublicSnapshot | null;
 }) {
   const { t } = useI18n();
   const navigate = useNavigate();
@@ -153,6 +164,10 @@ export function Header({
   const { pathname, search } = useLocation();
   const categories = useCategories();
   const brands = useAllBrands();
+  const publishedNavigation = useQuery({
+    ...publishedNavigationQuery(),
+    ...(initialNavigation ? { initialData: initialNavigation } : {}),
+  });
   const accountProfile = useQuery({
     queryKey: ["account", "profile", user?.id],
     queryFn: getProfile,
@@ -187,6 +202,23 @@ export function Header({
                   : null;
   const transparentHeader = pathname === "/" && !scrolled;
   const visibleBrands = useMemo(() => sortBrands(brands.data ?? [], locale), [brands.data, locale]);
+  const navigationSnapshot = publishedNavigationIsUsable(publishedNavigation.data)
+    ? publishedNavigation.data
+    : undefined;
+  const dynamicNavigationItems = useMemo(
+    () =>
+      navigationSnapshot?.config.items.filter(
+        (item) => item.enabled && navigationVisibilityAllows(item.visibility, locale, "DESKTOP"),
+      ) ?? [],
+    [locale, navigationSnapshot],
+  );
+  const dynamicMobileItems = useMemo(
+    () =>
+      navigationSnapshot?.config.items.filter(
+        (item) => item.enabled && navigationVisibilityAllows(item.visibility, locale, "MOBILE"),
+      ) ?? [],
+    [locale, navigationSnapshot],
+  );
 
   useEffect(() => {
     let observer: IntersectionObserver | undefined;
@@ -221,7 +253,9 @@ export function Header({
       root.style.setProperty("--store-header-height", `${height}px`);
       // The layout offset stays pinned to the resting height so the compact
       // scrolled header never shifts the page content underneath it.
-      if (!scrolledRef.current) root.style.setProperty("--store-header-offset", `${height}px`);
+      if (!scrolledRef.current || window.scrollY <= 1) {
+        root.style.setProperty("--store-header-offset", `${height}px`);
+      }
     };
     const observer = new ResizeObserver(update);
     observer.observe(header);
@@ -284,75 +318,159 @@ export function Header({
               className="header-navigation-menu"
             >
               <NavigationMenuPrimitive.List className="flex items-center justify-center gap-1 2xl:gap-3">
-                <NavigationMenuPrimitive.Item className="header-nav-item">
-                  <NavigationMenuPrimitive.Link asChild>
-                    <Link
-                      to={homeNavItem.to}
-                      {...navInteractionProps(homeNavItem.id)}
-                      data-active={activeNavId === homeNavItem.id}
-                      aria-current={activeNavId === homeNavItem.id ? "page" : undefined}
-                      className="nav-link inline-flex min-h-11 w-full items-center justify-center px-3 text-center"
-                    >
-                      <span data-nav-label>{t(homeNavItem.label)}</span>
-                    </Link>
-                  </NavigationMenuPrimitive.Link>
-                </NavigationMenuPrimitive.Item>
-
-                <NavigationMenuPrimitive.Item value="brands" className="header-nav-item">
-                  <NavigationMenuPrimitive.Trigger
-                    {...navInteractionProps("brands")}
-                    data-active={activeNavId === "brands"}
-                    className="nav-link inline-flex min-h-11 w-full items-center justify-center gap-1.5 px-3 text-center"
-                  >
-                    <span data-nav-label>{t("nav.brands")}</span>
-                    <ChevronDown className="nav-chevron size-3" aria-hidden="true" />
-                  </NavigationMenuPrimitive.Trigger>
-                  <NavigationMenuPrimitive.Content className="header-mega-content">
-                    <BrandsMegaMenu
-                      brands={visibleBrands}
-                      loading={brands.isLoading}
-                      error={brands.isError}
-                      locale={locale}
-                      onNavigate={closeMegaMenu}
-                    />
-                  </NavigationMenuPrimitive.Content>
-                </NavigationMenuPrimitive.Item>
-
-                <NavigationMenuPrimitive.Item value="categories" className="header-nav-item">
-                  <NavigationMenuPrimitive.Trigger
-                    {...navInteractionProps("categories")}
-                    data-active={activeNavId === "categories"}
-                    className="nav-link inline-flex min-h-11 w-full items-center justify-center gap-1.5 px-3 text-center"
-                  >
-                    <span data-nav-label>{t("nav.categories")}</span>
-                    <ChevronDown className="nav-chevron size-3" aria-hidden="true" />
-                  </NavigationMenuPrimitive.Trigger>
-                  <NavigationMenuPrimitive.Content className="header-mega-content">
-                    <CategoriesMegaMenu
-                      brands={visibleBrands}
-                      categories={categories.data ?? []}
-                      loading={categories.isLoading}
-                      locale={locale}
-                      onNavigate={closeMegaMenu}
-                    />
-                  </NavigationMenuPrimitive.Content>
-                </NavigationMenuPrimitive.Item>
-
-                {utilityNav.map((item) => (
-                  <NavigationMenuPrimitive.Item key={item.id} className="header-nav-item">
-                    <NavigationMenuPrimitive.Link asChild>
-                      <Link
-                        to={item.to}
-                        {...navInteractionProps(item.id)}
-                        data-active={activeNavId === item.id}
-                        aria-current={activeNavId === item.id ? "page" : undefined}
-                        className="nav-link inline-flex min-h-11 w-full items-center justify-center px-3 text-center"
+                {navigationSnapshot ? (
+                  dynamicNavigationItems.map((item) => {
+                    const href = navigationSnapshot.resolvedLinks[item.id];
+                    const active = activeNavId
+                      ? activeNavId === item.key
+                      : Boolean(href && routeMatches(pathname, href));
+                    return item.megaMenu?.enabled ? (
+                      <NavigationMenuPrimitive.Item
+                        value={item.id}
+                        key={item.id}
+                        className="header-nav-item"
+                        onFocus={() => setMegaMenu(item.id)}
+                        onMouseOver={() => setMegaMenu(item.id)}
+                        onClick={(event) => {
+                          if ((event.target as HTMLElement).closest("[data-nav-id]")) {
+                            setMegaMenu(item.id);
+                          }
+                        }}
                       >
-                        <span data-nav-label>{t(item.label)}</span>
-                      </Link>
-                    </NavigationMenuPrimitive.Link>
-                  </NavigationMenuPrimitive.Item>
-                ))}
+                        <NavigationMenuPrimitive.Trigger
+                          {...navInteractionProps(item.key)}
+                          onFocus={() => setMegaMenu(item.id)}
+                          onPointerEnter={() => setMegaMenu(item.id)}
+                          data-active={active || undefined}
+                          className="nav-link inline-flex min-h-11 w-full items-center justify-center gap-1.5 px-3 text-center"
+                        >
+                          <span data-nav-label>{localizedNavigationText(item.label, locale)}</span>
+                          <ChevronDown className="nav-chevron size-3" aria-hidden="true" />
+                        </NavigationMenuPrimitive.Trigger>
+                        <NavigationMenuPrimitive.Content className="header-mega-content">
+                          <PublishedMegaMenu
+                            item={item}
+                            snapshot={navigationSnapshot}
+                            locale={locale}
+                            onNavigate={closeMegaMenu}
+                          />
+                        </NavigationMenuPrimitive.Content>
+                      </NavigationMenuPrimitive.Item>
+                    ) : href ? (
+                      <NavigationMenuPrimitive.Item key={item.id} className="header-nav-item">
+                        <NavigationMenuPrimitive.Link asChild>
+                          <a
+                            href={href}
+                            {...navInteractionProps(item.key)}
+                            data-active={active || undefined}
+                            aria-current={active ? "page" : undefined}
+                            className="nav-link inline-flex min-h-11 w-full items-center justify-center px-3 text-center"
+                            {...(item.destination.type === "EXTERNAL" && item.destination.newTab
+                              ? { target: "_blank", rel: "noopener noreferrer" }
+                              : {})}
+                          >
+                            <span data-nav-label>
+                              {localizedNavigationText(item.label, locale)}
+                            </span>
+                          </a>
+                        </NavigationMenuPrimitive.Link>
+                      </NavigationMenuPrimitive.Item>
+                    ) : null;
+                  })
+                ) : (
+                  <>
+                    <NavigationMenuPrimitive.Item className="header-nav-item">
+                      <NavigationMenuPrimitive.Link asChild>
+                        <Link
+                          to={homeNavItem.to}
+                          {...navInteractionProps(homeNavItem.id)}
+                          data-active={activeNavId === homeNavItem.id}
+                          aria-current={activeNavId === homeNavItem.id ? "page" : undefined}
+                          className="nav-link inline-flex min-h-11 w-full items-center justify-center px-3 text-center"
+                        >
+                          <span data-nav-label>{t(homeNavItem.label)}</span>
+                        </Link>
+                      </NavigationMenuPrimitive.Link>
+                    </NavigationMenuPrimitive.Item>
+                    <NavigationMenuPrimitive.Item
+                      value="brands"
+                      className="header-nav-item"
+                      onFocus={() => setMegaMenu("brands")}
+                      onMouseOver={() => setMegaMenu("brands")}
+                      onClick={(event) => {
+                        if ((event.target as HTMLElement).closest("[data-nav-id]")) {
+                          setMegaMenu("brands");
+                        }
+                      }}
+                    >
+                      <NavigationMenuPrimitive.Trigger
+                        {...navInteractionProps("brands")}
+                        onFocus={() => setMegaMenu("brands")}
+                        onPointerEnter={() => setMegaMenu("brands")}
+                        data-active={activeNavId === "brands"}
+                        className="nav-link inline-flex min-h-11 w-full items-center justify-center gap-1.5 px-3 text-center"
+                      >
+                        <span data-nav-label>{t("nav.brands")}</span>
+                        <ChevronDown className="nav-chevron size-3" aria-hidden="true" />
+                      </NavigationMenuPrimitive.Trigger>
+                      <NavigationMenuPrimitive.Content className="header-mega-content">
+                        <BrandsMegaMenu
+                          brands={visibleBrands}
+                          loading={brands.isLoading}
+                          error={brands.isError}
+                          locale={locale}
+                          onNavigate={closeMegaMenu}
+                        />
+                      </NavigationMenuPrimitive.Content>
+                    </NavigationMenuPrimitive.Item>
+                    <NavigationMenuPrimitive.Item
+                      value="categories"
+                      className="header-nav-item"
+                      onFocus={() => setMegaMenu("categories")}
+                      onMouseOver={() => setMegaMenu("categories")}
+                      onClick={(event) => {
+                        if ((event.target as HTMLElement).closest("[data-nav-id]")) {
+                          setMegaMenu("categories");
+                        }
+                      }}
+                    >
+                      <NavigationMenuPrimitive.Trigger
+                        {...navInteractionProps("categories")}
+                        onFocus={() => setMegaMenu("categories")}
+                        onPointerEnter={() => setMegaMenu("categories")}
+                        data-active={activeNavId === "categories"}
+                        className="nav-link inline-flex min-h-11 w-full items-center justify-center gap-1.5 px-3 text-center"
+                      >
+                        <span data-nav-label>{t("nav.categories")}</span>
+                        <ChevronDown className="nav-chevron size-3" aria-hidden="true" />
+                      </NavigationMenuPrimitive.Trigger>
+                      <NavigationMenuPrimitive.Content className="header-mega-content">
+                        <CategoriesMegaMenu
+                          brands={visibleBrands}
+                          categories={categories.data ?? []}
+                          loading={categories.isLoading}
+                          locale={locale}
+                          onNavigate={closeMegaMenu}
+                        />
+                      </NavigationMenuPrimitive.Content>
+                    </NavigationMenuPrimitive.Item>
+                    {utilityNav.map((item) => (
+                      <NavigationMenuPrimitive.Item key={item.id} className="header-nav-item">
+                        <NavigationMenuPrimitive.Link asChild>
+                          <Link
+                            to={item.to}
+                            {...navInteractionProps(item.id)}
+                            data-active={activeNavId === item.id}
+                            aria-current={activeNavId === item.id ? "page" : undefined}
+                            className="nav-link inline-flex min-h-11 w-full items-center justify-center px-3 text-center"
+                          >
+                            <span data-nav-label>{t(item.label)}</span>
+                          </Link>
+                        </NavigationMenuPrimitive.Link>
+                      </NavigationMenuPrimitive.Item>
+                    ))}
+                  </>
+                )}
               </NavigationMenuPrimitive.List>
 
               <div className="header-mega-position">
@@ -504,60 +622,99 @@ export function Header({
           <div className="mobile-nav__body">
             <nav aria-label="Mobile">
               <ul className="mobile-nav__list">
-                <li>
-                  <Link
-                    to={homeNavItem.to}
-                    onClick={closeMobileMenu}
-                    aria-current={activeNavId === homeNavItem.id ? "page" : undefined}
-                    className="mobile-nav__link"
-                  >
-                    {t(homeNavItem.label)}
-                  </Link>
-                </li>
-
-                <li>
-                  <MobileCatalogGroup id="brands" label={t("nav.brands")}>
-                    <BrandDirectory
-                      brands={visibleBrands}
-                      loading={brands.isLoading}
-                      error={brands.isError}
-                      locale={locale}
-                      onNavigate={closeMobileMenu}
-                      copy={copy}
-                      surface="mobile"
-                    />
-                  </MobileCatalogGroup>
-                </li>
-
-                <li>
-                  <MobileCatalogGroup id="categories" label={t("nav.categories")}>
-                    {categories.data?.length ? (
-                      <MobileCategoryAccordion
-                        categories={categories.data}
-                        locale={locale}
-                        onNavigate={closeMobileMenu}
-                      />
-                    ) : (
-                      <p className="mobile-nav__empty">{copy.categoriesEmpty}</p>
-                    )}
-                    <Link to="/shop" onClick={closeMobileMenu} className="mobile-nav__subaction">
-                      {copy.viewAllProducts}
-                    </Link>
-                  </MobileCatalogGroup>
-                </li>
-
-                {utilityNav.map((item) => (
-                  <li key={item.id}>
-                    <Link
-                      to={item.to}
-                      onClick={closeMobileMenu}
-                      aria-current={activeNavId === item.id ? "page" : undefined}
-                      className="mobile-nav__link"
-                    >
-                      {t(item.label)}
-                    </Link>
-                  </li>
-                ))}
+                {navigationSnapshot ? (
+                  dynamicMobileItems.map((item) => {
+                    const href = navigationSnapshot.resolvedLinks[item.id];
+                    const label = localizedNavigationText(item.label, locale);
+                    const active = activeNavId
+                      ? activeNavId === item.key
+                      : Boolean(href && routeMatches(pathname, href));
+                    return (
+                      <li key={item.id}>
+                        {item.megaMenu?.enabled ? (
+                          <MobileCatalogGroup id={item.id} label={label}>
+                            <PublishedMobileMenuItem
+                              item={item}
+                              snapshot={navigationSnapshot}
+                              locale={locale}
+                              onNavigate={closeMobileMenu}
+                            />
+                          </MobileCatalogGroup>
+                        ) : href ? (
+                          <a
+                            href={href}
+                            onClick={closeMobileMenu}
+                            aria-current={active ? "page" : undefined}
+                            className="mobile-nav__link"
+                            {...(item.destination.type === "EXTERNAL" && item.destination.newTab
+                              ? { target: "_blank", rel: "noopener noreferrer" }
+                              : {})}
+                          >
+                            {label}
+                          </a>
+                        ) : null}
+                      </li>
+                    );
+                  })
+                ) : (
+                  <>
+                    <li>
+                      <Link
+                        to={homeNavItem.to}
+                        onClick={closeMobileMenu}
+                        aria-current={activeNavId === homeNavItem.id ? "page" : undefined}
+                        className="mobile-nav__link"
+                      >
+                        {t(homeNavItem.label)}
+                      </Link>
+                    </li>
+                    <li>
+                      <MobileCatalogGroup id="brands" label={t("nav.brands")}>
+                        <BrandDirectory
+                          brands={visibleBrands}
+                          loading={brands.isLoading}
+                          error={brands.isError}
+                          locale={locale}
+                          onNavigate={closeMobileMenu}
+                          copy={copy}
+                          surface="mobile"
+                        />
+                      </MobileCatalogGroup>
+                    </li>
+                    <li>
+                      <MobileCatalogGroup id="categories" label={t("nav.categories")}>
+                        {categories.data?.length ? (
+                          <MobileCategoryAccordion
+                            categories={categories.data}
+                            locale={locale}
+                            onNavigate={closeMobileMenu}
+                          />
+                        ) : (
+                          <p className="mobile-nav__empty">{copy.categoriesEmpty}</p>
+                        )}
+                        <Link
+                          to="/shop"
+                          onClick={closeMobileMenu}
+                          className="mobile-nav__subaction"
+                        >
+                          {copy.viewAllProducts}
+                        </Link>
+                      </MobileCatalogGroup>
+                    </li>
+                    {utilityNav.map((item) => (
+                      <li key={item.id}>
+                        <Link
+                          to={item.to}
+                          onClick={closeMobileMenu}
+                          aria-current={activeNavId === item.id ? "page" : undefined}
+                          className="mobile-nav__link"
+                        >
+                          {t(item.label)}
+                        </Link>
+                      </li>
+                    ))}
+                  </>
+                )}
               </ul>
             </nav>
 
@@ -740,7 +897,7 @@ const CategoriesMegaMenu = memo(function CategoriesMegaMenu({
                   </span>
                   <span className="category-mega__parent-copy">
                     <strong>{label}</strong>
-                    <small>{copy.products(category.productCount)}</small>
+                    <small>{copy.products(categoryProductCount(category))}</small>
                   </span>
                   <ChevronRight
                     className="category-mega__chevron size-4 rtl:rotate-180"
@@ -850,26 +1007,6 @@ const CategoriesMegaMenu = memo(function CategoriesMegaMenu({
   );
 });
 
-function buildCategoryTree(categories: PublicCategoryResponse[]) {
-  const children = new Map<string, PublicCategoryResponse[]>();
-  const knownIds = new Set(categories.map((category) => category.id));
-  const sorted = [...categories].sort(
-    (left, right) =>
-      left.sortOrder - right.sortOrder || left.nameEn.localeCompare(right.nameEn, "en"),
-  );
-  const roots: PublicCategoryResponse[] = [];
-
-  for (const category of sorted) {
-    if (category.parentId && knownIds.has(category.parentId)) {
-      children.set(category.parentId, [...(children.get(category.parentId) ?? []), category]);
-    } else {
-      roots.push(category);
-    }
-  }
-
-  return { roots, children };
-}
-
 function buildCategoryShopGroups(locale: "ar" | "en", category?: PublicCategoryResponse) {
   const baseSearch = category?.slug ? { category: category.slug } : {};
   const english = [
@@ -951,7 +1088,7 @@ function MobileCategoryAccordion({
               </span>
               <span>
                 <strong>{label}</strong>
-                <small>{copy.products(category.productCount)}</small>
+                <small>{copy.products(categoryProductCount(category))}</small>
               </span>
             </AccordionTrigger>
             <AccordionContent className="mobile-category-nav__content">
@@ -975,7 +1112,7 @@ function MobileCategoryAccordion({
                         className="mobile-nav__sublink"
                       >
                         <span>{locale === "ar" ? child.nameAr : child.nameEn}</span>
-                        <small>{child.productCount}</small>
+                        <small>{categoryProductCount(child)}</small>
                       </Link>
                     </li>
                   ))}
@@ -1030,4 +1167,10 @@ function MobileCatalogGroup({
       </AccordionItem>
     </Accordion>
   );
+}
+
+function routeMatches(pathname: string, href: string) {
+  if (/^https?:\/\//i.test(href)) return false;
+  const path = href.split(/[?#]/, 1)[0] || "/";
+  return path === "/" ? pathname === "/" : pathname === path || pathname.startsWith(`${path}/`);
 }

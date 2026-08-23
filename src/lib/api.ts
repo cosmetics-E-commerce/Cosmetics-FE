@@ -2,11 +2,13 @@ import type {
   AuthSession,
   AuthUser,
   CartResponse,
+  CatalogFacetResponse,
   AddressResponse as ContractAddressResponse,
   CreateAddressInput as ContractCreateAddressInput,
   PublicBrandListItemResponse,
   PublicCategoryResponse,
   PublicProductResponse,
+  NavigationPublicSnapshot,
   CustomerReviewLibraryResponse,
   ReviewEligibilityResponse,
   ReviewResponse,
@@ -24,9 +26,11 @@ export type {
   AuthSession,
   AuthUser,
   CartResponse,
+  CatalogFacetResponse,
   PublicBrandListItemResponse,
   PublicCategoryResponse,
   PublicProductResponse,
+  NavigationPublicSnapshot,
   CustomerReviewLibraryResponse,
   ReviewEligibilityResponse,
   ReviewResponse,
@@ -38,6 +42,13 @@ export type {
   WishlistCollectionResponse,
   WishlistResponse,
 };
+
+export async function getPublishedNavigation(signal?: AbortSignal) {
+  return rawRequest<NavigationPublicSnapshot>("/navigation", {
+    auth: false,
+    ...(signal ? { signal } : {}),
+  });
+}
 
 export type AddressResponse = ContractAddressResponse & {
   bostaGovernorateId: string | null;
@@ -797,6 +808,42 @@ export async function listProductsPage(
     ...(signal ? { signal } : {}),
   });
   return normalizePaginatedList(result.data, result.meta, params);
+}
+
+export async function getProductFacets(
+  params: Record<string, string | number | undefined> = {},
+  signal?: AbortSignal,
+) {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(
+    ([key, value]) => value !== undefined && value !== "" && query.set(key, String(value)),
+  );
+  return rawRequest<CatalogFacetResponse>(`/products/facets${query.size ? `?${query}` : ""}`, {
+    auth: false,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+export async function listMerchandisingProducts(
+  params: {
+    section: string;
+    limit?: number;
+    categorySlug?: string;
+    excludeProductId?: string;
+  },
+  signal?: AbortSignal,
+) {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(
+    ([key, value]) => value !== undefined && value !== "" && query.set(key, String(value)),
+  );
+  const result = await rawRequest<
+    PublicProductResponse[] | { items?: PublicProductResponse[]; data?: PublicProductResponse[] }
+  >(`/products/merchandising?${query}`, {
+    auth: false,
+    ...(signal ? { signal } : {}),
+  });
+  return normalizeList(result);
 }
 
 export async function getProduct(slug: string) {

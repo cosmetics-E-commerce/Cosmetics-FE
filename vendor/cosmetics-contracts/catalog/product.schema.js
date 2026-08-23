@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.adminProductSchema = exports.adminProductImageSchema = exports.adminProductVariantSchema = exports.publicProductSchema = exports.publicProductVariantSchema = exports.publicProductOptionSchema = exports.publicProductOptionValueSchema = exports.publicProductImageSchema = exports.updateBrandSchema = exports.createBrandSchema = exports.publicBrandListItemSchema = exports.publicBrandSchema = exports.updateCategorySchema = exports.createCategorySchema = exports.publicCategorySchema = exports.adminProductQuerySchema = exports.publicBrandQuerySchema = exports.publicCatalogQuerySchema = exports.receiveBatchSchema = exports.reassignArchivedCategoryProductsSchema = exports.reassignArchivedProductSchema = exports.updateProductSchema = exports.productVariantUpdateSchema = exports.createProductSchema = exports.productDimensionsInputSchema = exports.productOptionInputSchema = exports.productOptionValueInputSchema = exports.productImageInputSchema = exports.productVariantInputSchema = exports.variantOpeningStockSchema = exports.PRODUCT_VARIANT_LIMIT = exports.PRODUCT_OPTION_VALUE_LIMIT = exports.PRODUCT_OPTION_LIMIT = exports.PRODUCT_GALLERY_LIMIT = exports.skinTypeEnum = void 0;
+exports.merchandisingProductQuerySchema = exports.adminProductSchema = exports.adminProductImageSchema = exports.adminProductVariantSchema = exports.publicProductSchema = exports.publicProductVariantSchema = exports.publicProductOptionSchema = exports.publicProductOptionValueSchema = exports.publicProductImageSchema = exports.updateBrandSchema = exports.createBrandSchema = exports.publicBrandListItemSchema = exports.publicBrandSchema = exports.updateCategorySchema = exports.createCategorySchema = exports.publicCategorySchema = exports.adminProductQuerySchema = exports.publicBrandQuerySchema = exports.catalogFacetSchema = exports.catalogFacetQuerySchema = exports.publicCatalogQuerySchema = exports.receiveBatchSchema = exports.reassignArchivedCategoryProductsSchema = exports.reassignArchivedProductSchema = exports.updateProductSchema = exports.productVariantUpdateSchema = exports.createProductSchema = exports.productDimensionsInputSchema = exports.productOptionInputSchema = exports.productOptionValueInputSchema = exports.productImageInputSchema = exports.productVariantInputSchema = exports.catalogEntityOptionSchema = exports.catalogEntityOptionQuerySchema = exports.updateTagSchema = exports.createTagSchema = exports.tagQuerySchema = exports.adminTagSchema = exports.tagSummarySchema = exports.variantOpeningStockSchema = exports.PRODUCT_VARIANT_LIMIT = exports.PRODUCT_OPTION_VALUE_LIMIT = exports.PRODUCT_OPTION_LIMIT = exports.PRODUCT_GALLERY_LIMIT = exports.skinTypeEnum = void 0;
 const zod_1 = require("zod");
 const image_reference_schema_1 = require("../media/image-reference.schema");
 const primitives_1 = require("../common/primitives");
@@ -39,6 +39,57 @@ const skinTypeQuerySchema = zod_1.z.preprocess((value) => {
         .map((item) => item.trim())
         .filter(Boolean);
 }, zod_1.z.array(exports.skinTypeEnum).optional());
+const tagSlugQuerySchema = zod_1.z.preprocess((value) => {
+    if (value === undefined)
+        return undefined;
+    if (Array.isArray(value))
+        return value;
+    return String(value)
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+}, zod_1.z.array(primitives_1.slugSchema).max(20).optional());
+const booleanQuerySchema = zod_1.z.preprocess((value) => {
+    if (value === undefined || value === "")
+        return undefined;
+    if (value === true || value === "true" || value === "1")
+        return true;
+    if (value === false || value === "false" || value === "0")
+        return false;
+    return value;
+}, zod_1.z.boolean().optional());
+exports.tagSummarySchema = zod_1.z.object({
+    id: primitives_1.uuidSchema,
+    name: zod_1.z.string(),
+    slug: primitives_1.slugSchema,
+});
+exports.adminTagSchema = exports.tagSummarySchema.extend({
+    normalizedName: zod_1.z.string(),
+    productCount: zod_1.z.number().int().nonnegative(),
+    createdAt: zod_1.z.date(),
+    updatedAt: zod_1.z.date(),
+});
+exports.tagQuerySchema = pagination_1.paginationQuerySchema.extend({
+    search: zod_1.z.string().trim().min(1).max(80).optional(),
+    sortBy: zod_1.z.enum(["name", "createdAt", "productCount"]).default("name"),
+});
+exports.createTagSchema = zod_1.z
+    .object({ name: zod_1.z.string().trim().min(1).max(80) })
+    .strict();
+exports.updateTagSchema = exports.createTagSchema;
+exports.catalogEntityOptionQuerySchema = pagination_1.paginationQuerySchema.extend({
+    search: zod_1.z.string().trim().min(1).max(120).optional(),
+    rootsOnly: booleanQuerySchema,
+});
+exports.catalogEntityOptionSchema = zod_1.z.object({
+    id: primitives_1.uuidSchema,
+    slug: primitives_1.slugSchema,
+    label: zod_1.z.string(),
+    secondaryLabel: zod_1.z.string().nullable(),
+    parentId: primitives_1.uuidSchema.nullable().optional(),
+    pathEn: zod_1.z.string().optional(),
+    pathAr: zod_1.z.string().optional(),
+});
 exports.productVariantInputSchema = zod_1.z.object({
     id: primitives_1.uuidSchema.optional(),
     sku: zod_1.z.string().trim().min(1).max(64),
@@ -109,8 +160,12 @@ const productBaseSchema = zod_1.z.object({
     descriptionAr: zod_1.z.string().trim().max(5000).optional(),
     /** Allergen disclosure — a regulatory expectation for cosmetics. */
     ingredients: zod_1.z.string().trim().max(5000).optional(),
+    /** @deprecated Compatibility field; new clients should send howToUseEn. */
     howToUse: zod_1.z.string().trim().max(2000).optional(),
+    howToUseEn: zod_1.z.string().trim().max(2000).optional(),
+    howToUseAr: zod_1.z.string().trim().max(2000).optional(),
     skinType: zod_1.z.array(exports.skinTypeEnum).default([]),
+    tagIds: zod_1.z.array(primitives_1.uuidSchema).max(50).optional(),
     basePrice: primitives_1.piastresSchema.positive(),
     compareAtPrice: primitives_1.piastresSchema.positive().optional(),
     isActive: zod_1.z.boolean().default(false),
@@ -161,8 +216,12 @@ exports.updateProductSchema = zod_1.z.object({
     descriptionEn: zod_1.z.string().trim().max(5000).optional(),
     descriptionAr: zod_1.z.string().trim().max(5000).optional(),
     ingredients: zod_1.z.string().trim().max(5000).optional(),
+    /** @deprecated Compatibility field; new clients should send howToUseEn. */
     howToUse: zod_1.z.string().trim().max(2000).optional(),
+    howToUseEn: zod_1.z.string().trim().max(2000).nullable().optional(),
+    howToUseAr: zod_1.z.string().trim().max(2000).nullable().optional(),
     skinType: zod_1.z.array(exports.skinTypeEnum).optional(),
+    tagIds: zod_1.z.array(primitives_1.uuidSchema).max(50).optional(),
     basePrice: primitives_1.piastresSchema.positive().optional(),
     compareAtPrice: primitives_1.piastresSchema.positive().nullable().optional(),
     weight: zod_1.z.number().nonnegative().max(1000).nullable().optional(),
@@ -217,6 +276,8 @@ exports.publicCatalogQuerySchema = pagination_1.paginationQuerySchema
     categorySlug: primitives_1.slugSchema.optional(),
     brandSlug: primitives_1.slugSchema.optional(),
     skinType: skinTypeQuerySchema,
+    tags: tagSlugQuerySchema,
+    inStock: booleanQuerySchema,
     minPrice: zod_1.z.coerce.number().int().nonnegative().optional(),
     maxPrice: zod_1.z.coerce.number().int().nonnegative().optional(),
     sortBy: zod_1.z.enum(["createdAt", "basePrice", "nameEn"]).default("createdAt"),
@@ -226,6 +287,27 @@ exports.publicCatalogQuerySchema = pagination_1.paginationQuerySchema
     v.minPrice <= v.maxPrice, {
     message: "minPrice must be less than or equal to maxPrice",
     path: ["minPrice"],
+});
+exports.catalogFacetQuerySchema = zod_1.z.object({
+    search: zod_1.z.string().trim().min(1).max(120).optional(),
+    categorySlug: primitives_1.slugSchema.optional(),
+    brandSlug: primitives_1.slugSchema.optional(),
+    inStock: booleanQuerySchema,
+});
+exports.catalogFacetSchema = zod_1.z.object({
+    tags: zod_1.z.array(exports.tagSummarySchema.extend({ count: zod_1.z.number().int().nonnegative() })),
+    categories: zod_1.z.array(zod_1.z.object({
+        id: primitives_1.uuidSchema,
+        parentId: primitives_1.uuidSchema.nullable(),
+        slug: primitives_1.slugSchema,
+        nameEn: zod_1.z.string(),
+        nameAr: zod_1.z.string(),
+        count: zod_1.z.number().int().nonnegative(),
+    })),
+    price: zod_1.z.object({
+        min: primitives_1.piastresSchema.nullable(),
+        max: primitives_1.piastresSchema.nullable(),
+    }),
 });
 exports.publicBrandQuerySchema = pagination_1.paginationQuerySchema.extend({
     search: zod_1.z.string().trim().min(1).max(120).optional(),
@@ -240,6 +322,7 @@ exports.adminProductQuerySchema = pagination_1.paginationQuerySchema
     brandId: primitives_1.uuidSchema.optional(),
     brandSlug: primitives_1.slugSchema.optional(),
     skinType: skinTypeQuerySchema,
+    tags: tagSlugQuerySchema,
     minPrice: zod_1.z.coerce.number().int().nonnegative().optional(),
     maxPrice: zod_1.z.coerce.number().int().nonnegative().optional(),
     sortBy: zod_1.z
@@ -260,7 +343,10 @@ exports.publicCategorySchema = zod_1.z.object({
     nameAr: zod_1.z.string(),
     imageUrl: zod_1.z.string().nullable(),
     sortOrder: zod_1.z.number().int(),
+    /** Historical direct-assignment count retained for API compatibility. */
     productCount: zod_1.z.number().int(),
+    directProductCount: zod_1.z.number().int().optional(),
+    aggregateProductCount: zod_1.z.number().int().optional(),
 });
 exports.createCategorySchema = zod_1.z
     .object({
@@ -358,13 +444,20 @@ exports.publicProductSchema = zod_1.z.object({
     descriptionAr: zod_1.z.string().nullable(),
     ingredients: zod_1.z.string().nullable(),
     howToUse: zod_1.z.string().nullable(),
+    howToUseEn: zod_1.z.string().nullable().optional(),
+    howToUseAr: zod_1.z.string().nullable().optional(),
     skinType: zod_1.z.array(exports.skinTypeEnum),
+    tags: zod_1.z.array(exports.tagSummarySchema),
     basePrice: primitives_1.piastresSchema,
     compareAtPrice: primitives_1.piastresSchema.nullable(),
     rating: zod_1.z.number().min(0).max(5),
     reviewCount: zod_1.z.number().int().nonnegative(),
     imageUrl: zod_1.z.string().nullable(),
-    category: exports.publicCategorySchema.omit({ productCount: true }),
+    category: exports.publicCategorySchema.omit({
+        productCount: true,
+        directProductCount: true,
+        aggregateProductCount: true,
+    }),
     brand: exports.publicBrandSchema.nullable(),
     options: zod_1.z.array(exports.publicProductOptionSchema),
     variants: zod_1.z.array(exports.publicProductVariantSchema),
@@ -394,5 +487,11 @@ exports.adminProductSchema = exports.publicProductSchema.extend({
     deletedAt: zod_1.z.date().nullable(),
     variants: zod_1.z.array(exports.adminProductVariantSchema),
     images: zod_1.z.array(exports.adminProductImageSchema),
+});
+exports.merchandisingProductQuerySchema = zod_1.z.object({
+    section: zod_1.z.string().trim().min(1).max(64).default("default"),
+    limit: zod_1.z.coerce.number().int().positive().max(20).default(8),
+    categorySlug: primitives_1.slugSchema.optional(),
+    excludeProductId: primitives_1.uuidSchema.optional(),
 });
 //# sourceMappingURL=product.schema.js.map

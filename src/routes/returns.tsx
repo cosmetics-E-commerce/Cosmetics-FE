@@ -6,6 +6,7 @@ import {
   PolicyList,
 } from "@/components/content/InformationPage";
 import { breadcrumbSchema, createSeoHead, jsonLd } from "@/lib/seo";
+import { useStore } from "@/lib/store";
 
 const sections = [
   { id: "accepted", label: "Accepted cases" },
@@ -15,101 +16,197 @@ const sections = [
   { id: "process", label: "Return process" },
   { id: "fees", label: "Return shipping fees" },
 ];
+const sectionsAr = [
+  { id: "accepted", label: "الحالات المقبولة" },
+  { id: "not-accepted", label: "الحالات غير المقبولة" },
+  { id: "conditions", label: "شروط الإرجاع" },
+  { id: "refunds", label: "استرداد المبلغ" },
+  { id: "process", label: "خطوات الإرجاع" },
+  { id: "fees", label: "رسوم شحن الإرجاع" },
+];
 
 export const Route = createFileRoute("/returns")({
-  head: () => ({
-    ...createSeoHead({
-      title: "Returns & Exchanges",
-      description:
-        "Understand BioReza return and exchange eligibility, the 14-day request period, refunds, and the step-by-step return process.",
-      path: "/returns",
-      locale: "en",
-      alternates: false,
-    }),
-    scripts: [
-      jsonLd(
-        breadcrumbSchema([
-          { name: "Home", path: "/" },
-          { name: "Returns & Exchanges", path: "/returns" },
-        ]),
-      ),
-    ],
-  }),
+  head: ({ match }) => {
+    const ar = match.search.lang === "ar";
+    return {
+      ...createSeoHead({
+        title: ar ? "الإرجاع والاستبدال" : "Returns & Exchanges",
+        description: ar
+          ? "تعرّفي على أهلية الإرجاع والاستبدال وفترة الطلب البالغة 14 يوماً وخطوات استرداد المبلغ."
+          : "Understand BioReza return and exchange eligibility, the 14-day request period, refunds, and the step-by-step return process.",
+        path: "/returns",
+        locale: ar ? "ar" : "en",
+      }),
+      scripts: [
+        jsonLd(
+          breadcrumbSchema([
+            { name: ar ? "الرئيسية" : "Home", path: "/" },
+            { name: ar ? "الإرجاع والاستبدال" : "Returns & Exchanges", path: "/returns" },
+          ]),
+        ),
+      ],
+    };
+  },
   component: ReturnsAndExchanges,
 });
 
 function ReturnsAndExchanges() {
+  const { locale } = useStore();
+  const ar = locale === "ar";
   return (
     <InformationPage
-      eyebrow="Customer care"
-      title="Returns & exchanges"
-      intro="At BioReza, customer satisfaction is our priority. Due to the nature of skincare, haircare, and cosmetic products, certain conditions apply to returns and exchanges."
-      sections={sections}
+      eyebrow={ar ? "خدمة العملاء" : "Customer care"}
+      title={ar ? "الإرجاع والاستبدال" : "Returns & exchanges"}
+      intro={
+        ar
+          ? "رضاكِ أولوية لدينا. ونظراً لطبيعة منتجات العناية بالبشرة والشعر ومستحضرات التجميل، تطبق شروط محددة على الإرجاع والاستبدال."
+          : "At BioReza, customer satisfaction is our priority. Due to the nature of skincare, haircare, and cosmetic products, certain conditions apply to returns and exchanges."
+      }
+      sections={ar ? sectionsAr : sections}
     >
-      <InformationSection id="accepted" title="Returns & exchanges are accepted when">
-        <p>A customer may request a return or exchange if:</p>
+      <InformationSection
+        id="accepted"
+        title={ar ? "يُقبل الإرجاع أو الاستبدال عندما" : "Returns & exchanges are accepted when"}
+      >
+        <p>
+          {ar
+            ? "يمكن طلب الإرجاع أو الاستبدال في الحالات التالية:"
+            : "A customer may request a return or exchange if:"}
+        </p>
         <PolicyList tone="positive">
-          <li>The wrong product was received.</li>
-          <li>The product arrived damaged or defective.</li>
-          <li>The product was opened or used before delivery.</li>
-          <li>The product is missing items or is incomplete.</li>
-          <li>The received product is different from the order.</li>
-        </PolicyList>
-      </InformationSection>
-
-      <InformationSection id="not-accepted" title="Returns & exchanges are not accepted when">
-        <p>For hygiene and safety reasons, returns or exchanges cannot be accepted if:</p>
-        <PolicyList tone="restricted">
-          <li>The product has been opened or used after delivery.</li>
-          <li>The product is returned without its original packaging.</li>
-          <li>The product is damaged due to improper use or storage.</li>
-          <li>The request is made after the allowed return period.</li>
+          <li>{ar ? "استلام منتج غير صحيح." : "The wrong product was received."}</li>
           <li>
-            The product was purchased during a final sale or clearance promotion, unless it is
-            defective.
+            {ar ? "وصول المنتج تالفاً أو معيباً." : "The product arrived damaged or defective."}
           </li>
-          <li>The customer changes their mind after receiving the correct product.</li>
+          <li>
+            {ar
+              ? "كان المنتج مفتوحاً أو مستخدماً قبل التسليم."
+              : "The product was opened or used before delivery."}
+          </li>
+          <li>
+            {ar
+              ? "المنتج ناقص أو تنقصه بعض محتوياته."
+              : "The product is missing items or is incomplete."}
+          </li>
+          <li>
+            {ar
+              ? "المنتج المستلم مختلف عن الطلب."
+              : "The received product is different from the order."}
+          </li>
         </PolicyList>
       </InformationSection>
 
-      <InformationSection id="conditions" title="Return conditions">
-        <p>To be eligible for a return or exchange:</p>
-        <p className="bio-policy-emphasis">Request within 14 days</p>
+      <InformationSection
+        id="not-accepted"
+        title={
+          ar ? "لا يُقبل الإرجاع أو الاستبدال عندما" : "Returns & exchanges are not accepted when"
+        }
+      >
+        <p>
+          {ar
+            ? "لأسباب تتعلق بالنظافة والسلامة، لا يمكن قبول الطلب في الحالات التالية:"
+            : "For hygiene and safety reasons, returns or exchanges cannot be accepted if:"}
+        </p>
+        <PolicyList tone="restricted">
+          <li>
+            {ar
+              ? "فُتح المنتج أو استُخدم بعد التسليم."
+              : "The product has been opened or used after delivery."}
+          </li>
+          <li>
+            {ar
+              ? "أُعيد المنتج دون عبوته الأصلية."
+              : "The product is returned without its original packaging."}
+          </li>
+          <li>
+            {ar
+              ? "تضرر المنتج بسبب الاستخدام أو التخزين غير السليم."
+              : "The product is damaged due to improper use or storage."}
+          </li>
+          <li>
+            {ar
+              ? "قُدم الطلب بعد انتهاء فترة الإرجاع المسموح بها."
+              : "The request is made after the allowed return period."}
+          </li>
+          <li>
+            {ar
+              ? "اشتُري المنتج ضمن تصفية أو بيع نهائي، ما لم يكن معيباً."
+              : "The product was purchased during a final sale or clearance promotion, unless it is defective."}
+          </li>
+          <li>
+            {ar
+              ? "تغيير الرأي بعد استلام المنتج الصحيح."
+              : "The customer changes their mind after receiving the correct product."}
+          </li>
+        </PolicyList>
+      </InformationSection>
+
+      <InformationSection id="conditions" title={ar ? "شروط الإرجاع" : "Return conditions"}>
+        <p>{ar ? "لأهلية الإرجاع أو الاستبدال:" : "To be eligible for a return or exchange:"}</p>
+        <p className="bio-policy-emphasis">
+          {ar ? "قدمي الطلب خلال 14 يوماً" : "Request within 14 days"}
+        </p>
         <PolicyList>
-          <li>The request must be submitted within 14 days of receiving the order.</li>
-          <li>The product must be unused, unopened, and in its original condition.</li>
-          <li>All original packaging, seals, accessories, and labels must be intact.</li>
-          <li>A valid receipt or proof of purchase is required.</li>
+          <li>
+            {ar
+              ? "يجب تقديم الطلب خلال 14 يوماً من استلامه."
+              : "The request must be submitted within 14 days of receiving the order."}
+          </li>
+          <li>
+            {ar
+              ? "يجب أن يكون المنتج غير مستخدم وغير مفتوح وبحالته الأصلية."
+              : "The product must be unused, unopened, and in its original condition."}
+          </li>
+          <li>
+            {ar
+              ? "يجب أن تظل العبوة والأختام والملحقات والملصقات الأصلية سليمة."
+              : "All original packaging, seals, accessories, and labels must be intact."}
+          </li>
+          <li>
+            {ar
+              ? "يلزم إيصال صالح أو إثبات شراء."
+              : "A valid receipt or proof of purchase is required."}
+          </li>
         </PolicyList>
       </InformationSection>
 
-      <InformationSection id="refunds" title="Refunds">
+      <InformationSection id="refunds" title={ar ? "استرداد المبلغ" : "Refunds"}>
         <p>
-          Once the returned product has been received and inspected, our team will notify the
-          customer of the status of their refund or exchange request.
+          {ar
+            ? "بعد استلام المنتج المرتجع وفحصه، سيبلغكِ فريقنا بحالة طلب الاسترداد أو الاستبدال."
+            : "Once the returned product has been received and inspected, our team will notify the customer of the status of their refund or exchange request."}
         </p>
         <p>
-          If approved, the refund will be processed using the original payment method whenever
-          applicable.
+          {ar
+            ? "عند الموافقة، يُعاد المبلغ عبر طريقة الدفع الأصلية متى كان ذلك ممكناً."
+            : "If approved, the refund will be processed using the original payment method whenever applicable."}
         </p>
       </InformationSection>
 
-      <InformationSection id="process" title="Return process">
+      <InformationSection id="process" title={ar ? "خطوات الإرجاع" : "Return process"}>
         <ol className="bio-return-steps">
           <li className="bio-return-step">
             <span className="bio-return-step__number" aria-hidden="true">
               01
             </span>
             <div>
-              <h3>Contact us</h3>
-              <p>To request a return or exchange, contact our Customer Care Team.</p>
-              <CustomerCarePhone label="Start a return" />
-              <p>The request should include:</p>
+              <h3>{ar ? "تواصلي معنا" : "Contact us"}</h3>
+              <p>
+                {ar
+                  ? "لطلب الإرجاع أو الاستبدال، تواصلي مع فريق خدمة العملاء."
+                  : "To request a return or exchange, contact our Customer Care Team."}
+              </p>
+              <CustomerCarePhone label={ar ? "بدء طلب الإرجاع" : "Start a return"} />
+              <p>{ar ? "يجب أن يتضمن الطلب:" : "The request should include:"}</p>
               <PolicyList>
-                <li>Order Number</li>
-                <li>Product Name</li>
-                <li>Reason for the return or exchange</li>
-                <li>Photos, if the product is damaged, defective, or incorrect</li>
+                <li>{ar ? "رقم الطلب" : "Order Number"}</li>
+                <li>{ar ? "اسم المنتج" : "Product Name"}</li>
+                <li>{ar ? "سبب الإرجاع أو الاستبدال" : "Reason for the return or exchange"}</li>
+                <li>
+                  {ar
+                    ? "صور إذا كان المنتج تالفاً أو معيباً أو غير صحيح"
+                    : "Photos, if the product is damaged, defective, or incorrect"}
+                </li>
               </PolicyList>
             </div>
           </li>
@@ -118,12 +215,17 @@ function ReturnsAndExchanges() {
               02
             </span>
             <div>
-              <h3>Eligibility review</h3>
+              <h3>{ar ? "مراجعة الأهلية" : "Eligibility review"}</h3>
               <p>
-                Our team will carefully review the request to ensure it meets the conditions
-                outlined in the Returns &amp; Exchange Policy.
+                {ar
+                  ? "يراجع فريقنا الطلب بعناية للتأكد من مطابقته لشروط سياسة الإرجاع والاستبدال."
+                  : "Our team will carefully review the request to ensure it meets the conditions outlined in the Returns & Exchange Policy."}
               </p>
-              <p>If additional information is required, we will contact the customer promptly.</p>
+              <p>
+                {ar
+                  ? "إذا احتجنا معلومات إضافية فسنتواصل معكِ سريعاً."
+                  : "If additional information is required, we will contact the customer promptly."}
+              </p>
             </div>
           </li>
           <li className="bio-return-step">
@@ -131,14 +233,23 @@ function ReturnsAndExchanges() {
               03
             </span>
             <div>
-              <h3>Return approval</h3>
-              <p>If the request is approved:</p>
+              <h3>{ar ? "الموافقة على الإرجاع" : "Return approval"}</h3>
+              <p>{ar ? "عند الموافقة على الطلب:" : "If the request is approved:"}</p>
               <PolicyList>
-                <li>The customer will receive detailed return instructions.</li>
-                <li>The product must be returned in its original condition and packaging.</li>
                 <li>
-                  Once received, our Quality Control Team will inspect the item before completing
-                  the refund or exchange.
+                  {ar
+                    ? "ستصلكِ تعليمات الإرجاع بالتفصيل."
+                    : "The customer will receive detailed return instructions."}
+                </li>
+                <li>
+                  {ar
+                    ? "يجب إعادة المنتج بحالته وعبوته الأصليتين."
+                    : "The product must be returned in its original condition and packaging."}
+                </li>
+                <li>
+                  {ar
+                    ? "بعد الاستلام، يفحص فريق الجودة المنتج قبل إتمام الاسترداد أو الاستبدال."
+                    : "Once received, our Quality Control Team will inspect the item before completing the refund or exchange."}
                 </li>
               </PolicyList>
             </div>
@@ -146,13 +257,21 @@ function ReturnsAndExchanges() {
         </ol>
       </InformationSection>
 
-      <InformationSection id="fees" title="Return shipping fees">
-        <p>Approved refunds are processed after the returned item has been inspected.</p>
-        <p>Shipping fees are non-refundable unless the return is due to:</p>
+      <InformationSection id="fees" title={ar ? "رسوم شحن الإرجاع" : "Return shipping fees"}>
+        <p>
+          {ar
+            ? "تُعالج المبالغ المستردة بعد فحص المنتج المرتجع."
+            : "Approved refunds are processed after the returned item has been inspected."}
+        </p>
+        <p>
+          {ar
+            ? "رسوم الشحن غير قابلة للاسترداد إلا إذا كان سبب الإرجاع:"
+            : "Shipping fees are non-refundable unless the return is due to:"}
+        </p>
         <PolicyList>
-          <li>An incorrect item sent by BioReza.</li>
-          <li>A damaged or defective product.</li>
-          <li>An error during order fulfillment.</li>
+          <li>{ar ? "إرسال بيوريزا منتجاً غير صحيح." : "An incorrect item sent by BioReza."}</li>
+          <li>{ar ? "منتج تالف أو معيب." : "A damaged or defective product."}</li>
+          <li>{ar ? "خطأ أثناء تجهيز الطلب." : "An error during order fulfillment."}</li>
         </PolicyList>
       </InformationSection>
     </InformationPage>

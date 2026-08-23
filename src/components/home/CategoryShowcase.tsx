@@ -359,8 +359,11 @@ export function CategoryShowcase({ initialCategories }: CategoryShowcaseProps) {
                         <span className="sf-category-showcase__copy">
                           <strong className="sf-category-showcase__name">{name}</strong>
                           <span className="sf-category-showcase__meta">
-                            {category.productCount} {labels.product}
-                            {!rtl && category.productCount !== 1 ? "s" : ""}
+                            {category.aggregateProductCount ?? category.productCount}{" "}
+                            {labels.product}
+                            {!rtl && (category.aggregateProductCount ?? category.productCount) !== 1
+                              ? "s"
+                              : ""}
                           </span>
                           <span className="sf-category-showcase__cta">
                             {labels.shopNow}

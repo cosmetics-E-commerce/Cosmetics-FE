@@ -276,7 +276,7 @@ test("the dedicated brands page owns full search and alphabet exploration", asyn
 
   await page.getByRole("link", { name: /Brand 001/ }).click();
   await expect(page).toHaveURL(/\/brands\/brand-1$/);
-  await expect(page.getByRole("heading", { name: "Brand 001" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Brand 001", exact: true })).toBeVisible();
 
   await page.goto("/brands?lang=ar");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");

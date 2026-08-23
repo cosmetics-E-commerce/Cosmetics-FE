@@ -50,7 +50,22 @@ export declare const wishlistItemSchema: z.ZodObject<{
         descriptionAr: z.ZodNullable<z.ZodString>;
         ingredients: z.ZodNullable<z.ZodString>;
         howToUse: z.ZodNullable<z.ZodString>;
+        howToUseEn: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        howToUseAr: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         skinType: z.ZodArray<z.ZodEnum<["OILY", "DRY", "COMBINATION", "SENSITIVE", "NORMAL", "ALL"]>, "many">;
+        tags: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            name: z.ZodString;
+            slug: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            name: string;
+            slug: string;
+        }, {
+            id: string;
+            name: string;
+            slug: string;
+        }>, "many">;
         basePrice: z.ZodNumber;
         compareAtPrice: z.ZodNullable<z.ZodNumber>;
         rating: z.ZodNumber;
@@ -65,22 +80,24 @@ export declare const wishlistItemSchema: z.ZodObject<{
             imageUrl: z.ZodNullable<z.ZodString>;
             sortOrder: z.ZodNumber;
             productCount: z.ZodNumber;
-        }, "productCount">, "strip", z.ZodTypeAny, {
+            directProductCount: z.ZodOptional<z.ZodNumber>;
+            aggregateProductCount: z.ZodOptional<z.ZodNumber>;
+        }, "productCount" | "directProductCount" | "aggregateProductCount">, "strip", z.ZodTypeAny, {
             sortOrder: number;
             id: string;
             imageUrl: string | null;
             slug: string;
+            parentId: string | null;
             nameEn: string;
             nameAr: string;
-            parentId: string | null;
         }, {
             sortOrder: number;
             id: string;
             imageUrl: string | null;
             slug: string;
+            parentId: string | null;
             nameEn: string;
             nameAr: string;
-            parentId: string | null;
         }>;
         brand: z.ZodNullable<z.ZodObject<{
             id: z.ZodString;
@@ -394,6 +411,11 @@ export declare const wishlistItemSchema: z.ZodObject<{
             altText: string | null;
             isPrimary: boolean;
         }[];
+        tags: {
+            id: string;
+            name: string;
+            slug: string;
+        }[];
         rating: number;
         reviewCount: number;
         category: {
@@ -401,9 +423,9 @@ export declare const wishlistItemSchema: z.ZodObject<{
             id: string;
             imageUrl: string | null;
             slug: string;
+            parentId: string | null;
             nameEn: string;
             nameAr: string;
-            parentId: string | null;
         };
         brand: {
             id: string;
@@ -433,6 +455,8 @@ export declare const wishlistItemSchema: z.ZodObject<{
             concentration: string | null;
             concentrationUnit: string | null;
         }[];
+        howToUseEn?: string | null | undefined;
+        howToUseAr?: string | null | undefined;
     }, {
         options: {
             values: {
@@ -494,6 +518,11 @@ export declare const wishlistItemSchema: z.ZodObject<{
             altText: string | null;
             isPrimary: boolean;
         }[];
+        tags: {
+            id: string;
+            name: string;
+            slug: string;
+        }[];
         rating: number;
         reviewCount: number;
         category: {
@@ -501,9 +530,9 @@ export declare const wishlistItemSchema: z.ZodObject<{
             id: string;
             imageUrl: string | null;
             slug: string;
+            parentId: string | null;
             nameEn: string;
             nameAr: string;
-            parentId: string | null;
         };
         brand: {
             id: string;
@@ -533,6 +562,8 @@ export declare const wishlistItemSchema: z.ZodObject<{
             concentration: string | null;
             concentrationUnit: string | null;
         }[];
+        howToUseEn?: string | null | undefined;
+        howToUseAr?: string | null | undefined;
     }>;
     addedAt: z.ZodString;
 }, "strip", z.ZodTypeAny, {
@@ -600,6 +631,11 @@ export declare const wishlistItemSchema: z.ZodObject<{
             altText: string | null;
             isPrimary: boolean;
         }[];
+        tags: {
+            id: string;
+            name: string;
+            slug: string;
+        }[];
         rating: number;
         reviewCount: number;
         category: {
@@ -607,9 +643,9 @@ export declare const wishlistItemSchema: z.ZodObject<{
             id: string;
             imageUrl: string | null;
             slug: string;
+            parentId: string | null;
             nameEn: string;
             nameAr: string;
-            parentId: string | null;
         };
         brand: {
             id: string;
@@ -639,6 +675,8 @@ export declare const wishlistItemSchema: z.ZodObject<{
             concentration: string | null;
             concentrationUnit: string | null;
         }[];
+        howToUseEn?: string | null | undefined;
+        howToUseAr?: string | null | undefined;
     };
     addedAt: string;
 }, {
@@ -706,6 +744,11 @@ export declare const wishlistItemSchema: z.ZodObject<{
             altText: string | null;
             isPrimary: boolean;
         }[];
+        tags: {
+            id: string;
+            name: string;
+            slug: string;
+        }[];
         rating: number;
         reviewCount: number;
         category: {
@@ -713,9 +756,9 @@ export declare const wishlistItemSchema: z.ZodObject<{
             id: string;
             imageUrl: string | null;
             slug: string;
+            parentId: string | null;
             nameEn: string;
             nameAr: string;
-            parentId: string | null;
         };
         brand: {
             id: string;
@@ -745,6 +788,8 @@ export declare const wishlistItemSchema: z.ZodObject<{
             concentration: string | null;
             concentrationUnit: string | null;
         }[];
+        howToUseEn?: string | null | undefined;
+        howToUseAr?: string | null | undefined;
     };
     addedAt: string;
 }>;
@@ -770,7 +815,22 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             descriptionAr: z.ZodNullable<z.ZodString>;
             ingredients: z.ZodNullable<z.ZodString>;
             howToUse: z.ZodNullable<z.ZodString>;
+            howToUseEn: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            howToUseAr: z.ZodOptional<z.ZodNullable<z.ZodString>>;
             skinType: z.ZodArray<z.ZodEnum<["OILY", "DRY", "COMBINATION", "SENSITIVE", "NORMAL", "ALL"]>, "many">;
+            tags: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                name: z.ZodString;
+                slug: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                id: string;
+                name: string;
+                slug: string;
+            }, {
+                id: string;
+                name: string;
+                slug: string;
+            }>, "many">;
             basePrice: z.ZodNumber;
             compareAtPrice: z.ZodNullable<z.ZodNumber>;
             rating: z.ZodNumber;
@@ -785,22 +845,24 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 imageUrl: z.ZodNullable<z.ZodString>;
                 sortOrder: z.ZodNumber;
                 productCount: z.ZodNumber;
-            }, "productCount">, "strip", z.ZodTypeAny, {
+                directProductCount: z.ZodOptional<z.ZodNumber>;
+                aggregateProductCount: z.ZodOptional<z.ZodNumber>;
+            }, "productCount" | "directProductCount" | "aggregateProductCount">, "strip", z.ZodTypeAny, {
                 sortOrder: number;
                 id: string;
                 imageUrl: string | null;
                 slug: string;
+                parentId: string | null;
                 nameEn: string;
                 nameAr: string;
-                parentId: string | null;
             }, {
                 sortOrder: number;
                 id: string;
                 imageUrl: string | null;
                 slug: string;
+                parentId: string | null;
                 nameEn: string;
                 nameAr: string;
-                parentId: string | null;
             }>;
             brand: z.ZodNullable<z.ZodObject<{
                 id: z.ZodString;
@@ -1114,6 +1176,11 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 altText: string | null;
                 isPrimary: boolean;
             }[];
+            tags: {
+                id: string;
+                name: string;
+                slug: string;
+            }[];
             rating: number;
             reviewCount: number;
             category: {
@@ -1121,9 +1188,9 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 id: string;
                 imageUrl: string | null;
                 slug: string;
+                parentId: string | null;
                 nameEn: string;
                 nameAr: string;
-                parentId: string | null;
             };
             brand: {
                 id: string;
@@ -1153,6 +1220,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 concentration: string | null;
                 concentrationUnit: string | null;
             }[];
+            howToUseEn?: string | null | undefined;
+            howToUseAr?: string | null | undefined;
         }, {
             options: {
                 values: {
@@ -1214,6 +1283,11 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 altText: string | null;
                 isPrimary: boolean;
             }[];
+            tags: {
+                id: string;
+                name: string;
+                slug: string;
+            }[];
             rating: number;
             reviewCount: number;
             category: {
@@ -1221,9 +1295,9 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 id: string;
                 imageUrl: string | null;
                 slug: string;
+                parentId: string | null;
                 nameEn: string;
                 nameAr: string;
-                parentId: string | null;
             };
             brand: {
                 id: string;
@@ -1253,6 +1327,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 concentration: string | null;
                 concentrationUnit: string | null;
             }[];
+            howToUseEn?: string | null | undefined;
+            howToUseAr?: string | null | undefined;
         }>;
         addedAt: z.ZodString;
     }, "strip", z.ZodTypeAny, {
@@ -1320,6 +1396,11 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 altText: string | null;
                 isPrimary: boolean;
             }[];
+            tags: {
+                id: string;
+                name: string;
+                slug: string;
+            }[];
             rating: number;
             reviewCount: number;
             category: {
@@ -1327,9 +1408,9 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 id: string;
                 imageUrl: string | null;
                 slug: string;
+                parentId: string | null;
                 nameEn: string;
                 nameAr: string;
-                parentId: string | null;
             };
             brand: {
                 id: string;
@@ -1359,6 +1440,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 concentration: string | null;
                 concentrationUnit: string | null;
             }[];
+            howToUseEn?: string | null | undefined;
+            howToUseAr?: string | null | undefined;
         };
         addedAt: string;
     }, {
@@ -1426,6 +1509,11 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 altText: string | null;
                 isPrimary: boolean;
             }[];
+            tags: {
+                id: string;
+                name: string;
+                slug: string;
+            }[];
             rating: number;
             reviewCount: number;
             category: {
@@ -1433,9 +1521,9 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 id: string;
                 imageUrl: string | null;
                 slug: string;
+                parentId: string | null;
                 nameEn: string;
                 nameAr: string;
-                parentId: string | null;
             };
             brand: {
                 id: string;
@@ -1465,6 +1553,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 concentration: string | null;
                 concentrationUnit: string | null;
             }[];
+            howToUseEn?: string | null | undefined;
+            howToUseAr?: string | null | undefined;
         };
         addedAt: string;
     }>, "many">;
@@ -1542,6 +1632,11 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 altText: string | null;
                 isPrimary: boolean;
             }[];
+            tags: {
+                id: string;
+                name: string;
+                slug: string;
+            }[];
             rating: number;
             reviewCount: number;
             category: {
@@ -1549,9 +1644,9 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 id: string;
                 imageUrl: string | null;
                 slug: string;
+                parentId: string | null;
                 nameEn: string;
                 nameAr: string;
-                parentId: string | null;
             };
             brand: {
                 id: string;
@@ -1581,6 +1676,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 concentration: string | null;
                 concentrationUnit: string | null;
             }[];
+            howToUseEn?: string | null | undefined;
+            howToUseAr?: string | null | undefined;
         };
         addedAt: string;
     }[];
@@ -1658,6 +1755,11 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 altText: string | null;
                 isPrimary: boolean;
             }[];
+            tags: {
+                id: string;
+                name: string;
+                slug: string;
+            }[];
             rating: number;
             reviewCount: number;
             category: {
@@ -1665,9 +1767,9 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 id: string;
                 imageUrl: string | null;
                 slug: string;
+                parentId: string | null;
                 nameEn: string;
                 nameAr: string;
-                parentId: string | null;
             };
             brand: {
                 id: string;
@@ -1697,6 +1799,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 concentration: string | null;
                 concentrationUnit: string | null;
             }[];
+            howToUseEn?: string | null | undefined;
+            howToUseAr?: string | null | undefined;
         };
         addedAt: string;
     }[];
@@ -1727,7 +1831,22 @@ export declare const wishlistSchema: z.ZodObject<{
                 descriptionAr: z.ZodNullable<z.ZodString>;
                 ingredients: z.ZodNullable<z.ZodString>;
                 howToUse: z.ZodNullable<z.ZodString>;
+                howToUseEn: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+                howToUseAr: z.ZodOptional<z.ZodNullable<z.ZodString>>;
                 skinType: z.ZodArray<z.ZodEnum<["OILY", "DRY", "COMBINATION", "SENSITIVE", "NORMAL", "ALL"]>, "many">;
+                tags: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    name: z.ZodString;
+                    slug: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }, {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }>, "many">;
                 basePrice: z.ZodNumber;
                 compareAtPrice: z.ZodNullable<z.ZodNumber>;
                 rating: z.ZodNumber;
@@ -1742,22 +1861,24 @@ export declare const wishlistSchema: z.ZodObject<{
                     imageUrl: z.ZodNullable<z.ZodString>;
                     sortOrder: z.ZodNumber;
                     productCount: z.ZodNumber;
-                }, "productCount">, "strip", z.ZodTypeAny, {
+                    directProductCount: z.ZodOptional<z.ZodNumber>;
+                    aggregateProductCount: z.ZodOptional<z.ZodNumber>;
+                }, "productCount" | "directProductCount" | "aggregateProductCount">, "strip", z.ZodTypeAny, {
                     sortOrder: number;
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 }, {
                     sortOrder: number;
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 }>;
                 brand: z.ZodNullable<z.ZodObject<{
                     id: z.ZodString;
@@ -2071,6 +2192,11 @@ export declare const wishlistSchema: z.ZodObject<{
                     altText: string | null;
                     isPrimary: boolean;
                 }[];
+                tags: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }[];
                 rating: number;
                 reviewCount: number;
                 category: {
@@ -2078,9 +2204,9 @@ export declare const wishlistSchema: z.ZodObject<{
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 };
                 brand: {
                     id: string;
@@ -2110,6 +2236,8 @@ export declare const wishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }[];
+                howToUseEn?: string | null | undefined;
+                howToUseAr?: string | null | undefined;
             }, {
                 options: {
                     values: {
@@ -2171,6 +2299,11 @@ export declare const wishlistSchema: z.ZodObject<{
                     altText: string | null;
                     isPrimary: boolean;
                 }[];
+                tags: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }[];
                 rating: number;
                 reviewCount: number;
                 category: {
@@ -2178,9 +2311,9 @@ export declare const wishlistSchema: z.ZodObject<{
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 };
                 brand: {
                     id: string;
@@ -2210,6 +2343,8 @@ export declare const wishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }[];
+                howToUseEn?: string | null | undefined;
+                howToUseAr?: string | null | undefined;
             }>;
             addedAt: z.ZodString;
         }, "strip", z.ZodTypeAny, {
@@ -2277,6 +2412,11 @@ export declare const wishlistSchema: z.ZodObject<{
                     altText: string | null;
                     isPrimary: boolean;
                 }[];
+                tags: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }[];
                 rating: number;
                 reviewCount: number;
                 category: {
@@ -2284,9 +2424,9 @@ export declare const wishlistSchema: z.ZodObject<{
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 };
                 brand: {
                     id: string;
@@ -2316,6 +2456,8 @@ export declare const wishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }[];
+                howToUseEn?: string | null | undefined;
+                howToUseAr?: string | null | undefined;
             };
             addedAt: string;
         }, {
@@ -2383,6 +2525,11 @@ export declare const wishlistSchema: z.ZodObject<{
                     altText: string | null;
                     isPrimary: boolean;
                 }[];
+                tags: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }[];
                 rating: number;
                 reviewCount: number;
                 category: {
@@ -2390,9 +2537,9 @@ export declare const wishlistSchema: z.ZodObject<{
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 };
                 brand: {
                     id: string;
@@ -2422,6 +2569,8 @@ export declare const wishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }[];
+                howToUseEn?: string | null | undefined;
+                howToUseAr?: string | null | undefined;
             };
             addedAt: string;
         }>, "many">;
@@ -2499,6 +2648,11 @@ export declare const wishlistSchema: z.ZodObject<{
                     altText: string | null;
                     isPrimary: boolean;
                 }[];
+                tags: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }[];
                 rating: number;
                 reviewCount: number;
                 category: {
@@ -2506,9 +2660,9 @@ export declare const wishlistSchema: z.ZodObject<{
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 };
                 brand: {
                     id: string;
@@ -2538,6 +2692,8 @@ export declare const wishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }[];
+                howToUseEn?: string | null | undefined;
+                howToUseAr?: string | null | undefined;
             };
             addedAt: string;
         }[];
@@ -2615,6 +2771,11 @@ export declare const wishlistSchema: z.ZodObject<{
                     altText: string | null;
                     isPrimary: boolean;
                 }[];
+                tags: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }[];
                 rating: number;
                 reviewCount: number;
                 category: {
@@ -2622,9 +2783,9 @@ export declare const wishlistSchema: z.ZodObject<{
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 };
                 brand: {
                     id: string;
@@ -2654,6 +2815,8 @@ export declare const wishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }[];
+                howToUseEn?: string | null | undefined;
+                howToUseAr?: string | null | undefined;
             };
             addedAt: string;
         }[];
@@ -2676,7 +2839,22 @@ export declare const wishlistSchema: z.ZodObject<{
             descriptionAr: z.ZodNullable<z.ZodString>;
             ingredients: z.ZodNullable<z.ZodString>;
             howToUse: z.ZodNullable<z.ZodString>;
+            howToUseEn: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            howToUseAr: z.ZodOptional<z.ZodNullable<z.ZodString>>;
             skinType: z.ZodArray<z.ZodEnum<["OILY", "DRY", "COMBINATION", "SENSITIVE", "NORMAL", "ALL"]>, "many">;
+            tags: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                name: z.ZodString;
+                slug: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                id: string;
+                name: string;
+                slug: string;
+            }, {
+                id: string;
+                name: string;
+                slug: string;
+            }>, "many">;
             basePrice: z.ZodNumber;
             compareAtPrice: z.ZodNullable<z.ZodNumber>;
             rating: z.ZodNumber;
@@ -2691,22 +2869,24 @@ export declare const wishlistSchema: z.ZodObject<{
                 imageUrl: z.ZodNullable<z.ZodString>;
                 sortOrder: z.ZodNumber;
                 productCount: z.ZodNumber;
-            }, "productCount">, "strip", z.ZodTypeAny, {
+                directProductCount: z.ZodOptional<z.ZodNumber>;
+                aggregateProductCount: z.ZodOptional<z.ZodNumber>;
+            }, "productCount" | "directProductCount" | "aggregateProductCount">, "strip", z.ZodTypeAny, {
                 sortOrder: number;
                 id: string;
                 imageUrl: string | null;
                 slug: string;
+                parentId: string | null;
                 nameEn: string;
                 nameAr: string;
-                parentId: string | null;
             }, {
                 sortOrder: number;
                 id: string;
                 imageUrl: string | null;
                 slug: string;
+                parentId: string | null;
                 nameEn: string;
                 nameAr: string;
-                parentId: string | null;
             }>;
             brand: z.ZodNullable<z.ZodObject<{
                 id: z.ZodString;
@@ -3020,6 +3200,11 @@ export declare const wishlistSchema: z.ZodObject<{
                 altText: string | null;
                 isPrimary: boolean;
             }[];
+            tags: {
+                id: string;
+                name: string;
+                slug: string;
+            }[];
             rating: number;
             reviewCount: number;
             category: {
@@ -3027,9 +3212,9 @@ export declare const wishlistSchema: z.ZodObject<{
                 id: string;
                 imageUrl: string | null;
                 slug: string;
+                parentId: string | null;
                 nameEn: string;
                 nameAr: string;
-                parentId: string | null;
             };
             brand: {
                 id: string;
@@ -3059,6 +3244,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 concentration: string | null;
                 concentrationUnit: string | null;
             }[];
+            howToUseEn?: string | null | undefined;
+            howToUseAr?: string | null | undefined;
         }, {
             options: {
                 values: {
@@ -3120,6 +3307,11 @@ export declare const wishlistSchema: z.ZodObject<{
                 altText: string | null;
                 isPrimary: boolean;
             }[];
+            tags: {
+                id: string;
+                name: string;
+                slug: string;
+            }[];
             rating: number;
             reviewCount: number;
             category: {
@@ -3127,9 +3319,9 @@ export declare const wishlistSchema: z.ZodObject<{
                 id: string;
                 imageUrl: string | null;
                 slug: string;
+                parentId: string | null;
                 nameEn: string;
                 nameAr: string;
-                parentId: string | null;
             };
             brand: {
                 id: string;
@@ -3159,6 +3351,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 concentration: string | null;
                 concentrationUnit: string | null;
             }[];
+            howToUseEn?: string | null | undefined;
+            howToUseAr?: string | null | undefined;
         }>;
         addedAt: z.ZodString;
     }, "strip", z.ZodTypeAny, {
@@ -3226,6 +3420,11 @@ export declare const wishlistSchema: z.ZodObject<{
                 altText: string | null;
                 isPrimary: boolean;
             }[];
+            tags: {
+                id: string;
+                name: string;
+                slug: string;
+            }[];
             rating: number;
             reviewCount: number;
             category: {
@@ -3233,9 +3432,9 @@ export declare const wishlistSchema: z.ZodObject<{
                 id: string;
                 imageUrl: string | null;
                 slug: string;
+                parentId: string | null;
                 nameEn: string;
                 nameAr: string;
-                parentId: string | null;
             };
             brand: {
                 id: string;
@@ -3265,6 +3464,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 concentration: string | null;
                 concentrationUnit: string | null;
             }[];
+            howToUseEn?: string | null | undefined;
+            howToUseAr?: string | null | undefined;
         };
         addedAt: string;
     }, {
@@ -3332,6 +3533,11 @@ export declare const wishlistSchema: z.ZodObject<{
                 altText: string | null;
                 isPrimary: boolean;
             }[];
+            tags: {
+                id: string;
+                name: string;
+                slug: string;
+            }[];
             rating: number;
             reviewCount: number;
             category: {
@@ -3339,9 +3545,9 @@ export declare const wishlistSchema: z.ZodObject<{
                 id: string;
                 imageUrl: string | null;
                 slug: string;
+                parentId: string | null;
                 nameEn: string;
                 nameAr: string;
-                parentId: string | null;
             };
             brand: {
                 id: string;
@@ -3371,6 +3577,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 concentration: string | null;
                 concentrationUnit: string | null;
             }[];
+            howToUseEn?: string | null | undefined;
+            howToUseAr?: string | null | undefined;
         };
         addedAt: string;
     }>, "many">;
@@ -3443,6 +3651,11 @@ export declare const wishlistSchema: z.ZodObject<{
                 altText: string | null;
                 isPrimary: boolean;
             }[];
+            tags: {
+                id: string;
+                name: string;
+                slug: string;
+            }[];
             rating: number;
             reviewCount: number;
             category: {
@@ -3450,9 +3663,9 @@ export declare const wishlistSchema: z.ZodObject<{
                 id: string;
                 imageUrl: string | null;
                 slug: string;
+                parentId: string | null;
                 nameEn: string;
                 nameAr: string;
-                parentId: string | null;
             };
             brand: {
                 id: string;
@@ -3482,6 +3695,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 concentration: string | null;
                 concentrationUnit: string | null;
             }[];
+            howToUseEn?: string | null | undefined;
+            howToUseAr?: string | null | undefined;
         };
         addedAt: string;
     }[];
@@ -3557,6 +3772,11 @@ export declare const wishlistSchema: z.ZodObject<{
                     altText: string | null;
                     isPrimary: boolean;
                 }[];
+                tags: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }[];
                 rating: number;
                 reviewCount: number;
                 category: {
@@ -3564,9 +3784,9 @@ export declare const wishlistSchema: z.ZodObject<{
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 };
                 brand: {
                     id: string;
@@ -3596,6 +3816,8 @@ export declare const wishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }[];
+                howToUseEn?: string | null | undefined;
+                howToUseAr?: string | null | undefined;
             };
             addedAt: string;
         }[];
@@ -3670,6 +3892,11 @@ export declare const wishlistSchema: z.ZodObject<{
                 altText: string | null;
                 isPrimary: boolean;
             }[];
+            tags: {
+                id: string;
+                name: string;
+                slug: string;
+            }[];
             rating: number;
             reviewCount: number;
             category: {
@@ -3677,9 +3904,9 @@ export declare const wishlistSchema: z.ZodObject<{
                 id: string;
                 imageUrl: string | null;
                 slug: string;
+                parentId: string | null;
                 nameEn: string;
                 nameAr: string;
-                parentId: string | null;
             };
             brand: {
                 id: string;
@@ -3709,6 +3936,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 concentration: string | null;
                 concentrationUnit: string | null;
             }[];
+            howToUseEn?: string | null | undefined;
+            howToUseAr?: string | null | undefined;
         };
         addedAt: string;
     }[];
@@ -3784,6 +4013,11 @@ export declare const wishlistSchema: z.ZodObject<{
                     altText: string | null;
                     isPrimary: boolean;
                 }[];
+                tags: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }[];
                 rating: number;
                 reviewCount: number;
                 category: {
@@ -3791,9 +4025,9 @@ export declare const wishlistSchema: z.ZodObject<{
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 };
                 brand: {
                     id: string;
@@ -3823,6 +4057,8 @@ export declare const wishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }[];
+                howToUseEn?: string | null | undefined;
+                howToUseAr?: string | null | undefined;
             };
             addedAt: string;
         }[];
@@ -3859,7 +4095,22 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 descriptionAr: z.ZodNullable<z.ZodString>;
                 ingredients: z.ZodNullable<z.ZodString>;
                 howToUse: z.ZodNullable<z.ZodString>;
+                howToUseEn: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+                howToUseAr: z.ZodOptional<z.ZodNullable<z.ZodString>>;
                 skinType: z.ZodArray<z.ZodEnum<["OILY", "DRY", "COMBINATION", "SENSITIVE", "NORMAL", "ALL"]>, "many">;
+                tags: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    name: z.ZodString;
+                    slug: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }, {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }>, "many">;
                 basePrice: z.ZodNumber;
                 compareAtPrice: z.ZodNullable<z.ZodNumber>;
                 rating: z.ZodNumber;
@@ -3874,22 +4125,24 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     imageUrl: z.ZodNullable<z.ZodString>;
                     sortOrder: z.ZodNumber;
                     productCount: z.ZodNumber;
-                }, "productCount">, "strip", z.ZodTypeAny, {
+                    directProductCount: z.ZodOptional<z.ZodNumber>;
+                    aggregateProductCount: z.ZodOptional<z.ZodNumber>;
+                }, "productCount" | "directProductCount" | "aggregateProductCount">, "strip", z.ZodTypeAny, {
                     sortOrder: number;
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 }, {
                     sortOrder: number;
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 }>;
                 brand: z.ZodNullable<z.ZodObject<{
                     id: z.ZodString;
@@ -4203,6 +4456,11 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     altText: string | null;
                     isPrimary: boolean;
                 }[];
+                tags: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }[];
                 rating: number;
                 reviewCount: number;
                 category: {
@@ -4210,9 +4468,9 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 };
                 brand: {
                     id: string;
@@ -4242,6 +4500,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }[];
+                howToUseEn?: string | null | undefined;
+                howToUseAr?: string | null | undefined;
             }, {
                 options: {
                     values: {
@@ -4303,6 +4563,11 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     altText: string | null;
                     isPrimary: boolean;
                 }[];
+                tags: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }[];
                 rating: number;
                 reviewCount: number;
                 category: {
@@ -4310,9 +4575,9 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 };
                 brand: {
                     id: string;
@@ -4342,6 +4607,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }[];
+                howToUseEn?: string | null | undefined;
+                howToUseAr?: string | null | undefined;
             }>;
             addedAt: z.ZodString;
         }, "strip", z.ZodTypeAny, {
@@ -4409,6 +4676,11 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     altText: string | null;
                     isPrimary: boolean;
                 }[];
+                tags: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }[];
                 rating: number;
                 reviewCount: number;
                 category: {
@@ -4416,9 +4688,9 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 };
                 brand: {
                     id: string;
@@ -4448,6 +4720,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }[];
+                howToUseEn?: string | null | undefined;
+                howToUseAr?: string | null | undefined;
             };
             addedAt: string;
         }, {
@@ -4515,6 +4789,11 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     altText: string | null;
                     isPrimary: boolean;
                 }[];
+                tags: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }[];
                 rating: number;
                 reviewCount: number;
                 category: {
@@ -4522,9 +4801,9 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 };
                 brand: {
                     id: string;
@@ -4554,6 +4833,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }[];
+                howToUseEn?: string | null | undefined;
+                howToUseAr?: string | null | undefined;
             };
             addedAt: string;
         }>, "many">;
@@ -4634,6 +4915,11 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     altText: string | null;
                     isPrimary: boolean;
                 }[];
+                tags: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }[];
                 rating: number;
                 reviewCount: number;
                 category: {
@@ -4641,9 +4927,9 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 };
                 brand: {
                     id: string;
@@ -4673,6 +4959,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }[];
+                howToUseEn?: string | null | undefined;
+                howToUseAr?: string | null | undefined;
             };
             addedAt: string;
         }[];
@@ -4750,6 +5038,11 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     altText: string | null;
                     isPrimary: boolean;
                 }[];
+                tags: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }[];
                 rating: number;
                 reviewCount: number;
                 category: {
@@ -4757,9 +5050,9 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 };
                 brand: {
                     id: string;
@@ -4789,6 +5082,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }[];
+                howToUseEn?: string | null | undefined;
+                howToUseAr?: string | null | undefined;
             };
             addedAt: string;
         }[];
@@ -4871,6 +5166,11 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     altText: string | null;
                     isPrimary: boolean;
                 }[];
+                tags: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }[];
                 rating: number;
                 reviewCount: number;
                 category: {
@@ -4878,9 +5178,9 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 };
                 brand: {
                     id: string;
@@ -4910,6 +5210,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }[];
+                howToUseEn?: string | null | undefined;
+                howToUseAr?: string | null | undefined;
             };
             addedAt: string;
         }[];
@@ -4992,6 +5294,11 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     altText: string | null;
                     isPrimary: boolean;
                 }[];
+                tags: {
+                    id: string;
+                    name: string;
+                    slug: string;
+                }[];
                 rating: number;
                 reviewCount: number;
                 category: {
@@ -4999,9 +5306,9 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     id: string;
                     imageUrl: string | null;
                     slug: string;
+                    parentId: string | null;
                     nameEn: string;
                     nameAr: string;
-                    parentId: string | null;
                 };
                 brand: {
                     id: string;
@@ -5031,6 +5338,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }[];
+                howToUseEn?: string | null | undefined;
+                howToUseAr?: string | null | undefined;
             };
             addedAt: string;
         }[];

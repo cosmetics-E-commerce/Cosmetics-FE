@@ -11,22 +11,27 @@ import {
 } from "@/components/home/Sections";
 import { CategoryShowcase } from "@/components/home/CategoryShowcase";
 import { BrandMarquee } from "@/components/home/BrandMarquee";
-import { loadAllBrands, loadCatalog, loadCategories } from "@/lib/catalog";
+import { loadAllBrands, loadCategories, loadMerchandisingCatalog } from "@/lib/catalog";
 import { images } from "@/lib/products";
 import { absoluteUrl, canonicalUrl, createSeoHead, itemListSchema, jsonLd } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
-    const [products, categories, brands] = await Promise.all([
-      loadCatalog(
-        { limit: 8, sortBy: "createdAt", sortOrder: "desc" },
+    const [arrivals, customerEdit, categories, brands] = await Promise.all([
+      loadMerchandisingCatalog(
+        { section: "home-arrivals", limit: 5 },
+        context.locale === "ar" ? "ar" : "en",
+      ),
+      loadMerchandisingCatalog(
+        { section: "home-customer-edit", limit: 8 },
         context.locale === "ar" ? "ar" : "en",
       ),
       loadCategories(),
       loadAllBrands(),
     ]);
     return {
-      products,
+      arrivals,
+      customerEdit,
       categories,
       brands,
       locale: context.locale === "ar" ? ("ar" as const) : ("en" as const),
@@ -63,8 +68,8 @@ export const Route = createFileRoute("/")({
           primaryImageOfPage: { "@type": "ImageObject", url: absoluteUrl(images.heroSlide1) },
           isPartOf: { "@id": `${canonicalUrl("/", "en")}#website` },
         }),
-        ...(loaderData?.products.length
-          ? [jsonLd(itemListSchema("Featured products", loaderData.products, locale))]
+        ...(loaderData?.arrivals.length
+          ? [jsonLd(itemListSchema("Featured products", loaderData.arrivals, locale))]
           : []),
       ],
     };
@@ -73,17 +78,17 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { products, categories, brands } = Route.useLoaderData();
+  const { arrivals, customerEdit, categories, brands } = Route.useLoaderData();
   return (
     <>
       <Hero />
       <BrandMarquee initialBrands={brands} />
       <Benefits />
       <CategoryShowcase initialCategories={categories} />
-      <Featured initialProducts={products.slice(0, 5)} />
+      <Featured initialProducts={arrivals} />
       <CollectionFeature />
       <Concerns />
-      <BestSellers initialProducts={products} />
+      <BestSellers initialProducts={customerEdit} />
       <BrandStory />
       <BeautyDifference />
     </>

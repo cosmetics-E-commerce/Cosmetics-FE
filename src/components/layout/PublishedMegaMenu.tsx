@@ -1,0 +1,634 @@
+import { Component, useMemo, useState, type ReactNode } from "react";
+import type {
+  NavigationBlock,
+  NavigationItem,
+  NavigationPublicSnapshot,
+  NavigationResolvedEntity,
+} from "@cosmetics/contracts";
+import { ChevronRight, Grid2X2, Image as ImageIcon, Search } from "lucide-react";
+
+import legacyPromoImage from "@/assets/product-serum.jpg";
+import { localizedNavigationText, navigationVisibilityAllows } from "@/lib/navigation";
+
+type Locale = "en" | "ar";
+
+export function PublishedMegaMenu({
+  item,
+  snapshot,
+  locale,
+  onNavigate,
+}: {
+  item: NavigationItem;
+  snapshot: NavigationPublicSnapshot;
+  locale: Locale;
+  onNavigate: () => void;
+}) {
+  const rows = item.megaMenu?.rows.filter(
+    (row) => row.enabled && navigationVisibilityAllows(row.visibility, locale, "DESKTOP"),
+  );
+  if (!rows?.length) return null;
+  return (
+    <div
+      className="header-mega-panel published-mega"
+      data-menu-width={item.megaMenu?.width.toLowerCase()}
+      data-menu-style={item.megaMenu?.style.toLowerCase()}
+      dir={locale === "ar" ? "rtl" : "ltr"}
+    >
+      {rows.map((row) => (
+        <div
+          className="published-mega__row"
+          key={row.id}
+          data-presentation={row.presentation.toLowerCase()}
+          data-separators={row.columnSeparators || undefined}
+        >
+          {row.columns.map((column) => (
+            <div
+              className="published-mega__column"
+              key={column.id}
+              style={{ "--published-column-span": column.span } as React.CSSProperties}
+            >
+              {column.blocks
+                .filter(
+                  (block) =>
+                    block.enabled &&
+                    navigationVisibilityAllows(block.visibility, locale, "DESKTOP"),
+                )
+                .map((block) => (
+                  <SafePublishedBlock
+                    key={block.id}
+                    block={block}
+                    snapshot={snapshot}
+                    locale={locale}
+                    onNavigate={onNavigate}
+                  />
+                ))}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export function PublishedMobileMenuItem({
+  item,
+  snapshot,
+  locale,
+  onNavigate,
+}: {
+  item: NavigationItem;
+  snapshot: NavigationPublicSnapshot;
+  locale: Locale;
+  onNavigate: () => void;
+}) {
+  const blocks = useMemo(
+    () =>
+      (item.megaMenu?.rows ?? [])
+        .filter(
+          (row) => row.enabled && navigationVisibilityAllows(row.visibility, locale, "MOBILE"),
+        )
+        .flatMap((row) => row.columns.flatMap((column) => column.blocks))
+        .filter(
+          (block) =>
+            block.enabled && navigationVisibilityAllows(block.visibility, locale, "MOBILE"),
+        )
+        .sort((left, right) => (left.mobileOrder ?? 100) - (right.mobileOrder ?? 100)),
+    [item.megaMenu?.rows, locale],
+  );
+  return (
+    <div className="published-mobile-menu">
+      {blocks.map((block) => (
+        <SafePublishedBlock
+          key={block.id}
+          block={block}
+          snapshot={snapshot}
+          locale={locale}
+          onNavigate={onNavigate}
+          mobile
+        />
+      ))}
+    </div>
+  );
+}
+
+type PublishedBlockProps = {
+  block: NavigationBlock;
+  snapshot: NavigationPublicSnapshot;
+  locale: Locale;
+  onNavigate: () => void;
+  mobile?: boolean;
+};
+
+class SafePublishedBlock extends Component<PublishedBlockProps, { failed: boolean }> {
+  override state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  override render(): ReactNode {
+    if (this.state.failed) return null;
+    return <PublishedBlock {...this.props} />;
+  }
+}
+
+function PublishedBlock({
+  block,
+  snapshot,
+  locale,
+  onNavigate,
+  mobile = false,
+}: PublishedBlockProps) {
+  const entities = snapshot.resolvedBlocks[block.id] ?? [];
+  if (block.type === "CATEGORY_EXPLORER")
+    return (
+      <CategoryExplorer
+        block={block}
+        entities={entities}
+        snapshot={snapshot}
+        locale={locale}
+        onNavigate={onNavigate}
+        mobile={mobile}
+      />
+    );
+  if (block.type === "BRAND_DIRECTORY")
+    return (
+      <BrandDirectoryBlock
+        block={block}
+        entities={entities}
+        locale={locale}
+        onNavigate={onNavigate}
+      />
+    );
+  if (block.type === "CATEGORY_LIST" || block.type === "BRAND_LIST" || block.type === "TAG_LIST")
+    return (
+      <EntityList
+        block={block}
+        entities={entities}
+        snapshot={snapshot}
+        locale={locale}
+        onNavigate={onNavigate}
+      />
+    );
+  if (block.type === "PRODUCT_LIST")
+    return (
+      <ProductList
+        block={block}
+        entities={entities}
+        snapshot={snapshot}
+        locale={locale}
+        onNavigate={onNavigate}
+      />
+    );
+  if (block.type === "PROMO_CARD")
+    return (
+      <PromoCard
+        promo={block}
+        href={snapshot.resolvedLinks[block.id]}
+        mediaUrl={block.mediaAssetId ? snapshot.media[block.mediaAssetId]?.url : undefined}
+        locale={locale}
+        onNavigate={onNavigate}
+      />
+    );
+  if (block.type === "CUSTOM_LINKS")
+    return (
+      <section className={`published-mega__links is-${block.presentation.toLowerCase()}`}>
+        {block.showHeading ? <BlockHeading value={block.heading} locale={locale} /> : null}
+        {block.links.map((link) => {
+          const href = snapshot.resolvedLinks[link.id];
+          return href ? (
+            <SafeLink
+              href={href}
+              key={link.id}
+              onNavigate={onNavigate}
+              newTab={link.destination.type === "EXTERNAL" && link.destination.newTab}
+            >
+              {localizedNavigationText(link.label, locale)}
+            </SafeLink>
+          ) : null;
+        })}
+      </section>
+    );
+  if (block.type === "HEADING")
+    return (
+      <h3 className={`published-mega__heading is-${block.level.toLowerCase()}`}>
+        {localizedNavigationText(block.text, locale)}
+      </h3>
+    );
+  if (block.type === "TEXT")
+    return (
+      <p className={`published-mega__text is-${block.tone.toLowerCase()}`}>
+        {localizedNavigationText(block.text, locale)}
+      </p>
+    );
+  if (block.type === "CTA" || block.type === "SHOP_ALL") {
+    const href = snapshot.resolvedLinks[block.id];
+    return href ? (
+      <SafeLink
+        href={href}
+        onNavigate={onNavigate}
+        newTab={block.destination.type === "EXTERNAL" && block.destination.newTab}
+        className={`published-mega__cta is-${block.style.toLowerCase()} ${block.type === "CTA" ? `align-${block.alignment.toLowerCase()}` : ""}`}
+      >
+        {block.type === "CTA" && block.icon !== "NONE" && block.iconPosition === "START" ? (
+          block.icon === "GRID" ? (
+            <Grid2X2 aria-hidden="true" />
+          ) : (
+            <ChevronRight aria-hidden="true" />
+          )
+        ) : null}
+        {localizedNavigationText(block.label, locale)}
+        {block.type === "CTA" && block.icon !== "NONE" && block.iconPosition === "END" ? (
+          block.icon === "GRID" ? (
+            <Grid2X2 aria-hidden="true" />
+          ) : (
+            <ChevronRight aria-hidden="true" />
+          )
+        ) : null}
+      </SafeLink>
+    ) : null;
+  }
+  if (block.type === "IMAGE") {
+    const media = block.mediaAssetId ? snapshot.media[block.mediaAssetId] : undefined;
+    if (!media) return null;
+    const image = (
+      <img
+        className={`published-mega__image is-${block.aspect.toLowerCase()}`}
+        src={media.url}
+        alt={localizedNavigationText(block.alt, locale) || media.altText || ""}
+      />
+    );
+    const href = snapshot.resolvedLinks[block.id];
+    return href ? (
+      <SafeLink
+        href={href}
+        onNavigate={onNavigate}
+        className="published-mega__image-link"
+        newTab={Boolean(block.destination?.type === "EXTERNAL" && block.destination.newTab)}
+      >
+        {image}
+      </SafeLink>
+    ) : (
+      image
+    );
+  }
+  if (block.type === "DIVIDER") return <hr className="published-mega__divider" />;
+  if (block.type === "SPACER")
+    return (
+      <span
+        aria-hidden="true"
+        className={`published-mega__spacer is-${block.size.toLowerCase()}`}
+      />
+    );
+  return null;
+}
+
+function CategoryExplorer({
+  block,
+  entities,
+  snapshot,
+  locale,
+  onNavigate,
+  mobile,
+}: {
+  block: Extract<NavigationBlock, { type: "CATEGORY_EXPLORER" }>;
+  entities: NavigationResolvedEntity[];
+  snapshot: NavigationPublicSnapshot;
+  locale: Locale;
+  onNavigate: () => void;
+  mobile: boolean;
+}) {
+  const parents = entities.filter(
+    (entity) => entity.kind === "CATEGORY" && entity.secondaryLabel === "root",
+  );
+  const brands = entities.filter((entity) => entity.kind === "BRAND");
+  return (
+    <section className="published-category-explorer" data-mobile={mobile || undefined}>
+      <div className="published-category-explorer__groups">
+        <BlockHeading value={block.heading} locale={locale} />
+        <div>
+          {parents.map((parent) => {
+            const children = entities.filter(
+              (entity) => entity.kind === "CATEGORY" && entity.secondaryLabel === parent.id,
+            );
+            return (
+              <section key={parent.id}>
+                <SafeLink
+                  href={parent.href}
+                  onNavigate={onNavigate}
+                  className="published-category-explorer__parent"
+                >
+                  {entityLabel(parent, locale)}
+                  {block.showProductCounts && parent.productCount !== undefined ? (
+                    <small>{parent.productCount}</small>
+                  ) : null}
+                </SafeLink>
+                {children.map((child) => (
+                  <SafeLink href={child.href} key={child.id} onNavigate={onNavigate}>
+                    {entityLabel(child, locale)}
+                  </SafeLink>
+                ))}
+              </section>
+            );
+          })}
+        </div>
+        {snapshot.resolvedLinks[block.id] ? (
+          <SafeLink
+            href={snapshot.resolvedLinks[block.id]!}
+            onNavigate={onNavigate}
+            className="published-mega__view-all"
+          >
+            {localizedNavigationText(block.viewAllLabel, locale)}
+            <ChevronRight aria-hidden="true" />
+          </SafeLink>
+        ) : null}
+      </div>
+      {brands.length ? (
+        <section className="published-category-explorer__brands">
+          <BlockHeading value={{ en: "Featured Brands", ar: "علامات مميزة" }} locale={locale} />
+          {brands.map((brand) => (
+            <SafeLink href={brand.href} key={brand.id} onNavigate={onNavigate}>
+              {brand.imageUrl ? <img src={brand.imageUrl} alt="" /> : null}
+              <span>{entityLabel(brand, locale)}</span>
+            </SafeLink>
+          ))}
+        </section>
+      ) : null}
+      {block.promo.enabled ? (
+        <PromoCard
+          promo={block.promo}
+          href={
+            snapshot.resolvedLinks[`${block.id}:promo`] ??
+            resolveDestinationHref(block.promo.destination)
+          }
+          mediaUrl={
+            block.promo.mediaAssetId
+              ? snapshot.media[block.promo.mediaAssetId]?.url
+              : block.id === "40000000-0000-4000-8000-000000000002"
+                ? legacyPromoImage
+                : undefined
+          }
+          locale={locale}
+          onNavigate={onNavigate}
+        />
+      ) : null}
+    </section>
+  );
+}
+
+function BrandDirectoryBlock({
+  block,
+  entities,
+  locale,
+  onNavigate,
+}: {
+  block: Extract<NavigationBlock, { type: "BRAND_DIRECTORY" }>;
+  entities: NavigationResolvedEntity[];
+  locale: Locale;
+  onNavigate: () => void;
+}) {
+  const [search, setSearch] = useState("");
+  const visible = useMemo(() => {
+    const normalized = search.trim().toLocaleLowerCase(locale);
+    return normalized
+      ? entities.filter((entity) =>
+          entityLabel(entity, locale).toLocaleLowerCase(locale).includes(normalized),
+        )
+      : entities;
+  }, [entities, locale, search]);
+  return (
+    <section className="published-brand-directory">
+      <header>
+        <BlockHeading value={block.heading} locale={locale} />
+        {block.showSearch ? (
+          <label>
+            <Search aria-hidden="true" />
+            <span className="sr-only">
+              {localizedNavigationText(block.searchPlaceholder, locale)}
+            </span>
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder={localizedNavigationText(block.searchPlaceholder, locale)}
+            />
+          </label>
+        ) : null}
+      </header>
+      <div className="published-brand-directory__list">
+        {visible.map((brand) => (
+          <SafeLink href={brand.href} key={brand.id} onNavigate={onNavigate}>
+            {entityLabel(brand, locale)}
+          </SafeLink>
+        ))}
+      </div>
+      <SafeLink href="/brands" onNavigate={onNavigate} className="published-mega__view-all">
+        {localizedNavigationText(block.viewAllLabel, locale)}
+        <ChevronRight aria-hidden="true" />
+      </SafeLink>
+    </section>
+  );
+}
+
+function EntityList({
+  block,
+  entities,
+  snapshot,
+  locale,
+  onNavigate,
+}: {
+  block: Extract<NavigationBlock, { type: "CATEGORY_LIST" | "BRAND_LIST" | "TAG_LIST" }>;
+  entities: NavigationResolvedEntity[];
+  snapshot: NavigationPublicSnapshot;
+  locale: Locale;
+  onNavigate: () => void;
+}) {
+  const presentation = "presentation" in block ? block.presentation.toLowerCase() : "plain";
+  return (
+    <section className={`published-mega__entity-list is-${presentation}`}>
+      {block.showHeading ? <BlockHeading value={block.heading} locale={locale} /> : null}
+      <div>
+        {entities.map((entity) => (
+          <SafeLink href={entity.href} key={entity.id} onNavigate={onNavigate}>
+            {block.type === "CATEGORY_LIST" && block.showIcon ? (
+              entity.imageUrl ? (
+                <img src={entity.imageUrl} alt="" />
+              ) : (
+                <Grid2X2 aria-hidden="true" />
+              )
+            ) : "presentation" in block && block.presentation !== "PLAIN" && entity.imageUrl ? (
+              <img src={entity.imageUrl} alt="" />
+            ) : null}
+            <span>{entityLabel(entity, locale)}</span>
+            {"showProductCount" in block &&
+            block.showProductCount &&
+            entity.productCount !== undefined ? (
+              <small>{entity.productCount}</small>
+            ) : null}
+            {block.type === "CATEGORY_LIST" && block.showChevron ? (
+              <ChevronRight className="published-mega__entity-chevron" aria-hidden="true" />
+            ) : null}
+          </SafeLink>
+        ))}
+      </div>
+      {block.showViewAll && snapshot.resolvedLinks[block.id] ? (
+        <SafeLink
+          href={snapshot.resolvedLinks[block.id]!}
+          onNavigate={onNavigate}
+          className="published-mega__view-all"
+        >
+          {localizedNavigationText(block.viewAllLabel, locale)}
+        </SafeLink>
+      ) : null}
+    </section>
+  );
+}
+
+function ProductList({
+  block,
+  entities,
+  snapshot,
+  locale,
+  onNavigate,
+}: {
+  block: Extract<NavigationBlock, { type: "PRODUCT_LIST" }>;
+  entities: NavigationResolvedEntity[];
+  snapshot: NavigationPublicSnapshot;
+  locale: Locale;
+  onNavigate: () => void;
+}) {
+  if (!entities.length) return null;
+  return (
+    <section className={`published-mega__products is-${block.presentation.toLowerCase()}`}>
+      {block.showHeading ? <BlockHeading value={block.heading} locale={locale} /> : null}
+      <div>
+        {entities.map((product) => (
+          <SafeLink href={product.href} key={product.id} onNavigate={onNavigate}>
+            {block.showImage ? (
+              <span className="published-mega__product-image">
+                {product.imageUrl ? (
+                  <img src={product.imageUrl} alt="" />
+                ) : (
+                  <ImageIcon aria-hidden="true" />
+                )}
+              </span>
+            ) : null}
+            <span>
+              <strong>{entityLabel(product, locale)}</strong>
+              {block.showPrice && product.price !== undefined ? (
+                <small>{formatPrice(product.price, locale)}</small>
+              ) : null}
+            </span>
+          </SafeLink>
+        ))}
+      </div>
+      {block.showViewAll && snapshot.resolvedLinks[block.id] ? (
+        <SafeLink
+          href={snapshot.resolvedLinks[block.id]!}
+          onNavigate={onNavigate}
+          className="published-mega__view-all"
+        >
+          {localizedNavigationText(block.viewAllLabel, locale)}
+        </SafeLink>
+      ) : null}
+    </section>
+  );
+}
+
+type Promo =
+  | Extract<NavigationBlock, { type: "PROMO_CARD" }>
+  | Extract<NavigationBlock, { type: "CATEGORY_EXPLORER" }>["promo"];
+
+function PromoCard({
+  promo,
+  href,
+  mediaUrl,
+  locale,
+  onNavigate,
+}: {
+  promo: Promo;
+  href?: string | undefined;
+  mediaUrl?: string | undefined;
+  locale: Locale;
+  onNavigate: () => void;
+}) {
+  const showImage = "showImage" in promo ? promo.showImage : true;
+  const showDescription = "showDescription" in promo ? promo.showDescription : true;
+  const showCta = "showCta" in promo ? promo.showCta : true;
+  return (
+    <article className={`published-mega__promo is-${promo.style.toLowerCase()}`}>
+      <div>
+        <p>{localizedNavigationText(promo.eyebrow, locale)}</p>
+        <h3>{localizedNavigationText(promo.title, locale)}</h3>
+        {showDescription ? <span>{localizedNavigationText(promo.description, locale)}</span> : null}
+        {showCta && href ? (
+          <SafeLink
+            href={href}
+            onNavigate={onNavigate}
+            newTab={promo.destination.type === "EXTERNAL" && promo.destination.newTab}
+          >
+            {localizedNavigationText(promo.ctaLabel, locale)}
+          </SafeLink>
+        ) : null}
+      </div>
+      {showImage && mediaUrl ? (
+        <img src={mediaUrl} alt={localizedNavigationText(promo.imageAlt, locale)} />
+      ) : null}
+    </article>
+  );
+}
+
+function BlockHeading({ value, locale }: { value: { en: string; ar: string }; locale: Locale }) {
+  const text = localizedNavigationText(value, locale);
+  return text ? <h3 className="published-mega__heading">{text}</h3> : null;
+}
+
+function SafeLink({
+  href,
+  onNavigate,
+  className,
+  newTab = false,
+  children,
+}: {
+  href: string;
+  onNavigate: () => void;
+  className?: string;
+  newTab?: boolean;
+  children: React.ReactNode;
+}) {
+  const external = /^https?:\/\//i.test(href);
+  return (
+    <a
+      href={href}
+      className={className}
+      onClick={onNavigate}
+      {...(external && newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+    >
+      {children}
+    </a>
+  );
+}
+
+function entityLabel(entity: NavigationResolvedEntity, locale: Locale) {
+  return (locale === "ar" ? entity.labelAr : entity.labelEn) || entity.labelEn || entity.labelAr;
+}
+
+function formatPrice(value: number, locale: Locale) {
+  return new Intl.NumberFormat(locale === "ar" ? "ar-EG" : "en-EG", {
+    style: "currency",
+    currency: "EGP",
+    maximumFractionDigits: 0,
+  }).format(value / 100);
+}
+
+function resolveDestinationHref(
+  destination: Extract<NavigationBlock, { type: "CATEGORY_EXPLORER" }>["promo"]["destination"],
+) {
+  if (destination.type === "HOME") return "/";
+  if (destination.type === "SHOP" || destination.type === "NEW_ARRIVALS") return "/shop";
+  if (destination.type === "OFFERS") return "/offers";
+  if (destination.type === "ABOUT") return "/about";
+  if (destination.type === "CONTACT") return "/contact";
+  if (destination.type === "CUSTOM_PATH") return destination.path;
+  if (destination.type === "EXTERNAL") return destination.url;
+  return undefined;
+}

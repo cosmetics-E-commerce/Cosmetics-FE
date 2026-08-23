@@ -12,7 +12,10 @@ const product = {
   descriptionAr: "وصف عربي",
   ingredients: "Water",
   howToUse: "Apply once daily",
+  howToUseEn: "Apply to clean skin once daily",
+  howToUseAr: "يُستخدم على بشرة نظيفة مرة يومياً",
   skinType: ["DRY" as const],
+  tags: [],
   basePrice: 12500,
   compareAtPrice: null,
   rating: 4.5,
@@ -75,7 +78,17 @@ describe("mapProduct", () => {
     expect(mapProduct(product, "ar")).toMatchObject({
       name: "سيروم",
       description: "وصف عربي",
+      howToUse: "يُستخدم على بشرة نظيفة مرة يومياً",
     });
+  });
+
+  it("uses a deliberate opposite-locale fallback only when usage copy is missing", () => {
+    expect(mapProduct({ ...product, howToUseAr: null }, "ar").howToUse).toBe(
+      "Apply to clean skin once daily",
+    );
+    expect(mapProduct({ ...product, howToUseEn: null, howToUse: null }, "en").howToUse).toBe(
+      "يُستخدم على بشرة نظيفة مرة يومياً",
+    );
   });
 
   it("preserves authored paragraph breaks in English and Arabic descriptions", () => {

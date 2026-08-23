@@ -28,14 +28,10 @@ export function ProductInfoAccordion({
 
   if (!availableSections.length) return null;
 
-  const defaultSection =
-    availableSections.find((section) => section.id === "description")?.id ??
-    availableSections[0]!.id;
-
   return (
     <Accordion
       type="multiple"
-      defaultValue={[defaultSection]}
+      defaultValue={[]}
       className="product-info-accordion"
       aria-label={label}
     >
@@ -67,6 +63,7 @@ export function ProductInfoAccordion({
               <div className="product-info-accordion__copy">
                 {section.content ? (
                   <p
+                    dir="auto"
                     className={
                       section.id === "description"
                         ? "product-reference-description-copy"
@@ -81,7 +78,9 @@ export function ProductInfoAccordion({
                 {section.benefits?.length ? (
                   <ul>
                     {section.benefits.map((benefit) => (
-                      <li key={benefit}>{benefit}</li>
+                      <li key={benefit} dir="auto">
+                        {benefit}
+                      </li>
                     ))}
                   </ul>
                 ) : null}

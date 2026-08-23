@@ -35,6 +35,7 @@ const DialogContent = React.forwardRef<
     showCloseButton?: boolean;
     overlayClassName?: string;
     closeLabel?: string;
+    viewport?: boolean;
   }
 >(
   (
@@ -44,6 +45,7 @@ const DialogContent = React.forwardRef<
       showCloseButton = true,
       overlayClassName,
       closeLabel = "Close",
+      viewport = false,
       ...props
     },
     ref,
@@ -54,7 +56,9 @@ const DialogContent = React.forwardRef<
         ref={ref}
         aria-modal="true"
         className={cn(
-          "mobile-adaptive-dialog fixed z-50 grid gap-4 rounded-[var(--radius-xl)] border bg-background p-6 shadow-lg",
+          viewport
+            ? "fixed inset-0 z-50"
+            : "mobile-adaptive-dialog fixed z-50 grid gap-4 rounded-[var(--radius-xl)] border bg-background p-6 shadow-lg",
           className,
         )}
         {...props}
