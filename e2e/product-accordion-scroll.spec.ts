@@ -3,13 +3,15 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 const productPath = "/product/acm-depiwhite-eye-contour-gel-15ml";
 const transitionMs = 280;
 
-test("opening How to use keeps its trigger anchored when Description is tall", async ({ page }) => {
+test("opening How to use keeps its trigger anchored while every section starts closed", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(productPath, { waitUntil: "networkidle" });
 
   const description = page.getByRole("button", { name: "Description" });
   const howToUse = page.getByRole("button", { name: "How to use" });
-  await expect(description).toHaveAttribute("aria-expanded", "true");
+  await expect(description).toHaveAttribute("aria-expanded", "false");
   await expect(page.locator(".product-reference-description-copy")).toHaveCSS(
     "white-space",
     "pre-line",
@@ -18,7 +20,7 @@ test("opening How to use keeps its trigger anchored when Description is tall", a
   await installScrollProbe(page);
   const { before, after } = await toggleAndMeasure(page, howToUse, "true");
 
-  await expect(description).toHaveAttribute("aria-expanded", "true");
+  await expect(description).toHaveAttribute("aria-expanded", "false");
   expectStableInteraction(before, after);
   expect(after.footerTop).toBeGreaterThan(after.viewportHeight * 0.8);
 });
@@ -31,7 +33,7 @@ test("every product detail disclosure opens and closes without navigation or scr
   await installScrollProbe(page);
 
   const sections = [
-    { name: "Description", initial: "true" },
+    { name: "Description", initial: "false" },
     { name: "How to use", initial: "false" },
     { name: "Delivery policy", initial: "false" },
     { name: "Shipping & Return", initial: "false" },
@@ -67,7 +69,7 @@ test("rapid disclosure changes do not reset product state or desynchronize open 
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(productPath, { waitUntil: "networkidle" });
 
-  await page.getByRole("button", { name: "Increase quantity" }).click();
+  await page.getByRole("button", { name: "Increase quantity", exact: true }).click();
   const quantity = page.locator(".product-reference-quantity .count-change");
   await expect(quantity).toHaveText("2");
   const productImageSrc = await page
@@ -85,7 +87,7 @@ test("rapid disclosure changes do not reset product state or desynchronize open 
     await trigger.evaluate((element) => (element as HTMLButtonElement).click());
   }
 
-  await expect(description).toHaveAttribute("aria-expanded", "true");
+  await expect(description).toHaveAttribute("aria-expanded", "false");
   await expect(howToUse).toHaveAttribute("aria-expanded", "false");
   await expect(delivery).toHaveAttribute("aria-expanded", "true");
   await expect(returns).toHaveAttribute("aria-expanded", "true");
@@ -110,12 +112,12 @@ test("the anchored interaction remains stable across supported responsive widths
 
     const description = page.getByRole("button", { name: "Description" });
     const howToUse = page.getByRole("button", { name: "How to use" });
-    await expect(description).toHaveAttribute("aria-expanded", "true");
+    await expect(description).toHaveAttribute("aria-expanded", "false");
     const result = await toggleAndMeasure(page, howToUse, "true");
 
-    await expect(description, `Description unexpectedly closed at ${width}px`).toHaveAttribute(
+    await expect(description, `Description unexpectedly opened at ${width}px`).toHaveAttribute(
       "aria-expanded",
-      "true",
+      "false",
     );
     expectStableInteraction(result.before, result.after, `${width}px`);
   }
@@ -129,17 +131,23 @@ test("RTL keeps document direction and the clicked Arabic trigger anchored", asy
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
   const description = page.getByRole("button", { name: "الوصف" });
   const howToUse = page.getByRole("button", { name: "طريقة الاستخدام" });
-  await expect(description).toHaveAttribute("aria-expanded", "true");
+  await expect(description).toHaveAttribute("aria-expanded", "false");
 
   const result = await toggleAndMeasure(page, howToUse, "true");
-  await expect(description).toHaveAttribute("aria-expanded", "true");
+  await expect(description).toHaveAttribute("aria-expanded", "false");
   expectStableInteraction(result.before, result.after, "RTL");
 });
 
 type InteractionMeasurement = Awaited<ReturnType<typeof measure>>;
 
 async function centerTrigger(trigger: Locator) {
-  await trigger.evaluate((element) => element.scrollIntoView({ block: "center" }));
+  await trigger.evaluate((element) => {
+    const root = document.documentElement;
+    const previousBehavior = root.style.scrollBehavior;
+    root.style.scrollBehavior = "auto";
+    element.scrollIntoView({ block: "center" });
+    root.style.scrollBehavior = previousBehavior;
+  });
 }
 
 async function installScrollProbe(page: Page) {
@@ -190,10 +198,7 @@ async function toggleAndMeasure(page: Page, trigger: Locator, expanded: "true" |
     state.__productAccordionScrollCalls = [];
   });
   const before = await measure(trigger);
-  const bounds = await trigger.boundingBox();
-  if (!bounds) throw new Error("Accordion trigger is not visible for pointer activation");
-
-  await page.mouse.click(bounds.x + bounds.width / 2, bounds.y + bounds.height / 2);
+  await trigger.click();
   await expect(trigger).toHaveAttribute("aria-expanded", expanded);
   await page.waitForTimeout(transitionMs);
 

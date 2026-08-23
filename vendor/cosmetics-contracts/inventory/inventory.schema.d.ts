@@ -60,6 +60,27 @@ export declare const inventoryBatchQuerySchema: z.ZodObject<{
     variantId?: string | undefined;
 }>;
 export type InventoryBatchQuery = z.infer<typeof inventoryBatchQuerySchema>;
+export declare const inventoryVariantOptionQuerySchema: z.ZodObject<{
+    page: z.ZodDefault<z.ZodNumber>;
+    limit: z.ZodDefault<z.ZodNumber>;
+    sortBy: z.ZodOptional<z.ZodString>;
+    sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
+} & {
+    search: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    page: number;
+    limit: number;
+    sortOrder: "asc" | "desc";
+    sortBy?: string | undefined;
+    search?: string | undefined;
+}, {
+    page?: number | undefined;
+    limit?: number | undefined;
+    sortBy?: string | undefined;
+    sortOrder?: "asc" | "desc" | undefined;
+    search?: string | undefined;
+}>;
+export type InventoryVariantOptionQuery = z.infer<typeof inventoryVariantOptionQuerySchema>;
 export declare const stockReservationQuerySchema: z.ZodObject<{
     page: z.ZodDefault<z.ZodNumber>;
     limit: z.ZodDefault<z.ZodNumber>;
@@ -388,6 +409,64 @@ export declare const inventoryBatchSchema: z.ZodObject<{
     };
 }>;
 export type InventoryBatchResponse = z.infer<typeof inventoryBatchSchema>;
+export declare const inventoryVariantOptionSchema: z.ZodObject<{
+    id: z.ZodString;
+    sku: z.ZodString;
+    barcode: z.ZodNullable<z.ZodString>;
+    nameEn: z.ZodString;
+    nameAr: z.ZodString;
+    product: z.ZodObject<{
+        id: z.ZodString;
+        slug: z.ZodString;
+        nameEn: z.ZodString;
+        nameAr: z.ZodString;
+        isActive: z.ZodBoolean;
+        publishedAt: z.ZodNullable<z.ZodString>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        isActive: boolean;
+        slug: string;
+        nameEn: string;
+        nameAr: string;
+        publishedAt: string | null;
+    }, {
+        id: string;
+        isActive: boolean;
+        slug: string;
+        nameEn: string;
+        nameAr: string;
+        publishedAt: string | null;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    sku: string;
+    nameEn: string;
+    nameAr: string;
+    barcode: string | null;
+    product: {
+        id: string;
+        isActive: boolean;
+        slug: string;
+        nameEn: string;
+        nameAr: string;
+        publishedAt: string | null;
+    };
+}, {
+    id: string;
+    sku: string;
+    nameEn: string;
+    nameAr: string;
+    barcode: string | null;
+    product: {
+        id: string;
+        isActive: boolean;
+        slug: string;
+        nameEn: string;
+        nameAr: string;
+        publishedAt: string | null;
+    };
+}>;
+export type InventoryVariantOptionResponse = z.infer<typeof inventoryVariantOptionSchema>;
 export declare const stockReservationSchema: z.ZodObject<{
     id: z.ZodString;
     orderId: z.ZodString;
@@ -958,6 +1037,135 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
                 nameAr: string;
                 publishedAt: string | null;
             };
+        };
+    }[];
+    meta: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    };
+}>;
+export declare const paginatedInventoryVariantOptionsSchema: z.ZodObject<{
+    data: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        sku: z.ZodString;
+        barcode: z.ZodNullable<z.ZodString>;
+        nameEn: z.ZodString;
+        nameAr: z.ZodString;
+        product: z.ZodObject<{
+            id: z.ZodString;
+            slug: z.ZodString;
+            nameEn: z.ZodString;
+            nameAr: z.ZodString;
+            isActive: z.ZodBoolean;
+            publishedAt: z.ZodNullable<z.ZodString>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            isActive: boolean;
+            slug: string;
+            nameEn: string;
+            nameAr: string;
+            publishedAt: string | null;
+        }, {
+            id: string;
+            isActive: boolean;
+            slug: string;
+            nameEn: string;
+            nameAr: string;
+            publishedAt: string | null;
+        }>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        sku: string;
+        nameEn: string;
+        nameAr: string;
+        barcode: string | null;
+        product: {
+            id: string;
+            isActive: boolean;
+            slug: string;
+            nameEn: string;
+            nameAr: string;
+            publishedAt: string | null;
+        };
+    }, {
+        id: string;
+        sku: string;
+        nameEn: string;
+        nameAr: string;
+        barcode: string | null;
+        product: {
+            id: string;
+            isActive: boolean;
+            slug: string;
+            nameEn: string;
+            nameAr: string;
+            publishedAt: string | null;
+        };
+    }>, "many">;
+    meta: z.ZodObject<{
+        page: z.ZodNumber;
+        limit: z.ZodNumber;
+        total: z.ZodNumber;
+        totalPages: z.ZodNumber;
+        hasNext: z.ZodBoolean;
+        hasPrev: z.ZodBoolean;
+    }, "strip", z.ZodTypeAny, {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    }, {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    data: {
+        id: string;
+        sku: string;
+        nameEn: string;
+        nameAr: string;
+        barcode: string | null;
+        product: {
+            id: string;
+            isActive: boolean;
+            slug: string;
+            nameEn: string;
+            nameAr: string;
+            publishedAt: string | null;
+        };
+    }[];
+    meta: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    };
+}, {
+    data: {
+        id: string;
+        sku: string;
+        nameEn: string;
+        nameAr: string;
+        barcode: string | null;
+        product: {
+            id: string;
+            isActive: boolean;
+            slug: string;
+            nameEn: string;
+            nameAr: string;
+            publishedAt: string | null;
         };
     }[];
     meta: {

@@ -24,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { customerCareTelHref, siteConfig } from "@/lib/site-config";
+import { useStore } from "@/lib/store";
 import "./information-pages.css";
 
 export type InformationPageSection = {
@@ -46,14 +47,20 @@ export function InformationPage({
   children: ReactNode;
   className?: string;
 }) {
+  const { locale } = useStore();
+  const ar = locale === "ar";
   return (
-    <article className={`bio-information-page ${className}`.trim()} lang="en" dir="ltr">
+    <article
+      className={`bio-information-page ${className}`.trim()}
+      lang={locale}
+      dir={ar ? "rtl" : "ltr"}
+    >
       <div className="bio-information-page__shell">
-        <Breadcrumb className="bio-information-page__breadcrumb">
+        <Breadcrumb className="storefront-breadcrumb bio-information-page__breadcrumb">
           <BreadcrumbList>
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
-                <Link to="/">Home</Link>
+                <Link to="/">{ar ? "الرئيسية" : "Home"}</Link>
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
@@ -72,7 +79,9 @@ export function InformationPage({
         <div
           className={`bio-information-page__layout${sections?.length ? " bio-information-page__layout--with-nav" : ""}`}
         >
-          {sections?.length ? <InformationContents title={title} sections={sections} /> : null}
+          {sections?.length ? (
+            <InformationContents title={title} sections={sections} locale={locale} />
+          ) : null}
           <div className="bio-information-page__body">{children}</div>
         </div>
       </div>
@@ -83,9 +92,11 @@ export function InformationPage({
 function InformationContents({
   title,
   sections,
+  locale,
 }: {
   title: string;
   sections: InformationPageSection[];
+  locale: "en" | "ar";
 }) {
   const navRef = useRef<HTMLElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -234,8 +245,12 @@ function InformationContents({
   };
 
   return (
-    <nav ref={navRef} className="bio-information-page__contents" aria-label={`${title} sections`}>
-      <p id={labelId}>On this page</p>
+    <nav
+      ref={navRef}
+      className="bio-information-page__contents"
+      aria-label={locale === "ar" ? `أقسام ${title}` : `${title} sections`}
+    >
+      <p id={labelId}>{locale === "ar" ? "في هذه الصفحة" : "On this page"}</p>
       <ol>
         {sections.map((section) => (
           <li key={section.id}>
@@ -265,7 +280,7 @@ function InformationContents({
             align="start"
             sideOffset={6}
             className="bio-information-page__selector-menu"
-            aria-label={`${title} sections`}
+            aria-label={locale === "ar" ? `أقسام ${title}` : `${title} sections`}
             onCloseAutoFocus={(event) => {
               const selectedId = pendingSelectionRef.current;
               if (!selectedId) return;
@@ -292,7 +307,7 @@ function InformationContents({
         </DropdownMenu>
       </div>
       <span className="sr-only" aria-live="polite">
-        Current section: {activeSection?.label}
+        {locale === "ar" ? "القسم الحالي:" : "Current section:"} {activeSection?.label}
       </span>
     </nav>
   );

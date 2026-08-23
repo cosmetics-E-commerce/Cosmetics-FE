@@ -136,31 +136,37 @@ function PurchasableProductAction({
   const disabled = busy || !variant?.id || !product.id;
 
   return (
-    <div className="quick-add" aria-label={`${labels.quantity}: ${quantity}`} onClick={stop}>
+    <div
+      className={`quick-add${requiresSelection ? " quick-add--selection" : ""}`}
+      aria-label={
+        requiresSelection ? `${labels.choose}: ${product.name}` : `${labels.quantity}: ${quantity}`
+      }
+      onClick={stop}
+    >
       <div className="quick-add__content">
-        <div className="quick-add__quantity" aria-label={labels.quantity} role="group" dir="ltr">
-          <button
-            type="button"
-            aria-label={`${labels.decrease}: ${product.name}`}
-            disabled={disabled || requiresSelection || quantity <= 1}
-            onClick={(event) => changeQuantity(event, -1)}
-          >
-            <Minus aria-hidden="true" />
-          </button>
-          <output aria-live="polite" aria-label={`${labels.quantity} ${quantity}`}>
-            {quantity}
-          </output>
-          <button
-            type="button"
-            aria-label={`${labels.increase}: ${product.name}`}
-            disabled={disabled || requiresSelection || quantity >= maximum}
-            onClick={(event) => changeQuantity(event, 1)}
-          >
-            <Plus aria-hidden="true" />
-          </button>
-        </div>
-
-        <span className="quick-add__divider" aria-hidden="true" />
+        {!requiresSelection ? (
+          <div className="quick-add__quantity" aria-label={labels.quantity} role="group" dir="ltr">
+            <button
+              type="button"
+              aria-label={`${labels.decrease}: ${product.name}`}
+              disabled={disabled || quantity <= 1}
+              onClick={(event) => changeQuantity(event, -1)}
+            >
+              <Minus aria-hidden="true" />
+            </button>
+            <output aria-live="polite" aria-label={`${labels.quantity} ${quantity}`}>
+              {quantity}
+            </output>
+            <button
+              type="button"
+              aria-label={`${labels.increase}: ${product.name}`}
+              disabled={disabled || quantity >= maximum}
+              onClick={(event) => changeQuantity(event, 1)}
+            >
+              <Plus aria-hidden="true" />
+            </button>
+          </div>
+        ) : null}
 
         {requiresSelection ? (
           product.id ? (

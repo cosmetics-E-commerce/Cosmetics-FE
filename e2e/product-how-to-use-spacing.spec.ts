@@ -10,7 +10,7 @@ test("How to use preserves authored spacing while wrapping responsively", async 
       waitUntil: "networkidle",
     });
 
-    await page.getByRole("button", { name: "How to use" }).click();
+    await page.getByRole("button", { name: "How to use", exact: true }).click();
     const copy = page.locator(".product-how-to-use-copy");
     await expect(copy).toBeVisible();
 

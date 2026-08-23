@@ -217,38 +217,32 @@ test.describe("brand presentation", () => {
         const breadcrumb = pageElement.querySelector(".sf-shop-breadcrumb")!;
         const intro = pageElement.querySelector(".sf-catalog-landing-intro")!;
         const logo = pageElement.querySelector(".sf-brand-landing-logo-shell")!;
-        const label = intro.querySelector(":scope > .label-xs")!;
-        const description = intro.querySelector(":scope > p:last-child")!;
         const catalog = pageElement.querySelector(".sf-shop-catalog")!;
-        const meta = pageElement.querySelector(".sf-shop-meta")!;
+        const toolbar = pageElement.querySelector(".catalog-listing-toolbar")!;
         const grid = pageElement.querySelector(".sf-shop-products")!;
         const firstProduct = grid.firstElementChild!;
         const rect = (element: Element) => element.getBoundingClientRect();
         const breadcrumbRect = rect(breadcrumb);
         const introRect = rect(intro);
         const logoRect = rect(logo);
-        const labelRect = rect(label);
-        const descriptionRect = rect(description);
-        const metaRect = rect(meta);
+        const toolbarRect = rect(toolbar);
         const gridRect = rect(grid);
         const productRect = rect(firstProduct);
         const introStyle = getComputedStyle(intro);
         const catalogStyle = getComputedStyle(catalog);
-        const metaStyle = getComputedStyle(meta);
         return {
+          hasFillerCopy: Boolean(
+            intro.querySelector(":scope > .label-xs, :scope > p:not(.sr-only)"),
+          ),
           introHeight: introRect.height,
           introMinHeight: introStyle.minHeight,
           introPaddingTop: Number.parseFloat(introStyle.paddingTop),
           introPaddingBottom: Number.parseFloat(introStyle.paddingBottom),
           catalogMinHeight: catalogStyle.minHeight,
           catalogMarginTop: Number.parseFloat(catalogStyle.marginTop),
-          metaMarginTop: Number.parseFloat(metaStyle.marginTop),
-          metaPaddingTop: Number.parseFloat(metaStyle.paddingTop),
           breadcrumbToLogo: logoRect.top - breadcrumbRect.bottom,
-          logoToLabel: labelRect.top - logoRect.bottom,
-          labelToDescription: descriptionRect.top - labelRect.bottom,
-          descriptionToMeta: metaRect.top - descriptionRect.bottom,
-          metaToGrid: gridRect.top - metaRect.bottom,
+          logoToToolbar: toolbarRect.top - logoRect.bottom,
+          toolbarToGrid: gridRect.top - toolbarRect.bottom,
           productTop: productRect.top,
         };
       });
@@ -256,19 +250,14 @@ test.describe("brand presentation", () => {
       expect(layout.introMinHeight).toBe("0px");
       expect(layout.catalogMinHeight).toBe("0px");
       expect(layout.catalogMarginTop).toBe(0);
-      expect(layout.metaMarginTop).toBe(0);
-      expect(layout.metaPaddingTop).toBe(0);
+      expect(layout.hasFillerCopy).toBe(false);
       expect(layout.introHeight).toBeLessThan(460);
-      expect(layout.breadcrumbToLogo).toBeGreaterThanOrEqual(viewport.width < 768 ? 32 : 47);
-      expect(layout.breadcrumbToLogo).toBeLessThanOrEqual(viewport.width < 768 ? 36 : 65);
-      expect(layout.logoToLabel).toBeGreaterThanOrEqual(21);
-      expect(layout.logoToLabel).toBeLessThanOrEqual(37);
-      expect(layout.labelToDescription).toBeGreaterThanOrEqual(18);
-      expect(layout.labelToDescription).toBeLessThanOrEqual(22);
-      expect(layout.descriptionToMeta).toBeGreaterThanOrEqual(viewport.width < 768 ? 36 : 43);
-      expect(layout.descriptionToMeta).toBeLessThanOrEqual(viewport.width < 768 ? 40 : 57);
-      expect(layout.metaToGrid).toBeGreaterThanOrEqual(23);
-      expect(layout.metaToGrid).toBeLessThanOrEqual(33);
+      expect(layout.breadcrumbToLogo).toBeGreaterThanOrEqual(32);
+      expect(layout.breadcrumbToLogo).toBeLessThanOrEqual(65);
+      expect(layout.logoToToolbar).toBeGreaterThanOrEqual(27);
+      expect(layout.logoToToolbar).toBeLessThanOrEqual(46);
+      expect(layout.toolbarToGrid).toBeGreaterThanOrEqual(23);
+      expect(layout.toolbarToGrid).toBeLessThanOrEqual(33);
       expect(layout.productTop).toBeLessThan(
         viewport.height * (viewport.width >= 1024 ? 0.82 : 0.9),
       );

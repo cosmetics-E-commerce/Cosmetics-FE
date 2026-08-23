@@ -1,21 +1,30 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { Check, Grid2X2, Grid3X3, List, SlidersHorizontal, X } from "lucide-react";
-import { ProductCard } from "@/components/shop/ProductCard";
+
 import { Reveal } from "@/components/brand/Reveal";
+import { sortBrands } from "@/components/layout/brand-directory-data";
+import { CatalogListingControls } from "@/components/shop/CatalogListingControls";
+import {
+  catalogFacetParams,
+  catalogListingParams,
+  parseCatalogListingSearch,
+  type CatalogListingSearch,
+  withListingPage,
+  withResetPage,
+} from "@/components/shop/catalog-listing-state";
+import { ProductCard } from "@/components/shop/ProductCard";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import {
   loadBrands,
+  loadCatalogFacets,
   loadCatalogPage,
   loadCategories,
   useBrands,
+  useCatalogFacets,
   useCatalogPage,
   useCategories,
 } from "@/lib/catalog";
-import { useStore } from "@/lib/store";
 import { useI18n } from "@/lib/i18n";
-import { sortBrands } from "@/components/layout/brand-directory-data";
 import {
   breadcrumbSchema,
   createSeoHead,
@@ -24,69 +33,34 @@ import {
   localizePath,
   type SeoLocale,
 } from "@/lib/seo";
-
-type Search = {
-  brand?: string | undefined;
-  category?: string | undefined;
-  concern?: string | undefined;
-  sort?: string | undefined;
-  search?: string | undefined;
-  view?: "compact" | "grid" | "list" | undefined;
-  page?: number | undefined;
-};
-
-const PAGE_SIZE = 24;
+import { useStore } from "@/lib/store";
 
 export const Route = createFileRoute("/shop")({
-  validateSearch: (raw: Record<string, unknown>): Search => ({
-    ...(typeof raw["brand"] === "string" ? { brand: raw["brand"] } : {}),
-    ...(typeof raw["category"] === "string" ? { category: raw["category"] } : {}),
-    ...(typeof raw["concern"] === "string" ? { concern: raw["concern"] } : {}),
-    ...(typeof raw["sort"] === "string" ? { sort: raw["sort"] } : {}),
-    ...(typeof raw["search"] === "string" ? { search: raw["search"] } : {}),
-    ...(raw["view"] === "compact" || raw["view"] === "grid" || raw["view"] === "list"
-      ? { view: raw["view"] }
-      : {}),
-    ...(toPage(raw["page"]) ? { page: toPage(raw["page"]) } : {}),
-  }),
-  loaderDeps: ({ search }) => ({
-    brand: search.brand,
-    category: search.category,
-    concern: search.concern,
-    sort: search.sort,
-    search: search.search,
-    view: search.view,
-    page: search.page,
-  }),
+  validateSearch: parseCatalogListingSearch,
+  loaderDeps: ({ search }) => search,
   loader: async ({ deps, context }) => {
     const locale: SeoLocale = context.locale === "ar" ? "ar" : "en";
     const page = deps.page ?? 1;
-    const [catalog, categories, brands] = await Promise.all([
-      loadCatalogPage(catalogParams(deps, page), locale),
+    const [catalog, facets, categories, brands] = await Promise.all([
+      loadCatalogPage(catalogListingParams(deps, {}, page), locale),
+      loadCatalogFacets(catalogFacetParams(deps)),
       loadCategories(),
       loadBrands(),
     ]);
     if (catalog.meta.total > 0 && page > catalog.meta.totalPages) throw notFound();
-    return { catalog, categories, brands, locale };
+    return { catalog, facets, categories, brands, locale };
   },
   head: ({ loaderData, match }) => {
     const locale = loaderData?.locale ?? "en";
     const search = match.search;
     const page = search.page ?? 1;
-    const filtered = Boolean(
-      search.brand ||
-      search.category ||
-      search.concern ||
-      search.search ||
-      search.sort ||
-      search.view,
-    );
+    const filtered = hasCatalogState(search);
     const category = loaderData?.categories.find((item) => item.slug === search.category);
     const brand = loaderData?.brands.find((item) => item.slug === search.brand);
     const canonicalPath =
-      category && !search.brand && !search.concern && !search.search
+      category && onlyEntityFilter(search, "category")
         ? `/categories/${encodeURIComponent(category.slug)}`
-        : brand && !search.category && !search.concern && !search.search
+        : brand && onlyEntityFilter(search, "brand")
           ? `/brands/${encodeURIComponent(brand.slug)}`
           : "/shop";
     const title = search.search
@@ -152,122 +126,65 @@ function Shop() {
   const navigate = Route.useNavigate();
   const { locale } = useStore();
   const { t } = useI18n();
-  const [filters, setFilters] = useState(false);
-  const view = search.view ?? "compact";
   const page = search.page ?? 1;
   const initial = Route.useLoaderData();
-  const catalog = useCatalogPage(catalogParams(search, page), locale, initial.catalog);
+  const catalog = useCatalogPage(catalogListingParams(search, {}, page), locale, initial.catalog);
+  const facets = useCatalogFacets(catalogFacetParams(search), initial.facets);
   const categories = useCategories(initial.categories);
   const brands = useBrands(initial.brands);
   const sortedBrands = useMemo(() => sortBrands(brands.data ?? [], locale), [brands.data, locale]);
-  const activeFilters = [
-    search.brand ? { key: "brand" as const, label: search.brand } : null,
-    search.category ? { key: "category" as const, label: search.category } : null,
-    search.concern ? { key: "concern" as const, label: search.concern } : null,
-    search.search
-      ? {
-          key: "search" as const,
-          label: `${locale === "ar" ? "بحث" : "Search"}: ${search.search}`,
-        }
-      : null,
-  ].filter(Boolean) as Array<{
-    key: "brand" | "category" | "concern" | "search";
-    label: string;
-  }>;
-  const clearFilters = () =>
-    navigate({
-      search: {
-        ...(search.sort ? { sort: search.sort } : {}),
-        ...(search.view ? { view: search.view } : {}),
-      },
-    });
+  const products = catalog.data?.items ?? [];
+  const meta = catalog.data?.meta;
+  const view = search.view ?? "grid";
   const categoryTabs = [
     { id: "all", slug: undefined, label: t("shop.all"), count: undefined },
     ...(categories.data ?? [])
-      .filter((category) => category.productCount > 0)
+      .filter(
+        (category) =>
+          category.parentId === null &&
+          (category.aggregateProductCount ?? category.productCount) > 0,
+      )
       .map((category) => ({
         id: category.id,
         slug: category.slug,
         label: locale === "ar" ? category.nameAr : category.nameEn,
-        count: category.productCount,
+        count: category.aggregateProductCount ?? category.productCount,
       })),
   ];
-  const products = catalog.data?.items ?? [];
-  const meta = catalog.data?.meta;
-  const productCount = meta?.total ?? products.length;
-  const pageStart = meta && meta.total > 0 ? (meta.page - 1) * meta.limit + 1 : 0;
-  const pageEnd = meta ? Math.min(meta.page * meta.limit, meta.total) : products.length;
-  const resetPageSearch = (next: Search): Search => ({
-    ...next,
-    page: undefined,
-  });
-  const shopHeadline =
-    locale === "ar"
+  const categoryOptions = (categories.data ?? []).map((category) => ({
+    id: category.id,
+    parentId: category.parentId,
+    slug: category.slug,
+    label: locale === "ar" ? category.nameAr : category.nameEn,
+    count: category.aggregateProductCount ?? category.productCount,
+  }));
+  const brandOptions = sortedBrands.map((brand) => ({
+    id: brand.id,
+    slug: brand.slug,
+    label: brand.name,
+    count: brand.productCount,
+  }));
+  const setSearch = (next: CatalogListingSearch) => navigate({ search: next });
+  const clearFilters = () =>
+    setSearch({
+      ...(search.search ? { search: search.search } : {}),
+      ...(search.sort ? { sort: search.sort } : {}),
+      ...(search.view ? { view: search.view } : {}),
+    });
+  const shopHeadline = search.search
+    ? locale === "ar"
+      ? `نتائج البحث عن «${search.search}»`
+      : `Search results for “${search.search}”`
+    : locale === "ar"
       ? "تسوّقي العناية بالبشرة والمكياج والشعر والعطور"
       : "Shop Skincare, Makeup, Haircare & Fragrance";
-  const FilterList = (
-    <div className="sf-shop-filter-panel__group">
-      <p className="sf-shop-filter-panel__eyebrow">{t("shop.category")}</p>
-      <ul className="sf-shop-filter-panel__list">
-        <li>
-          <button
-            type="button"
-            onClick={() => {
-              navigate({ search: resetPageSearch({ ...search, category: undefined }) });
-              setFilters(false);
-            }}
-            className="sf-shop-filter-panel__option"
-            data-active={!search.category || undefined}
-          >
-            <span>{t("shop.all")}</span>
-            {!search.category && <Check className="size-4" aria-hidden="true" />}
-          </button>
-        </li>
-        {categories.data?.map((category) => (
-          <li key={category.id}>
-            <Link
-              to="/categories/$slug"
-              params={{ slug: category.slug }}
-              onClick={() => setFilters(false)}
-              className="sf-shop-filter-panel__option"
-              data-active={search.category === category.slug || undefined}
-            >
-              <span>{locale === "ar" ? category.nameAr : category.nameEn}</span>
-              <span className="sf-shop-filter-panel__meta">{category.productCount}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-      {sortedBrands.length > 0 && (
-        <div className="sf-shop-filter-panel__group sf-shop-filter-panel__group--divided">
-          <p className="sf-shop-filter-panel__eyebrow">
-            {locale === "ar" ? "العلامة التجارية" : "Brand"}
-          </p>
-          <ul className="sf-shop-filter-panel__list">
-            {sortedBrands
-              .filter((brand) => brand.productCount > 0)
-              .map((brand) => (
-                <li key={brand.id}>
-                  <Link
-                    to="/brands/$slug"
-                    params={{ slug: brand.slug }}
-                    onClick={() => setFilters(false)}
-                    className="sf-shop-filter-panel__option"
-                    data-active={search.brand === brand.slug || undefined}
-                  >
-                    <span>{brand.name}</span>
-                    <span className="sf-shop-filter-panel__meta">{brand.productCount}</span>
-                  </Link>
-                </li>
-              ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
+
   return (
     <div className="sf-shop-page sf-shop-page--minimal">
-      <nav aria-label="Breadcrumb" className="sf-shop-breadcrumb">
+      <nav
+        aria-label={locale === "ar" ? "مسار الصفحة" : "Breadcrumb"}
+        className="storefront-breadcrumb sf-shop-breadcrumb"
+      >
         <Link to="/">{t("common.home")}</Link>
         <span aria-hidden="true">/</span>
         <span>{t("common.shop")}</span>
@@ -276,266 +193,91 @@ function Shop() {
         <h1>{shopHeadline}</h1>
       </Reveal>
       <section className="sf-shop-catalog" aria-labelledby="shop-products-title">
-        <div className="sf-shop-filterbar">
-          <div className="sf-shop-tabs" role="tablist" aria-label={t("shop.category")}>
-            {categoryTabs.map((category) => {
-              const selected =
-                search.category === category.slug || (!search.category && !category.slug);
-
-              return (
-                <button
-                  key={category.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={selected}
-                  className="sf-shop-tab"
-                  onClick={() =>
-                    navigate({ search: resetPageSearch({ ...search, category: category.slug }) })
-                  }
-                >
-                  {category.label}
-                  {category.count ? <span>({category.count})</span> : null}
-                </button>
-              );
-            })}
-          </div>
-          <button type="button" onClick={() => setFilters(true)} className="sf-shop-filter-button">
-            <SlidersHorizontal className="size-4" aria-hidden="true" />
-            {t("shop.filters")}
-            {activeFilters.length > 0 && <span>{activeFilters.length}</span>}
-          </button>
-          <select
-            aria-label={locale === "ar" ? "ترتيب المنتجات" : "Sort products"}
-            value={search.sort ?? ""}
-            onChange={(event) =>
-              navigate({
-                search: resetPageSearch({ ...search, sort: event.target.value || undefined }),
-              })
-            }
-            className="sf-shop-sort sf-shop-sort--mobile"
-          >
-            <option value="">{t("shop.sortNewest")}</option>
-            <option value="price-asc">{t("shop.sortLow")}</option>
-            <option value="price-desc">{t("shop.sortHigh")}</option>
-          </select>
-        </div>
-        <div className="sf-shop-meta">
-          <h2 id="shop-products-title">
-            {productCount} {t("common.products")}
-          </h2>
-          {meta && meta.total > 0 && (
-            <p className="sf-shop-page-count">
-              {locale === "ar"
-                ? `عرض ${pageStart}-${pageEnd} من ${meta.total}`
-                : `Showing ${pageStart}-${pageEnd} of ${meta.total}`}
-            </p>
-          )}
-          <select
-            aria-label={locale === "ar" ? "ترتيب المنتجات" : "Sort products"}
-            value={search.sort ?? ""}
-            onChange={(event) =>
-              navigate({
-                search: resetPageSearch({ ...search, sort: event.target.value || undefined }),
-              })
-            }
-            className="sf-shop-sort"
-          >
-            <option value="">{t("shop.sortNewest")}</option>
-            <option value="price-asc">{t("shop.sortLow")}</option>
-            <option value="price-desc">{t("shop.sortHigh")}</option>
-          </select>
-        </div>
-        {activeFilters.length > 0 && (
-          <div className="sf-shop-active-filters" aria-label="Active filters">
-            {activeFilters.map((filter) => (
+        <div className="sf-shop-tabs" role="tablist" aria-label={t("shop.category")}>
+          {categoryTabs.map((category) => {
+            const selected =
+              search.category === category.slug || (!search.category && !category.slug);
+            return (
               <button
-                key={filter.key}
+                key={category.id}
                 type="button"
-                onClick={() =>
-                  navigate({ search: resetPageSearch({ ...search, [filter.key]: undefined }) })
-                }
-                aria-label={`Remove ${filter.label} filter`}
+                role="tab"
+                aria-selected={selected}
+                className="sf-shop-tab"
+                onClick={() => setSearch(withResetPage(search, { category: category.slug }))}
               >
-                {filter.label}
-                <X className="size-3" aria-hidden="true" />
+                {category.label}
+                {category.count ? <span>({category.count})</span> : null}
               </button>
-            ))}
-            <button type="button" onClick={clearFilters}>
-              {t("common.clearAll")}
-            </button>
-          </div>
-        )}
-        {catalog.isLoading && <ProductGridSkeleton view={view} />}
-        {catalog.error && (
+            );
+          })}
+        </div>
+
+        <h2 id="shop-products-title" className="sr-only">
+          {shopHeadline}
+        </h2>
+        <CatalogListingControls
+          locale={locale}
+          search={search}
+          resultCount={meta?.total ?? products.length}
+          {...(facets.data ? { facets: facets.data } : {})}
+          categories={categoryOptions}
+          brands={brandOptions}
+          onChange={setSearch}
+        />
+
+        {catalog.isLoading ? <ProductGridSkeleton view={view} /> : null}
+        {catalog.error ? (
           <State
             title={t("shop.errorTitle")}
             copy={t("shop.errorCopy")}
             action={() => void catalog.refetch()}
             actionLabel={t("common.tryAgain")}
           />
-        )}
-        {!catalog.isLoading && !catalog.error && products.length === 0 && (
+        ) : null}
+        {!catalog.isLoading && !catalog.error && products.length === 0 ? (
           <State
             title={t("shop.emptyTitle")}
             copy={t("shop.emptyCopy")}
             action={clearFilters}
             actionLabel={t("shop.clearFilters")}
           />
-        )}
-        {catalog.data && (
+        ) : null}
+        {catalog.data ? (
           <>
             <div
-              className={`sf-shop-products ${
-                view === "list"
-                  ? "sf-shop-products--list"
-                  : view === "grid"
-                    ? "sf-shop-products--grid"
-                    : "sf-shop-products--compact"
-              }`}
+              className={`sf-shop-products ${view === "list" ? "sf-shop-products--list" : "sf-shop-products--grid"}`}
             >
               {products.map((product, index) => (
                 <Reveal key={product.slug} delay={(index % 4) * 35}>
-                  <ProductCard
-                    product={product}
-                    compact={view === "compact"}
-                    layout={view === "list" ? "list" : "grid"}
-                  />
+                  <ProductCard product={product} compact={view !== "list"} layout={view} />
                 </Reveal>
               ))}
             </div>
-            {meta && meta.totalPages > 1 && (
+            {meta && meta.totalPages > 1 ? (
               <ShopPagination
                 page={meta.page}
                 totalPages={meta.totalPages}
-                onPageChange={(nextPage) =>
-                  navigate({ search: { ...search, page: nextPage > 1 ? nextPage : undefined } })
-                }
                 locale={locale}
                 search={search}
-                crawlable={
-                  !search.brand &&
-                  !search.category &&
-                  !search.concern &&
-                  !search.search &&
-                  !search.sort &&
-                  !search.view
-                }
+                onPageChange={(nextPage) => setSearch(withListingPage(search, nextPage))}
+                crawlable={!hasCatalogState(withListingPage(search, 1))}
               />
-            )}
+            ) : null}
           </>
-        )}
+        ) : null}
       </section>
-      <Sheet open={filters} onOpenChange={setFilters}>
-        <SheetContent side="right" showCloseButton={false} className="sf-shop-filter-drawer">
-          <div className="sf-shop-filter-panel__header">
-            <div>
-              <p className="sf-shop-filter-panel__eyebrow">
-                {locale === "ar" ? "تخصيص النتائج" : "Refine results"}
-              </p>
-              <SheetTitle className="sf-shop-filter-panel__title">{t("shop.filters")}</SheetTitle>
-            </div>
-            <button
-              type="button"
-              onClick={() => setFilters(false)}
-              aria-label={locale === "ar" ? "إغلاق الفلاتر" : "Close filters"}
-              className="sf-shop-filter-panel__close"
-            >
-              <X aria-hidden="true" />
-            </button>
-          </div>
-          <div className="sf-shop-filter-panel__body">
-            {FilterList}
-            <div className="sf-shop-filter-panel__group sf-shop-filter-panel__group--divided">
-              <p className="sf-shop-filter-panel__eyebrow">
-                {locale === "ar" ? "العرض والترتيب" : "View and sort"}
-              </p>
-              <select
-                aria-label={locale === "ar" ? "ترتيب المنتجات" : "Sort products"}
-                value={search.sort ?? ""}
-                onChange={(event) =>
-                  navigate({
-                    search: resetPageSearch({ ...search, sort: event.target.value || undefined }),
-                  })
-                }
-                className="sf-shop-filter-panel__select"
-              >
-                <option value="">{t("shop.sortNewest")}</option>
-                <option value="price-asc">{t("shop.sortLow")}</option>
-                <option value="price-desc">{t("shop.sortHigh")}</option>
-              </select>
-              <div
-                role="group"
-                aria-label="Product view"
-                className="sf-shop-filter-panel__view-toggle"
-              >
-                {[
-                  { value: "compact" as const, label: "Compact grid", Icon: Grid3X3 },
-                  { value: "grid" as const, label: "Grid view", Icon: Grid2X2 },
-                  { value: "list" as const, label: "List view", Icon: List },
-                ].map(({ value, label, Icon }) => (
-                  <button
-                    key={value}
-                    type="button"
-                    aria-label={label}
-                    aria-pressed={view === value}
-                    title={label}
-                    onClick={() => navigate({ search: { ...search, view: value } })}
-                    className="sf-shop-filter-panel__view-button"
-                    data-active={view === value || undefined}
-                  >
-                    <Icon className="size-4" strokeWidth={1.25} />
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="sf-shop-filter-panel__footer">
-            <button type="button" onClick={clearFilters} className="sf-shop-filter-panel__clear">
-              {t("common.clearAll")}
-            </button>
-            <button
-              type="button"
-              onClick={() => setFilters(false)}
-              className="sf-shop-filter-panel__apply"
-            >
-              {locale === "ar" ? "عرض النتائج" : "Show results"}
-            </button>
-          </div>
-        </SheetContent>
-      </Sheet>
     </div>
   );
 }
 
-function toPage(value: unknown) {
-  const page = typeof value === "string" ? Number.parseInt(value, 10) : Number(value);
-  return Number.isFinite(page) && page > 1 ? page : undefined;
-}
-
-function catalogParams(search: Search, page: number) {
-  const sort =
-    search.sort === "price-asc"
-      ? { sortBy: "basePrice", sortOrder: "asc" }
-      : search.sort === "price-desc"
-        ? { sortBy: "basePrice", sortOrder: "desc" }
-        : { sortBy: "createdAt", sortOrder: "desc" };
-  return {
-    page,
-    limit: PAGE_SIZE,
-    brandSlug: search.brand?.toLowerCase(),
-    categorySlug: search.category?.toLowerCase(),
-    search: search.search ?? search.concern,
-    ...sort,
-  };
-}
-
-// Without an exact search match, TanStack marks the page-1 link (which carries
-// no `page` param) as active on every page, so it renders aria-current too.
 const paginationActiveOptions = { exact: true, includeSearch: true } as const;
 
 function visiblePages(page: number, totalPages: number) {
   const pages = new Set(
-    [1, totalPages, page - 1, page, page + 1].filter((p) => p >= 1 && p <= totalPages),
+    [1, totalPages, page - 2, page - 1, page, page + 1, page + 2].filter(
+      (item) => item >= 1 && item <= totalPages,
+    ),
   );
   return [...pages].sort((a, b) => a - b);
 }
@@ -552,72 +294,54 @@ function ShopPagination({
   totalPages: number;
   onPageChange: (page: number) => void;
   locale: "ar" | "en";
-  search: Search;
+  search: CatalogListingSearch;
   crawlable: boolean;
 }) {
   const pages = visiblePages(page, totalPages);
   let previous = 0;
+  const pageControl = (item: number) =>
+    crawlable ? (
+      <Link
+        to="/shop"
+        search={withListingPage(search, item)}
+        activeOptions={paginationActiveOptions}
+        aria-current={item === page ? "page" : undefined}
+      >
+        {item}
+      </Link>
+    ) : (
+      <button
+        type="button"
+        onClick={() => onPageChange(item)}
+        aria-current={item === page ? "page" : undefined}
+      >
+        {item}
+      </button>
+    );
 
   return (
     <nav
       className="sf-shop-pagination"
       aria-label={locale === "ar" ? "صفحات المنتجات" : "Product pages"}
     >
-      {crawlable && page > 1 ? (
-        <Link
-          to="/shop"
-          search={{ ...search, page: page > 2 ? page - 1 : undefined }}
-          activeOptions={paginationActiveOptions}
-        >
-          {locale === "ar" ? "السابق" : "Previous"}
-        </Link>
-      ) : (
-        <button type="button" onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
-          {locale === "ar" ? "السابق" : "Previous"}
-        </button>
-      )}
+      <button type="button" onClick={() => onPageChange(page - 1)} disabled={page <= 1}>
+        {locale === "ar" ? "السابق" : "Previous"}
+      </button>
       <ol>
         {pages.map((item) => {
           const gap = item - previous > 1;
           previous = item;
           return (
             <li key={item}>
-              {gap && <span className="sf-shop-pagination__ellipsis">...</span>}
-              {crawlable ? (
-                <Link
-                  to="/shop"
-                  search={{ ...search, page: item > 1 ? item : undefined }}
-                  activeOptions={paginationActiveOptions}
-                  aria-current={item === page ? "page" : undefined}
-                >
-                  {item}
-                </Link>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => onPageChange(item)}
-                  aria-current={item === page ? "page" : undefined}
-                >
-                  {item}
-                </button>
-              )}
+              {gap ? <span className="sf-shop-pagination__ellipsis">…</span> : null}
+              {pageControl(item)}
             </li>
           );
         })}
       </ol>
-      {crawlable && page < totalPages ? (
-        <Link
-          to="/shop"
-          search={{ ...search, page: page + 1 }}
-          activeOptions={paginationActiveOptions}
-        >
-          {locale === "ar" ? "التالي" : "Next"}
-        </Link>
-      ) : (
-        <button type="button" onClick={() => onPageChange(page + 1)} disabled={page >= totalPages}>
-          {locale === "ar" ? "التالي" : "Next"}
-        </button>
-      )}
+      <button type="button" onClick={() => onPageChange(page + 1)} disabled={page >= totalPages}>
+        {locale === "ar" ? "التالي" : "Next"}
+      </button>
     </nav>
   );
 }
@@ -626,12 +350,12 @@ function State({
   title,
   copy,
   action,
-  actionLabel = "Try again",
+  actionLabel,
 }: {
   title: string;
   copy: string;
   action: () => void;
-  actionLabel?: string;
+  actionLabel: string;
 }) {
   return (
     <div className="mt-10 border border-border px-8 py-20 text-center">
@@ -643,16 +367,11 @@ function State({
     </div>
   );
 }
-function ProductGridSkeleton({ view }: { view: "compact" | "grid" | "list" }) {
+
+function ProductGridSkeleton({ view }: { view: "grid" | "list" }) {
   return (
     <div
-      className={`mt-10 grid gap-5 ${
-        view === "list"
-          ? "grid-cols-1"
-          : view === "grid"
-            ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3"
-            : "grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
-      }`}
+      className={`mt-10 grid gap-5 ${view === "list" ? "grid-cols-1" : "grid-cols-2 md:grid-cols-3 xl:grid-cols-4"}`}
     >
       {Array.from({ length: 8 }, (_, index) => (
         <div key={index} className="animate-pulse">
@@ -663,4 +382,26 @@ function ProductGridSkeleton({ view }: { view: "compact" | "grid" | "list" }) {
       ))}
     </div>
   );
+}
+
+function hasCatalogState(search: CatalogListingSearch) {
+  return Boolean(
+    search.brand ||
+    search.category ||
+    search.concern ||
+    search.search ||
+    search.sort ||
+    search.view ||
+    search.stock ||
+    search.tags ||
+    search.minPrice !== undefined ||
+    search.maxPrice !== undefined,
+  );
+}
+
+function onlyEntityFilter(search: CatalogListingSearch, key: "brand" | "category") {
+  const { page: _page, ...withoutPage } = search;
+  const copy = { ...withoutPage };
+  delete copy[key];
+  return Boolean(search[key]) && !hasCatalogState(copy);
 }

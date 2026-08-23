@@ -31,9 +31,22 @@ test("product media keeps mixed aspect-ratio gallery images in one stable frame"
   await expect(secondary).toHaveCSS("position", "absolute");
   await expect(primaryImage).toHaveCSS("object-fit", "cover");
   await expect(secondaryImage).toHaveCSS("object-fit", "cover");
+  await expect(card.locator(".quick-add__divider")).toHaveCount(0);
 
   if (testInfo.project.name === "chromium") {
+    await expect(quickAdd).toHaveCSS("opacity", "0");
     await card.hover();
+    await page.waitForTimeout(140);
+    const midpoint = await layerOpacity(primary, secondary);
+    expect(midpoint.primary).toBeGreaterThan(0);
+    expect(midpoint.primary).toBeLessThan(1);
+    expect(midpoint.secondary).toBeGreaterThan(0);
+    expect(midpoint.secondary).toBeLessThan(1);
+    const actionMidpoint = await quickAdd.evaluate((element) =>
+      Number.parseFloat(getComputedStyle(element).opacity),
+    );
+    expect(actionMidpoint).toBeGreaterThan(0);
+    expect(actionMidpoint).toBeLessThan(1);
     await expect(secondary).toHaveCSS("opacity", "1");
     await expect(primary).toHaveCSS("opacity", "0");
     await expect(quickAdd).toHaveCSS("opacity", "1");
@@ -45,6 +58,20 @@ test("product media keeps mixed aspect-ratio gallery images in one stable frame"
     expect(hovered.media.height).toBeCloseTo(initial.media.height, 4);
     expect(hovered.primary).toEqual(hovered.secondary);
 
+    await page.locator(".sf-shop-meta").hover();
+    await page.waitForTimeout(80);
+    const reversing = await layerOpacity(primary, secondary);
+    expect(reversing.primary).toBeGreaterThan(0);
+    expect(reversing.primary).toBeLessThan(1);
+    expect(reversing.secondary).toBeGreaterThan(0);
+    expect(reversing.secondary).toBeLessThan(1);
+    await card.hover();
+    await page.waitForTimeout(60);
+    const reentering = await layerOpacity(primary, secondary);
+    expect(reentering.primary).toBeGreaterThan(0);
+    expect(reentering.primary).toBeLessThan(1);
+    expect(reentering.secondary).toBeGreaterThan(0);
+    expect(reentering.secondary).toBeLessThan(1);
     await page.locator(".sf-shop-meta").hover();
     await expect(primary).toHaveCSS("opacity", "1");
     await expect(secondary).toHaveCSS("opacity", "0");
@@ -58,6 +85,49 @@ test("product media keeps mixed aspect-ratio gallery images in one stable frame"
   }
 
   expect(runtimeIssues).toEqual([]);
+});
+
+test("a one-image product never fades into an empty media layer", async ({ page }, testInfo) => {
+  await page.route("**/api/v1/**", (route) => route.fulfill({ json: { success: true, data: [] } }));
+  await page.goto("/privacy-policy", { waitUntil: "networkidle" });
+  await mountProductCardFixture(page);
+  const media = page.locator(".sf-product-card__media");
+  await media.evaluate((element) => {
+    element.querySelector(".product-card-secondary")?.remove();
+    element.setAttribute("data-has-secondary", "false");
+    element.setAttribute("data-secondary-ready", "false");
+  });
+
+  if (testInfo.project.name === "chromium") await media.hover();
+  await expect(media.locator(".product-card-primary")).toHaveCSS("opacity", "1");
+  await expect(media.locator(".product-card-secondary")).toHaveCount(0);
+});
+
+test("the real product card keeps its secondary image node mounted through first hover", async ({
+  page,
+}) => {
+  await page.goto("/shop", { waitUntil: "networkidle" });
+  const card = page.locator(".sf-shop-page .sf-product-card").first();
+  const media = card.locator(".product-card-media");
+  const secondary = media.locator(".product-card-secondary");
+
+  await expect(secondary).toHaveCount(1);
+  await expect(secondary.locator("img")).toHaveCount(1);
+  await secondary.evaluate((element) => {
+    (window as typeof window & { __productCardSecondary?: Element }).__productCardSecondary =
+      element;
+  });
+  await expect(media).toHaveAttribute("data-secondary-ready", "true");
+
+  await card.hover();
+  expect(
+    await secondary.evaluate(
+      (element) =>
+        (window as typeof window & { __productCardSecondary?: Element }).__productCardSecondary ===
+        element,
+    ),
+  ).toBe(true);
+  await expect(card.locator(".quick-add__divider")).toHaveCount(0);
 });
 
 async function mountProductCardFixture(page: Page) {
@@ -91,6 +161,14 @@ async function mountProductCardFixture(page: Page) {
     },
     { portrait, landscape },
   );
+}
+
+async function layerOpacity(primary: Locator, secondary: Locator) {
+  const [primaryOpacity, secondaryOpacity] = await Promise.all([
+    primary.evaluate((element) => Number.parseFloat(getComputedStyle(element).opacity)),
+    secondary.evaluate((element) => Number.parseFloat(getComputedStyle(element).opacity)),
+  ]);
+  return { primary: primaryOpacity, secondary: secondaryOpacity };
 }
 
 async function measureCard(card: Locator) {

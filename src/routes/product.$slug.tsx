@@ -18,7 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { PolishedImage } from "@/components/ui/polished-image";
 import { ProductCard } from "@/components/shop/ProductCard";
-import { ProductImageZoom } from "@/components/shop/ProductImageZoom";
+import { ProductImageViewer } from "@/components/shop/ProductImageViewer";
 import {
   ProductInfoAccordion,
   type ProductInfoSection,
@@ -27,7 +27,7 @@ import { ProductReviews } from "@/components/shop/ProductReviews";
 import { IngredientExplorer } from "@/components/shop/IngredientExplorer";
 import { WishlistPicker } from "@/components/shop/WishlistPicker";
 import { formatPrice } from "@/lib/products";
-import { loadCatalog, loadProduct, useProduct } from "@/lib/catalog";
+import { loadMerchandisingCatalog, loadProduct, useProduct } from "@/lib/catalog";
 import { listProductReviews, type ProductReviews as ProductReviewsData } from "@/lib/api";
 import { useStore } from "@/lib/store";
 import { trackCommerceEvent } from "@/lib/analytics";
@@ -186,12 +186,12 @@ export const Route = createFileRoute("/product/$slug")({
         product.id
           ? listProductReviews(product.id).catch(() => emptyReviews())
           : Promise.resolve(emptyReviews()),
-        loadCatalog(
+        loadMerchandisingCatalog(
           {
-            categorySlug: product.categorySlug,
-            limit: 5,
-            sortBy: "createdAt",
-            sortOrder: "desc",
+            section: `related-${product.id}`,
+            ...(product.categorySlug ? { categorySlug: product.categorySlug } : {}),
+            ...(product.id ? { excludeProductId: product.id } : {}),
+            limit: 4,
           },
           locale,
         ).catch(() => []),
@@ -199,7 +199,7 @@ export const Route = createFileRoute("/product/$slug")({
       return {
         product,
         reviews,
-        related: related.filter((item) => item.slug !== product.slug).slice(0, 4),
+        related,
         locale,
       };
     } catch (error) {
@@ -372,14 +372,12 @@ function ProductPage() {
           url,
           altText: product.imageAlt || product.name,
         }));
-  const activeImage = activeMedia[imageIndex]?.url ?? product.image;
-  const activeImageAlt = activeMedia[imageIndex]?.altText || product.imageAlt || product.name;
   const discountPercent =
     variant?.originalPrice && variant.originalPrice > variant.price
       ? Math.round((1 - variant.price / variant.originalPrice) * 100)
       : null;
-  const tags = [product.type, product.category].filter(Boolean).join(", ");
-  const categoryLine = [product.category, ...product.concerns].filter(Boolean).join(", ");
+  const tags = product.concerns.filter(Boolean).join(", ");
+  const categoryLine = product.category;
   const sku = variant?.sku;
   const detailSections = (
     [
@@ -444,7 +442,12 @@ function ProductPage() {
   return (
     <div className="sf-product-page product-template-white">
       <div className="product-shell">
-        <Reveal as="nav" variant="fade" distance={0} className="product-reference-breadcrumb">
+        <Reveal
+          as="nav"
+          variant="fade"
+          distance={0}
+          className="storefront-breadcrumb product-reference-breadcrumb"
+        >
           <Link to="/">{labels.home}</Link>
           <span aria-hidden="true">•</span>
           <Link to="/shop">{labels.shop}</Link>
@@ -462,10 +465,11 @@ function ProductPage() {
 
         <section className="product-reference-layout">
           <Reveal variant="scale" duration={480} distance={0} className="product-reference-gallery">
-            <ProductImageZoom
-              src={activeImage}
-              alt={activeImageAlt}
-              resetKey={`${product.id}:${variant?.id ?? "product"}:${activeMedia[imageIndex]?.id ?? activeImage}`}
+            <ProductImageViewer
+              images={activeMedia}
+              index={imageIndex}
+              onIndexChange={setImageIndex}
+              locale={locale}
             />
             <div className="product-reference-thumbs">
               {activeMedia.map((image, index) => (
@@ -499,7 +503,7 @@ function ProductPage() {
             distance={20}
             className="product-reference-summary"
           >
-            <h1>{product.name}</h1>
+            <h1 dir="auto">{product.name}</h1>
             <div className="product-reference-rating">
               <span className="product-reference-stars" aria-hidden="true">
                 {[1, 2, 3, 4, 5].map((value) => (
@@ -524,7 +528,9 @@ function ProductPage() {
             </div>
 
             {product.shortDescription ? (
-              <p className="product-reference-short-description">{product.shortDescription}</p>
+              <p className="product-reference-short-description" dir="auto">
+                {product.shortDescription}
+              </p>
             ) : null}
 
             <dl className="product-reference-meta">
@@ -535,14 +541,16 @@ function ProductPage() {
                   {!outOfStock ? <Check className="size-4" aria-hidden="true" /> : null}
                 </dd>
               </div>
-              <div>
-                <dt>{labels.tags}</dt>
-                <dd>{tags}</dd>
-              </div>
+              {tags ? (
+                <div>
+                  <dt>{labels.tags}</dt>
+                  <dd dir="auto">{tags}</dd>
+                </div>
+              ) : null}
               {sku ? (
                 <div>
                   <dt>{labels.sku}</dt>
-                  <dd>{sku}</dd>
+                  <dd dir="ltr">{sku}</dd>
                 </div>
               ) : null}
               {product.brand ? (
@@ -667,7 +675,7 @@ function ProductPage() {
                         setQuantity(1);
                       }}
                       aria-pressed={variantIndex === index}
-                      aria-label={`${item.label}${item.stock === 0 ? ", out of stock" : ""}`}
+                      aria-label={`${item.label}${item.stock === 0 ? `, ${labels.out}` : ""}`}
                       className="product-variant"
                     >
                       {item.shadeHex && (
@@ -744,7 +752,9 @@ function ProductPage() {
                 {shared ? labels.shared : labels.share}
               </button>
               <a
-                href={`mailto:hello@bioreza.com?subject=${encodeURIComponent(`Question about ${product.name}`)}`}
+                href={`mailto:hello@bioreza.com?subject=${encodeURIComponent(
+                  locale === "ar" ? `سؤال عن ${product.name}` : `Question about ${product.name}`,
+                )}`}
               >
                 <MessageCircleQuestion className="size-4" />
                 {labels.ask}
@@ -803,6 +813,7 @@ function ProductPage() {
             <IngredientExplorer
               ingredients={product.ingredientDetails}
               fallback={product.ingredients}
+              locale={locale}
             />
           </section>
         ) : null}
@@ -859,7 +870,7 @@ function RelatedProducts({
   products,
   title,
 }: {
-  products: Awaited<ReturnType<typeof loadCatalog>>;
+  products: Awaited<ReturnType<typeof loadMerchandisingCatalog>>;
   title: string;
 }) {
   if (!products.length) return null;

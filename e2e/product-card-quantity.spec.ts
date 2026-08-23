@@ -12,14 +12,39 @@ test("mobile grid cards keep the quantity stepper symmetric and isolated", async
     const geometry = await measureToolbar(toolbar);
 
     assertStableToolbar(geometry);
+    expect(geometry.layout).toBe("stacked");
+    expect(geometry.root.top).toBeGreaterThanOrEqual(geometry.media.bottom + 6);
+    expect(geometry.root.left).toBeGreaterThanOrEqual(geometry.purchase.left - 0.5);
+    expect(geometry.root.right).toBeLessThanOrEqual(geometry.purchase.right + 0.5);
     expect(geometry.documentOverflow).toBeLessThanOrEqual(0.5);
-    expect(geometry.labelLines).toBeLessThanOrEqual(2.1);
     expect(geometry.minus.height).toBeGreaterThanOrEqual(44);
     expect(geometry.plus.height).toBeGreaterThanOrEqual(44);
-    if (width === 430) {
-      expect(geometry.minus.width).toBeGreaterThanOrEqual(39.5);
-      expect(geometry.plus.width).toBeGreaterThanOrEqual(39.5);
-    }
+    expect(geometry.minus.width).toBeGreaterThanOrEqual(40);
+    expect(geometry.plus.width).toBeGreaterThanOrEqual(40);
+  }
+});
+
+test("commerce controls respond to their card width instead of the viewport alone", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 900 });
+  await page.goto("/shop", { waitUntil: "networkidle" });
+  const products = page.locator(".sf-shop-products");
+  const toolbar = page.locator(".sf-shop-page .quick-add").first();
+
+  for (const width of [160, 180, 200, 240, 280, 320]) {
+    await products.evaluate((element, nextWidth) => {
+      const grid = element as HTMLElement;
+      grid.style.width = `${nextWidth}px`;
+      grid.style.gridTemplateColumns = "minmax(0, 1fr)";
+      grid.style.marginInline = "auto";
+    }, width);
+
+    const geometry = await measureToolbar(toolbar);
+    assertStableToolbar(geometry);
+    expect(geometry.layout).toBe(width <= 300 ? "stacked" : "inline");
+    expect(geometry.root.width).toBeCloseTo(width, 0);
+    expect(geometry.documentOverflow).toBeLessThanOrEqual(0.5);
   }
 });
 
@@ -40,7 +65,7 @@ test("quantity digits and stock states do not move the stepper zones", async ({ 
   for (let quantity = 3; quantity <= 8; quantity += 1) await increment.click();
   await expect(output).toHaveText("8");
   await expect(increment).toBeDisabled();
-  await expect(page.locator(".sf-product-card__badge--low").first()).toBeVisible();
+  await expect(page.locator(".sf-product-card__badge--low")).toHaveCount(0);
 
   const stableButtons = await buttonGeometry(toolbar);
   for (const quantity of [1, 2, 9, 10]) {
@@ -71,8 +96,9 @@ test("list view and Arabic RTL preserve the same logical separation", async ({ p
 
     assertStableToolbar(geometry);
     expect(geometry.direction).toBe(scenario.direction);
-    expect(geometry.minus.width).toBeGreaterThanOrEqual(38.5);
-    expect(geometry.plus.width).toBeGreaterThanOrEqual(38.5);
+    expect(geometry.layout).toBe(scenario.width === 320 ? "stacked" : "inline");
+    expect(geometry.minus.width).toBeGreaterThanOrEqual(38);
+    expect(geometry.plus.width).toBeGreaterThanOrEqual(38);
     expect(geometry.documentOverflow).toBeLessThanOrEqual(0.5);
 
     await page.locator("html").evaluate((element) => element.classList.add("dark"));
@@ -93,6 +119,7 @@ test("desktop grid and list cards keep the toolbar inside the product media", as
     const media = await box(card.locator(".sf-product-card__media"));
 
     assertStableToolbar(geometry);
+    expect(geometry.layout).toBe("inline");
     expect(geometry.root.left).toBeGreaterThanOrEqual(media.left);
     expect(geometry.root.right).toBeLessThanOrEqual(media.right);
     expect(geometry.root.top).toBeGreaterThanOrEqual(media.top);
@@ -110,16 +137,20 @@ type Rect = {
 };
 
 type ToolbarGeometry = {
+  layout: "stacked" | "inline";
+  mobileComposition: boolean;
   direction: string;
   documentOverflow: number;
   labelLines: number;
+  labelOverflow: number;
   root: Rect;
   content: Rect;
+  purchase: Rect;
+  media: Rect;
   quantity: Rect;
   minus: Rect;
   output: Rect;
   plus: Rect;
-  divider: Rect;
   action: Rect;
 };
 
@@ -129,6 +160,8 @@ function assertStableToolbar(geometry: ToolbarGeometry) {
   expect(geometry.minus.height).toBeGreaterThanOrEqual(40);
   expect(geometry.plus.height).toBeGreaterThanOrEqual(40);
   expect(geometry.action.height).toBeGreaterThanOrEqual(40);
+  expect(geometry.labelLines).toBeLessThanOrEqual(1.1);
+  if (geometry.mobileComposition) expect(geometry.labelOverflow).toBeLessThanOrEqual(0.5);
   expect(geometry.minus.width).toBeCloseTo(geometry.output.width, 1);
   expect(geometry.output.width).toBeCloseTo(geometry.plus.width, 1);
   expect(center(geometry.minus, "x") - center(geometry.output, "x")).toBeCloseTo(
@@ -136,17 +169,23 @@ function assertStableToolbar(geometry: ToolbarGeometry) {
     1,
   );
 
-  for (const item of [geometry.minus, geometry.output, geometry.plus, geometry.action]) {
-    expect(center(item, "y")).toBeCloseTo(center(geometry.content, "y"), 1);
+  for (const item of [geometry.minus, geometry.output, geometry.plus]) {
+    expect(center(item, "y")).toBeCloseTo(center(geometry.quantity, "y"), 1);
   }
 
   expect(geometry.minus.right).toBeLessThanOrEqual(geometry.output.left + 0.5);
   expect(geometry.output.right).toBeLessThanOrEqual(geometry.plus.left + 0.5);
-  const outerZones = [geometry.quantity, geometry.divider, geometry.action].sort(
-    (first, second) => first.left - second.left,
-  );
-  expect(outerZones[0]!.right).toBeLessThanOrEqual(outerZones[1]!.left - 1.5);
-  expect(outerZones[1]!.right).toBeLessThanOrEqual(outerZones[2]!.left - 1.5);
+  if (geometry.layout === "stacked") {
+    expect(geometry.quantity.width).toBeCloseTo(geometry.content.width, 1);
+    expect(geometry.action.width).toBeCloseTo(geometry.content.width, 1);
+    expect(geometry.action.top).toBeGreaterThanOrEqual(geometry.quantity.bottom + 5);
+  } else {
+    expect(center(geometry.action, "y")).toBeCloseTo(center(geometry.content, "y"), 1);
+    const outerZones = [geometry.quantity, geometry.action].sort(
+      (first, second) => first.left - second.left,
+    );
+    expect(outerZones[0]!.right).toBeLessThanOrEqual(outerZones[1]!.left - 1.5);
+  }
 }
 
 async function measureToolbar(toolbar: Locator): Promise<ToolbarGeometry> {
@@ -166,18 +205,25 @@ async function measureToolbar(toolbar: Locator): Promise<ToolbarGeometry> {
     const buttons = quantity.querySelectorAll("button");
     const label = root.querySelector(".quick-add__action span")!;
     const labelStyles = getComputedStyle(label);
+    const quantityRect = rect(quantity);
+    const actionRect = rect(root.querySelector(".quick-add__action")!);
+    const card = root.closest(".product-card")!;
     return {
+      layout: actionRect.top >= quantityRect.bottom - 0.5 ? "stacked" : "inline",
+      mobileComposition: getComputedStyle(root).position === "relative",
       direction: getComputedStyle(root).direction,
       documentOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
       labelLines: label.getBoundingClientRect().height / Number.parseFloat(labelStyles.lineHeight),
+      labelOverflow: label.scrollWidth - label.clientWidth,
       root: rect(root),
       content: rect(root.querySelector(".quick-add__content")!),
-      quantity: rect(quantity),
+      purchase: rect(root.parentElement!),
+      media: rect(card.querySelector(".product-card-media")!),
+      quantity: quantityRect,
       minus: rect(buttons[0]!),
       output: rect(quantity.querySelector("output")!),
       plus: rect(buttons[1]!),
-      divider: rect(root.querySelector(".quick-add__divider")!),
-      action: rect(root.querySelector(".quick-add__action")!),
+      action: actionRect,
     };
   });
 }

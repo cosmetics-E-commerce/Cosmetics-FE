@@ -1,7 +1,12 @@
 import { useEffect } from "react";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { SeoCatalogLanding } from "@/components/shop/SeoCatalogLanding";
-import { loadCatalogPage, loadCategories } from "@/lib/catalog";
+import {
+  catalogFacetParams,
+  catalogListingParams,
+  parseCatalogListingSearch,
+} from "@/components/shop/catalog-listing-state";
+import { loadCatalogFacets, loadCatalogPage, loadCategories } from "@/lib/catalog";
 import { emitCampaignContext } from "@/lib/analytics";
 import {
   breadcrumbSchema,
@@ -13,25 +18,22 @@ import {
   type SeoLocale,
 } from "@/lib/seo";
 
-const PAGE_SIZE = 24;
-
 export const Route = createFileRoute("/categories/$slug")({
-  validateSearch: (raw: Record<string, unknown>): { page?: number } => {
-    const page = pageNumber(raw["page"]);
-    return page ? { page } : {};
-  },
-  loaderDeps: ({ search }) => ({ page: search.page }),
+  validateSearch: parseCatalogListingSearch,
+  loaderDeps: ({ search }) => search,
   loader: async ({ params, deps, context }) => {
     const locale: SeoLocale = context.locale === "ar" ? "ar" : "en";
     const page = deps.page ?? 1;
-    const [categories, catalog] = await Promise.all([
+    const scope = { categorySlug: params.slug };
+    const [categories, catalog, facets] = await Promise.all([
       loadCategories(),
-      loadCatalogPage({ categorySlug: params.slug, page, limit: PAGE_SIZE }, locale),
+      loadCatalogPage(catalogListingParams(deps, scope, page), locale),
+      loadCatalogFacets(catalogFacetParams(deps, scope)),
     ]);
     const category = categories.find((item) => item.slug === params.slug);
     if (
       !category ||
-      category.productCount < 1 ||
+      (category.aggregateProductCount ?? category.productCount) < 1 ||
       (catalog.meta.total > 0 && page > catalog.meta.totalPages)
     ) {
       throw notFound();
@@ -46,11 +48,28 @@ export const Route = createFileRoute("/categories/$slug")({
           slug: parentRecord.slug,
         }
       : undefined;
-    return { category, catalog, locale, name, parent };
+    const children = categories
+      .filter((item) => item.parentId === category.id)
+      .map((item) => ({
+        id: item.id,
+        slug: item.slug,
+        name: locale === "ar" ? item.nameAr : item.nameEn,
+        imageUrl: item.imageUrl,
+        productCount: item.aggregateProductCount ?? item.productCount,
+      }));
+    return { category, catalog, facets, locale, name, parent, children };
   },
   head: ({ loaderData, params, match }) => {
     const locale = loaderData?.locale ?? "en";
     const page = match.search.page ?? 1;
+    const filtered = Boolean(
+      match.search.sort ||
+      match.search.view ||
+      match.search.stock ||
+      match.search.tags ||
+      match.search.minPrice !== undefined ||
+      match.search.maxPrice !== undefined,
+    );
     const name = loaderData?.name ?? params.slug;
     const path = `/categories/${encodeURIComponent(params.slug)}`;
     const description =
@@ -58,15 +77,27 @@ export const Route = createFileRoute("/categories/$slug")({
         ? `تصفّحي منتجات ${name} المتاحة حالياً من بيوريزا مع الأسعار وخيارات المنتج.`
         : `Browse ${name} products currently available from BIOREZA, with current prices and product options.`;
     const seo = createSeoHead({
-      title: page > 1 ? `${name} Products - Page ${page}` : `${name} Products`,
+      title:
+        locale === "ar"
+          ? page > 1
+            ? `منتجات ${name} - الصفحة ${page}`
+            : `منتجات ${name}`
+          : page > 1
+            ? `${name} Products - Page ${page}`
+            : `${name} Products`,
       description,
       path,
       locale,
-      page,
+      page: filtered ? undefined : page,
       image: loaderData?.category.imageUrl,
-      index: Boolean(loaderData?.catalog.items.length),
-      prevPath: page > 1 ? localizePath(path, locale, page - 1) : undefined,
-      nextPath: loaderData?.catalog.meta.hasNext ? localizePath(path, locale, page + 1) : undefined,
+      index: !filtered && Boolean(loaderData?.catalog.items.length),
+      follow: true,
+      alternates: !filtered,
+      prevPath: !filtered && page > 1 ? localizePath(path, locale, page - 1) : undefined,
+      nextPath:
+        !filtered && loaderData?.catalog.meta.hasNext
+          ? localizePath(path, locale, page + 1)
+          : undefined,
     });
     const crumbs = [
       { name: locale === "ar" ? "الرئيسية" : "Home", path: "/" },
@@ -78,27 +109,28 @@ export const Route = createFileRoute("/categories/$slug")({
     ];
     return {
       ...seo,
-      scripts: loaderData
-        ? [
-            jsonLd(breadcrumbSchema(crumbs, locale)),
-            jsonLd(
-              itemListSchema(
-                `${name} Products`,
-                loaderData.catalog.items,
-                locale,
-                (page - 1) * loaderData.catalog.meta.limit,
+      scripts:
+        loaderData && !filtered
+          ? [
+              jsonLd(breadcrumbSchema(crumbs, locale)),
+              jsonLd(
+                itemListSchema(
+                  locale === "ar" ? `منتجات ${name}` : `${name} Products`,
+                  loaderData.catalog.items,
+                  locale,
+                  (page - 1) * loaderData.catalog.meta.limit,
+                ),
               ),
-            ),
-            jsonLd({
-              "@context": "https://schema.org",
-              "@type": "CollectionPage",
-              name,
-              url: canonicalUrl(path, locale, page),
-              inLanguage: locale,
-              mainEntity: { "@type": "ItemList", numberOfItems: loaderData.catalog.meta.total },
-            }),
-          ]
-        : [],
+              jsonLd({
+                "@context": "https://schema.org",
+                "@type": "CollectionPage",
+                name,
+                url: canonicalUrl(path, locale, page),
+                inLanguage: locale,
+                mainEntity: { "@type": "ItemList", numberOfItems: loaderData.catalog.meta.total },
+              }),
+            ]
+          : [],
     };
   },
   component: CategoryPage,
@@ -106,6 +138,8 @@ export const Route = createFileRoute("/categories/$slug")({
 
 function CategoryPage() {
   const data = Route.useLoaderData();
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
   useEffect(() => {
     emitCampaignContext({
       categoryId: data.category.id,
@@ -127,11 +161,10 @@ function CategoryPage() {
       meta={data.catalog.meta}
       locale={data.locale}
       parent={data.parent}
+      children={data.children}
+      facets={data.facets}
+      search={search}
+      onSearchChange={(next) => navigate({ search: next })}
     />
   );
-}
-
-function pageNumber(value: unknown) {
-  const page = typeof value === "string" ? Number.parseInt(value, 10) : Number(value);
-  return Number.isFinite(page) && page > 1 ? page : undefined;
 }

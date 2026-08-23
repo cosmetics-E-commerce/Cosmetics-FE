@@ -86,10 +86,19 @@ function applyResponsePolicy(request: Request, response: Response) {
       url.pathname,
     );
   const noisyCatalog =
-    url.pathname === "/shop" &&
-    ["brand", "category", "concern", "search", "sort", "view"].some((key) =>
-      url.searchParams.has(key),
-    );
+    /^\/(?:shop|brands\/[^/]+|categories\/[^/]+)\/?$/.test(url.pathname) &&
+    [
+      "brand",
+      "category",
+      "concern",
+      "search",
+      "sort",
+      "view",
+      "stock",
+      "tags",
+      "minPrice",
+      "maxPrice",
+    ].some((key) => url.searchParams.has(key));
 
   if (privatePath || response.status >= 400) {
     headers.set("X-Robots-Tag", "noindex, nofollow, noarchive");

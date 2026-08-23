@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Heart } from "lucide-react";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Stars } from "@/components/brand/Stars";
 import { PolishedImage } from "@/components/ui/polished-image";
 import { QuickAddToolbar } from "@/components/shop/QuickAddToolbar";
@@ -11,13 +11,13 @@ import { useStore } from "@/lib/store";
 const cardCopy = {
   en: {
     out: "Out of stock",
-    low: "Low stock",
+    view: (name: string, price: string) => `View ${name}, ${price}`,
     wishAdd: (name: string) => `Add ${name} to wishlist`,
     wishRemove: (name: string) => `Remove ${name} from wishlist`,
   },
   ar: {
     out: "غير متوفر",
-    low: "مخزون منخفض",
+    view: (name: string, price: string) => `عرض ${name}، ${price}`,
     wishAdd: (name: string) => `إضافة ${name} إلى المفضلة`,
     wishRemove: (name: string) => `إزالة ${name} من المفضلة`,
   },
@@ -37,21 +37,65 @@ export function ProductCard({
   const wished = wishlist.includes(product.slug);
   const variant =
     product.sizes.find((item) => item.stock === undefined || item.stock > 0) ?? product.sizes[0];
-  const stock = product.id ? product.stock : undefined;
   const outOfStock = product.inStock === false || !variant || variant.stock === 0;
-  const lowStock = !outOfStock && stock !== undefined && stock > 0 && stock < 10;
   const { primary: primaryImage, secondary: secondaryImage } = selectProductCardImages(product);
+  const mediaRef = useRef<HTMLDivElement>(null);
   const secondaryImageRef = useRef<HTMLImageElement>(null);
+  const mountedRef = useRef(true);
   const [secondaryReady, setSecondaryReady] = useState(false);
 
+  const prepareSecondary = useCallback((image: HTMLImageElement | null, loadIfNeeded = false) => {
+    if (!image) return;
+    if (!image.complete) {
+      if (loadIfNeeded) image.loading = "eager";
+      return;
+    }
+    if (image.naturalWidth <= 0 || image.naturalHeight <= 0) return;
+
+    const markReady = () => {
+      if (mountedRef.current && secondaryImageRef.current === image) setSecondaryReady(true);
+    };
+
+    if (typeof image.decode === "function") void image.decode().then(markReady, markReady);
+    else markReady();
+  }, []);
+
   useEffect(() => {
-    const image = secondaryImageRef.current;
-    setSecondaryReady(
-      Boolean(
-        secondaryImage && image?.complete && image.naturalWidth > 0 && image.naturalHeight > 0,
-      ),
+    setSecondaryReady(false);
+    prepareSecondary(secondaryImageRef.current);
+  }, [prepareSecondary, secondaryImage]);
+
+  useEffect(() => {
+    const media = mediaRef.current;
+    if (!secondaryImage || !media || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        prepareSecondary(secondaryImageRef.current, true);
+        observer.disconnect();
+      },
+      { rootMargin: "720px 0px" },
     );
-  }, [secondaryImage]);
+    observer.observe(media);
+    return () => observer.disconnect();
+  }, [prepareSecondary, secondaryImage]);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  const preloadSecondary = useCallback(() => {
+    if (!secondaryImage || secondaryReady) return;
+    if (
+      typeof window !== "undefined" &&
+      !window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    )
+      return;
+    prepareSecondary(secondaryImageRef.current, true);
+  }, [prepareSecondary, secondaryImage, secondaryReady]);
 
   return (
     <article
@@ -61,9 +105,12 @@ export function ProductCard({
           : "flex flex-col"
       }`}
       data-layout={layout}
+      onPointerEnter={preloadSecondary}
+      onFocusCapture={preloadSecondary}
     >
       <div className="product-card__purchase relative min-w-0">
         <div
+          ref={mediaRef}
           className="product-card-media sf-product-card__media relative overflow-hidden"
           data-has-secondary={secondaryImage ? "true" : "false"}
           data-secondary-ready={secondaryReady ? "true" : "false"}
@@ -104,11 +151,9 @@ export function ProductCard({
                     ? "(min-width: 640px) 12rem, 7rem"
                     : "(min-width: 1280px) 24vw, (min-width: 768px) 33vw, 50vw"
                 }
-                onLoad={(event) =>
-                  setSecondaryReady(
-                    event.currentTarget.naturalWidth > 0 && event.currentTarget.naturalHeight > 0,
-                  )
-                }
+                onLoad={(event) => {
+                  prepareSecondary(event.currentTarget);
+                }}
                 onError={() => setSecondaryReady(false)}
                 wrapperClassName="product-card-layer product-card-secondary"
                 className="product-card-image product-card-image--secondary"
@@ -134,12 +179,7 @@ export function ProductCard({
               {labels.out}
             </span>
           )}
-          {lowStock && (
-            <span className="sf-product-card__badge sf-product-card__badge--low absolute start-3 top-3">
-              {labels.low}
-            </span>
-          )}
-          {product.promotionBadge && !outOfStock && !lowStock && (
+          {product.promotionBadge && !outOfStock && (
             <span className="sf-product-card__badge sf-product-card__badge--sale absolute start-3 top-3">
               {product.promotionBadge}
             </span>
@@ -151,13 +191,15 @@ export function ProductCard({
         className={`product-card__info sf-product-card__info flex min-w-0 flex-1 flex-col ${layout === "list" ? "py-2" : "pt-4"}`}
       >
         <p className="sf-product-card__category">{product.category}</p>
-        <h3 className="sf-product-card__title">
+        <h3 className="sf-product-card__title" dir="auto">
           <ProductLink product={product} className="transition-colors hover:text-gold">
             {product.name}
           </ProductLink>
         </h3>
         {!compact && product.benefit ? (
-          <p className="sf-product-card__benefit line-clamp-2">{product.benefit}</p>
+          <p className="sf-product-card__benefit line-clamp-2" dir="auto">
+            {product.benefit}
+          </p>
         ) : null}
         {product.rating > 0 && (
           <div className="sf-product-card__rating flex items-center gap-2">
@@ -168,7 +210,7 @@ export function ProductCard({
         <div className="sf-product-card__footer mt-auto flex items-end justify-between gap-3">
           <ProductLink
             product={product}
-            ariaLabel={`View ${product.name}, ${formatPrice(variant?.price ?? product.price)}`}
+            ariaLabel={labels.view(product.name, formatPrice(variant?.price ?? product.price))}
             className="product-card__price sf-product-card__price inline-flex min-h-11 items-center whitespace-nowrap focus-visible:outline-none"
           >
             <span className="flex flex-wrap items-baseline gap-2">

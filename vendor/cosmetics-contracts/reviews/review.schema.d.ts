@@ -159,12 +159,12 @@ export declare const reviewSummarySchema: z.ZodObject<{
     count: z.ZodNumber;
     distribution: z.ZodRecord<z.ZodString, z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
-    average: number;
     count: number;
+    average: number;
     distribution: Record<string, number>;
 }, {
-    average: number;
     count: number;
+    average: number;
     distribution: Record<string, number>;
 }>;
 export type ReviewSummaryResponse = z.infer<typeof reviewSummarySchema>;

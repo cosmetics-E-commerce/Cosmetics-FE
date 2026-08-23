@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { MotionProvider } from "@/components/motion/MotionProvider";
 import { jsonLd, organizationGraph, verificationMeta } from "@/lib/seo";
+import { publishedNavigationQuery } from "@/lib/navigation";
 
 const LazyCartDrawer = lazy(() =>
   import("@/components/shop/CartDrawer").then((module) => ({ default: module.CartDrawer })),
@@ -107,6 +108,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   beforeLoad: ({ search }) => ({
     locale: search.lang === "ar" ? ("ar" as const) : ("en" as const),
   }),
+  loader: async ({ context }) => {
+    try {
+      return await context.queryClient.ensureQueryData(publishedNavigationQuery());
+    } catch {
+      return null;
+    }
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -217,6 +225,7 @@ function DeferredInteractiveLayers() {
 
 function RootComponent() {
   const { queryClient, locale } = Route.useRouteContext();
+  const initialNavigation = Route.useLoaderData();
   const { pathname } = useLocation();
   const pageRef = useRef<HTMLDivElement>(null);
   const headerScrollSentinelRef = useRef<HTMLSpanElement>(null);
@@ -269,7 +278,10 @@ function RootComponent() {
               className="header-scroll-sentinel"
               aria-hidden="true"
             />
-            <Header scrollSentinelRef={headerScrollSentinelRef} />
+            <Header
+              scrollSentinelRef={headerScrollSentinelRef}
+              initialNavigation={initialNavigation}
+            />
             {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
             <main
               id="main-content"

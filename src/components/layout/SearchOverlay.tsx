@@ -314,7 +314,12 @@ export function SearchOverlay() {
                     <li key={category.id}>
                       <Link to="/categories/$slug" params={{ slug: category.slug }} onClick={close}>
                         <span>{locale === "ar" ? category.nameAr : category.nameEn}</span>
-                        <small>{String(category.productCount).padStart(2, "0")}</small>
+                        <small>
+                          {String(category.aggregateProductCount ?? category.productCount).padStart(
+                            2,
+                            "0",
+                          )}
+                        </small>
                       </Link>
                     </li>
                   ))}

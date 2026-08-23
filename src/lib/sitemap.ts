@@ -84,7 +84,7 @@ export async function categoryPathsForSitemap() {
     listCategoriesPage({ page, limit: API_PAGE_SIZE, sortBy: "nameEn", sortOrder: "asc" }),
   );
   return categories
-    .filter((category) => category.productCount > 0)
+    .filter((category) => (category.aggregateProductCount ?? category.productCount) > 0)
     .map((category) => `/categories/${encodeURIComponent(category.slug)}`);
 }
 

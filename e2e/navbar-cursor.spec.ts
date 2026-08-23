@@ -36,15 +36,15 @@ test("mobile and RTL navbar controls preserve the same cursor contract", async (
 }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "This assertion targets the mobile drawer");
 
-  await page.goto("/about?lang=ar");
+  await page.goto("/about?lang=ar", { waitUntil: "networkidle" });
   await expect(page.locator('section[aria-label^="Notifications"]')).toBeAttached();
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
 
-  const menuTrigger = page.locator(".store-header .header-brand-slot > button");
+  const menuTrigger = page.getByRole("button", { name: "فتح القائمة", exact: true });
   await expect(menuTrigger).toHaveCSS("cursor", "pointer");
   await menuTrigger.click();
 
-  const mobileNavigation = page.locator(".mobile-nav");
+  const mobileNavigation = page.getByRole("dialog", { name: "فتح القائمة" });
   await expect(mobileNavigation).toBeVisible();
   await expectVisibleControlsToUsePointer(mobileNavigation.locator("a, button"));
 });

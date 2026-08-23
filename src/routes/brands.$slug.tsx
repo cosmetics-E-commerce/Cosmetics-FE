@@ -1,6 +1,11 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { SeoCatalogLanding } from "@/components/shop/SeoCatalogLanding";
-import { loadAllBrands, loadCatalogPage } from "@/lib/catalog";
+import {
+  catalogFacetParams,
+  catalogListingParams,
+  parseCatalogListingSearch,
+} from "@/components/shop/catalog-listing-state";
+import { loadAllBrands, loadCatalogFacets, loadCatalogPage } from "@/lib/catalog";
 import {
   breadcrumbSchema,
   absoluteUrl,
@@ -12,30 +17,36 @@ import {
   type SeoLocale,
 } from "@/lib/seo";
 
-const PAGE_SIZE = 24;
-
 export const Route = createFileRoute("/brands/$slug")({
-  validateSearch: (raw: Record<string, unknown>): { page?: number } => {
-    const page = pageNumber(raw["page"]);
-    return page ? { page } : {};
-  },
-  loaderDeps: ({ search }) => ({ page: search.page }),
+  validateSearch: parseCatalogListingSearch,
+  loaderDeps: ({ search }) => search,
   loader: async ({ params, deps, context }) => {
     const locale: SeoLocale = context.locale === "ar" ? "ar" : "en";
     const page = deps.page ?? 1;
-    const [brands, catalog] = await Promise.all([
+    const scope = { brandSlug: params.slug };
+    const [brands, catalog, facets] = await Promise.all([
       loadAllBrands(),
-      loadCatalogPage({ brandSlug: params.slug, page, limit: PAGE_SIZE }, locale),
+      loadCatalogPage(catalogListingParams(deps, scope, page), locale),
+      loadCatalogFacets(catalogFacetParams(deps, scope)),
     ]);
     const brand = brands.find((item) => item.slug === params.slug);
     if (!brand || (page > 1 && page > catalog.meta.totalPages)) {
       throw notFound();
     }
-    return { brand, catalog, locale };
+    return { brand, catalog, facets, locale };
   },
   head: ({ loaderData, params, match }) => {
     const locale = loaderData?.locale ?? "en";
     const page = match.search.page ?? 1;
+    const filtered = Boolean(
+      match.search.category ||
+      match.search.sort ||
+      match.search.view ||
+      match.search.stock ||
+      match.search.tags ||
+      match.search.minPrice !== undefined ||
+      match.search.maxPrice !== undefined,
+    );
     const name = loaderData?.brand.name ?? params.slug;
     const path = `/brands/${encodeURIComponent(params.slug)}`;
     const description =
@@ -55,50 +66,56 @@ export const Route = createFileRoute("/brands/$slug")({
       description,
       path,
       locale,
-      page,
+      page: filtered ? undefined : page,
       image: loaderData?.brand.logoUrl,
-      index: Boolean(loaderData?.catalog.items.length),
-      prevPath: page > 1 ? localizePath(path, locale, page - 1) : undefined,
-      nextPath: loaderData?.catalog.meta.hasNext ? localizePath(path, locale, page + 1) : undefined,
+      index: !filtered && Boolean(loaderData?.catalog.items.length),
+      follow: true,
+      alternates: !filtered,
+      prevPath: !filtered && page > 1 ? localizePath(path, locale, page - 1) : undefined,
+      nextPath:
+        !filtered && loaderData?.catalog.meta.hasNext
+          ? localizePath(path, locale, page + 1)
+          : undefined,
     });
     return {
       ...seo,
-      scripts: loaderData
-        ? [
-            jsonLd(
-              breadcrumbSchema(
-                [
-                  { name: locale === "ar" ? "الرئيسية" : "Home", path: "/" },
-                  { name: locale === "ar" ? "المتجر" : "Shop", path: "/shop" },
-                  { name, path },
-                ],
-                locale,
+      scripts:
+        loaderData && !filtered
+          ? [
+              jsonLd(
+                breadcrumbSchema(
+                  [
+                    { name: locale === "ar" ? "الرئيسية" : "Home", path: "/" },
+                    { name: locale === "ar" ? "المتجر" : "Shop", path: "/shop" },
+                    { name, path },
+                  ],
+                  locale,
+                ),
               ),
-            ),
-            jsonLd(
-              itemListSchema(
-                locale === "ar" ? `منتجات ${name}` : `${name} Products`,
-                loaderData.catalog.items,
-                locale,
-                (page - 1) * loaderData.catalog.meta.limit,
+              jsonLd(
+                itemListSchema(
+                  locale === "ar" ? `منتجات ${name}` : `${name} Products`,
+                  loaderData.catalog.items,
+                  locale,
+                  (page - 1) * loaderData.catalog.meta.limit,
+                ),
               ),
-            ),
-            jsonLd({
-              "@context": "https://schema.org",
-              "@type": "CollectionPage",
-              name,
-              url: canonicalUrl(path, locale, page),
-              inLanguage: locale,
-              mainEntity: {
-                "@type": "Brand",
+              jsonLd({
+                "@context": "https://schema.org",
+                "@type": "CollectionPage",
                 name,
-                ...(loaderData.brand.logoUrl
-                  ? { logo: absoluteUrl(loaderData.brand.logoUrl) }
-                  : {}),
-              },
-            }),
-          ]
-        : [],
+                url: canonicalUrl(path, locale, page),
+                inLanguage: locale,
+                mainEntity: {
+                  "@type": "Brand",
+                  name,
+                  ...(loaderData.brand.logoUrl
+                    ? { logo: absoluteUrl(loaderData.brand.logoUrl) }
+                    : {}),
+                },
+              }),
+            ]
+          : [],
     };
   },
   component: BrandPage,
@@ -106,25 +123,21 @@ export const Route = createFileRoute("/brands/$slug")({
 
 function BrandPage() {
   const data = Route.useLoaderData();
-  const description =
-    data.locale === "ar"
-      ? `تصفّحي منتجات ${data.brand.name} المتاحة حالياً من بيوريزا مع الأسعار وخيارات المنتج.`
-      : `Browse ${data.brand.name} products currently available from BIOREZA, with current prices and product options.`;
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
   return (
     <SeoCatalogLanding
       kind="brand"
       slug={data.brand.slug}
       name={data.brand.name}
-      description={description}
+      description=""
       products={data.catalog.items}
       meta={data.catalog.meta}
       locale={data.locale}
       logo={data.brand.logoUrl}
+      facets={data.facets}
+      search={search}
+      onSearchChange={(next) => navigate({ search: next })}
     />
   );
-}
-
-function pageNumber(value: unknown) {
-  const page = typeof value === "string" ? Number.parseInt(value, 10) : Number(value);
-  return Number.isFinite(page) && page > 1 ? page : undefined;
 }

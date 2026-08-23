@@ -114,13 +114,15 @@ test("sign-out dialog stays viewport-safe, modal, and keyboard accessible", asyn
     await page.keyboard.press("Escape");
     await expect(dialog).toHaveCount(0);
     await expect(trigger).toBeFocused();
-    expect(
-      await page.evaluate(
-        () =>
-          !document.body.hasAttribute("data-scroll-locked") &&
-          getComputedStyle(document.body).overflow !== "hidden",
-      ),
-    ).toBe(true);
+    await expect
+      .poll(() =>
+        page.evaluate(
+          () =>
+            !document.body.hasAttribute("data-scroll-locked") &&
+            getComputedStyle(document.body).overflow !== "hidden",
+        ),
+      )
+      .toBe(true);
   }
 
   await page.setViewportSize({ width: 568, height: 320 });

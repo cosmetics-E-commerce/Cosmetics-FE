@@ -74,11 +74,11 @@ async function expectAlphabetical(names: Locator, locale: "ar" | "en" = "en") {
   expect(actual).toEqual(expected);
 }
 
-test("desktop brands menu stays compact and adapts from 2 to 100 brands", async ({
+test("published desktop navigation reaches catalogues from 2 to 100 brands", async ({
   page,
 }, testInfo) => {
   test.setTimeout(120_000);
-  test.skip(testInfo.project.name !== "chromium", "Desktop-only brand mega-menu");
+  test.skip(testInfo.project.name !== "chromium", "Desktop-only brand navigation");
   const current = { brands: createBrands(2) };
   await mockBrands(page, current);
   await page.setViewportSize({ width: 1440, height: 900 });
@@ -88,88 +88,25 @@ test("desktop brands menu stays compact and adapts from 2 to 100 brands", async 
     await page.goto(`/about?catalogue=${count}`);
     await waitForHydration(page);
     const nav = page.getByRole("navigation", { name: "Primary" });
-    const trigger = nav.getByRole("button", { name: "Brands", exact: true });
-    await trigger.click();
-
-    const menu = page.locator(".brand-menu--mega");
-    await expect(menu).toBeVisible();
-    await expect(menu.locator(".brand-menu__alphabet-link")).toHaveCount(count);
-    await expect(menu.getByPlaceholder("Search brands…")).toHaveCount(count >= 25 ? 1 : 0);
-    const groups = menu.locator(".brand-menu__alphabet-group");
-    for (let index = 0; index < (await groups.count()); index += 1) {
-      await expectAlphabetical(groups.nth(index).locator(".brand-menu__alphabet-link"));
-    }
-    await expectAlphabetical(menu.locator(".brand-menu__alphabet-link"));
-
-    const panel = page.locator(".header-mega-panel--brands");
-    const box = await panel.boundingBox();
-    expect(box).not.toBeNull();
-    expect(box!.width).toBeLessThanOrEqual(1120);
-    expect(box!.height).toBeLessThanOrEqual(650);
-    if (count <= 15) {
-      expect(
-        await menu
-          .locator(".brand-menu__alphabet-scroll")
-          .evaluate((element) => element.scrollHeight <= element.clientHeight + 1),
-      ).toBe(true);
-    }
-    await expect(menu.getByRole("link", { name: /View all brands/ })).toHaveAttribute(
-      "href",
-      "/brands",
-    );
-    await expectNoPageOverflow(page);
-  }
-
-  const menu = page.locator(".brand-menu--mega");
-  const groupHeadings = menu.locator(".brand-menu__alphabet-group h3");
-  await expect(groupHeadings.nth(0)).toHaveText("A");
-  await expect(groupHeadings.nth(1)).toHaveText("B");
-  await expect(groupHeadings.nth(2)).toHaveText("C");
-  await expect(groupHeadings.nth(3)).toHaveText("D");
-  await expect(groupHeadings.filter({ hasText: /^Q$/ })).toHaveCount(0);
-  const search = menu.getByPlaceholder("Search brands…");
-  await search.fill("brand");
-  await expectAlphabetical(menu.locator(".brand-menu__alphabet-link"));
-  await search.fill("avene");
-  await expect(menu.locator(".brand-menu__alphabet-link")).toHaveCount(1);
-  await expect(menu.getByText("Avène Maison de Beauté Internationale")).toBeVisible();
-  await search.fill("not a brand");
-  await expect(menu.getByText("No brands match your search.")).toBeVisible();
-  await menu.getByRole("button", { name: "Clear brand search" }).click();
-  await expect(search).toHaveValue("");
-
-  for (const viewport of [
-    { width: 1280, height: 800 },
-    { width: 1440, height: 900 },
-    { width: 1920, height: 1080 },
-  ]) {
-    await page.setViewportSize(viewport);
-    await page.goto(`/about?catalogue=100&viewport=${viewport.width}`);
-    await waitForHydration(page);
-    const trigger = page
-      .getByRole("navigation", { name: "Primary" })
-      .getByRole("button", { name: "Brands", exact: true });
-    await expect(trigger).toHaveAttribute("data-state", "closed");
-    await trigger.click();
-    await expect(trigger).toHaveAttribute("data-state", "open");
-    const viewportElement = page.locator(".header-mega-viewport");
-    await expect(viewportElement).toBeVisible();
-    const box = await viewportElement.boundingBox();
-    expect(box).not.toBeNull();
-    expect(box!.x).toBeGreaterThanOrEqual(0);
-    expect(box!.x + box!.width).toBeLessThanOrEqual(viewport.width + 1);
-    const columns = await page
-      .locator(".brand-menu__alphabet-grid")
-      .evaluate(
-        (element) =>
-          getComputedStyle(element).gridTemplateColumns.split(" ").filter(Boolean).length,
-      );
-    expect(columns).toBe(viewport.width < 1440 ? 3 : 4);
+    const brandsTrigger = nav.getByRole("button", { name: "Brands", exact: true });
+    await brandsTrigger.click();
+    const publishedDirectory = page.locator(".published-brand-directory");
+    await expect(publishedDirectory).toBeVisible();
+    const viewAllBrands = publishedDirectory.getByRole("link", { name: /View all brands/ });
+    await expect(viewAllBrands).toHaveAttribute("href", "/brands");
+    await viewAllBrands.click();
+    await expect(page).toHaveURL(/\/brands$/);
+    await expect(page.getByRole("heading", { name: "Beauty, by name." })).toBeVisible();
+    await expect(page.getByText(`${count} brands`)).toBeVisible();
+    await expect(page.locator(".brands-page__group a")).toHaveCount(count);
+    await expectAlphabetical(page.locator(".brands-page__group a > span:first-child"));
     await expectNoPageOverflow(page);
   }
 });
 
-test("mobile and tablet use a capped touch-first brands disclosure", async ({ page }, testInfo) => {
+test("mobile and tablet published navigation reaches the full brand directory", async ({
+  page,
+}, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "Mobile drawer coverage");
   const current = { brands: createBrands(100) };
   await mockBrands(page, current);
@@ -178,18 +115,15 @@ test("mobile and tablet use a capped touch-first brands disclosure", async ({ pa
   await waitForHydration(page);
 
   await page.locator(".store-header .header-brand-slot > button").click();
-  await page.locator(".mobile-nav__list > li").nth(1).locator(".mobile-nav__link").click();
-  const menu = page.locator(".brand-menu--mobile");
-  await expect(menu).toBeVisible();
-  await expect(menu.locator(".brand-menu__brand-link")).toHaveCount(8);
-  await expectAlphabetical(menu.locator(".brand-menu__brand-name"));
-  await expect(menu.getByRole("link", { name: /View all brands/ })).toHaveAttribute(
-    "href",
-    "/brands",
-  );
-
-  await menu.getByPlaceholder("Search brands…").fill("avene");
-  await expect(menu.locator(".brand-menu__brand-link")).toHaveCount(1);
+  const mobileNavigation = page.getByRole("dialog", { name: "Open menu" });
+  await mobileNavigation.getByRole("button", { name: "Brands", exact: true }).click();
+  const publishedDirectory = mobileNavigation.locator(".published-brand-directory");
+  const viewAllBrands = publishedDirectory.getByRole("link", { name: /View all brands/ });
+  await expect(viewAllBrands).toHaveAttribute("href", "/brands");
+  await viewAllBrands.click();
+  await expect(page).toHaveURL(/\/brands$/);
+  await expect(page.getByText("100 brands")).toBeVisible();
+  await expect(page.locator(".brands-page__group a")).toHaveCount(100);
 
   for (const viewport of [
     { width: 320, height: 568 },
@@ -200,19 +134,12 @@ test("mobile and tablet use a capped touch-first brands disclosure", async ({ pa
     { width: 1024, height: 768 },
   ]) {
     await page.setViewportSize(viewport);
-    const box = await page.locator(".mobile-nav").boundingBox();
-    expect(box).not.toBeNull();
-    expect(box!.x).toBeGreaterThanOrEqual(0);
-    expect(box!.x + box!.width).toBeLessThanOrEqual(viewport.width + 1);
     await expectNoPageOverflow(page);
   }
 
-  await page.goto("/about?lang=ar");
-  await waitForHydration(page);
-  await page.locator(".store-header .header-brand-slot > button").click();
-  await page.locator(".mobile-nav__list > li").nth(1).locator(".mobile-nav__link").click();
-  await expect(page.locator(".brand-menu--mobile")).toHaveAttribute("dir", "rtl");
-  await expectAlphabetical(page.locator(".brand-menu--mobile .brand-menu__brand-name"), "ar");
+  await page.goto("/brands?lang=ar");
+  await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(page.locator(".brands-page")).toHaveAttribute("dir", "rtl");
   await expectNoPageOverflow(page);
 });
 
@@ -227,10 +154,11 @@ test("the dedicated brands page owns full search and alphabet exploration", asyn
     .getByRole("navigation", { name: "Primary" })
     .getByRole("button", { name: "Brands", exact: true });
   await brandsTrigger.click();
-  await page
-    .locator(".brand-menu--mega")
-    .getByRole("link", { name: /View all brands/ })
-    .click();
+  const viewAllBrands = page
+    .locator(".published-brand-directory")
+    .getByRole("link", { name: /View all brands/ });
+  await expect(viewAllBrands).toHaveAttribute("href", "/brands");
+  await viewAllBrands.click();
   await expect(page).toHaveURL(/\/brands$/);
 
   await expect(page.getByRole("heading", { name: "Beauty, by name." })).toBeVisible();
@@ -276,7 +204,7 @@ test("the dedicated brands page owns full search and alphabet exploration", asyn
 
   await page.getByRole("link", { name: /Brand 001/ }).click();
   await expect(page).toHaveURL(/\/brands\/brand-1$/);
-  await expect(page.getByRole("heading", { name: "Brand 001" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Brand 001", exact: true })).toBeVisible();
 
   await page.goto("/brands?lang=ar");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");

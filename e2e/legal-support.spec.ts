@@ -64,6 +64,35 @@ test("official customer-care pages are discoverable and interactive", async ({ p
   );
 });
 
+test("Arabic informational routes render localized body copy and navigation", async ({ page }) => {
+  await page.goto("/about?lang=ar", { waitUntil: "networkidle" });
+  await expect(
+    page.getByRole("heading", { name: "الجمال لا يعني امتلاك المزيد، بل اختيار الأفضل." }),
+  ).toBeVisible();
+  await expect(page.getByText("Beauty isn't about owning more.", { exact: false })).toHaveCount(0);
+
+  await page.goto("/faq?lang=ar", { waitUntil: "networkidle" });
+  const paymentQuestion = page.getByRole("button", { name: "ما طرق الدفع المتاحة؟" });
+  await expect(paymentQuestion).toHaveAttribute("aria-expanded", "false");
+  await paymentQuestion.click();
+  await expect(page.getByText("الدفع عند الاستلام")).toBeVisible();
+
+  await page.goto("/shipping-policy?lang=ar", { waitUntil: "networkidle" });
+  await expect(page.getByRole("heading", { name: "الشحن والتوصيل", exact: true })).toBeVisible();
+  await expect(page.getByText("1–3 أيام عمل")).toBeVisible();
+
+  await page.goto("/returns?lang=ar", { waitUntil: "networkidle" });
+  await expect(
+    page.getByRole("heading", { name: "الإرجاع والاستبدال", exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText("قدمي الطلب خلال 14 يوماً")).toBeVisible();
+
+  await page.goto("/privacy-policy?lang=ar", { waitUntil: "networkidle" });
+  await expect(page.getByRole("heading", { name: "سياسة الخصوصية", exact: true })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "أقسام سياسة الخصوصية" })).toBeVisible();
+  await expect(page.getByText("لا تبيع بيوريزا معلوماتكِ الشخصية", { exact: false })).toBeVisible();
+});
+
 test("legacy public content URLs permanently redirect", async ({ request }) => {
   const privacy = await request.get("/privacy", { maxRedirects: 0 });
   expect(privacy.status()).toBe(308);

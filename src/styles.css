@@ -717,7 +717,7 @@ html[data-motion-ready="true"]
 }
 
 .product-card__info {
-  transition: transform 220ms var(--ease-premium);
+  transition: none;
 }
 
 .product-card__price {
@@ -936,9 +936,9 @@ html[data-motion-ready="true"]
 }
 
 .sf-brand-landing-logo-shell {
-  width: clamp(16rem, 24vw, 24rem);
-  height: clamp(8rem, 12vw, 12rem);
-  margin-bottom: clamp(1.5rem, 3vw, 2.25rem);
+  width: min(100%, clamp(22rem, 38vw, 36rem));
+  height: clamp(10rem, 17vw, 16rem);
+  margin-bottom: 0;
   background: transparent;
 }
 
@@ -948,9 +948,9 @@ html[data-motion-ready="true"]
 
 @media (max-width: 640px) {
   .sf-brand-landing-logo-shell {
-    width: min(100%, 15rem);
-    height: 8rem;
-    margin-bottom: 1.375rem;
+    width: min(100%, 19rem);
+    height: 9rem;
+    margin-bottom: 0;
   }
 }
 
@@ -1033,7 +1033,7 @@ html[data-motion-ready="true"]
   }
 
   .product-card:hover .product-card__info {
-    transform: translateY(-2px);
+    transform: none;
   }
 }
 

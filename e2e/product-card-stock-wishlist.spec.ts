@@ -2,6 +2,16 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const mobileWidths = [320, 360, 375, 390, 393, 414, 430];
 
+test("low-stock urgency is reserved for product detail context", async ({ page }) => {
+  await page.goto("/shop?search=stock-one", { waitUntil: "networkidle" });
+  await expect(page.locator(".sf-product-card__badge--low")).toHaveCount(0);
+
+  await page.goto("/product/acm-depiwhite-eye-contour-gel-15ml", {
+    waitUntil: "networkidle",
+  });
+  await expect(page.getByText("Low stock · 8 remaining", { exact: true })).toBeVisible();
+});
+
 test("stock states render mutually exclusive product-card actions", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 900 });
 
@@ -14,7 +24,7 @@ test("stock states render mutually exclusive product-card actions", async ({ pag
 
   await page.goto("/shop?search=stock-one", { waitUntil: "networkidle" });
   const lowStockCard = page.locator(".sf-product-card").first();
-  await expect(lowStockCard.locator(".sf-product-card__badge--low")).toBeVisible();
+  await expect(lowStockCard.locator(".sf-product-card__badge--low")).toHaveCount(0);
   await expect(lowStockCard.locator(".sf-product-card__badge--stock")).toHaveCount(0);
   await expect(lowStockCard.locator(".quick-add__quantity")).toBeVisible();
   await expect(lowStockCard.getByRole("button", { name: /^Add to bag:/ })).toBeEnabled();
@@ -35,10 +45,9 @@ test("stock states render mutually exclusive product-card actions", async ({ pag
     "href",
     "/product/out-of-stock-product",
   );
-  expect((await outOfStockCard.locator(".quick-add").boundingBox())!.height).toBeCloseTo(
-    purchasableHeight,
-    1,
-  );
+  const unavailableHeight = (await outOfStockCard.locator(".quick-add").boundingBox())!.height;
+  expect(unavailableHeight).toBeGreaterThanOrEqual(44);
+  expect(unavailableHeight).toBeLessThanOrEqual(purchasableHeight);
 
   let cartRequests = 0;
   page.on("request", (request) => {
@@ -88,6 +97,18 @@ test("the card selects an available variant and never submits its sold-out sibli
   });
 });
 
+test("the card never chooses between multiple purchasable variants", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 900 });
+  await page.goto("/shop?search=variant-selection", { waitUntil: "networkidle" });
+  const card = page.locator(".sf-product-card").first();
+
+  await expect(card.locator(".quick-add__quantity, .quick-add__divider")).toHaveCount(0);
+  const choose = card.getByRole("link", { name: /^Choose options:/ });
+  await expect(choose).toBeVisible();
+  await expect(choose).toHaveAttribute("href", "/product/variant-selection-product");
+  await expect(card.getByRole("button", { name: /^Add to bag:/ })).toHaveCount(0);
+});
+
 test("wishlist control is balanced, separated from badges, and mirrors in RTL", async ({
   page,
 }) => {
@@ -98,9 +119,8 @@ test("wishlist control is balanced, separated from badges, and mirrors in RTL", 
     const card = page.locator(".sf-product-card").first();
     const wish = card.locator(".sf-product-card__wish");
     const icon = wish.locator(".sf-product-card__wish-icon");
-    const badge = card.locator(".sf-product-card__badge--low");
     await expect(wish).toBeVisible();
-    await expect(badge).toBeVisible();
+    await expect(card.locator(".sf-product-card__badge")).toHaveCount(0);
 
     const geometry = await measureWishlist(card);
     expect(geometry.button.width).toBeCloseTo(42, 1);
@@ -109,7 +129,6 @@ test("wishlist control is balanced, separated from badges, and mirrors in RTL", 
     expect(geometry.icon.height).toBeCloseTo(22, 1);
     expect(center(geometry.button, "x")).toBeCloseTo(center(geometry.icon, "x"), 1);
     expect(center(geometry.button, "y")).toBeCloseTo(center(geometry.icon, "y"), 1);
-    expect(overlaps(geometry.button, geometry.badge)).toBe(false);
     expect(geometry.button.right).toBeLessThanOrEqual(geometry.media.right);
     expect(geometry.button.top).toBeGreaterThanOrEqual(geometry.media.top);
     await expect(icon).toHaveAttribute("stroke-width", "1.8");
@@ -136,8 +155,7 @@ test("wishlist control is balanced, separated from badges, and mirrors in RTL", 
   const rtlGeometry = await measureWishlist(rtlCard);
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
   await expect(rtlCard.locator(".sf-product-card__wish")).toHaveAccessibleName(/إضافة .* المفضلة/);
-  expect(rtlGeometry.button.left).toBeLessThan(rtlGeometry.badge.left);
-  expect(overlaps(rtlGeometry.button, rtlGeometry.badge)).toBe(false);
+  expect(rtlGeometry.button.left).toBeGreaterThanOrEqual(rtlGeometry.media.left);
 });
 
 type Rect = {
@@ -195,20 +213,10 @@ async function measureWishlist(card: Locator) {
       media: rect(element.querySelector(".sf-product-card__media")!),
       button: rect(element.querySelector(".sf-product-card__wish")!),
       icon: rect(element.querySelector(".sf-product-card__wish-icon")!),
-      badge: rect(element.querySelector(".sf-product-card__badge")!),
     };
   });
 }
 
 function center(rect: Rect, axis: "x" | "y") {
   return axis === "x" ? rect.left + rect.width / 2 : rect.top + rect.height / 2;
-}
-
-function overlaps(first: Rect, second: Rect) {
-  return !(
-    first.right <= second.left ||
-    first.left >= second.right ||
-    first.bottom <= second.top ||
-    first.top >= second.bottom
-  );
 }

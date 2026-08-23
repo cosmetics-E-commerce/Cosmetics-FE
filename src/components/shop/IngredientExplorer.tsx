@@ -10,31 +10,40 @@ import {
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import type { IngredientInfo } from "@/lib/products";
 
-function IngredientDetails({ ingredient }: { ingredient: IngredientInfo }) {
-  const rtl = typeof document !== "undefined" && document.documentElement.dir === "rtl";
+function IngredientDetails({
+  ingredient,
+  locale,
+}: {
+  ingredient: IngredientInfo;
+  locale: "ar" | "en";
+}) {
+  const rtl = locale === "ar";
+  const copy = ingredientCopy[locale];
   const description =
     (rtl ? ingredient.shortDescriptionAr : ingredient.shortDescriptionEn) ||
-    ingredient.shortDescriptionEn;
+    (rtl ? ingredient.shortDescriptionEn : ingredient.shortDescriptionAr);
   return (
     <div className="space-y-4 text-start">
       <header className="border-b border-border/60 pb-3">
         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-          INCI ingredient
+          {copy.inci}
         </p>
         <h3 className="mt-1 text-xl font-semibold text-foreground">{ingredient.inciName}</h3>
         {ingredient.commonName && (
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Also known as {ingredient.commonName}
+            {copy.alsoKnownAs} {ingredient.commonName}
           </p>
         )}
         {description && (
-          <p className="mt-3 text-sm leading-relaxed text-foreground/75">{description}</p>
+          <p className="mt-3 text-sm leading-relaxed text-foreground/75" dir="auto">
+            {description}
+          </p>
         )}
       </header>
       {ingredient.benefits.length > 0 && (
         <section>
           <h4 className="mb-2 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-foreground">
-            <Sparkles className="size-3.5" /> Benefits
+            <Sparkles className="size-3.5" /> {copy.benefits}
           </h4>
           <ul className="space-y-1.5">
             {ingredient.benefits.map((item) => (
@@ -49,7 +58,7 @@ function IngredientDetails({ ingredient }: { ingredient: IngredientInfo }) {
       {ingredient.concerns.length > 0 && (
         <section className="border-s-2 border-[var(--color-warning-border)] bg-[var(--color-warning-soft)] p-3">
           <h4 className="mb-2 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--color-warning)]">
-            <AlertTriangle className="size-3.5" /> Potential concerns
+            <AlertTriangle className="size-3.5" /> {copy.concerns}
           </h4>
           <ul className="space-y-1.5">
             {ingredient.concerns.map((item) => (
@@ -63,7 +72,7 @@ function IngredientDetails({ ingredient }: { ingredient: IngredientInfo }) {
       {ingredient.goodFor.length > 0 && (
         <section>
           <h4 className="mb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-foreground">
-            Good for
+            {copy.goodFor}
           </h4>
           <div className="flex flex-wrap gap-1.5">
             {ingredient.goodFor.map((item) => (
@@ -80,7 +89,7 @@ function IngredientDetails({ ingredient }: { ingredient: IngredientInfo }) {
       {ingredient.functions.length > 0 && (
         <section>
           <h4 className="mb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-foreground">
-            Functions
+            {copy.functions}
           </h4>
           <p className="text-xs leading-relaxed text-foreground/65">
             {ingredient.functions.join(" · ")}
@@ -90,7 +99,7 @@ function IngredientDetails({ ingredient }: { ingredient: IngredientInfo }) {
       {ingredient.avoidIf.length > 0 && (
         <section>
           <h4 className="mb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-foreground">
-            Consider avoiding if
+            {copy.avoidIf}
           </h4>
           <p className="text-xs leading-relaxed text-foreground/65">
             {ingredient.avoidIf.join(" · ")}
@@ -100,7 +109,7 @@ function IngredientDetails({ ingredient }: { ingredient: IngredientInfo }) {
       {(ingredient.regulatoryNotes || ingredient.restrictions || ingredient.safetyNotes) && (
         <section>
           <h4 className="mb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-foreground">
-            Safety &amp; regulatory
+            {copy.safety}
           </h4>
           <div className="space-y-1.5 text-xs leading-relaxed text-foreground/65">
             {ingredient.safetyNotes && <p>{ingredient.safetyNotes}</p>}
@@ -110,8 +119,7 @@ function IngredientDetails({ ingredient }: { ingredient: IngredientInfo }) {
         </section>
       )}
       <p className="border-t border-border/60 pt-3 text-[10px] leading-relaxed text-muted-foreground">
-        Ingredient information is provided for general informational purposes and does not replace
-        professional medical advice.
+        {copy.disclaimer}
       </p>
     </div>
   );
@@ -123,13 +131,16 @@ function IngredientChip({
   open,
   onOpenChange,
   onTouchOpen,
+  locale,
 }: {
   ingredient: IngredientInfo;
   touchMode: boolean;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onTouchOpen: () => void;
+  locale: "ar" | "en";
 }) {
+  const copy = ingredientCopy[locale];
   const contentId = useId();
   const trigger = (
     <button
@@ -139,7 +150,7 @@ function IngredientChip({
       aria-haspopup="dialog"
       aria-expanded={open}
       aria-controls={open && !touchMode ? contentId : undefined}
-      aria-label={`Information about ${ingredient.inciName}`}
+      aria-label={copy.informationAbout(ingredient.inciName)}
     >
       {ingredient.inciName}
       <Info className="size-3 opacity-55 transition-opacity group-hover:opacity-100" />
@@ -154,7 +165,7 @@ function IngredientChip({
       <HoverCardContent
         id={contentId}
         role="dialog"
-        aria-label={`${ingredient.inciName} ingredient information`}
+        aria-label={copy.informationAbout(ingredient.inciName)}
         className="ingredient-popover-card w-[min(360px,calc(100vw-24px))] rounded-none border-border bg-background p-0 shadow-xl duration-150 data-[state=closed]:duration-100"
         side="bottom"
         sideOffset={8}
@@ -165,7 +176,7 @@ function IngredientChip({
         hideWhenDetached
       >
         <div className="ingredient-popover-card__scroll">
-          <IngredientDetails ingredient={ingredient} />
+          <IngredientDetails ingredient={ingredient} locale={locale} />
         </div>
         <HoverCardArrow className="fill-background stroke-border" width={12} height={6} />
       </HoverCardContent>
@@ -191,10 +202,13 @@ function useTouchMode() {
 export function IngredientExplorer({
   ingredients,
   fallback,
+  locale,
 }: {
   ingredients: IngredientInfo[];
   fallback?: string;
+  locale: "ar" | "en";
 }) {
+  const copy = ingredientCopy[locale];
   const touchMode = useTouchMode();
   const [active, setActive] = useState<IngredientInfo | null>(null);
   const [openIngredientId, setOpenIngredientId] = useState<string | null>(null);
@@ -223,16 +237,12 @@ export function IngredientExplorer({
     return ordered;
   }, [fallback, ingredients]);
   if (!displayIngredients.length)
-    return (
-      <p className="text-sm text-muted-foreground">
-        Ingredient details are not available for this product yet.
-      </p>
-    );
+    return <p className="text-sm text-muted-foreground">{copy.unavailable}</p>;
   return (
     <>
       <div
         className="flex flex-wrap items-center gap-x-2.5 gap-y-2"
-        aria-label="Product ingredients"
+        aria-label={copy.productIngredients}
       >
         {displayIngredients.map(({ name, ingredient }, index) => (
           <span
@@ -250,12 +260,10 @@ export function IngredientExplorer({
                   )
                 }
                 onTouchOpen={() => setActive(ingredient)}
+                locale={locale}
               />
             ) : (
-              <span
-                className="ingredient-unmapped"
-                title="No curated ingredient profile is available yet"
-              >
+              <span className="ingredient-unmapped" title={copy.noProfile}>
                 {name}
               </span>
             )}
@@ -274,11 +282,47 @@ export function IngredientExplorer({
         >
           <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border" />
           <SheetHeader className="sr-only">
-            <SheetTitle>{active?.inciName ?? "Ingredient information"}</SheetTitle>
+            <SheetTitle>{active?.inciName ?? copy.information}</SheetTitle>
           </SheetHeader>
-          {active && <IngredientDetails ingredient={active} />}
+          {active && <IngredientDetails ingredient={active} locale={locale} />}
         </SheetContent>
       </Sheet>
     </>
   );
 }
+
+const ingredientCopy = {
+  en: {
+    inci: "INCI ingredient",
+    alsoKnownAs: "Also known as",
+    benefits: "Benefits",
+    concerns: "Potential concerns",
+    goodFor: "Good for",
+    functions: "Functions",
+    avoidIf: "Consider avoiding if",
+    safety: "Safety & regulatory",
+    disclaimer:
+      "Ingredient information is provided for general informational purposes and does not replace professional medical advice.",
+    informationAbout: (name: string) => `Information about ${name}`,
+    unavailable: "Ingredient details are not available for this product yet.",
+    productIngredients: "Product ingredients",
+    noProfile: "No curated ingredient profile is available yet",
+    information: "Ingredient information",
+  },
+  ar: {
+    inci: "مكوّن حسب التسمية الدولية",
+    alsoKnownAs: "يُعرف أيضاً باسم",
+    benefits: "الفوائد",
+    concerns: "محاذير محتملة",
+    goodFor: "مناسب لـ",
+    functions: "الوظائف",
+    avoidIf: "يُفضّل تجنبه عند",
+    safety: "السلامة والتنظيم",
+    disclaimer: "معلومات المكونات مقدمة لأغراض توعوية عامة ولا تغني عن الاستشارة الطبية المتخصصة.",
+    informationAbout: (name: string) => `معلومات عن ${name}`,
+    unavailable: "تفاصيل المكونات غير متاحة لهذا المنتج حالياً.",
+    productIngredients: "مكونات المنتج",
+    noProfile: "لا يتوفر ملف موثق لهذا المكوّن بعد",
+    information: "معلومات المكوّن",
+  },
+} as const;

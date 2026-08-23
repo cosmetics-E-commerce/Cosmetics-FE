@@ -28,6 +28,7 @@ __exportStar(require("./payments/payment-proof.schema"), exports);
 __exportStar(require("./catalog/product.schema"), exports);
 __exportStar(require("./cart/cart.schema"), exports);
 __exportStar(require("./wishlist/wishlist.schema"), exports);
+__exportStar(require("./navigation/navigation.schema"), exports);
 __exportStar(require("./inventory/inventory.schema"), exports);
 __exportStar(require("./shipping/shipping.schema"), exports);
 __exportStar(require("./permissions/permission.schema"), exports);
