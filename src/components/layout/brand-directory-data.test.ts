@@ -13,6 +13,33 @@ function brand(name: string, productCount: number, id = name): PublicBrandListIt
 }
 
 describe("brand directory data", () => {
+  it("matches the required alphabetical directory grouping exactly", () => {
+    const groups = groupBrands(
+      ["CeraVe", "Anua", "Bioderma", "Atelier Nude", "Eucerin", "COSRX"].map((name) =>
+        brand(name, 1),
+      ),
+      "en",
+    );
+
+    expect(groups.map(({ key, brands }) => [key, brands.map((entry) => entry.name)])).toEqual([
+      ["A", ["Anua", "Atelier Nude"]],
+      ["B", ["Bioderma"]],
+      ["C", ["CeraVe", "COSRX"]],
+      ["E", ["Eucerin"]],
+    ]);
+  });
+
+  it("normalizes case into one letter group while preserving display names", () => {
+    const groups = groupBrands(
+      [brand("cerave", 1, "lower"), brand("COSRX", 1), brand("CeraVe", 1, "mixed")],
+      "en",
+    );
+
+    expect(groups).toHaveLength(1);
+    expect(groups[0]?.key).toBe("C");
+    expect(groups[0]?.brands.map((entry) => entry.name)).toEqual(["CeraVe", "cerave", "COSRX"]);
+  });
+
   it("supports empty, single-brand, and large catalogues without special-case layout data", () => {
     expect(groupBrands([], "en")).toEqual([]);
     expect(groupBrands([brand("Nuxe", 1)], "en")).toMatchObject([

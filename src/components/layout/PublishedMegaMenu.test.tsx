@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import {
   DEFAULT_NAVIGATION_CONFIG,
@@ -10,6 +10,8 @@ import { PublishedMegaMenu, PublishedMobileMenuItem } from "./PublishedMegaMenu"
 
 const categoriesItem = DEFAULT_NAVIGATION_CONFIG.items.find((item) => item.key === "categories")!;
 const blockId = categoriesItem.megaMenu!.rows[0]!.columns[0]!.blocks[0]!.id;
+const brandsItem = DEFAULT_NAVIGATION_CONFIG.items.find((item) => item.key === "brands")!;
+const brandBlockId = brandsItem.megaMenu!.rows[0]!.columns[0]!.blocks[0]!.id;
 const snapshot: NavigationPublicSnapshot = {
   schemaVersion: 1,
   revisionId: "a0000000-0000-4000-8000-000000000001",
@@ -47,6 +49,113 @@ const snapshot: NavigationPublicSnapshot = {
 };
 
 describe("published mega menu renderer", () => {
+  it("renders the default Brands block as a sorted searchable alphabetical directory", () => {
+    const brandSnapshot: NavigationPublicSnapshot = {
+      ...snapshot,
+      resolvedBlocks: {
+        [brandBlockId]: [
+          {
+            kind: "BRAND",
+            id: "cerave",
+            labelEn: "CeraVe",
+            labelAr: "CeraVe",
+            href: "/brands/cerave",
+          },
+          { kind: "BRAND", id: "anua", labelEn: "Anua", labelAr: "Anua", href: "/brands/anua" },
+          {
+            kind: "BRAND",
+            id: "bioderma",
+            labelEn: "Bioderma",
+            labelAr: "Bioderma",
+            href: "/brands/bioderma",
+          },
+          {
+            kind: "BRAND",
+            id: "atelier",
+            labelEn: "Atelier Nude",
+            labelAr: "Atelier Nude",
+            href: "/brands/atelier-nude",
+          },
+          {
+            kind: "BRAND",
+            id: "eucerin",
+            labelEn: "Eucerin",
+            labelAr: "Eucerin",
+            href: "/brands/eucerin",
+          },
+          { kind: "BRAND", id: "cosrx", labelEn: "COSRX", labelAr: "COSRX", href: "/brands/cosrx" },
+        ],
+      },
+    };
+    const { container } = render(
+      <PublishedMegaMenu
+        item={brandsItem}
+        snapshot={brandSnapshot}
+        locale="en"
+        onNavigate={vi.fn()}
+      />,
+    );
+
+    const groups = [
+      ...container.querySelectorAll<HTMLElement>(".published-brand-directory__group"),
+    ];
+    expect(groups.map((group) => group.querySelector("h3")?.textContent)).toEqual([
+      "A",
+      "B",
+      "C",
+      "E",
+    ]);
+    expect(
+      within(groups[0]!)
+        .getAllByRole("link")
+        .map((link) => link.textContent),
+    ).toEqual(["Anua", "Atelier Nude"]);
+    expect(screen.getByRole("link", { name: "CeraVe" })).toHaveAttribute("href", "/brands/cerave");
+    expect(screen.getByRole("link", { name: /View all brands/i })).toHaveAttribute(
+      "href",
+      "/brands",
+    );
+
+    fireEvent.change(screen.getByPlaceholderText("Search brands…"), {
+      target: { value: "cera" },
+    });
+    expect(screen.getByRole("link", { name: "CeraVe" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "COSRX" })).not.toBeInTheDocument();
+    expect(container.querySelectorAll(".published-brand-directory__group")).toHaveLength(1);
+  });
+
+  it("keeps the alphabetical Brands directory usable in Arabic mobile navigation", () => {
+    const localizedSnapshot: NavigationPublicSnapshot = {
+      ...snapshot,
+      resolvedBlocks: {
+        [brandBlockId]: [
+          {
+            kind: "BRAND",
+            id: "beesline",
+            labelEn: "Beesline",
+            labelAr: "بيزلين",
+            href: "/brands/beesline",
+          },
+        ],
+      },
+    };
+    const { container } = render(
+      <PublishedMobileMenuItem
+        item={brandsItem}
+        snapshot={localizedSnapshot}
+        locale="ar"
+        onNavigate={vi.fn()}
+      />,
+    );
+
+    expect(container.querySelector(".published-brand-directory")).toHaveAttribute("dir", "rtl");
+    expect(screen.getByRole("heading", { name: "ب" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "بيزلين" })).toHaveAttribute(
+      "href",
+      "/brands/beesline",
+    );
+  });
+
   it("renders resolved dynamic entities as semantic links", () => {
     render(
       <PublishedMegaMenu

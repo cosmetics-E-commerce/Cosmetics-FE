@@ -238,8 +238,16 @@ export function Footer() {
 
         <div className="site-footer__bottom">
           <div className="sf-shell site-footer__bottom-layout">
-            <p>
-              © {new Date().getFullYear()} BIOREZA Cosmetics. {t("footer.rights")}
+            <p className="site-footer__copyright">
+              <span>
+                © {new Date().getFullYear()} BIOREZA Cosmetics. {t("footer.rights")}
+              </span>
+              <span className="site-footer__credit">
+                {t("footer.createdBy")}{" "}
+                <a href="https://hammerload.com/" target="_blank" rel="noopener noreferrer">
+                  Hammerload
+                </a>
+              </span>
             </p>
             <ul>
               {legalLinks.map((link) => (

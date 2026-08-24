@@ -8,6 +8,7 @@ import type {
 import { ChevronRight, Grid2X2, Image as ImageIcon, Search } from "lucide-react";
 
 import legacyPromoImage from "@/assets/product-serum.jpg";
+import { filterBrands, groupBrandItems } from "@/components/layout/brand-directory-data";
 import { localizedNavigationText, navigationVisibilityAllows } from "@/lib/navigation";
 
 type Locale = "en" | "ar";
@@ -388,16 +389,19 @@ function BrandDirectoryBlock({
   onNavigate: () => void;
 }) {
   const [search, setSearch] = useState("");
-  const visible = useMemo(() => {
-    const normalized = search.trim().toLocaleLowerCase(locale);
-    return normalized
-      ? entities.filter((entity) =>
-          entityLabel(entity, locale).toLocaleLowerCase(locale).includes(normalized),
-        )
-      : entities;
+  const groups = useMemo(() => {
+    const brands = entities
+      .filter((entity) => entity.kind === "BRAND")
+      .map((entity) => ({
+        id: entity.id,
+        name: entityLabel(entity, locale),
+        slug: entity.href,
+        entity,
+      }));
+    return groupBrandItems(filterBrands(brands, search, locale), locale);
   }, [entities, locale, search]);
   return (
-    <section className="published-brand-directory">
+    <section className="published-brand-directory" dir={locale === "ar" ? "rtl" : "ltr"}>
       <header>
         <BlockHeading value={block.heading} locale={locale} />
         {block.showSearch ? (
@@ -414,13 +418,28 @@ function BrandDirectoryBlock({
           </label>
         ) : null}
       </header>
-      <div className="published-brand-directory__list">
-        {visible.map((brand) => (
-          <SafeLink href={brand.href} key={brand.id} onNavigate={onNavigate}>
-            {entityLabel(brand, locale)}
-          </SafeLink>
-        ))}
-      </div>
+      {groups.length ? (
+        <div className="published-brand-directory__groups" aria-live="polite">
+          {groups.map((group) => (
+            <section className="published-brand-directory__group" key={group.key}>
+              <h3>{group.key}</h3>
+              <ul>
+                {group.brands.map((brand) => (
+                  <li key={brand.id}>
+                    <SafeLink href={brand.entity.href} onNavigate={onNavigate}>
+                      {brand.name}
+                    </SafeLink>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      ) : (
+        <p className="published-brand-directory__empty" role="status">
+          {locale === "ar" ? "لا توجد علامات مطابقة للبحث." : "No brands match your search."}
+        </p>
+      )}
       <SafeLink href="/brands" onNavigate={onNavigate} className="published-mega__view-all">
         {localizedNavigationText(block.viewAllLabel, locale)}
         <ChevronRight aria-hidden="true" />

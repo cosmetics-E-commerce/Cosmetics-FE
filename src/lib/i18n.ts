@@ -86,6 +86,7 @@ const messages = {
     "footer.terms": "Terms & conditions",
     "footer.cookies": "Cookie policy",
     "footer.rights": "All rights reserved.",
+    "footer.createdBy": "Website created by",
   },
   ar: {
     "nav.brands": "العلامات التجارية",
@@ -171,6 +172,7 @@ const messages = {
     "footer.terms": "الشروط والأحكام",
     "footer.cookies": "سياسة ملفات الارتباط",
     "footer.rights": "جميع الحقوق محفوظة.",
+    "footer.createdBy": "تم إنشاء الموقع بواسطة",
   },
 } as const;
 
