@@ -8,6 +8,8 @@ const classicNavigationConfig = structuredClone(DEFAULT_NAVIGATION_CONFIG);
 const categoriesNavigationItem = classicNavigationConfig.items.find(
   (item) => item.key === "categories",
 );
+const brandsNavigationItem = classicNavigationConfig.items.find((item) => item.key === "brands");
+const brandDirectoryBlockId = brandsNavigationItem.megaMenu.rows[0].columns[0].blocks[0].id;
 const navigationVisibility = categoriesNavigationItem.visibility;
 const blockBase = (id) => ({
   id,
@@ -208,6 +210,21 @@ const publishedNavigation = {
   publishedAt: "2026-08-23T12:00:00.000Z",
   config: classicNavigationConfig,
   resolvedBlocks: {
+    [brandDirectoryBlockId]: [
+      ["d1000000-0000-4000-8000-000000000001", "cerave", "CeraVe"],
+      ["d1000000-0000-4000-8000-000000000002", "anua", "Anua"],
+      ["d1000000-0000-4000-8000-000000000003", "bioderma", "Bioderma"],
+      ["d1000000-0000-4000-8000-000000000004", "atelier-nude", "Atelier Nude"],
+      ["d1000000-0000-4000-8000-000000000005", "eucerin", "Eucerin"],
+      ["d1000000-0000-4000-8000-000000000006", "cosrx", "COSRX"],
+    ].map(([id, slug, name]) => ({
+      kind: "BRAND",
+      id,
+      labelEn: name,
+      labelAr: name,
+      href: `/brands/${slug}`,
+      secondaryLabel: null,
+    })),
     [classicBlockIds.rail]: [
       {
         kind: "CATEGORY",

@@ -1,8 +1,10 @@
 import type { PublicBrandListItemResponse } from "@/lib/api";
 
-export type BrandGroup = {
+export type BrandDirectoryItem = Pick<PublicBrandListItemResponse, "id" | "name" | "slug">;
+
+export type BrandGroup<TBrand extends BrandDirectoryItem = PublicBrandListItemResponse> = {
   key: string;
-  brands: PublicBrandListItemResponse[];
+  brands: TBrand[];
 };
 
 const LATIN_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -59,9 +61,9 @@ export function compareBrandInitials(left: string, right: string, locale: "ar" |
   return BRAND_COLLATION[locale].base.compare(left, right) || compareCodePoints(left, right);
 }
 
-export function compareBrands(
-  left: PublicBrandListItemResponse,
-  right: PublicBrandListItemResponse,
+export function compareBrands<TBrand extends BrandDirectoryItem>(
+  left: TBrand,
+  right: TBrand,
   locale: "ar" | "en",
 ) {
   const { base, accent } = BRAND_COLLATION[locale];
@@ -76,12 +78,15 @@ export function compareBrands(
   );
 }
 
-export function sortBrands(brands: PublicBrandListItemResponse[], locale: "ar" | "en") {
+export function sortBrands<TBrand extends BrandDirectoryItem>(
+  brands: TBrand[],
+  locale: "ar" | "en",
+) {
   return [...brands].sort((left, right) => compareBrands(left, right, locale));
 }
 
-export function filterBrands(
-  brands: PublicBrandListItemResponse[],
+export function filterBrands<TBrand extends BrandDirectoryItem>(
+  brands: TBrand[],
   search: string,
   locale: "ar" | "en",
 ) {
@@ -103,7 +108,14 @@ export function groupBrands(
   brands: PublicBrandListItemResponse[],
   locale: "ar" | "en",
 ): BrandGroup[] {
-  const grouped = new Map<string, PublicBrandListItemResponse[]>();
+  return groupBrandItems(brands, locale);
+}
+
+export function groupBrandItems<TBrand extends BrandDirectoryItem>(
+  brands: TBrand[],
+  locale: "ar" | "en",
+): BrandGroup<TBrand>[] {
+  const grouped = new Map<string, TBrand[]>();
 
   for (const brand of sortBrands(brands, locale)) {
     const key = brandInitial(brand.name, locale);
