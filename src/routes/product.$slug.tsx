@@ -870,13 +870,7 @@ function ProductPage() {
   );
 }
 
-function RelatedProducts({
-  products,
-  title,
-}: {
-  products: Product[];
-  title: string;
-}) {
+function RelatedProducts({ products, title }: { products: Product[]; title: string }) {
   if (!products.length) return null;
 
   return (

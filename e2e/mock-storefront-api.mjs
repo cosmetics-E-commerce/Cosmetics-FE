@@ -470,6 +470,7 @@ const product = {
   reviewCount: 12,
   imageUrl: "/bioreza-logo.png",
   category,
+  categories: [category],
   brand: brands[0],
   options: [],
   variants: [

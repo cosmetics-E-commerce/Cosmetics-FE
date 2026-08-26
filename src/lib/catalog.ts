@@ -453,7 +453,9 @@ async function promotionalPrices(products: PublicProductResponse[]) {
       variantId: variant.id,
       productId: product.id,
       categoryId: product.category.id,
-      categoryIds: product.categories.map((category) => category.id),
+      categoryIds: (product.categories?.length ? product.categories : [product.category]).map(
+        (category) => category.id,
+      ),
       brandId: product.brand?.id ?? null,
       name: product.nameEn,
       unitPrice: variant.price,
