@@ -118,6 +118,7 @@ export declare const catalogEntityOptionQuerySchema: z.ZodObject<{
 } & {
     search: z.ZodOptional<z.ZodString>;
     rootsOnly: z.ZodEffects<z.ZodOptional<z.ZodBoolean>, boolean | undefined, unknown>;
+    maxDepth: z.ZodOptional<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
     page: number;
     limit: number;
@@ -125,6 +126,7 @@ export declare const catalogEntityOptionQuerySchema: z.ZodObject<{
     sortBy?: string | undefined;
     search?: string | undefined;
     rootsOnly?: boolean | undefined;
+    maxDepth?: number | undefined;
 }, {
     page?: number | undefined;
     limit?: number | undefined;
@@ -132,6 +134,7 @@ export declare const catalogEntityOptionQuerySchema: z.ZodObject<{
     sortOrder?: "asc" | "desc" | undefined;
     search?: string | undefined;
     rootsOnly?: unknown;
+    maxDepth?: number | undefined;
 }>;
 export type CatalogEntityOptionQuery = z.infer<typeof catalogEntityOptionQuerySchema>;
 export declare const catalogEntityOptionSchema: z.ZodObject<{

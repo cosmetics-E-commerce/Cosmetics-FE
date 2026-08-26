@@ -3,8 +3,10 @@ import { describe, expect, it } from "vitest";
 import type { PublicCategoryResponse } from "@/lib/api";
 import {
   buildCategoryTree,
+  categoryAncestors,
   categoryProductCount,
   flattenCategoryHierarchy,
+  flattenCategoryHierarchyWithDepth,
 } from "./category-hierarchy";
 
 const root = category({
@@ -23,12 +25,21 @@ const child = category({
   productCount: 4,
   aggregateProductCount: 4,
 });
+const grandchild = category({
+  id: "10000000-0000-4000-8000-000000000003",
+  slug: "roll-on",
+  nameEn: "Roll-On",
+  parentId: child.id,
+  productCount: 2,
+  aggregateProductCount: 2,
+});
 
 describe("storefront category hierarchy", () => {
   it("keeps children out of the root rail and indexes them by parent", () => {
-    const tree = buildCategoryTree([child, root]);
+    const tree = buildCategoryTree([grandchild, child, root]);
     expect(tree.roots.map((item) => item.id)).toEqual([root.id]);
     expect(tree.children.get(root.id)?.map((item) => item.id)).toEqual([child.id]);
+    expect(tree.children.get(child.id)?.map((item) => item.id)).toEqual([grandchild.id]);
   });
 
   it("uses aggregate counts for parents while retaining legacy direct counts", () => {
@@ -39,7 +50,7 @@ describe("storefront category hierarchy", () => {
 
   it("promotes a category with a missing parent to a safe visible root", () => {
     const orphan = category({
-      id: "10000000-0000-4000-8000-000000000003",
+      id: "10000000-0000-4000-8000-000000000098",
       slug: "legacy-child",
       nameEn: "Legacy child",
       parentId: "10000000-0000-4000-8000-000000000099",
@@ -54,11 +65,25 @@ describe("storefront category hierarchy", () => {
       nameEn: "Skincare",
       parentId: null,
     });
-    expect(flattenCategoryHierarchy([child, secondRoot, root]).map((item) => item.id)).toEqual([
-      secondRoot.id,
-      root.id,
-      child.id,
+    expect(
+      flattenCategoryHierarchy([grandchild, child, secondRoot, root]).map((item) => item.id),
+    ).toEqual([secondRoot.id, root.id, child.id, grandchild.id]);
+  });
+
+  it("reports all three visual depths and builds complete breadcrumb ancestry", () => {
+    expect(
+      flattenCategoryHierarchyWithDepth([grandchild, child, root]).map(({ category, depth }) => [
+        category.id,
+        depth,
+      ]),
+    ).toEqual([
+      [root.id, 0],
+      [child.id, 1],
+      [grandchild.id, 2],
     ]);
+    expect(
+      categoryAncestors([grandchild, child, root], grandchild.id).map((category) => category.id),
+    ).toEqual([root.id, child.id]);
   });
 });
 

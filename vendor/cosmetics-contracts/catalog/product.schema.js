@@ -80,6 +80,7 @@ exports.updateTagSchema = exports.createTagSchema;
 exports.catalogEntityOptionQuerySchema = pagination_1.paginationQuerySchema.extend({
     search: zod_1.z.string().trim().min(1).max(120).optional(),
     rootsOnly: booleanQuerySchema,
+    maxDepth: zod_1.z.coerce.number().int().min(1).max(3).optional(),
 });
 exports.catalogEntityOptionSchema = zod_1.z.object({
     id: primitives_1.uuidSchema,

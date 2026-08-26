@@ -15,12 +15,47 @@ export function buildCategoryTree(categories: PublicCategoryResponse[]) {
   return partitionCategoryHierarchy(sorted);
 }
 
-/** Keeps each root next to its children while preserving the API order within each level. */
+/** Keeps every category next to its descendants while preserving sibling API order. */
 export function flattenCategoryHierarchy<T extends { id: string; parentId?: string | null }>(
   categories: T[],
 ): T[] {
+  return flattenCategoryHierarchyWithDepth(categories).map(({ category }) => category);
+}
+
+export function flattenCategoryHierarchyWithDepth<
+  T extends { id: string; parentId?: string | null },
+>(categories: T[]): Array<{ category: T; depth: number }> {
   const { roots, children } = partitionCategoryHierarchy(categories);
-  return roots.flatMap((root) => [root, ...(children.get(root.id) ?? [])]);
+  const result: Array<{ category: T; depth: number }> = [];
+  const visited = new Set<string>();
+  const visit = (category: T, depth: number) => {
+    if (visited.has(category.id)) return;
+    visited.add(category.id);
+    result.push({ category, depth });
+    for (const child of children.get(category.id) ?? []) visit(child, depth + 1);
+  };
+  for (const root of roots) visit(root, 0);
+  for (const category of categories) visit(category, 0);
+  return result;
+}
+
+export function categoryAncestors<T extends { id: string; parentId?: string | null }>(
+  categories: T[],
+  categoryId: string,
+): T[] {
+  const byId = new Map(categories.map((category) => [category.id, category]));
+  const ancestors: T[] = [];
+  const visited = new Set([categoryId]);
+  let parentId = byId.get(categoryId)?.parentId;
+  while (parentId) {
+    if (visited.has(parentId)) break;
+    visited.add(parentId);
+    const parent = byId.get(parentId);
+    if (!parent) break;
+    ancestors.unshift(parent);
+    parentId = parent.parentId;
+  }
+  return ancestors;
 }
 
 function partitionCategoryHierarchy<T extends { id: string; parentId?: string | null }>(

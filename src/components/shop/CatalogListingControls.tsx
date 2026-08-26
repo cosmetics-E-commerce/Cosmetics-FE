@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "re
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import type { CatalogFacetResponse } from "@/lib/api";
 import { localizeTagName } from "@/lib/catalog";
-import { flattenCategoryHierarchy } from "@/lib/category-hierarchy";
+import { flattenCategoryHierarchyWithDepth } from "@/lib/category-hierarchy";
 import {
   selectedTagSlugs,
   type CatalogListingSearch,
@@ -47,7 +47,7 @@ export function CatalogListingControls({
   const [minimum, setMinimum] = useState(search.minPrice?.toString() ?? "");
   const [maximum, setMaximum] = useState(search.maxPrice?.toString() ?? "");
   const selectedTags = selectedTagSlugs(search);
-  const categoryOptions = flattenCategoryHierarchy(
+  const categoryOptions = flattenCategoryHierarchyWithDepth(
     categories.length
       ? categories
       : (facets?.categories ?? []).map((category) => ({
@@ -94,10 +94,10 @@ export function CatalogListingControls({
       });
     }
     if (!hideCategory && search.category) {
-      const category = categoryOptions.find((item) => item.slug === search.category);
+      const category = categoryOptions.find((item) => item.category.slug === search.category);
       filters.push({
         key: "category",
-        label: category?.label ?? search.category,
+        label: category?.category.label ?? search.category,
         remove: () => onChange(withResetPage(search, { category: undefined })),
       });
     }
@@ -261,12 +261,12 @@ export function CatalogListingControls({
 
             {!hideCategory && categoryOptions.length ? (
               <FilterGroup label={copy.category}>
-                {categoryOptions.map((category) => (
+                {categoryOptions.map(({ category, depth }) => (
                   <button
                     key={category.id}
                     type="button"
                     className="sf-shop-filter-panel__option"
-                    data-depth={category.parentId ? "child" : "root"}
+                    data-depth={categoryDepthName(depth)}
                     data-active={search.category === category.slug || undefined}
                     onClick={() =>
                       onChange(
@@ -385,6 +385,10 @@ export function CatalogListingControls({
       </Sheet>
     </>
   );
+}
+
+function categoryDepthName(depth: number): string {
+  return ["root", "child", "grandchild"][depth] ?? `level-${depth + 1}`;
 }
 
 function FilterGroup({ label, children }: { label: string; children: ReactNode }) {

@@ -877,6 +877,13 @@ const CategoriesMegaMenu = memo(function CategoriesMegaMenu({
   const childCategories = selectedCategory
     ? (categoryTree.children.get(selectedCategory.id) ?? [])
     : [];
+  const visibleCategories = childCategories.flatMap((child) => [
+    { category: child, depth: 1 },
+    ...(categoryTree.children.get(child.id) ?? []).map((grandchild) => ({
+      category: grandchild,
+      depth: 2,
+    })),
+  ]);
   const selectedName = selectedCategory
     ? locale === "ar"
       ? selectedCategory.nameAr
@@ -948,14 +955,15 @@ const CategoriesMegaMenu = memo(function CategoriesMegaMenu({
               <div className="category-mega__column category-mega__column--wide">
                 <h3>{selectedName}</h3>
                 <div className="category-mega__column-links">
-                  {childCategories.slice(0, 8).map((child) => (
+                  {visibleCategories.slice(0, 12).map(({ category, depth }) => (
                     <Link
-                      key={child.id}
+                      key={category.id}
                       to="/categories/$slug"
-                      params={{ slug: child.slug }}
+                      params={{ slug: category.slug }}
                       onClick={onNavigate}
+                      data-depth={depth}
                     >
-                      {locale === "ar" ? child.nameAr : child.nameEn}
+                      {locale === "ar" ? category.nameAr : category.nameEn}
                     </Link>
                   ))}
                   {selectedCategory && (
@@ -1139,10 +1147,24 @@ function MobileCategoryAccordion({
                         params={{ slug: child.slug }}
                         onClick={onNavigate}
                         className="mobile-nav__sublink"
+                        data-depth="1"
                       >
                         <span>{locale === "ar" ? child.nameAr : child.nameEn}</span>
                         <small>{categoryProductCount(child)}</small>
                       </Link>
+                      {(categoryTree.children.get(child.id) ?? []).map((grandchild) => (
+                        <Link
+                          key={grandchild.id}
+                          to="/categories/$slug"
+                          params={{ slug: grandchild.slug }}
+                          onClick={onNavigate}
+                          className="mobile-nav__sublink"
+                          data-depth="2"
+                        >
+                          <span>{locale === "ar" ? grandchild.nameAr : grandchild.nameEn}</span>
+                          <small>{categoryProductCount(grandchild)}</small>
+                        </Link>
+                      ))}
                     </li>
                   ))}
                 </ul>
