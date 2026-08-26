@@ -2217,13 +2217,21 @@ body:has(.sf-product-page) .header-actions__divider {
 .published-category-explorer {
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(130px, 0.7fr) minmax(210px, 0.9fr);
+  align-items: start;
   gap: clamp(20px, 2.3vw, 34px);
 }
 
-.published-category-explorer__groups > div {
+.published-category-explorer__columns {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  align-items: start;
+  column-gap: clamp(24px, 2.2vw, 32px);
+}
+.published-category-explorer__column {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 28px;
 }
 .published-category-explorer__parent {
   font-family: var(--font-serif);
@@ -2240,22 +2248,82 @@ body:has(.sf-product-page) .header-actions__divider {
   font-size: 0.6rem;
 }
 .published-category-explorer__brands {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 10px;
   padding-inline-start: 18px;
   border-inline-start: 1px solid var(--sf-line);
 }
-.published-category-explorer__brands > a {
-  display: grid;
-  justify-items: center;
-  gap: 5px;
-  padding: 8px;
-  color: var(--sf-carbon);
-  font-family: var(--font-serif);
-  text-align: center;
+.published-category-explorer__brands > .published-mega__heading {
+  margin-bottom: 4px;
 }
-.published-category-explorer__brands img {
-  width: 88px;
-  height: 34px;
+.published-category-explorer__brand {
+  display: flex;
+  width: 104px;
+  height: 52px;
+  align-items: center;
+  justify-content: flex-start;
+  justify-self: start;
+  overflow: hidden;
+  background: transparent;
+  cursor: pointer;
+}
+.published-category-explorer__brand img {
+  display: block;
+  width: 104px;
+  height: 52px;
+  flex: 0 0 auto;
+  background: transparent;
   object-fit: contain;
+  object-position: center;
+  mix-blend-mode: multiply;
+  opacity: 0;
+  transform: scale(1);
+  transform-origin: center;
+  transition:
+    filter 180ms ease,
+    opacity 180ms ease;
+}
+/* Brand uploads commonly use padded square canvases. The fixed frame prevents
+   layout shift; source-shape scaling removes only the outer canvas while the
+   contained image keeps its intrinsic aspect ratio. */
+.published-category-explorer__brand[data-logo-shape] img {
+  opacity: 1;
+}
+.published-category-explorer__brand[data-logo-shape="square"] img {
+  transform: scale(1.9);
+}
+.published-category-explorer__brand:is([data-logo-shape="wide"], [data-logo-shape="tall"]) img {
+  transform: scale(1.2);
+}
+.published-category-explorer__brand:is(:hover, :focus-visible) {
+  background: transparent;
+}
+.published-category-explorer__brand:is(:hover, :focus-visible) img {
+  filter: contrast(1.06);
+  opacity: 0.9;
+}
+.published-category-explorer__brand:focus-visible {
+  border-radius: 2px;
+  outline: 1px solid color-mix(in srgb, var(--sf-gold) 62%, transparent);
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .published-category-explorer__brand,
+  .published-category-explorer__brand img {
+    transition: none;
+  }
+}
+
+.published-category-explorer > .published-mega__promo {
+  min-height: 0;
+  align-self: start;
+  align-content: start;
+  padding-bottom: 21px;
+}
+.published-category-explorer > .published-mega__promo > img {
+  display: none;
 }
 
 .published-mega__promo {
@@ -2524,7 +2592,7 @@ body:has(.sf-product-page) .header-actions__divider {
   grid-template-columns: 1fr;
   gap: 14px;
 }
-.published-mobile-menu .published-category-explorer__groups > div {
+.published-mobile-menu .published-category-explorer__columns {
   grid-template-columns: 1fr;
   gap: 10px;
 }
@@ -2534,7 +2602,6 @@ body:has(.sf-product-page) .header-actions__divider {
   border-top: 1px solid var(--sf-line);
 }
 .published-mobile-menu .published-category-explorer__brands > a {
-  display: inline-flex;
   margin-inline-end: 8px;
 }
 .published-mobile-menu .published-mega__promo {
@@ -2558,7 +2625,7 @@ body:has(.sf-product-page) .header-actions__divider {
   grid-template-columns: 1fr;
 }
 
-@media (max-width: 1320px) {
+@media (max-width: 1365px) {
   .published-mega {
     width: min(1040px, calc(100vw - 40px));
   }

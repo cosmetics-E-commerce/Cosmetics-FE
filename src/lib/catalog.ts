@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import type { PublicProductResponse } from "@/lib/api";
 import {
   getProduct,
@@ -17,6 +17,10 @@ import { images, type Product } from "@/lib/products";
 import { trackCommerceEvent } from "@/lib/analytics";
 
 export type Locale = "ar" | "en";
+
+const CATALOG_STALE_TIME = 2 * 60_000;
+const REFERENCE_STALE_TIME = 15 * 60_000;
+const REFERENCE_GC_TIME = 30 * 60_000;
 
 const fallbackImages: Record<string, string> = {
   skincare: images.catSkincare,
@@ -189,7 +193,68 @@ export function useCatalogPage(
   initialData?: { items: Product[]; meta: PaginationMeta },
 ) {
   return useQuery({
-    queryKey: ["catalog-page", params, locale],
+    ...catalogPageQuery(params, locale),
+    ...(initialData !== undefined ? { initialData } : {}),
+    placeholderData: (previous) => previous,
+  });
+}
+
+export function useCatalogFacets(
+  params: Record<string, string | number | undefined> = {},
+  initialData?: Awaited<ReturnType<typeof getProductFacets>>,
+) {
+  return useQuery({
+    ...catalogFacetsQuery(params),
+    ...(initialData !== undefined ? { initialData } : {}),
+  });
+}
+
+export function useMerchandisingCatalog(
+  params: { section: string; limit?: number; categorySlug?: string; excludeProductId?: string },
+  locale: Locale = "en",
+  initialData?: Product[],
+) {
+  return useQuery({
+    ...merchandisingQuery(params, locale),
+    ...(initialData !== undefined ? { initialData } : {}),
+  });
+}
+
+export function useProduct(slug: string, locale: Locale = "en", initialData?: Product) {
+  return useQuery({
+    ...productQuery(slug, locale),
+    enabled: Boolean(slug),
+    ...(initialData !== undefined ? { initialData } : {}),
+  });
+}
+
+export function useCategories(initialData?: Awaited<ReturnType<typeof listCategories>>) {
+  return useQuery({
+    ...categoriesQuery(),
+    ...(initialData ? { initialData: filterEntitiesWithProducts(initialData) } : {}),
+  });
+}
+
+export function useBrands(initialData?: Awaited<ReturnType<typeof listBrands>>) {
+  return useQuery({
+    ...brandsQuery(),
+    ...(initialData ? { initialData: filterEntitiesWithProducts(initialData) } : {}),
+  });
+}
+
+export function useAllBrands(initialData?: Awaited<ReturnType<typeof listAllBrands>>) {
+  return useQuery({
+    ...allBrandsQuery(),
+    ...(initialData !== undefined ? { initialData } : {}),
+  });
+}
+
+export function catalogPageQuery(
+  params: Record<string, string | number | undefined> = {},
+  locale: Locale = "en",
+) {
+  return queryOptions({
+    queryKey: ["catalog-page", params, locale] as const,
     queryFn: async ({ signal }) => {
       const records = await listProductsPage(params, signal);
       if (
@@ -208,81 +273,70 @@ export function useCatalogPage(
         meta: records.meta,
       };
     },
-    initialData,
-    placeholderData: (previous) => previous,
-    staleTime: 60_000,
+    staleTime: CATALOG_STALE_TIME,
   });
 }
 
-export function useCatalogFacets(
+export function catalogFacetsQuery(
   params: Record<string, string | number | undefined> = {},
-  initialData?: Awaited<ReturnType<typeof getProductFacets>>,
 ) {
-  return useQuery({
-    queryKey: ["catalog-facets", params],
+  return queryOptions({
+    queryKey: ["catalog-facets", params] as const,
     queryFn: ({ signal }) => getProductFacets(params, signal),
-    initialData,
-    staleTime: 60_000,
+    staleTime: CATALOG_STALE_TIME,
   });
 }
 
-export function useMerchandisingCatalog(
+export function merchandisingQuery(
   params: { section: string; limit?: number; categorySlug?: string; excludeProductId?: string },
   locale: Locale = "en",
-  initialData?: Product[],
 ) {
-  return useQuery({
-    queryKey: ["merchandising", params, locale],
+  return queryOptions({
+    queryKey: ["merchandising", params, locale] as const,
     queryFn: async ({ signal }) => {
       const records = await listMerchandisingProducts(params, signal);
       const prices = await promotionalPrices(records);
       return records.map((product) => applyPrices(mapProduct(product, locale), prices));
     },
-    initialData,
-    staleTime: 60_000,
+    staleTime: CATALOG_STALE_TIME,
   });
 }
 
-export function useProduct(slug: string, locale: Locale = "en", initialData?: Product) {
-  return useQuery({
-    queryKey: ["product", slug, locale],
+export function productQuery(slug: string, locale: Locale = "en") {
+  return queryOptions({
+    queryKey: ["product", slug, locale] as const,
     queryFn: async () => {
       const record = await getProduct(slug);
       return applyPrices(mapProduct(record, locale), await promotionalPrices([record]));
     },
-    enabled: Boolean(slug),
-    initialData,
-    staleTime: 60_000,
+    staleTime: CATALOG_STALE_TIME,
   });
 }
 
-export function useCategories(initialData?: Awaited<ReturnType<typeof listCategories>>) {
-  return useQuery({
-    queryKey: ["categories"],
+export function categoriesQuery() {
+  return queryOptions({
+    queryKey: ["categories"] as const,
     queryFn: async () => filterEntitiesWithProducts(await listCategories()),
-    initialData: initialData ? filterEntitiesWithProducts(initialData) : undefined,
-    staleTime: 60_000,
-    refetchOnWindowFocus: "always",
+    staleTime: REFERENCE_STALE_TIME,
+    gcTime: REFERENCE_GC_TIME,
   });
 }
 
-export function useBrands(initialData?: Awaited<ReturnType<typeof listBrands>>) {
-  return useQuery({
-    queryKey: ["brands"],
+export function brandsQuery() {
+  return queryOptions({
+    queryKey: ["brands"] as const,
     queryFn: async () => filterEntitiesWithProducts(await listBrands()),
-    initialData: initialData ? filterEntitiesWithProducts(initialData) : undefined,
-    staleTime: 60_000,
-    refetchOnWindowFocus: "always",
+    staleTime: REFERENCE_STALE_TIME,
+    gcTime: REFERENCE_GC_TIME,
   });
 }
 
-export function useAllBrands(initialData?: Awaited<ReturnType<typeof listAllBrands>>) {
-  return useQuery({
-    queryKey: ["brands", "all"],
+export function allBrandsQuery() {
+  return queryOptions({
+    queryKey: ["brands", "all"] as const,
     queryFn: ({ signal }) => listAllBrands(signal),
-    initialData,
-    staleTime: 60_000,
-    refetchOnWindowFocus: "always",
+    staleTime: REFERENCE_STALE_TIME,
+    gcTime: REFERENCE_GC_TIME,
   });
 }
 

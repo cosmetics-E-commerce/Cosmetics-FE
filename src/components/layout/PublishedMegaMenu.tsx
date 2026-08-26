@@ -1,4 +1,5 @@
 import { Component, useMemo, useState, type ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 import type {
   NavigationBlock,
   NavigationItem,
@@ -303,35 +304,32 @@ function CategoryExplorer({
     (entity) => entity.kind === "CATEGORY" && entity.secondaryLabel === "root",
   );
   const brands = entities.filter((entity) => entity.kind === "BRAND");
+  const categoryColumns = mobile
+    ? [parents]
+    : Array.from({ length: 3 }, (_, columnIndex) =>
+        parents.filter((_, parentIndex) => parentIndex % 3 === columnIndex),
+      );
   return (
     <section className="published-category-explorer" data-mobile={mobile || undefined}>
       <div className="published-category-explorer__groups">
         <BlockHeading value={block.heading} locale={locale} />
-        <div>
-          {parents.map((parent) => {
-            const children = entities.filter(
-              (entity) => entity.kind === "CATEGORY" && entity.secondaryLabel === parent.id,
-            );
-            return (
-              <section key={parent.id}>
-                <SafeLink
-                  href={parent.href}
+        <div className="published-category-explorer__columns">
+          {categoryColumns.map((column, columnIndex) => (
+            <div className="published-category-explorer__column" key={columnIndex}>
+              {column.map((parent) => (
+                <CategoryGroup
+                  key={parent.id}
+                  parent={parent}
+                  children={entities.filter(
+                    (entity) => entity.kind === "CATEGORY" && entity.secondaryLabel === parent.id,
+                  )}
+                  locale={locale}
+                  showProductCount={block.showProductCounts}
                   onNavigate={onNavigate}
-                  className="published-category-explorer__parent"
-                >
-                  {entityLabel(parent, locale)}
-                  {block.showProductCounts && parent.productCount !== undefined ? (
-                    <small>{parent.productCount}</small>
-                  ) : null}
-                </SafeLink>
-                {children.map((child) => (
-                  <SafeLink href={child.href} key={child.id} onNavigate={onNavigate}>
-                    {entityLabel(child, locale)}
-                  </SafeLink>
-                ))}
-              </section>
-            );
-          })}
+                />
+              ))}
+            </div>
+          ))}
         </div>
         {snapshot.resolvedLinks[block.id] ? (
           <SafeLink
@@ -348,9 +346,25 @@ function CategoryExplorer({
         <section className="published-category-explorer__brands">
           <BlockHeading value={{ en: "Featured Brands", ar: "علامات مميزة" }} locale={locale} />
           {brands.map((brand) => (
-            <SafeLink href={brand.href} key={brand.id} onNavigate={onNavigate}>
-              {brand.imageUrl ? <img src={brand.imageUrl} alt="" /> : null}
-              <span>{entityLabel(brand, locale)}</span>
+            <SafeLink
+              href={brand.href}
+              key={brand.id}
+              onNavigate={onNavigate}
+              className="published-category-explorer__brand"
+              ariaLabel={entityLabel(brand, locale)}
+            >
+              {brand.imageUrl ? (
+                <img
+                  src={brand.imageUrl}
+                  alt={`${entityLabel(brand, locale)} logo`}
+                  width={104}
+                  height={52}
+                  loading="eager"
+                  decoding="async"
+                  draggable={false}
+                  onLoad={normalizeFeaturedBrandLogo}
+                />
+              ) : null}
             </SafeLink>
           ))}
         </section>
@@ -373,6 +387,40 @@ function CategoryExplorer({
           onNavigate={onNavigate}
         />
       ) : null}
+    </section>
+  );
+}
+
+function CategoryGroup({
+  parent,
+  children,
+  locale,
+  showProductCount,
+  onNavigate,
+}: {
+  parent: NavigationResolvedEntity;
+  children: NavigationResolvedEntity[];
+  locale: Locale;
+  showProductCount: boolean;
+  onNavigate: () => void;
+}) {
+  return (
+    <section>
+      <SafeLink
+        href={parent.href}
+        onNavigate={onNavigate}
+        className="published-category-explorer__parent"
+      >
+        {entityLabel(parent, locale)}
+        {showProductCount && parent.productCount !== undefined ? (
+          <small>{parent.productCount}</small>
+        ) : null}
+      </SafeLink>
+      {children.map((child) => (
+        <SafeLink href={child.href} key={child.id} onNavigate={onNavigate}>
+          {entityLabel(child, locale)}
+        </SafeLink>
+      ))}
     </section>
   );
 }
@@ -601,24 +649,51 @@ function BlockHeading({ value, locale }: { value: { en: string; ar: string }; lo
   return text ? <h3 className="published-mega__heading">{text}</h3> : null;
 }
 
+function normalizeFeaturedBrandLogo(event: React.SyntheticEvent<HTMLImageElement>) {
+  const image = event.currentTarget;
+  const link = image.parentElement;
+  if (!link || !image.naturalWidth || !image.naturalHeight) return;
+
+  const sourceAspectRatio = image.naturalWidth / image.naturalHeight;
+  link.dataset["logoShape"] =
+    sourceAspectRatio > 1.12 ? "wide" : sourceAspectRatio < 0.88 ? "tall" : "square";
+}
+
 function SafeLink({
   href,
   onNavigate,
   className,
+  ariaLabel,
   newTab = false,
   children,
 }: {
   href: string;
   onNavigate: () => void;
   className?: string;
+  ariaLabel?: string;
   newTab?: boolean;
   children: React.ReactNode;
 }) {
   const external = /^https?:\/\//i.test(href);
+  if (!external) {
+    return (
+      <Link
+        to={href}
+        preload="intent"
+        preloadDelay={0}
+        className={className}
+        aria-label={ariaLabel}
+        onClick={onNavigate}
+      >
+        {children}
+      </Link>
+    );
+  }
   return (
     <a
       href={href}
       className={className}
+      aria-label={ariaLabel}
       onClick={onNavigate}
       {...(external && newTab ? { target: "_blank", rel: "noopener noreferrer" } : {})}
     >

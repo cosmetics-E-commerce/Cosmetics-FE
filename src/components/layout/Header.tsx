@@ -356,6 +356,24 @@ export function Header({
                           />
                         </NavigationMenuPrimitive.Content>
                       </NavigationMenuPrimitive.Item>
+                    ) : href && item.destination.type !== "EXTERNAL" ? (
+                      <NavigationMenuPrimitive.Item key={item.id} className="header-nav-item">
+                        <NavigationMenuPrimitive.Link asChild>
+                          <Link
+                            to={href}
+                            preload="intent"
+                            preloadDelay={0}
+                            {...navInteractionProps(item.key)}
+                            data-active={active || undefined}
+                            aria-current={active ? "page" : undefined}
+                            className="nav-link inline-flex min-h-11 w-full items-center justify-center px-3 text-center"
+                          >
+                            <span data-nav-label>
+                              {localizedNavigationText(item.label, locale)}
+                            </span>
+                          </Link>
+                        </NavigationMenuPrimitive.Link>
+                      </NavigationMenuPrimitive.Item>
                     ) : href ? (
                       <NavigationMenuPrimitive.Item key={item.id} className="header-nav-item">
                         <NavigationMenuPrimitive.Link asChild>
@@ -365,7 +383,7 @@ export function Header({
                             data-active={active || undefined}
                             aria-current={active ? "page" : undefined}
                             className="nav-link inline-flex min-h-11 w-full items-center justify-center px-3 text-center"
-                            {...(item.destination.type === "EXTERNAL" && item.destination.newTab
+                            {...("newTab" in item.destination && item.destination.newTab
                               ? { target: "_blank", rel: "noopener noreferrer" }
                               : {})}
                           >
@@ -640,13 +658,24 @@ export function Header({
                               onNavigate={closeMobileMenu}
                             />
                           </MobileCatalogGroup>
+                        ) : href && item.destination.type !== "EXTERNAL" ? (
+                          <Link
+                            to={href}
+                            preload="intent"
+                            preloadDelay={0}
+                            onClick={closeMobileMenu}
+                            aria-current={active ? "page" : undefined}
+                            className="mobile-nav__link"
+                          >
+                            {label}
+                          </Link>
                         ) : href ? (
                           <a
                             href={href}
                             onClick={closeMobileMenu}
                             aria-current={active ? "page" : undefined}
                             className="mobile-nav__link"
-                            {...(item.destination.type === "EXTERNAL" && item.destination.newTab
+                            {...("newTab" in item.destination && item.destination.newTab
                               ? { target: "_blank", rel: "noopener noreferrer" }
                               : {})}
                           >

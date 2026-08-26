@@ -26,8 +26,8 @@ import {
 import { ProductReviews } from "@/components/shop/ProductReviews";
 import { IngredientExplorer } from "@/components/shop/IngredientExplorer";
 import { WishlistPicker } from "@/components/shop/WishlistPicker";
-import { formatPrice } from "@/lib/products";
-import { loadMerchandisingCatalog, loadProduct, useProduct } from "@/lib/catalog";
+import { formatPrice, type Product } from "@/lib/products";
+import { merchandisingQuery, productQuery, useProduct } from "@/lib/catalog";
 import { listProductReviews, type ProductReviews as ProductReviewsData } from "@/lib/api";
 import { useStore } from "@/lib/store";
 import { trackCommerceEvent } from "@/lib/analytics";
@@ -181,20 +181,24 @@ export const Route = createFileRoute("/product/$slug")({
   loader: async ({ params, context }) => {
     const locale: SeoLocale = context.locale === "ar" ? "ar" : "en";
     try {
-      const product = await loadProduct(params.slug, locale);
+      const product = await context.queryClient.ensureQueryData(productQuery(params.slug, locale));
       const [reviews, related] = await Promise.all([
         product.id
           ? listProductReviews(product.id).catch(() => emptyReviews())
           : Promise.resolve(emptyReviews()),
-        loadMerchandisingCatalog(
-          {
-            section: `related-${product.id}`,
-            ...(product.categorySlug ? { categorySlug: product.categorySlug } : {}),
-            ...(product.id ? { excludeProductId: product.id } : {}),
-            limit: 4,
-          },
-          locale,
-        ).catch(() => []),
+        context.queryClient
+          .ensureQueryData(
+            merchandisingQuery(
+              {
+                section: `related-${product.id}`,
+                ...(product.categorySlug ? { categorySlug: product.categorySlug } : {}),
+                ...(product.id ? { excludeProductId: product.id } : {}),
+                limit: 4,
+              },
+              locale,
+            ),
+          )
+          .catch(() => []),
       ]);
       return {
         product,
@@ -870,7 +874,7 @@ function RelatedProducts({
   products,
   title,
 }: {
-  products: Awaited<ReturnType<typeof loadMerchandisingCatalog>>;
+  products: Product[];
   title: string;
 }) {
   if (!products.length) return null;
