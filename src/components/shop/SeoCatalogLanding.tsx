@@ -17,7 +17,7 @@ type Props = {
   products: Product[];
   meta: PaginationMeta;
   locale: "ar" | "en";
-  parent?: { name: string; slug: string } | undefined;
+  ancestors?: Array<{ name: string; slug: string }>;
   children?: Array<{
     id: string;
     slug: string;
@@ -39,7 +39,7 @@ export function SeoCatalogLanding({
   products,
   meta,
   locale,
-  parent,
+  ancestors = [],
   children = [],
   logo,
   facets,
@@ -57,14 +57,14 @@ export function SeoCatalogLanding({
         <Link to="/">{locale === "ar" ? "الرئيسية" : "Home"}</Link>
         <span aria-hidden="true">/</span>
         <Link to="/shop">{locale === "ar" ? "المتجر" : "Shop"}</Link>
-        {parent ? (
-          <>
+        {ancestors.map((ancestor) => (
+          <span key={ancestor.slug} className="contents">
             <span aria-hidden="true">/</span>
-            <Link to="/categories/$slug" params={{ slug: parent.slug }}>
-              {parent.name}
+            <Link to="/categories/$slug" params={{ slug: ancestor.slug }}>
+              {ancestor.name}
             </Link>
-          </>
-        ) : null}
+          </span>
+        ))}
         <span aria-hidden="true">/</span>
         <span aria-current="page">{name}</span>
       </nav>

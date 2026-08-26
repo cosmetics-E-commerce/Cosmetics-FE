@@ -61,6 +61,15 @@ const snapshot: NavigationPublicSnapshot = {
         secondaryLabel: "b0000000-0000-4000-8000-000000000001",
         productCount: 4,
       },
+      {
+        kind: "CATEGORY",
+        id: "b0000000-0000-4000-8000-000000000003",
+        labelEn: "Liquid Lipstick",
+        labelAr: "أحمر شفاه سائل",
+        href: "/categories/liquid-lipstick",
+        secondaryLabel: "b0000000-0000-4000-8000-000000000002",
+        productCount: 2,
+      },
     ],
   },
   resolvedLinks: {
@@ -195,6 +204,9 @@ describe("published mega menu renderer", () => {
     expect(screen.getByRole("link", { name: "Lipstick" })).toHaveAttribute(
       "href",
       "/categories/lipstick",
+    );
+    expect(screen.getByRole("link", { name: "Liquid Lipstick" })).toHaveClass(
+      "published-category-explorer__grandchild",
     );
   });
 
@@ -386,6 +398,6 @@ describe("published mega menu renderer", () => {
     expect(container.querySelector('[data-menu-style="classic"]')).toBeInTheDocument();
     expect(container.querySelector('[data-separators="true"]')).toBeInTheDocument();
     expect(container.querySelector(".published-mega__entity-list.is-rail")).toBeInTheDocument();
-    expect(container.querySelectorAll(".published-mega__entity-chevron")).toHaveLength(2);
+    expect(container.querySelectorAll(".published-mega__entity-chevron")).toHaveLength(3);
   });
 });

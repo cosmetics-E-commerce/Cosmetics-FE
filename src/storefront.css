@@ -1878,6 +1878,12 @@ body:has(.sf-product-page) .header-actions__divider {
     transform 180ms var(--header-ease);
 }
 
+.category-mega__column-links a[data-depth="2"] {
+  margin-inline-start: 10px;
+  color: var(--sf-taupe);
+  font-size: 0.71rem;
+}
+
 .category-mega__column-links a:hover,
 .category-mega__column-links a:focus-visible {
   background: color-mix(in srgb, var(--sf-gold) 8%, #fff);
@@ -2246,6 +2252,11 @@ body:has(.sf-product-page) .header-actions__divider {
   color: var(--sf-taupe);
   font-family: var(--font-sans);
   font-size: 0.6rem;
+}
+.published-category-explorer__grandchild {
+  margin-inline-start: 12px;
+  color: var(--sf-taupe) !important;
+  font-size: 0.7rem !important;
 }
 .published-category-explorer__brands {
   display: grid;
@@ -2815,6 +2826,12 @@ body:has(.sf-product-page) .header-actions__divider {
   font-size: 0.72rem;
   font-variant-numeric: tabular-nums;
   opacity: 0.7;
+}
+
+.mobile-nav__sublink[data-depth="2"] {
+  min-height: 40px;
+  padding-inline-start: 18px;
+  font-size: 0.84rem;
 }
 
 .mobile-nav__subaction {
@@ -7286,6 +7303,16 @@ html[data-motion-ready="true"] .sf-concern-list[data-motion-state="hidden"]::bef
   padding-inline-start: 2rem;
 }
 .sf-shop-filter-panel__option[data-depth="child"] > span:first-child::before {
+  content: "↳";
+  margin-inline-end: 0.5rem;
+  color: var(--muted-foreground);
+}
+
+.sf-shop-filter-panel__option[data-depth="grandchild"] {
+  padding-inline-start: 3rem;
+}
+
+.sf-shop-filter-panel__option[data-depth="grandchild"] > span:first-child::before {
   content: "↳";
   margin-inline-end: 0.5rem;
   color: var(--muted-foreground);
@@ -19720,6 +19747,10 @@ body:has(.account-page) .header-nav-indicator {
 
 .sf-shop-filter-panel__option[data-depth="child"] {
   padding-inline-start: 2rem;
+}
+
+.sf-shop-filter-panel__option[data-depth="grandchild"] {
+  padding-inline-start: 3rem;
 }
 
 /* Counts read as quiet chips instead of stray numbers on the far edge. */

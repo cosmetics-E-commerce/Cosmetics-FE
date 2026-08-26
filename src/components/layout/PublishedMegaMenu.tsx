@@ -323,6 +323,7 @@ function CategoryExplorer({
                   children={entities.filter(
                     (entity) => entity.kind === "CATEGORY" && entity.secondaryLabel === parent.id,
                   )}
+                  entities={entities}
                   locale={locale}
                   showProductCount={block.showProductCounts}
                   onNavigate={onNavigate}
@@ -394,12 +395,14 @@ function CategoryExplorer({
 function CategoryGroup({
   parent,
   children,
+  entities,
   locale,
   showProductCount,
   onNavigate,
 }: {
   parent: NavigationResolvedEntity;
   children: NavigationResolvedEntity[];
+  entities: NavigationResolvedEntity[];
   locale: Locale;
   showProductCount: boolean;
   onNavigate: () => void;
@@ -416,11 +419,28 @@ function CategoryGroup({
           <small>{parent.productCount}</small>
         ) : null}
       </SafeLink>
-      {children.map((child) => (
-        <SafeLink href={child.href} key={child.id} onNavigate={onNavigate}>
+      {children.flatMap((child) => [
+        <SafeLink
+          href={child.href}
+          key={child.id}
+          onNavigate={onNavigate}
+          className="published-category-explorer__child"
+        >
           {entityLabel(child, locale)}
-        </SafeLink>
-      ))}
+        </SafeLink>,
+        ...entities
+          .filter((entity) => entity.kind === "CATEGORY" && entity.secondaryLabel === child.id)
+          .map((grandchild) => (
+            <SafeLink
+              href={grandchild.href}
+              key={grandchild.id}
+              onNavigate={onNavigate}
+              className="published-category-explorer__grandchild"
+            >
+              {entityLabel(grandchild, locale)}
+            </SafeLink>
+          )),
+      ])}
     </section>
   );
 }

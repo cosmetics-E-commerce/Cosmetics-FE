@@ -8,6 +8,7 @@ import {
 } from "@/components/shop/catalog-listing-state";
 import { catalogFacetsQuery, catalogPageQuery, categoriesQuery } from "@/lib/catalog";
 import { emitCampaignContext } from "@/lib/analytics";
+import { categoryAncestors } from "@/lib/category-hierarchy";
 import {
   breadcrumbSchema,
   canonicalUrl,
@@ -40,16 +41,11 @@ export const Route = createFileRoute("/categories/$slug")({
     ) {
       throw notFound();
     }
-    const parentRecord = category.parentId
-      ? categories.find((item) => item.id === category.parentId)
-      : undefined;
     const name = locale === "ar" ? category.nameAr : category.nameEn;
-    const parent = parentRecord
-      ? {
-          name: locale === "ar" ? parentRecord.nameAr : parentRecord.nameEn,
-          slug: parentRecord.slug,
-        }
-      : undefined;
+    const ancestors = categoryAncestors(categories, category.id).map((ancestor) => ({
+      name: locale === "ar" ? ancestor.nameAr : ancestor.nameEn,
+      slug: ancestor.slug,
+    }));
     const children = categories
       .filter((item) => item.parentId === category.id)
       .map((item) => ({
@@ -59,7 +55,7 @@ export const Route = createFileRoute("/categories/$slug")({
         imageUrl: item.imageUrl,
         productCount: item.aggregateProductCount ?? item.productCount,
       }));
-    return { category, catalog, facets, locale, name, parent, children };
+    return { category, catalog, facets, locale, name, ancestors, children };
   },
   head: ({ loaderData, params, match }) => {
     const locale = loaderData?.locale ?? "en";
@@ -104,9 +100,10 @@ export const Route = createFileRoute("/categories/$slug")({
     const crumbs = [
       { name: locale === "ar" ? "الرئيسية" : "Home", path: "/" },
       { name: locale === "ar" ? "المتجر" : "Shop", path: "/shop" },
-      ...(loaderData?.parent
-        ? [{ name: loaderData.parent.name, path: `/categories/${loaderData.parent.slug}` }]
-        : []),
+      ...(loaderData?.ancestors.map((ancestor) => ({
+        name: ancestor.name,
+        path: `/categories/${ancestor.slug}`,
+      })) ?? []),
       { name, path },
     ];
     return {
@@ -162,7 +159,7 @@ function CategoryPage() {
       products={data.catalog.items}
       meta={data.catalog.meta}
       locale={data.locale}
-      parent={data.parent}
+      ancestors={data.ancestors}
       children={data.children}
       facets={data.facets}
       search={search}
