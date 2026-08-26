@@ -45,6 +45,13 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
     nameAr: "المجموعة",
   };
   const categoryName = arabic ? category.nameAr : category.nameEn;
+  const assignedCategories = (product.categories?.length ? product.categories : [category]).map(
+    (assigned) => ({
+      id: assigned.id,
+      slug: assigned.slug,
+      name: arabic ? assigned.nameAr : assigned.nameEn,
+    }),
+  );
   const categoryFallback = fallbackImages[category.slug.toLowerCase()] ?? images.collection;
   const skinType = product.skinType ?? [];
   const tagNames = (product.tags ?? []).map((tag) => localizeTagName(tag, locale));
@@ -86,6 +93,8 @@ export function mapProduct(product: PublicProductResponse, locale: Locale): Prod
   return {
     id: product.id,
     categoryId: category.id,
+    categoryIds: assignedCategories.map((assigned) => assigned.id),
+    categories: assignedCategories,
     categorySlug: category.slug,
     brandId: product.brand?.id ?? null,
     brand: product.brand ? { name: product.brand.name, slug: product.brand.slug } : null,
@@ -277,9 +286,7 @@ export function catalogPageQuery(
   });
 }
 
-export function catalogFacetsQuery(
-  params: Record<string, string | number | undefined> = {},
-) {
+export function catalogFacetsQuery(params: Record<string, string | number | undefined> = {}) {
   return queryOptions({
     queryKey: ["catalog-facets", params] as const,
     queryFn: ({ signal }) => getProductFacets(params, signal),
@@ -446,6 +453,7 @@ async function promotionalPrices(products: PublicProductResponse[]) {
       variantId: variant.id,
       productId: product.id,
       categoryId: product.category.id,
+      categoryIds: product.categories.map((category) => category.id),
       brandId: product.brand?.id ?? null,
       name: product.nameEn,
       unitPrice: variant.price,

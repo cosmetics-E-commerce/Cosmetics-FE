@@ -338,8 +338,11 @@ export declare const productDimensionsInputSchema: {
     width: z.ZodOptional<z.ZodNumber>;
     length: z.ZodOptional<z.ZodNumber>;
 };
-export declare const createProductSchema: z.ZodEffects<z.ZodObject<{
-    categoryId: z.ZodString;
+export declare const createProductSchema: z.ZodEffects<z.ZodEffects<z.ZodObject<{
+    /** Canonical product-category assignments. Duplicate IDs are normalized. */
+    categoryIds: z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    /** @deprecated Send categoryIds instead. */
+    categoryId: z.ZodOptional<z.ZodString>;
     brandId: z.ZodOptional<z.ZodString>;
     slug: z.ZodOptional<z.ZodString>;
     nameEn: z.ZodString;
@@ -531,7 +534,6 @@ export declare const createProductSchema: z.ZodEffects<z.ZodObject<{
     isActive: boolean;
     nameEn: string;
     nameAr: string;
-    categoryId: string;
     skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
     basePrice: number;
     variants: {
@@ -582,6 +584,8 @@ export declare const createProductSchema: z.ZodEffects<z.ZodObject<{
     shortDescriptionEn?: string | undefined;
     shortDescriptionAr?: string | undefined;
     compareAtPrice?: number | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
     brandId?: string | undefined;
     ingredients?: string | undefined;
     howToUse?: string | undefined;
@@ -599,7 +603,6 @@ export declare const createProductSchema: z.ZodEffects<z.ZodObject<{
 }, {
     nameEn: string;
     nameAr: string;
-    categoryId: string;
     basePrice: number;
     variants: {
         sku: string;
@@ -642,6 +645,8 @@ export declare const createProductSchema: z.ZodEffects<z.ZodObject<{
     shortDescriptionEn?: string | undefined;
     shortDescriptionAr?: string | undefined;
     compareAtPrice?: number | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
     brandId?: string | undefined;
     ingredients?: string | undefined;
     howToUse?: string | undefined;
@@ -669,7 +674,6 @@ export declare const createProductSchema: z.ZodEffects<z.ZodObject<{
     isActive: boolean;
     nameEn: string;
     nameAr: string;
-    categoryId: string;
     skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
     basePrice: number;
     variants: {
@@ -720,6 +724,8 @@ export declare const createProductSchema: z.ZodEffects<z.ZodObject<{
     shortDescriptionEn?: string | undefined;
     shortDescriptionAr?: string | undefined;
     compareAtPrice?: number | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
     brandId?: string | undefined;
     ingredients?: string | undefined;
     howToUse?: string | undefined;
@@ -737,7 +743,6 @@ export declare const createProductSchema: z.ZodEffects<z.ZodObject<{
 }, {
     nameEn: string;
     nameAr: string;
-    categoryId: string;
     basePrice: number;
     variants: {
         sku: string;
@@ -780,6 +785,148 @@ export declare const createProductSchema: z.ZodEffects<z.ZodObject<{
     shortDescriptionEn?: string | undefined;
     shortDescriptionAr?: string | undefined;
     compareAtPrice?: number | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
+    brandId?: string | undefined;
+    ingredients?: string | undefined;
+    howToUse?: string | undefined;
+    howToUseEn?: string | undefined;
+    howToUseAr?: string | undefined;
+    skinType?: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[] | undefined;
+    tagIds?: string[] | undefined;
+    publishedAt?: Date | null | undefined;
+    images?: {
+        objectKey: string;
+        sortOrder?: number | undefined;
+        id?: string | undefined;
+        variantId?: string | null | undefined;
+        altText?: string | undefined;
+        isPrimary?: boolean | undefined;
+    }[] | undefined;
+    ingredientLinks?: {
+        ingredientId: string;
+        notes?: string | null | undefined;
+        position?: number | undefined;
+        concentration?: string | null | undefined;
+        concentrationUnit?: string | null | undefined;
+    }[] | undefined;
+}>, {
+    isActive: boolean;
+    nameEn: string;
+    nameAr: string;
+    skinType: ("OILY" | "DRY" | "COMBINATION" | "SENSITIVE" | "NORMAL" | "ALL")[];
+    basePrice: number;
+    variants: {
+        sku: string;
+        nameEn: string;
+        nameAr: string;
+        id?: string | undefined;
+        barcode?: string | undefined;
+        priceOverride?: number | undefined;
+        compareAtPrice?: number | undefined;
+        optionValueIds?: string[] | undefined;
+        shadeHex?: string | undefined;
+        openingStock?: {
+            quantity: number;
+            expiresAt: Date;
+            costPrice: number;
+            batchNumber?: string | undefined;
+        } | undefined;
+    }[];
+    images: {
+        sortOrder: number;
+        objectKey: string;
+        isPrimary: boolean;
+        id?: string | undefined;
+        variantId?: string | null | undefined;
+        altText?: string | undefined;
+    }[];
+    length?: number | undefined;
+    options?: {
+        values: {
+            id: string;
+            valueEn: string;
+            valueAr: string;
+            position: number;
+            metadata?: Record<string, string | number | boolean | null> | undefined;
+        }[];
+        id: string;
+        position: number;
+        nameEn: string;
+        nameAr: string;
+    }[] | undefined;
+    width?: number | undefined;
+    height?: number | undefined;
+    weight?: number | undefined;
+    slug?: string | undefined;
+    descriptionEn?: string | undefined;
+    descriptionAr?: string | undefined;
+    shortDescriptionEn?: string | undefined;
+    shortDescriptionAr?: string | undefined;
+    compareAtPrice?: number | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
+    brandId?: string | undefined;
+    ingredients?: string | undefined;
+    howToUse?: string | undefined;
+    howToUseEn?: string | undefined;
+    howToUseAr?: string | undefined;
+    tagIds?: string[] | undefined;
+    publishedAt?: Date | null | undefined;
+    ingredientLinks?: {
+        ingredientId: string;
+        notes?: string | null | undefined;
+        position?: number | undefined;
+        concentration?: string | null | undefined;
+        concentrationUnit?: string | null | undefined;
+    }[] | undefined;
+}, {
+    nameEn: string;
+    nameAr: string;
+    basePrice: number;
+    variants: {
+        sku: string;
+        nameEn: string;
+        nameAr: string;
+        id?: string | undefined;
+        barcode?: string | undefined;
+        priceOverride?: number | undefined;
+        compareAtPrice?: number | undefined;
+        optionValueIds?: string[] | undefined;
+        shadeHex?: string | undefined;
+        openingStock?: {
+            quantity: number;
+            expiresAt: Date;
+            costPrice: number;
+            batchNumber?: string | undefined;
+        } | undefined;
+    }[];
+    length?: number | undefined;
+    options?: {
+        values: {
+            id: string;
+            valueEn: string;
+            valueAr: string;
+            position: number;
+            metadata?: Record<string, string | number | boolean | null> | undefined;
+        }[];
+        id: string;
+        position: number;
+        nameEn: string;
+        nameAr: string;
+    }[] | undefined;
+    width?: number | undefined;
+    height?: number | undefined;
+    weight?: number | undefined;
+    isActive?: boolean | undefined;
+    slug?: string | undefined;
+    descriptionEn?: string | undefined;
+    descriptionAr?: string | undefined;
+    shortDescriptionEn?: string | undefined;
+    shortDescriptionAr?: string | undefined;
+    compareAtPrice?: number | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
     brandId?: string | undefined;
     ingredients?: string | undefined;
     howToUse?: string | undefined;
@@ -954,6 +1101,8 @@ export declare const productVariantUpdateSchema: z.ZodUnion<[z.ZodObject<{
 }>]>;
 export type ProductVariantUpdateInput = z.infer<typeof productVariantUpdateSchema>;
 export declare const updateProductSchema: z.ZodObject<{
+    categoryIds: z.ZodOptional<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    /** @deprecated Send categoryIds instead. */
     categoryId: z.ZodOptional<z.ZodString>;
     brandId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     slug: z.ZodOptional<z.ZodString>;
@@ -1242,6 +1391,7 @@ export declare const updateProductSchema: z.ZodObject<{
     nameEn?: string | undefined;
     nameAr?: string | undefined;
     compareAtPrice?: number | null | undefined;
+    categoryIds?: string[] | undefined;
     categoryId?: string | undefined;
     brandId?: string | null | undefined;
     ingredients?: string | undefined;
@@ -1329,6 +1479,7 @@ export declare const updateProductSchema: z.ZodObject<{
     nameEn?: string | undefined;
     nameAr?: string | undefined;
     compareAtPrice?: number | null | undefined;
+    categoryIds?: string[] | undefined;
     categoryId?: string | undefined;
     brandId?: string | null | undefined;
     ingredients?: string | undefined;
@@ -2180,6 +2331,35 @@ export declare const publicProductSchema: z.ZodObject<{
         nameEn: string;
         nameAr: string;
     }>;
+    categories: z.ZodArray<z.ZodObject<Omit<{
+        id: z.ZodString;
+        parentId: z.ZodNullable<z.ZodString>;
+        slug: z.ZodString;
+        nameEn: z.ZodString;
+        nameAr: z.ZodString;
+        imageUrl: z.ZodNullable<z.ZodString>;
+        sortOrder: z.ZodNumber;
+        /** Historical direct-assignment count retained for API compatibility. */
+        productCount: z.ZodNumber;
+        directProductCount: z.ZodOptional<z.ZodNumber>;
+        aggregateProductCount: z.ZodOptional<z.ZodNumber>;
+    }, "productCount" | "directProductCount" | "aggregateProductCount">, "strip", z.ZodTypeAny, {
+        sortOrder: number;
+        id: string;
+        imageUrl: string | null;
+        slug: string;
+        parentId: string | null;
+        nameEn: string;
+        nameAr: string;
+    }, {
+        sortOrder: number;
+        id: string;
+        imageUrl: string | null;
+        slug: string;
+        parentId: string | null;
+        nameEn: string;
+        nameAr: string;
+    }>, "many">;
     brand: z.ZodNullable<z.ZodObject<{
         id: z.ZodString;
         slug: z.ZodString;
@@ -2497,6 +2677,15 @@ export declare const publicProductSchema: z.ZodObject<{
         name: string;
         slug: string;
     }[];
+    categories: {
+        sortOrder: number;
+        id: string;
+        imageUrl: string | null;
+        slug: string;
+        parentId: string | null;
+        nameEn: string;
+        nameAr: string;
+    }[];
     rating: number;
     reviewCount: number;
     category: {
@@ -2603,6 +2792,15 @@ export declare const publicProductSchema: z.ZodObject<{
         id: string;
         name: string;
         slug: string;
+    }[];
+    categories: {
+        sortOrder: number;
+        id: string;
+        imageUrl: string | null;
+        slug: string;
+        parentId: string | null;
+        nameEn: string;
+        nameAr: string;
     }[];
     rating: number;
     reviewCount: number;
@@ -2848,6 +3046,35 @@ export declare const adminProductSchema: z.ZodObject<{
         nameEn: string;
         nameAr: string;
     }>;
+    categories: z.ZodArray<z.ZodObject<Omit<{
+        id: z.ZodString;
+        parentId: z.ZodNullable<z.ZodString>;
+        slug: z.ZodString;
+        nameEn: z.ZodString;
+        nameAr: z.ZodString;
+        imageUrl: z.ZodNullable<z.ZodString>;
+        sortOrder: z.ZodNumber;
+        /** Historical direct-assignment count retained for API compatibility. */
+        productCount: z.ZodNumber;
+        directProductCount: z.ZodOptional<z.ZodNumber>;
+        aggregateProductCount: z.ZodOptional<z.ZodNumber>;
+    }, "productCount" | "directProductCount" | "aggregateProductCount">, "strip", z.ZodTypeAny, {
+        sortOrder: number;
+        id: string;
+        imageUrl: string | null;
+        slug: string;
+        parentId: string | null;
+        nameEn: string;
+        nameAr: string;
+    }, {
+        sortOrder: number;
+        id: string;
+        imageUrl: string | null;
+        slug: string;
+        parentId: string | null;
+        nameEn: string;
+        nameAr: string;
+    }>, "many">;
     brand: z.ZodNullable<z.ZodObject<{
         id: z.ZodString;
         slug: z.ZodString;
@@ -3205,6 +3432,15 @@ export declare const adminProductSchema: z.ZodObject<{
         name: string;
         slug: string;
     }[];
+    categories: {
+        sortOrder: number;
+        id: string;
+        imageUrl: string | null;
+        slug: string;
+        parentId: string | null;
+        nameEn: string;
+        nameAr: string;
+    }[];
     rating: number;
     reviewCount: number;
     category: {
@@ -3325,6 +3561,15 @@ export declare const adminProductSchema: z.ZodObject<{
         id: string;
         name: string;
         slug: string;
+    }[];
+    categories: {
+        sortOrder: number;
+        id: string;
+        imageUrl: string | null;
+        slug: string;
+        parentId: string | null;
+        nameEn: string;
+        nameAr: string;
     }[];
     rating: number;
     reviewCount: number;

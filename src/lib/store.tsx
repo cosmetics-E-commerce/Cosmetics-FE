@@ -214,6 +214,7 @@ export function StoreProvider({
               variantId,
               productId: line.productId,
               categoryId: line.categoryId ?? "",
+              categoryIds: line.categoryId ? [line.categoryId] : [],
               brandId: line.brandId ?? null,
               slug: line.slug,
               productNameEn: line.name,

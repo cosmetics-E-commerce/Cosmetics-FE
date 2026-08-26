@@ -274,6 +274,7 @@ exports.promotionLineSchema = zod_1.z.object({
     variantId: primitives_1.uuidSchema,
     productId: primitives_1.uuidSchema,
     categoryId: primitives_1.uuidSchema,
+    categoryIds: zod_1.z.array(primitives_1.uuidSchema).default([]),
     brandId: primitives_1.uuidSchema.nullable(),
     name: zod_1.z.string(),
     unitPrice: primitives_1.piastresSchema,

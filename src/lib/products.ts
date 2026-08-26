@@ -58,6 +58,8 @@ export type IngredientInfo = {
 export type Product = {
   id?: string;
   categoryId?: string;
+  categoryIds?: string[];
+  categories?: Array<{ id: string; slug: string; name: string }>;
   categorySlug?: string;
   brandId?: string | null;
   brand?: { name: string; slug: string } | null;

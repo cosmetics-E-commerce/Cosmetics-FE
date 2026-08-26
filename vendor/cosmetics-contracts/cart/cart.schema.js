@@ -40,6 +40,7 @@ exports.cartItemSchema = zod_1.z.object({
     sku: zod_1.z.string(),
     imageUrl: zod_1.z.string().nullable(),
     categoryId: primitives_1.uuidSchema,
+    categoryIds: zod_1.z.array(primitives_1.uuidSchema),
     brandId: primitives_1.uuidSchema.nullable(),
     unitPrice: primitives_1.piastresSchema,
     quantity: zod_1.z.number().int().positive(),

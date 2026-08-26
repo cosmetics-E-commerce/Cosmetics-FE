@@ -149,7 +149,15 @@ exports.productDimensionsInputSchema = {
 };
 const productBaseSchema = zod_1.z.object({
     ...exports.productDimensionsInputSchema,
-    categoryId: primitives_1.uuidSchema,
+    /** Canonical product-category assignments. Duplicate IDs are normalized. */
+    categoryIds: zod_1.z
+        .array(primitives_1.uuidSchema)
+        .min(1, "Select at least one category")
+        .max(50)
+        .transform((ids) => [...new Set(ids)])
+        .optional(),
+    /** @deprecated Send categoryIds instead. */
+    categoryId: primitives_1.uuidSchema.optional(),
     brandId: primitives_1.uuidSchema.optional(),
     slug: primitives_1.slugSchema.optional(),
     nameEn: zod_1.z.string().trim().min(2).max(200),
@@ -184,7 +192,12 @@ const productBaseSchema = zod_1.z.object({
         .default([]),
     ingredientLinks: zod_1.z.array(ingredient_schema_1.productIngredientInputSchema).max(300).optional(),
 });
-exports.createProductSchema = productBaseSchema.refine((v) => v.compareAtPrice === undefined || v.compareAtPrice > v.basePrice, {
+exports.createProductSchema = productBaseSchema
+    .refine((v) => Boolean(v.categoryIds?.length || v.categoryId), {
+    message: "Select at least one category",
+    path: ["categoryIds"],
+})
+    .refine((v) => v.compareAtPrice === undefined || v.compareAtPrice > v.basePrice, {
     message: "Compare-at price must be greater than base price",
     path: ["compareAtPrice"],
 });
@@ -206,6 +219,13 @@ exports.productVariantUpdateSchema = zod_1.z.union([
     }),
 ]);
 exports.updateProductSchema = zod_1.z.object({
+    categoryIds: zod_1.z
+        .array(primitives_1.uuidSchema)
+        .min(1, "Select at least one category")
+        .max(50)
+        .transform((ids) => [...new Set(ids)])
+        .optional(),
+    /** @deprecated Send categoryIds instead. */
     categoryId: primitives_1.uuidSchema.optional(),
     brandId: primitives_1.uuidSchema.nullable().optional(),
     slug: primitives_1.slugSchema.optional(),
@@ -458,6 +478,11 @@ exports.publicProductSchema = zod_1.z.object({
         directProductCount: true,
         aggregateProductCount: true,
     }),
+    categories: zod_1.z.array(exports.publicCategorySchema.omit({
+        productCount: true,
+        directProductCount: true,
+        aggregateProductCount: true,
+    })),
     brand: exports.publicBrandSchema.nullable(),
     options: zod_1.z.array(exports.publicProductOptionSchema),
     variants: zod_1.z.array(exports.publicProductVariantSchema),
