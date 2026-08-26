@@ -57,7 +57,7 @@ export type CartLine = {
 };
 
 type Locale = "ar" | "en";
-type AddLine = {
+export type AddLine = {
   variantId?: string | undefined;
   productId?: string | undefined;
   categoryId?: string | undefined;
@@ -111,6 +111,8 @@ type StoreValue = {
 };
 
 const StoreContext = createContext<StoreValue | null>(null);
+type ProductCardStoreValue = Pick<StoreValue, "locale" | "wishlist" | "toggleWish" | "add">;
+const ProductCardStoreContext = createContext<ProductCardStoreValue | null>(null);
 
 export function StoreProvider({
   children,
@@ -212,6 +214,7 @@ export function StoreProvider({
               variantId,
               productId: line.productId,
               categoryId: line.categoryId ?? "",
+              categoryIds: line.categoryId ? [line.categoryId] : [],
               brandId: line.brandId ?? null,
               slug: line.slug,
               productNameEn: line.name,
@@ -546,7 +549,18 @@ export function StoreProvider({
     ],
   );
 
-  return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
+  const productCardValue = useMemo<ProductCardStoreValue>(
+    () => ({ locale, wishlist, toggleWish, add }),
+    [add, locale, toggleWish, wishlist],
+  );
+
+  return (
+    <StoreContext.Provider value={value}>
+      <ProductCardStoreContext.Provider value={productCardValue}>
+        {children}
+      </ProductCardStoreContext.Provider>
+    </StoreContext.Provider>
+  );
 }
 
 function recalculateCart(
@@ -572,5 +586,11 @@ function recalculateCart(
 export function useStore() {
   const context = useContext(StoreContext);
   if (!context) throw new Error("useStore must be used within StoreProvider");
+  return context;
+}
+
+export function useProductCardStore() {
+  const context = useContext(ProductCardStoreContext);
+  if (!context) throw new Error("useProductCardStore must be used within StoreProvider");
   return context;
 }

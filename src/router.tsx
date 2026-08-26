@@ -25,11 +25,11 @@ export const getRouter = () => {
     context: { queryClient },
     scrollRestoration: true,
     trailingSlash: "never",
-    defaultPreloadStaleTime: 0,
-    defaultViewTransition:
-      typeof document !== "undefined" &&
-      typeof document.startViewTransition === "function" &&
-      !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    // Intent-preloaded route data should still be fresh when the user completes the click.
+    defaultPreloadStaleTime: 30_000,
+    // Full-document snapshots are expensive for long catalog/home pages. The
+    // compositor-only page-enter animation in the root layout preserves motion.
+    defaultViewTransition: false,
   });
 
   return router;

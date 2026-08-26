@@ -316,8 +316,8 @@ export declare const bannerTargetingSchema: z.ZodObject<{
     countries: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     regions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
-    productIds: string[];
     categoryIds: string[];
+    productIds: string[];
     devices: ("desktop" | "tablet" | "mobile")[];
     authentication: "ALL" | "GUEST" | "LOGGED_IN";
     customerType: "ALL" | "RETURNING" | "NEW";
@@ -329,8 +329,8 @@ export declare const bannerTargetingSchema: z.ZodObject<{
     countries: string[];
     regions: string[];
 }, {
-    productIds?: string[] | undefined;
     categoryIds?: string[] | undefined;
+    productIds?: string[] | undefined;
     devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
     authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
     customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
@@ -669,8 +669,8 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         countries: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         regions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
-        productIds: string[];
         categoryIds: string[];
+        productIds: string[];
         devices: ("desktop" | "tablet" | "mobile")[];
         authentication: "ALL" | "GUEST" | "LOGGED_IN";
         customerType: "ALL" | "RETURNING" | "NEW";
@@ -682,8 +682,8 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         countries: string[];
         regions: string[];
     }, {
-        productIds?: string[] | undefined;
         categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
         devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
         authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
         customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
@@ -919,8 +919,8 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         nextBannerId?: string | null | undefined;
     };
     targeting: {
-        productIds: string[];
         categoryIds: string[];
+        productIds: string[];
         devices: ("desktop" | "tablet" | "mobile")[];
         authentication: "ALL" | "GUEST" | "LOGGED_IN";
         customerType: "ALL" | "RETURNING" | "NEW";
@@ -1066,8 +1066,8 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         inheritPromotionSchedule?: boolean | undefined;
     } | undefined;
     targeting?: {
-        productIds?: string[] | undefined;
         categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
         devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
         authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
         customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
@@ -1209,8 +1209,8 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         nextBannerId?: string | null | undefined;
     };
     targeting: {
-        productIds: string[];
         categoryIds: string[];
+        productIds: string[];
         devices: ("desktop" | "tablet" | "mobile")[];
         authentication: "ALL" | "GUEST" | "LOGGED_IN";
         customerType: "ALL" | "RETURNING" | "NEW";
@@ -1356,8 +1356,8 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         inheritPromotionSchedule?: boolean | undefined;
     } | undefined;
     targeting?: {
-        productIds?: string[] | undefined;
         categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
         devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
         authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
         customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
@@ -1775,8 +1775,8 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             countries: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             regions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
-            productIds: string[];
             categoryIds: string[];
+            productIds: string[];
             devices: ("desktop" | "tablet" | "mobile")[];
             authentication: "ALL" | "GUEST" | "LOGGED_IN";
             customerType: "ALL" | "RETURNING" | "NEW";
@@ -1788,8 +1788,8 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             countries: string[];
             regions: string[];
         }, {
-            productIds?: string[] | undefined;
             categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
             devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
             authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
             customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
@@ -2025,8 +2025,8 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             nextBannerId?: string | null | undefined;
         };
         targeting: {
-            productIds: string[];
             categoryIds: string[];
+            productIds: string[];
             devices: ("desktop" | "tablet" | "mobile")[];
             authentication: "ALL" | "GUEST" | "LOGGED_IN";
             customerType: "ALL" | "RETURNING" | "NEW";
@@ -2172,8 +2172,8 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             inheritPromotionSchedule?: boolean | undefined;
         } | undefined;
         targeting?: {
-            productIds?: string[] | undefined;
             categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
             devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
             authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
             customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
@@ -2315,8 +2315,8 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             nextBannerId?: string | null | undefined;
         };
         targeting: {
-            productIds: string[];
             categoryIds: string[];
+            productIds: string[];
             devices: ("desktop" | "tablet" | "mobile")[];
             authentication: "ALL" | "GUEST" | "LOGGED_IN";
             customerType: "ALL" | "RETURNING" | "NEW";
@@ -2462,8 +2462,8 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             inheritPromotionSchedule?: boolean | undefined;
         } | undefined;
         targeting?: {
-            productIds?: string[] | undefined;
             categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
             devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
             authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
             customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
@@ -2608,8 +2608,8 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             nextBannerId?: string | null | undefined;
         };
         targeting: {
-            productIds: string[];
             categoryIds: string[];
+            productIds: string[];
             devices: ("desktop" | "tablet" | "mobile")[];
             authentication: "ALL" | "GUEST" | "LOGGED_IN";
             customerType: "ALL" | "RETURNING" | "NEW";
@@ -2759,8 +2759,8 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             inheritPromotionSchedule?: boolean | undefined;
         } | undefined;
         targeting?: {
-            productIds?: string[] | undefined;
             categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
             devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
             authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
             customerType?: "ALL" | "RETURNING" | "NEW" | undefined;

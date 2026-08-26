@@ -1,6 +1,7 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const mobileWidths = [320, 360, 375, 390, 393, 414, 430];
+const subpixelTolerance = 0.01;
 
 test("mobile grid cards keep the quantity stepper symmetric and isolated", async ({ page }) => {
   await page.goto("/shop", { waitUntil: "networkidle" });
@@ -17,8 +18,8 @@ test("mobile grid cards keep the quantity stepper symmetric and isolated", async
     expect(geometry.root.left).toBeGreaterThanOrEqual(geometry.purchase.left - 0.5);
     expect(geometry.root.right).toBeLessThanOrEqual(geometry.purchase.right + 0.5);
     expect(geometry.documentOverflow).toBeLessThanOrEqual(0.5);
-    expect(geometry.minus.height).toBeGreaterThanOrEqual(44);
-    expect(geometry.plus.height).toBeGreaterThanOrEqual(44);
+    expect(geometry.minus.height).toBeGreaterThanOrEqual(44 - subpixelTolerance);
+    expect(geometry.plus.height).toBeGreaterThanOrEqual(44 - subpixelTolerance);
     expect(geometry.minus.width).toBeGreaterThanOrEqual(40);
     expect(geometry.plus.width).toBeGreaterThanOrEqual(40);
   }

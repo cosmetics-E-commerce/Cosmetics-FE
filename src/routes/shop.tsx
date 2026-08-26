@@ -15,10 +15,10 @@ import {
 import { ProductCard } from "@/components/shop/ProductCard";
 import { Button } from "@/components/ui/button";
 import {
-  loadBrands,
-  loadCatalogFacets,
-  loadCatalogPage,
-  loadCategories,
+  brandsQuery,
+  catalogFacetsQuery,
+  catalogPageQuery,
+  categoriesQuery,
   useBrands,
   useCatalogFacets,
   useCatalogPage,
@@ -42,10 +42,12 @@ export const Route = createFileRoute("/shop")({
     const locale: SeoLocale = context.locale === "ar" ? "ar" : "en";
     const page = deps.page ?? 1;
     const [catalog, facets, categories, brands] = await Promise.all([
-      loadCatalogPage(catalogListingParams(deps, {}, page), locale),
-      loadCatalogFacets(catalogFacetParams(deps)),
-      loadCategories(),
-      loadBrands(),
+      context.queryClient.ensureQueryData(
+        catalogPageQuery(catalogListingParams(deps, {}, page), locale),
+      ),
+      context.queryClient.ensureQueryData(catalogFacetsQuery(catalogFacetParams(deps))),
+      context.queryClient.ensureQueryData(categoriesQuery()),
+      context.queryClient.ensureQueryData(brandsQuery()),
     ]);
     if (catalog.meta.total > 0 && page > catalog.meta.totalPages) throw notFound();
     return { catalog, facets, categories, brands, locale };

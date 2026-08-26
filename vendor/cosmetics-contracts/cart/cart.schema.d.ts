@@ -55,6 +55,7 @@ export declare const cartItemSchema: z.ZodObject<{
     sku: z.ZodString;
     imageUrl: z.ZodNullable<z.ZodString>;
     categoryId: z.ZodString;
+    categoryIds: z.ZodArray<z.ZodString, "many">;
     brandId: z.ZodNullable<z.ZodString>;
     unitPrice: z.ZodNumber;
     quantity: z.ZodNumber;
@@ -83,6 +84,7 @@ export declare const cartItemSchema: z.ZodObject<{
     discount: number;
     imageUrl: string | null;
     slug: string;
+    categoryIds: string[];
     categoryId: string;
     brandId: string | null;
     unitPrice: number;
@@ -112,6 +114,7 @@ export declare const cartItemSchema: z.ZodObject<{
     discount: number;
     imageUrl: string | null;
     slug: string;
+    categoryIds: string[];
     categoryId: string;
     brandId: string | null;
     unitPrice: number;
@@ -161,6 +164,7 @@ export declare const cartSchema: z.ZodObject<{
         sku: z.ZodString;
         imageUrl: z.ZodNullable<z.ZodString>;
         categoryId: z.ZodString;
+        categoryIds: z.ZodArray<z.ZodString, "many">;
         brandId: z.ZodNullable<z.ZodString>;
         unitPrice: z.ZodNumber;
         quantity: z.ZodNumber;
@@ -189,6 +193,7 @@ export declare const cartSchema: z.ZodObject<{
         discount: number;
         imageUrl: string | null;
         slug: string;
+        categoryIds: string[];
         categoryId: string;
         brandId: string | null;
         unitPrice: number;
@@ -218,6 +223,7 @@ export declare const cartSchema: z.ZodObject<{
         discount: number;
         imageUrl: string | null;
         slug: string;
+        categoryIds: string[];
         categoryId: string;
         brandId: string | null;
         unitPrice: number;
@@ -306,6 +312,7 @@ export declare const cartSchema: z.ZodObject<{
         discount: number;
         imageUrl: string | null;
         slug: string;
+        categoryIds: string[];
         categoryId: string;
         brandId: string | null;
         unitPrice: number;
@@ -365,6 +372,7 @@ export declare const cartSchema: z.ZodObject<{
         discount: number;
         imageUrl: string | null;
         slug: string;
+        categoryIds: string[];
         categoryId: string;
         brandId: string | null;
         unitPrice: number;

@@ -294,8 +294,8 @@ export declare const popupTriggerSchema: z.ZodDefault<z.ZodObject<{
     mobileExitFallbackValue: z.ZodDefault<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
     type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-    productIds: string[];
     categoryIds: string[];
+    productIds: string[];
     delaySeconds: number;
     scrollPercent: number;
     inactivitySeconds: number;
@@ -308,8 +308,8 @@ export declare const popupTriggerSchema: z.ZodDefault<z.ZodObject<{
     mobileExitFallbackValue: number;
 }, {
     type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-    productIds?: string[] | undefined;
     categoryIds?: string[] | undefined;
+    productIds?: string[] | undefined;
     delaySeconds?: number | undefined;
     scrollPercent?: number | undefined;
     inactivitySeconds?: number | undefined;
@@ -741,8 +741,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         mobileExitFallbackValue: z.ZodDefault<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
         type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-        productIds: string[];
         categoryIds: string[];
+        productIds: string[];
         delaySeconds: number;
         scrollPercent: number;
         inactivitySeconds: number;
@@ -755,8 +755,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         mobileExitFallbackValue: number;
     }, {
         type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-        productIds?: string[] | undefined;
         categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
         delaySeconds?: number | undefined;
         scrollPercent?: number | undefined;
         inactivitySeconds?: number | undefined;
@@ -1140,8 +1140,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     }[];
     trigger: {
         type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-        productIds: string[];
         categoryIds: string[];
+        productIds: string[];
         delaySeconds: number;
         scrollPercent: number;
         inactivitySeconds: number;
@@ -1303,8 +1303,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     categoryId?: string | null | undefined;
     trigger?: {
         type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-        productIds?: string[] | undefined;
         categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
         delaySeconds?: number | undefined;
         scrollPercent?: number | undefined;
         inactivitySeconds?: number | undefined;
@@ -1464,8 +1464,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     }[];
     trigger: {
         type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-        productIds: string[];
         categoryIds: string[];
+        productIds: string[];
         delaySeconds: number;
         scrollPercent: number;
         inactivitySeconds: number;
@@ -1627,8 +1627,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     categoryId?: string | null | undefined;
     trigger?: {
         type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-        productIds?: string[] | undefined;
         categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
         delaySeconds?: number | undefined;
         scrollPercent?: number | undefined;
         inactivitySeconds?: number | undefined;
@@ -1868,14 +1868,14 @@ export declare const popupStorefrontContextSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         total: number;
         couponCode: string | null;
-        productIds: string[];
         categoryIds: string[];
+        productIds: string[];
         itemCount: number;
     }, {
         total?: number | undefined;
         couponCode?: string | null | undefined;
-        productIds?: string[] | undefined;
         categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
         itemCount?: number | undefined;
     }>>;
     behavior: z.ZodDefault<z.ZodObject<{
@@ -1952,8 +1952,8 @@ export declare const popupStorefrontContextSchema: z.ZodObject<{
     cart: {
         total: number;
         couponCode: string | null;
-        productIds: string[];
         categoryIds: string[];
+        productIds: string[];
         itemCount: number;
     };
     previewToken: string | null;
@@ -1993,8 +1993,8 @@ export declare const popupStorefrontContextSchema: z.ZodObject<{
     cart?: {
         total?: number | undefined;
         couponCode?: string | null | undefined;
-        productIds?: string[] | undefined;
         categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
         itemCount?: number | undefined;
     } | undefined;
     previewToken?: string | null | undefined;
@@ -2172,8 +2172,8 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
         mobileExitFallbackValue: z.ZodDefault<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
         type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-        productIds: string[];
         categoryIds: string[];
+        productIds: string[];
         delaySeconds: number;
         scrollPercent: number;
         inactivitySeconds: number;
@@ -2186,8 +2186,8 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
         mobileExitFallbackValue: number;
     }, {
         type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-        productIds?: string[] | undefined;
         categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
         delaySeconds?: number | undefined;
         scrollPercent?: number | undefined;
         inactivitySeconds?: number | undefined;
@@ -2450,8 +2450,8 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
     } | null;
     trigger: {
         type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-        productIds: string[];
         categoryIds: string[];
+        productIds: string[];
         delaySeconds: number;
         scrollPercent: number;
         inactivitySeconds: number;
@@ -2630,8 +2630,8 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
     } | null | undefined;
     trigger?: {
         type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-        productIds?: string[] | undefined;
         categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
         delaySeconds?: number | undefined;
         scrollPercent?: number | undefined;
         inactivitySeconds?: number | undefined;
@@ -2928,8 +2928,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             mobileExitFallbackValue: z.ZodDefault<z.ZodNumber>;
         }, "strip", z.ZodTypeAny, {
             type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-            productIds: string[];
             categoryIds: string[];
+            productIds: string[];
             delaySeconds: number;
             scrollPercent: number;
             inactivitySeconds: number;
@@ -2942,8 +2942,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             mobileExitFallbackValue: number;
         }, {
             type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-            productIds?: string[] | undefined;
             categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
             delaySeconds?: number | undefined;
             scrollPercent?: number | undefined;
             inactivitySeconds?: number | undefined;
@@ -3206,8 +3206,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         } | null;
         trigger: {
             type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-            productIds: string[];
             categoryIds: string[];
+            productIds: string[];
             delaySeconds: number;
             scrollPercent: number;
             inactivitySeconds: number;
@@ -3386,8 +3386,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         } | null | undefined;
         trigger?: {
             type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-            productIds?: string[] | undefined;
             categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
             delaySeconds?: number | undefined;
             scrollPercent?: number | undefined;
             inactivitySeconds?: number | undefined;
@@ -3525,8 +3525,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         } | null;
         trigger: {
             type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-            productIds: string[];
             categoryIds: string[];
+            productIds: string[];
             delaySeconds: number;
             scrollPercent: number;
             inactivitySeconds: number;
@@ -3709,8 +3709,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         } | null | undefined;
         trigger?: {
             type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-            productIds?: string[] | undefined;
             categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
             delaySeconds?: number | undefined;
             scrollPercent?: number | undefined;
             inactivitySeconds?: number | undefined;

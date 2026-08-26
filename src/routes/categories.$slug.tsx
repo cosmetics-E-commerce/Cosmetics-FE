@@ -6,7 +6,7 @@ import {
   catalogListingParams,
   parseCatalogListingSearch,
 } from "@/components/shop/catalog-listing-state";
-import { loadCatalogFacets, loadCatalogPage, loadCategories } from "@/lib/catalog";
+import { catalogFacetsQuery, catalogPageQuery, categoriesQuery } from "@/lib/catalog";
 import { emitCampaignContext } from "@/lib/analytics";
 import {
   breadcrumbSchema,
@@ -26,9 +26,11 @@ export const Route = createFileRoute("/categories/$slug")({
     const page = deps.page ?? 1;
     const scope = { categorySlug: params.slug };
     const [categories, catalog, facets] = await Promise.all([
-      loadCategories(),
-      loadCatalogPage(catalogListingParams(deps, scope, page), locale),
-      loadCatalogFacets(catalogFacetParams(deps, scope)),
+      context.queryClient.ensureQueryData(categoriesQuery()),
+      context.queryClient.ensureQueryData(
+        catalogPageQuery(catalogListingParams(deps, scope, page), locale),
+      ),
+      context.queryClient.ensureQueryData(catalogFacetsQuery(catalogFacetParams(deps, scope))),
     ]);
     const category = categories.find((item) => item.slug === params.slug);
     if (

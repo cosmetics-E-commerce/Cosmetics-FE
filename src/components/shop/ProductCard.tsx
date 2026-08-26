@@ -1,12 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { Heart } from "lucide-react";
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { memo, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { Stars } from "@/components/brand/Stars";
 import { PolishedImage } from "@/components/ui/polished-image";
 import { QuickAddToolbar } from "@/components/shop/QuickAddToolbar";
 import { selectProductCardImages } from "@/components/shop/product-card-media";
 import { formatPrice, type Product } from "@/lib/products";
-import { useStore } from "@/lib/store";
+import { useProductCardStore } from "@/lib/store";
 
 const cardCopy = {
   en: {
@@ -23,7 +23,31 @@ const cardCopy = {
   },
 } as const;
 
-export function ProductCard({
+const secondaryMediaCallbacks = new WeakMap<Element, () => void>();
+let secondaryMediaObserver: IntersectionObserver | null = null;
+
+function observeSecondaryMedia(element: Element, onApproach: () => void) {
+  if (typeof IntersectionObserver === "undefined") return () => undefined;
+  secondaryMediaCallbacks.set(element, onApproach);
+  secondaryMediaObserver ??= new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        secondaryMediaCallbacks.get(entry.target)?.();
+        secondaryMediaCallbacks.delete(entry.target);
+        secondaryMediaObserver?.unobserve(entry.target);
+      }
+    },
+    { rootMargin: "720px 0px" },
+  );
+  secondaryMediaObserver.observe(element);
+  return () => {
+    secondaryMediaCallbacks.delete(element);
+    secondaryMediaObserver?.unobserve(element);
+  };
+}
+
+export const ProductCard = memo(function ProductCard({
   product,
   compact = false,
   layout = "grid",
@@ -32,7 +56,7 @@ export function ProductCard({
   compact?: boolean;
   layout?: "grid" | "list";
 }) {
-  const { locale, wishlist, toggleWish } = useStore();
+  const { locale, wishlist, toggleWish } = useProductCardStore();
   const labels = cardCopy[locale];
   const wished = wishlist.includes(product.slug);
   const variant =
@@ -68,16 +92,9 @@ export function ProductCard({
   useEffect(() => {
     const media = mediaRef.current;
     if (!secondaryImage || !media || typeof IntersectionObserver === "undefined") return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) return;
-        prepareSecondary(secondaryImageRef.current, true);
-        observer.disconnect();
-      },
-      { rootMargin: "720px 0px" },
-    );
-    observer.observe(media);
-    return () => observer.disconnect();
+    return observeSecondaryMedia(media, () => {
+      prepareSecondary(secondaryImageRef.current, true);
+    });
   }, [prepareSecondary, secondaryImage]);
 
   useEffect(() => {
@@ -226,7 +243,7 @@ export function ProductCard({
       </div>
     </article>
   );
-}
+});
 
 function ProductLink({
   product,
@@ -244,6 +261,7 @@ function ProductLink({
       to="/product/$slug"
       params={{ slug: product.slug }}
       preload="intent"
+      preloadDelay={0}
       className={className}
       aria-label={ariaLabel}
     >

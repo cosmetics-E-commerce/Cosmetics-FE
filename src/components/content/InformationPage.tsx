@@ -239,6 +239,29 @@ function InformationContents({
     };
   }, [routeHash, scrollToSection, sections]);
 
+  useEffect(() => {
+    let firstFrame = 0;
+    let secondFrame = 0;
+    const syncBrowserHistoryHash = () => {
+      const id = decodeURIComponent(window.location.hash.replace(/^#/, ""));
+      if (!sections.some((section) => section.id === id)) return;
+      pendingHashNavigationRef.current = null;
+      setActiveId(id);
+      firstFrame = window.requestAnimationFrame(() => {
+        secondFrame = window.requestAnimationFrame(() =>
+          scrollToSection(id, { updateHistory: false, smooth: false }),
+        );
+      });
+    };
+
+    window.addEventListener("popstate", syncBrowserHistoryHash);
+    return () => {
+      window.cancelAnimationFrame(firstFrame);
+      window.cancelAnimationFrame(secondFrame);
+      window.removeEventListener("popstate", syncBrowserHistoryHash);
+    };
+  }, [scrollToSection, sections]);
+
   const selectFromLink = (event: MouseEvent<HTMLAnchorElement>, id: string) => {
     event.preventDefault();
     scrollToSection(id);

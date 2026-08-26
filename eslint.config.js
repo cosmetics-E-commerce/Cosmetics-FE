@@ -47,7 +47,10 @@ export default tseslint.config(
       ],
       "react-refresh/only-export-components": [
         "warn",
-        { allowConstantExport: true, allowExportNames: ["useStore"] },
+        {
+          allowConstantExport: true,
+          allowExportNames: ["useStore", "useProductCardStore"],
+        },
       ],
       "@typescript-eslint/no-unused-vars": "off",
     },

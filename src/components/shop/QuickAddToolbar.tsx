@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { Check, LoaderCircle, Minus, Plus, ShoppingBag, SlidersHorizontal } from "lucide-react";
 import type { Product } from "@/lib/products";
-import { useStore } from "@/lib/store";
+import { useProductCardStore } from "@/lib/store";
 
 type ProductVariant = Product["sizes"][number];
 type AddState = "idle" | "adding" | "added";
@@ -43,7 +43,7 @@ export function QuickAddToolbar({
   variant: ProductVariant | undefined;
   outOfStock: boolean;
 }) {
-  const { locale } = useStore();
+  const { locale } = useProductCardStore();
   const labels = copy[locale];
 
   if (outOfStock) return <OutOfStockAction product={product} label={labels.out} />;
@@ -79,7 +79,7 @@ function PurchasableProductAction({
   variant: ProductVariant | undefined;
   labels: QuickAddLabels;
 }) {
-  const { add, pendingVariants } = useStore();
+  const { add } = useProductCardStore();
   const [quantity, setQuantity] = useState(1);
   const [state, setState] = useState<AddState>("idle");
   const feedbackTimer = useRef<number | null>(null);
@@ -88,8 +88,7 @@ function PurchasableProductAction({
   );
   const requiresSelection = availableVariants.length > 1;
   const maximum = Math.max(1, variant?.stock ?? product.stock ?? 99);
-  const externallyPending = Boolean(variant?.id && pendingVariants.includes(variant.id));
-  const busy = state === "adding" || externallyPending;
+  const busy = state === "adding";
 
   useEffect(() => {
     setQuantity((current) => Math.min(current, maximum));

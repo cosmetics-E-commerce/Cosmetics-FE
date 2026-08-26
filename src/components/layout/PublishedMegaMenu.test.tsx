@@ -1,10 +1,33 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
+import type { AnchorHTMLAttributes, ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
 import {
   DEFAULT_NAVIGATION_CONFIG,
   navigationBlockSchema,
   type NavigationPublicSnapshot,
+  type NavigationResolvedEntity,
 } from "@cosmetics/contracts";
+
+vi.mock("@tanstack/react-router", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@tanstack/react-router")>();
+  return {
+    ...actual,
+    Link: ({
+      to,
+      children,
+      preload: _preload,
+      ...props
+    }: AnchorHTMLAttributes<HTMLAnchorElement> & {
+      to: string;
+      preload?: string;
+      children: ReactNode;
+    }) => (
+      <a href={to} {...props}>
+        {children}
+      </a>
+    ),
+  };
+});
 
 import { PublishedMegaMenu, PublishedMobileMenuItem } from "./PublishedMegaMenu";
 
@@ -173,6 +196,103 @@ describe("published mega menu renderer", () => {
       "href",
       "/categories/lipstick",
     );
+  });
+
+  it("distributes category groups into independent vertical columns", () => {
+    const parentNames = [
+      "Body Care",
+      "Fragrance",
+      "Hair Care",
+      "Korean",
+      "Offers & Bundles",
+      "Skin Care",
+      "Sun Care",
+    ];
+    const parentEntities: NavigationResolvedEntity[] = parentNames.map((name, index) => ({
+      kind: "CATEGORY",
+      id: `category-${index}`,
+      labelEn: name,
+      labelAr: name,
+      href: `/categories/${index}`,
+      secondaryLabel: "root",
+      productCount: index + 1,
+    }));
+    const columnSnapshot: NavigationPublicSnapshot = {
+      ...snapshot,
+      resolvedBlocks: { [blockId]: parentEntities },
+    };
+
+    const { container } = render(
+      <PublishedMegaMenu
+        item={categoriesItem}
+        snapshot={columnSnapshot}
+        locale="en"
+        onNavigate={vi.fn()}
+      />,
+    );
+
+    const columns = [...container.querySelectorAll(".published-category-explorer__column")];
+    expect(columns).toHaveLength(3);
+    expect(
+      columns.map((column) =>
+        [...column.querySelectorAll(".published-category-explorer__parent")].map(
+          (link) => link.childNodes[0]?.textContent,
+        ),
+      ),
+    ).toEqual([
+      ["Body Care", "Korean", "Sun Care"],
+      ["Fragrance", "Offers & Bundles"],
+      ["Hair Care", "Skin Care"],
+    ]);
+  });
+
+  it("renders featured brands as accessible logo-only links using resolved brand data", () => {
+    const onNavigate = vi.fn();
+    const logoUrl = "https://cdn.example.com/acm-logo.webp";
+    const featuredSnapshot: NavigationPublicSnapshot = {
+      ...snapshot,
+      resolvedBlocks: {
+        [blockId]: [
+          ...snapshot.resolvedBlocks[blockId]!,
+          {
+            kind: "BRAND",
+            id: "acm",
+            labelEn: "ACM",
+            labelAr: "ACM",
+            href: "/brands/acm",
+            imageUrl: logoUrl,
+          },
+        ],
+      },
+    };
+
+    render(
+      <PublishedMegaMenu
+        item={categoriesItem}
+        snapshot={featuredSnapshot}
+        locale="en"
+        onNavigate={onNavigate}
+      />,
+    );
+
+    const row = screen.getByRole("link", { name: "ACM" });
+    const logo = screen.getByAltText("ACM logo");
+    expect(row).toHaveClass("published-category-explorer__brand");
+    expect(row).toHaveAttribute("href", "/brands/acm");
+    expect(logo).toHaveAttribute("src", logoUrl);
+    expect(row.children).toHaveLength(1);
+    expect(row.firstElementChild).toBe(logo);
+    expect(row).toHaveTextContent("");
+
+    Object.defineProperties(logo, {
+      naturalWidth: { configurable: true, value: 240 },
+      naturalHeight: { configurable: true, value: 120 },
+    });
+    fireEvent.load(logo);
+    expect(logo.parentElement).toHaveAttribute("data-logo-shape", "wide");
+
+    fireEvent.click(row);
+    expect(onNavigate).toHaveBeenCalledOnce();
   });
 
   it("renders Arabic author content and a stacked mobile structure", () => {

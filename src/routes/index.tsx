@@ -1,33 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  Hero,
-  Benefits,
-  Featured,
-  CollectionFeature,
-  Concerns,
-  BestSellers,
-  BrandStory,
-  BeautyDifference,
-} from "@/components/home/Sections";
-import { CategoryShowcase } from "@/components/home/CategoryShowcase";
-import { BrandMarquee } from "@/components/home/BrandMarquee";
-import { loadAllBrands, loadCategories, loadMerchandisingCatalog } from "@/lib/catalog";
+import { lazy, Suspense } from "react";
+import { Hero } from "@/components/home/Hero";
+import { allBrandsQuery, categoriesQuery, merchandisingQuery } from "@/lib/catalog";
 import { images } from "@/lib/products";
 import { absoluteUrl, canonicalUrl, createSeoHead, itemListSchema, jsonLd } from "@/lib/seo";
+
+const HomeBelowFold = lazy(() => import("@/components/home/HomeBelowFold"));
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
     const [arrivals, customerEdit, categories, brands] = await Promise.all([
-      loadMerchandisingCatalog(
-        { section: "home-arrivals", limit: 5 },
-        context.locale === "ar" ? "ar" : "en",
+      context.queryClient.ensureQueryData(
+        merchandisingQuery(
+          { section: "home-arrivals", limit: 5 },
+          context.locale === "ar" ? "ar" : "en",
+        ),
       ),
-      loadMerchandisingCatalog(
-        { section: "home-customer-edit", limit: 8 },
-        context.locale === "ar" ? "ar" : "en",
+      context.queryClient.ensureQueryData(
+        merchandisingQuery(
+          { section: "home-customer-edit", limit: 8 },
+          context.locale === "ar" ? "ar" : "en",
+        ),
       ),
-      loadCategories(),
-      loadAllBrands(),
+      context.queryClient.ensureQueryData(categoriesQuery()),
+      context.queryClient.ensureQueryData(allBrandsQuery()),
     ]);
     return {
       arrivals,
@@ -82,15 +78,14 @@ function Index() {
   return (
     <>
       <Hero />
-      <BrandMarquee initialBrands={brands} />
-      <Benefits />
-      <CategoryShowcase initialCategories={categories} />
-      <Featured initialProducts={arrivals} />
-      <CollectionFeature />
-      <Concerns />
-      <BestSellers initialProducts={customerEdit} />
-      <BrandStory />
-      <BeautyDifference />
+      <Suspense fallback={null}>
+        <HomeBelowFold
+          arrivals={arrivals}
+          customerEdit={customerEdit}
+          categories={categories}
+          brands={brands}
+        />
+      </Suspense>
     </>
   );
 }

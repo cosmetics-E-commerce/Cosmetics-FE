@@ -201,11 +201,23 @@ function DeferredInteractiveLayers() {
   }, [searchOpen]);
   useEffect(() => {
     const mount = () => setCampaignsMounted(true);
-    const timer = window.setTimeout(mount, 900);
+    let idleId: number | undefined;
+    let timer: ReturnType<typeof globalThis.setTimeout> | undefined;
+    const schedule = () => {
+      if ("requestIdleCallback" in window) {
+        idleId = window.requestIdleCallback(mount, { timeout: 2_000 });
+      } else {
+        timer = globalThis.setTimeout(mount, 600);
+      }
+    };
+    if (document.readyState === "complete") schedule();
+    else window.addEventListener("load", schedule, { once: true });
     window.addEventListener("pointerdown", mount, { once: true, passive: true });
     window.addEventListener("keydown", mount, { once: true });
     return () => {
-      window.clearTimeout(timer);
+      window.removeEventListener("load", schedule);
+      if (idleId !== undefined && "cancelIdleCallback" in window) window.cancelIdleCallback(idleId);
+      if (timer !== undefined) globalThis.clearTimeout(timer);
       window.removeEventListener("pointerdown", mount);
       window.removeEventListener("keydown", mount);
     };
@@ -233,33 +245,12 @@ function RootComponent() {
   const isHome = pathname === "/";
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const previousScrollRestoration = window.history.scrollRestoration;
-    window.history.scrollRestoration = "manual";
-    return () => {
-      window.history.scrollRestoration = previousScrollRestoration;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-    const frame = window.requestAnimationFrame(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [pathname]);
-
-  useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
     }
     const el = pageRef.current;
     if (!el) return;
-    if (typeof document !== "undefined" && typeof document.startViewTransition === "function") {
-      return;
-    }
     el.classList.remove("page-enter");
     void el.offsetWidth;
     el.classList.add("page-enter");
@@ -289,7 +280,7 @@ function RootComponent() {
               className="storefront-main flex-1 outline-none"
               style={{ paddingTop: isHome ? 0 : "var(--store-header-offset, 103px)" }}
             >
-              <div ref={pageRef} key={pathname} className="motion-page">
+              <div ref={pageRef} className="motion-page">
                 <Outlet />
               </div>
             </main>

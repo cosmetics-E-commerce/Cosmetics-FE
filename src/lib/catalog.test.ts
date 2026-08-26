@@ -30,6 +30,17 @@ const product = {
     imageUrl: null,
     sortOrder: 0,
   },
+  categories: [
+    {
+      id: "22222222-2222-4222-8222-222222222222",
+      parentId: null,
+      slug: "skin",
+      nameEn: "Skin",
+      nameAr: "بشرة",
+      imageUrl: null,
+      sortOrder: 0,
+    },
+  ],
   brand: null,
   options: [],
   variants: [

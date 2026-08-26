@@ -14,18 +14,18 @@ export declare const promotionSelectorSchema: z.ZodObject<{
     excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
+    categoryIds: string[];
     productIds: string[];
     variantIds: string[];
-    categoryIds: string[];
     brandIds: string[];
     excludedProductIds: string[];
     excludedVariantIds: string[];
     excludedCategoryIds: string[];
     excludedBrandIds: string[];
 }, {
+    categoryIds?: string[] | undefined;
     productIds?: string[] | undefined;
     variantIds?: string[] | undefined;
-    categoryIds?: string[] | undefined;
     brandIds?: string[] | undefined;
     excludedProductIds?: string[] | undefined;
     excludedVariantIds?: string[] | undefined;
@@ -59,18 +59,18 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
         excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
         excludedCategoryIds: string[];
         excludedBrandIds: string[];
     }, {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -82,9 +82,9 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
     type: "QUANTITY";
     operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
     selector?: {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -96,9 +96,9 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
     type: "QUANTITY";
     operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
     selector?: {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -117,18 +117,18 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
         excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
         excludedCategoryIds: string[];
         excludedBrandIds: string[];
     }, {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -138,9 +138,9 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
 }, "strip", z.ZodTypeAny, {
     type: "HAS_ITEMS";
     selector: {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -150,9 +150,9 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
 }, {
     type: "HAS_ITEMS";
     selector: {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -171,18 +171,18 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
         excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
         excludedCategoryIds: string[];
         excludedBrandIds: string[];
     }, {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -192,9 +192,9 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
 }, "strip", z.ZodTypeAny, {
     type: "MISSING_ITEMS";
     selector: {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -204,9 +204,9 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
 }, {
     type: "MISSING_ITEMS";
     selector: {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -308,18 +308,18 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
         excludedCategoryIds: string[];
         excludedBrandIds: string[];
     }, {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -332,9 +332,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     value: number;
     type: "PERCENT_OFF";
     selector?: {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -346,9 +346,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     value: number;
     type: "PERCENT_OFF";
     selector?: {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -368,18 +368,18 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
         excludedCategoryIds: string[];
         excludedBrandIds: string[];
     }, {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -392,9 +392,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     value: number;
     type: "FIXED_OFF";
     selector?: {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -406,9 +406,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     value: number;
     type: "FIXED_OFF";
     selector?: {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -429,18 +429,18 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
         excludedCategoryIds: string[];
         excludedBrandIds: string[];
     }, {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -451,9 +451,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     type: "PRICE_OVERRIDE";
     price: number;
     selector?: {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -464,9 +464,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     type: "PRICE_OVERRIDE";
     price: number;
     selector?: {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -486,18 +486,18 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
         excludedCategoryIds: string[];
         excludedBrandIds: string[];
     }, {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -508,9 +508,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     type: "CHEAPEST_FREE";
     quantity: number;
     selector?: {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -521,9 +521,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     type: "CHEAPEST_FREE";
     quantity?: number | undefined;
     selector?: {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -542,18 +542,18 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
         excludedCategoryIds: string[];
         excludedBrandIds: string[];
     }, {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -566,9 +566,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     value: number;
     type: "ITEM_PERCENT_OFF";
     selector?: {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -580,9 +580,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     value: number;
     type: "ITEM_PERCENT_OFF";
     selector?: {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -602,18 +602,18 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
         excludedCategoryIds: string[];
         excludedBrandIds: string[];
     }, {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -626,9 +626,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     value: number;
     type: "ITEM_FIXED_OFF";
     selector?: {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -640,9 +640,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     value: number;
     type: "ITEM_FIXED_OFF";
     selector?: {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -671,18 +671,18 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
         excludedCategoryIds: string[];
         excludedBrandIds: string[];
     }, {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -699,18 +699,18 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
         excludedCategoryIds: string[];
         excludedBrandIds: string[];
     }, {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -725,9 +725,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     rewardPercentOff: number;
     strategy: "CHEAPEST" | "HIGHEST";
     qualifier?: {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -735,9 +735,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         excludedBrandIds: string[];
     } | undefined;
     reward?: {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -750,9 +750,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     rewardQuantity?: number | undefined;
     rewardPercentOff?: number | undefined;
     qualifier?: {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -760,9 +760,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         excludedBrandIds?: string[] | undefined;
     } | undefined;
     reward?: {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -825,18 +825,18 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
         excludedCategoryIds: string[];
         excludedBrandIds: string[];
     }, {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -850,9 +850,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         threshold: number;
     }[];
     selector?: {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -866,9 +866,9 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         threshold: number;
     }[];
     selector?: {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -929,9 +929,9 @@ export declare const promotionTargetsSchema: z.ZodObject<{
 } & {
     customerIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
+    categoryIds: string[];
     productIds: string[];
     variantIds: string[];
-    categoryIds: string[];
     brandIds: string[];
     excludedProductIds: string[];
     excludedVariantIds: string[];
@@ -939,9 +939,9 @@ export declare const promotionTargetsSchema: z.ZodObject<{
     excludedBrandIds: string[];
     customerIds: string[];
 }, {
+    categoryIds?: string[] | undefined;
     productIds?: string[] | undefined;
     variantIds?: string[] | undefined;
-    categoryIds?: string[] | undefined;
     brandIds?: string[] | undefined;
     excludedProductIds?: string[] | undefined;
     excludedVariantIds?: string[] | undefined;
@@ -1037,18 +1037,18 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1060,9 +1060,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "QUANTITY";
         operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -1074,9 +1074,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "QUANTITY";
         operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1095,18 +1095,18 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1116,9 +1116,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         type: "HAS_ITEMS";
         selector: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -1128,9 +1128,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     }, {
         type: "HAS_ITEMS";
         selector: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1149,18 +1149,18 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1170,9 +1170,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         type: "MISSING_ITEMS";
         selector: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -1182,9 +1182,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     }, {
         type: "MISSING_ITEMS";
         selector: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1285,18 +1285,18 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1309,9 +1309,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "PERCENT_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -1323,9 +1323,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "PERCENT_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1345,18 +1345,18 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1369,9 +1369,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "FIXED_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -1383,9 +1383,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "FIXED_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1406,18 +1406,18 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1428,9 +1428,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "PRICE_OVERRIDE";
         price: number;
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -1441,9 +1441,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "PRICE_OVERRIDE";
         price: number;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1463,18 +1463,18 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1485,9 +1485,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "CHEAPEST_FREE";
         quantity: number;
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -1498,9 +1498,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "CHEAPEST_FREE";
         quantity?: number | undefined;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1519,18 +1519,18 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1543,9 +1543,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "ITEM_PERCENT_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -1557,9 +1557,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "ITEM_PERCENT_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1579,18 +1579,18 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1603,9 +1603,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "ITEM_FIXED_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -1617,9 +1617,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "ITEM_FIXED_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1648,18 +1648,18 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1676,18 +1676,18 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1702,9 +1702,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         rewardPercentOff: number;
         strategy: "CHEAPEST" | "HIGHEST";
         qualifier?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -1712,9 +1712,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedBrandIds: string[];
         } | undefined;
         reward?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -1727,9 +1727,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         rewardQuantity?: number | undefined;
         rewardPercentOff?: number | undefined;
         qualifier?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1737,9 +1737,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedBrandIds?: string[] | undefined;
         } | undefined;
         reward?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1802,18 +1802,18 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1827,9 +1827,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             threshold: number;
         }[];
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -1843,9 +1843,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             threshold: number;
         }[];
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -1905,9 +1905,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } & {
         customerIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -1915,9 +1915,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         excludedBrandIds: string[];
         customerIds: string[];
     }, {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -1990,9 +1990,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "QUANTITY";
         operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2006,9 +2006,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | {
         type: "HAS_ITEMS";
         selector: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2018,9 +2018,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | {
         type: "MISSING_ITEMS";
         selector: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2059,9 +2059,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "PERCENT_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2073,9 +2073,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "FIXED_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2087,9 +2087,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "PRICE_OVERRIDE";
         price: number;
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2100,9 +2100,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "CHEAPEST_FREE";
         quantity: number;
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2113,9 +2113,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "ITEM_PERCENT_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2127,9 +2127,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "ITEM_FIXED_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2146,9 +2146,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         rewardPercentOff: number;
         strategy: "CHEAPEST" | "HIGHEST";
         qualifier?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2156,9 +2156,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedBrandIds: string[];
         } | undefined;
         reward?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2180,9 +2180,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             threshold: number;
         }[];
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2202,9 +2202,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         customerChooses: boolean;
     })[];
     targets: {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -2240,9 +2240,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "PERCENT_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2254,9 +2254,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "FIXED_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2268,9 +2268,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "PRICE_OVERRIDE";
         price: number;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2281,9 +2281,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "CHEAPEST_FREE";
         quantity?: number | undefined;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2294,9 +2294,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "ITEM_PERCENT_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2308,9 +2308,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "ITEM_FIXED_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2326,9 +2326,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         rewardQuantity?: number | undefined;
         rewardPercentOff?: number | undefined;
         qualifier?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2336,9 +2336,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedBrandIds?: string[] | undefined;
         } | undefined;
         reward?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2361,9 +2361,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             threshold: number;
         }[];
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2397,9 +2397,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "QUANTITY";
         operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2413,9 +2413,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | {
         type: "HAS_ITEMS";
         selector: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2425,9 +2425,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | {
         type: "MISSING_ITEMS";
         selector: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2463,9 +2463,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "GOVERNORATE";
     })[] | undefined;
     targets?: {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -2508,9 +2508,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "QUANTITY";
         operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2524,9 +2524,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | {
         type: "HAS_ITEMS";
         selector: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2536,9 +2536,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | {
         type: "MISSING_ITEMS";
         selector: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2577,9 +2577,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "PERCENT_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2591,9 +2591,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "FIXED_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2605,9 +2605,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "PRICE_OVERRIDE";
         price: number;
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2618,9 +2618,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "CHEAPEST_FREE";
         quantity: number;
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2631,9 +2631,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "ITEM_PERCENT_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2645,9 +2645,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "ITEM_FIXED_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2664,9 +2664,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         rewardPercentOff: number;
         strategy: "CHEAPEST" | "HIGHEST";
         qualifier?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2674,9 +2674,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedBrandIds: string[];
         } | undefined;
         reward?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2698,9 +2698,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             threshold: number;
         }[];
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -2720,9 +2720,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         customerChooses: boolean;
     })[];
     targets: {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -2758,9 +2758,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "PERCENT_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2772,9 +2772,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "FIXED_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2786,9 +2786,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "PRICE_OVERRIDE";
         price: number;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2799,9 +2799,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "CHEAPEST_FREE";
         quantity?: number | undefined;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2812,9 +2812,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "ITEM_PERCENT_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2826,9 +2826,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         value: number;
         type: "ITEM_FIXED_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2844,9 +2844,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         rewardQuantity?: number | undefined;
         rewardPercentOff?: number | undefined;
         qualifier?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2854,9 +2854,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedBrandIds?: string[] | undefined;
         } | undefined;
         reward?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2879,9 +2879,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             threshold: number;
         }[];
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2915,9 +2915,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "QUANTITY";
         operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2931,9 +2931,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | {
         type: "HAS_ITEMS";
         selector: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2943,9 +2943,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | {
         type: "MISSING_ITEMS";
         selector: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -2981,9 +2981,9 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         type: "GOVERNORATE";
     })[] | undefined;
     targets?: {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -3051,18 +3051,18 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3074,9 +3074,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         type: "QUANTITY";
         operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -3088,9 +3088,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         type: "QUANTITY";
         operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3109,18 +3109,18 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3130,9 +3130,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         type: "HAS_ITEMS";
         selector: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -3142,9 +3142,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
     }, {
         type: "HAS_ITEMS";
         selector: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3163,18 +3163,18 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3184,9 +3184,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         type: "MISSING_ITEMS";
         selector: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -3196,9 +3196,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
     }, {
         type: "MISSING_ITEMS";
         selector: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3299,18 +3299,18 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3323,9 +3323,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         value: number;
         type: "PERCENT_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -3337,9 +3337,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         value: number;
         type: "PERCENT_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3359,18 +3359,18 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3383,9 +3383,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         value: number;
         type: "FIXED_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -3397,9 +3397,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         value: number;
         type: "FIXED_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3420,18 +3420,18 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3442,9 +3442,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         type: "PRICE_OVERRIDE";
         price: number;
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -3455,9 +3455,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         type: "PRICE_OVERRIDE";
         price: number;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3477,18 +3477,18 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3499,9 +3499,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         type: "CHEAPEST_FREE";
         quantity: number;
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -3512,9 +3512,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         type: "CHEAPEST_FREE";
         quantity?: number | undefined;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3533,18 +3533,18 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3557,9 +3557,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         value: number;
         type: "ITEM_PERCENT_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -3571,9 +3571,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         value: number;
         type: "ITEM_PERCENT_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3593,18 +3593,18 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3617,9 +3617,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         value: number;
         type: "ITEM_FIXED_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -3631,9 +3631,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         value: number;
         type: "ITEM_FIXED_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3662,18 +3662,18 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3690,18 +3690,18 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3716,9 +3716,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         rewardPercentOff: number;
         strategy: "CHEAPEST" | "HIGHEST";
         qualifier?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -3726,9 +3726,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedBrandIds: string[];
         } | undefined;
         reward?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -3741,9 +3741,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         rewardQuantity?: number | undefined;
         rewardPercentOff?: number | undefined;
         qualifier?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3751,9 +3751,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedBrandIds?: string[] | undefined;
         } | undefined;
         reward?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3816,18 +3816,18 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3841,9 +3841,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
             threshold: number;
         }[];
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -3857,9 +3857,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
             threshold: number;
         }[];
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -3919,9 +3919,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
     } & {
         customerIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -3929,9 +3929,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         excludedBrandIds: string[];
         customerIds: string[];
     }, {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -4006,9 +4006,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         type: "QUANTITY";
         operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -4022,9 +4022,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
     } | {
         type: "HAS_ITEMS";
         selector: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -4034,9 +4034,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
     } | {
         type: "MISSING_ITEMS";
         selector: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -4075,9 +4075,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         value: number;
         type: "PERCENT_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -4089,9 +4089,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         value: number;
         type: "FIXED_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -4103,9 +4103,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         type: "PRICE_OVERRIDE";
         price: number;
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -4116,9 +4116,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         type: "CHEAPEST_FREE";
         quantity: number;
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -4129,9 +4129,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         value: number;
         type: "ITEM_PERCENT_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -4143,9 +4143,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         value: number;
         type: "ITEM_FIXED_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -4162,9 +4162,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         rewardPercentOff: number;
         strategy: "CHEAPEST" | "HIGHEST";
         qualifier?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -4172,9 +4172,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedBrandIds: string[];
         } | undefined;
         reward?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -4196,9 +4196,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
             threshold: number;
         }[];
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -4218,9 +4218,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         customerChooses: boolean;
     })[] | undefined;
     targets?: {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -4265,9 +4265,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         type: "QUANTITY";
         operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -4281,9 +4281,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
     } | {
         type: "HAS_ITEMS";
         selector: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -4293,9 +4293,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
     } | {
         type: "MISSING_ITEMS";
         selector: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -4334,9 +4334,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         value: number;
         type: "PERCENT_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -4348,9 +4348,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         value: number;
         type: "FIXED_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -4362,9 +4362,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         type: "PRICE_OVERRIDE";
         price: number;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -4375,9 +4375,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         type: "CHEAPEST_FREE";
         quantity?: number | undefined;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -4388,9 +4388,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         value: number;
         type: "ITEM_PERCENT_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -4402,9 +4402,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         value: number;
         type: "ITEM_FIXED_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -4420,9 +4420,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         rewardQuantity?: number | undefined;
         rewardPercentOff?: number | undefined;
         qualifier?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -4430,9 +4430,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedBrandIds?: string[] | undefined;
         } | undefined;
         reward?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -4455,9 +4455,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
             threshold: number;
         }[];
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -4477,9 +4477,9 @@ export declare const updatePromotionSchema: z.ZodObject<{
         customerChooses?: boolean | undefined;
     })[] | undefined;
     targets?: {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -4541,6 +4541,7 @@ export declare const promotionLineSchema: z.ZodObject<{
     variantId: z.ZodString;
     productId: z.ZodString;
     categoryId: z.ZodString;
+    categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     brandId: z.ZodNullable<z.ZodString>;
     name: z.ZodString;
     unitPrice: z.ZodNumber;
@@ -4550,6 +4551,7 @@ export declare const promotionLineSchema: z.ZodObject<{
     variantId: string;
     quantity: number;
     productId: string;
+    categoryIds: string[];
     categoryId: string;
     brandId: string | null;
     unitPrice: number;
@@ -4561,6 +4563,7 @@ export declare const promotionLineSchema: z.ZodObject<{
     categoryId: string;
     brandId: string | null;
     unitPrice: number;
+    categoryIds?: string[] | undefined;
 }>;
 export declare const promotionPreviewSchema: z.ZodObject<{
     promotion: z.ZodOptional<z.ZodObject<{
@@ -4603,18 +4606,18 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -4626,9 +4629,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "QUANTITY";
             operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -4640,9 +4643,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "QUANTITY";
             operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -4661,18 +4664,18 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -4682,9 +4685,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             type: "HAS_ITEMS";
             selector: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -4694,9 +4697,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         }, {
             type: "HAS_ITEMS";
             selector: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -4715,18 +4718,18 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -4736,9 +4739,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             type: "MISSING_ITEMS";
             selector: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -4748,9 +4751,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         }, {
             type: "MISSING_ITEMS";
             selector: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -4851,18 +4854,18 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -4875,9 +4878,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "PERCENT_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -4889,9 +4892,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "PERCENT_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -4911,18 +4914,18 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -4935,9 +4938,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "FIXED_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -4949,9 +4952,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "FIXED_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -4972,18 +4975,18 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -4994,9 +4997,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "PRICE_OVERRIDE";
             price: number;
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5007,9 +5010,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "PRICE_OVERRIDE";
             price: number;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5029,18 +5032,18 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5051,9 +5054,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "CHEAPEST_FREE";
             quantity: number;
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5064,9 +5067,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "CHEAPEST_FREE";
             quantity?: number | undefined;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5085,18 +5088,18 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5109,9 +5112,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "ITEM_PERCENT_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5123,9 +5126,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "ITEM_PERCENT_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5145,18 +5148,18 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5169,9 +5172,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "ITEM_FIXED_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5183,9 +5186,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "ITEM_FIXED_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5214,18 +5217,18 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5242,18 +5245,18 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5268,9 +5271,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             rewardPercentOff: number;
             strategy: "CHEAPEST" | "HIGHEST";
             qualifier?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5278,9 +5281,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedBrandIds: string[];
             } | undefined;
             reward?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5293,9 +5296,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             rewardQuantity?: number | undefined;
             rewardPercentOff?: number | undefined;
             qualifier?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5303,9 +5306,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedBrandIds?: string[] | undefined;
             } | undefined;
             reward?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5368,18 +5371,18 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5393,9 +5396,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 threshold: number;
             }[];
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5409,9 +5412,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 threshold: number;
             }[];
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5471,9 +5474,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } & {
             customerIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -5481,9 +5484,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             excludedBrandIds: string[];
             customerIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -5556,9 +5559,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "QUANTITY";
             operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5572,9 +5575,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | {
             type: "HAS_ITEMS";
             selector: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5584,9 +5587,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | {
             type: "MISSING_ITEMS";
             selector: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5625,9 +5628,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "PERCENT_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5639,9 +5642,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "FIXED_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5653,9 +5656,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "PRICE_OVERRIDE";
             price: number;
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5666,9 +5669,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "CHEAPEST_FREE";
             quantity: number;
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5679,9 +5682,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "ITEM_PERCENT_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5693,9 +5696,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "ITEM_FIXED_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5712,9 +5715,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             rewardPercentOff: number;
             strategy: "CHEAPEST" | "HIGHEST";
             qualifier?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5722,9 +5725,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedBrandIds: string[];
             } | undefined;
             reward?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5746,9 +5749,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 threshold: number;
             }[];
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -5768,9 +5771,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             customerChooses: boolean;
         })[];
         targets: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -5806,9 +5809,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "PERCENT_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5820,9 +5823,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "FIXED_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5834,9 +5837,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "PRICE_OVERRIDE";
             price: number;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5847,9 +5850,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "CHEAPEST_FREE";
             quantity?: number | undefined;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5860,9 +5863,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "ITEM_PERCENT_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5874,9 +5877,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "ITEM_FIXED_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5892,9 +5895,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             rewardQuantity?: number | undefined;
             rewardPercentOff?: number | undefined;
             qualifier?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5902,9 +5905,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedBrandIds?: string[] | undefined;
             } | undefined;
             reward?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5927,9 +5930,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 threshold: number;
             }[];
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5963,9 +5966,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "QUANTITY";
             operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5979,9 +5982,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | {
             type: "HAS_ITEMS";
             selector: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -5991,9 +5994,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | {
             type: "MISSING_ITEMS";
             selector: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -6029,9 +6032,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "GOVERNORATE";
         })[] | undefined;
         targets?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -6067,6 +6070,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         variantId: z.ZodString;
         productId: z.ZodString;
         categoryId: z.ZodString;
+        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         brandId: z.ZodNullable<z.ZodString>;
         name: z.ZodString;
         unitPrice: z.ZodNumber;
@@ -6076,6 +6080,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         variantId: string;
         quantity: number;
         productId: string;
+        categoryIds: string[];
         categoryId: string;
         brandId: string | null;
         unitPrice: number;
@@ -6087,6 +6092,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         categoryId: string;
         brandId: string | null;
         unitPrice: number;
+        categoryIds?: string[] | undefined;
     }>, "many">;
     diagnostic: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
@@ -6100,6 +6106,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         variantId: string;
         quantity: number;
         productId: string;
+        categoryIds: string[];
         categoryId: string;
         brandId: string | null;
         unitPrice: number;
@@ -6122,9 +6129,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "QUANTITY";
             operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -6138,9 +6145,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | {
             type: "HAS_ITEMS";
             selector: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -6150,9 +6157,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | {
             type: "MISSING_ITEMS";
             selector: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -6191,9 +6198,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "PERCENT_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -6205,9 +6212,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "FIXED_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -6219,9 +6226,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "PRICE_OVERRIDE";
             price: number;
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -6232,9 +6239,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "CHEAPEST_FREE";
             quantity: number;
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -6245,9 +6252,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "ITEM_PERCENT_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -6259,9 +6266,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "ITEM_FIXED_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -6278,9 +6285,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             rewardPercentOff: number;
             strategy: "CHEAPEST" | "HIGHEST";
             qualifier?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -6288,9 +6295,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedBrandIds: string[];
             } | undefined;
             reward?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -6312,9 +6319,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 threshold: number;
             }[];
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -6334,9 +6341,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             customerChooses: boolean;
         })[];
         targets: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -6374,6 +6381,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         categoryId: string;
         brandId: string | null;
         unitPrice: number;
+        categoryIds?: string[] | undefined;
     }[];
     governorate?: string | null | undefined;
     paymentMethod?: string | null | undefined;
@@ -6388,9 +6396,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "PERCENT_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -6402,9 +6410,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "FIXED_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -6416,9 +6424,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "PRICE_OVERRIDE";
             price: number;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -6429,9 +6437,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "CHEAPEST_FREE";
             quantity?: number | undefined;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -6442,9 +6450,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "ITEM_PERCENT_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -6456,9 +6464,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             value: number;
             type: "ITEM_FIXED_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -6474,9 +6482,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             rewardQuantity?: number | undefined;
             rewardPercentOff?: number | undefined;
             qualifier?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -6484,9 +6492,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedBrandIds?: string[] | undefined;
             } | undefined;
             reward?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -6509,9 +6517,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 threshold: number;
             }[];
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -6545,9 +6553,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "QUANTITY";
             operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -6561,9 +6569,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | {
             type: "HAS_ITEMS";
             selector: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -6573,9 +6581,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | {
             type: "MISSING_ITEMS";
             selector: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -6611,9 +6619,9 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             type: "GOVERNORATE";
         })[] | undefined;
         targets?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -6884,18 +6892,18 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -6907,9 +6915,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         type: "QUANTITY";
         operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -6921,9 +6929,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         type: "QUANTITY";
         operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -6942,18 +6950,18 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -6963,9 +6971,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         type: "HAS_ITEMS";
         selector: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -6975,9 +6983,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
     }, {
         type: "HAS_ITEMS";
         selector: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -6996,18 +7004,18 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7017,9 +7025,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         type: "MISSING_ITEMS";
         selector: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7029,9 +7037,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
     }, {
         type: "MISSING_ITEMS";
         selector: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7132,18 +7140,18 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7156,9 +7164,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         value: number;
         type: "PERCENT_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7170,9 +7178,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         value: number;
         type: "PERCENT_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7192,18 +7200,18 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7216,9 +7224,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         value: number;
         type: "FIXED_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7230,9 +7238,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         value: number;
         type: "FIXED_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7253,18 +7261,18 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7275,9 +7283,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         type: "PRICE_OVERRIDE";
         price: number;
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7288,9 +7296,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         type: "PRICE_OVERRIDE";
         price: number;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7310,18 +7318,18 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7332,9 +7340,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         type: "CHEAPEST_FREE";
         quantity: number;
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7345,9 +7353,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         type: "CHEAPEST_FREE";
         quantity?: number | undefined;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7366,18 +7374,18 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7390,9 +7398,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         value: number;
         type: "ITEM_PERCENT_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7404,9 +7412,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         value: number;
         type: "ITEM_PERCENT_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7426,18 +7434,18 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7450,9 +7458,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         value: number;
         type: "ITEM_FIXED_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7464,9 +7472,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         value: number;
         type: "ITEM_FIXED_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7495,18 +7503,18 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7523,18 +7531,18 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7549,9 +7557,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         rewardPercentOff: number;
         strategy: "CHEAPEST" | "HIGHEST";
         qualifier?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7559,9 +7567,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedBrandIds: string[];
         } | undefined;
         reward?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7574,9 +7582,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         rewardQuantity?: number | undefined;
         rewardPercentOff?: number | undefined;
         qualifier?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7584,9 +7592,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedBrandIds?: string[] | undefined;
         } | undefined;
         reward?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7649,18 +7657,18 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
             excludedCategoryIds: string[];
             excludedBrandIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7674,9 +7682,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
             threshold: number;
         }[];
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7690,9 +7698,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
             threshold: number;
         }[];
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -7752,9 +7760,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
     } & {
         customerIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -7762,9 +7770,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         excludedBrandIds: string[];
         customerIds: string[];
     }, {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -7854,9 +7862,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         type: "QUANTITY";
         operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7870,9 +7878,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
     } | {
         type: "HAS_ITEMS";
         selector: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7882,9 +7890,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
     } | {
         type: "MISSING_ITEMS";
         selector: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7923,9 +7931,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         value: number;
         type: "PERCENT_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7937,9 +7945,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         value: number;
         type: "FIXED_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7951,9 +7959,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         type: "PRICE_OVERRIDE";
         price: number;
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7964,9 +7972,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         type: "CHEAPEST_FREE";
         quantity: number;
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7977,9 +7985,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         value: number;
         type: "ITEM_PERCENT_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -7991,9 +7999,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         value: number;
         type: "ITEM_FIXED_OFF";
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -8010,9 +8018,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         rewardPercentOff: number;
         strategy: "CHEAPEST" | "HIGHEST";
         qualifier?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -8020,9 +8028,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedBrandIds: string[];
         } | undefined;
         reward?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -8044,9 +8052,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
             threshold: number;
         }[];
         selector?: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -8066,9 +8074,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         customerChooses: boolean;
     })[];
     targets: {
+        categoryIds: string[];
         productIds: string[];
         variantIds: string[];
-        categoryIds: string[];
         brandIds: string[];
         excludedProductIds: string[];
         excludedVariantIds: string[];
@@ -8122,9 +8130,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         type: "QUANTITY";
         operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -8138,9 +8146,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
     } | {
         type: "HAS_ITEMS";
         selector: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -8150,9 +8158,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
     } | {
         type: "MISSING_ITEMS";
         selector: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -8191,9 +8199,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         value: number;
         type: "PERCENT_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -8205,9 +8213,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         value: number;
         type: "FIXED_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -8219,9 +8227,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         type: "PRICE_OVERRIDE";
         price: number;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -8232,9 +8240,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         type: "CHEAPEST_FREE";
         quantity?: number | undefined;
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -8245,9 +8253,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         value: number;
         type: "ITEM_PERCENT_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -8259,9 +8267,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         value: number;
         type: "ITEM_FIXED_OFF";
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -8277,9 +8285,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         rewardQuantity?: number | undefined;
         rewardPercentOff?: number | undefined;
         qualifier?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -8287,9 +8295,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedBrandIds?: string[] | undefined;
         } | undefined;
         reward?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -8312,9 +8320,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
             threshold: number;
         }[];
         selector?: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -8334,9 +8342,9 @@ export declare const promotionResponseSchema: z.ZodObject<{
         customerChooses?: boolean | undefined;
     })[];
     targets: {
+        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
         variantIds?: string[] | undefined;
-        categoryIds?: string[] | undefined;
         brandIds?: string[] | undefined;
         excludedProductIds?: string[] | undefined;
         excludedVariantIds?: string[] | undefined;
@@ -8410,18 +8418,18 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8433,9 +8441,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "QUANTITY";
             operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -8447,9 +8455,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "QUANTITY";
             operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8468,18 +8476,18 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8489,9 +8497,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             type: "HAS_ITEMS";
             selector: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -8501,9 +8509,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         }, {
             type: "HAS_ITEMS";
             selector: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8522,18 +8530,18 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8543,9 +8551,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             type: "MISSING_ITEMS";
             selector: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -8555,9 +8563,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         }, {
             type: "MISSING_ITEMS";
             selector: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8658,18 +8666,18 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8682,9 +8690,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "PERCENT_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -8696,9 +8704,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "PERCENT_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8718,18 +8726,18 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8742,9 +8750,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "FIXED_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -8756,9 +8764,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "FIXED_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8779,18 +8787,18 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8801,9 +8809,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "PRICE_OVERRIDE";
             price: number;
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -8814,9 +8822,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "PRICE_OVERRIDE";
             price: number;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8836,18 +8844,18 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8858,9 +8866,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "CHEAPEST_FREE";
             quantity: number;
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -8871,9 +8879,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "CHEAPEST_FREE";
             quantity?: number | undefined;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8892,18 +8900,18 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8916,9 +8924,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "ITEM_PERCENT_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -8930,9 +8938,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "ITEM_PERCENT_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8952,18 +8960,18 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -8976,9 +8984,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "ITEM_FIXED_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -8990,9 +8998,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "ITEM_FIXED_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9021,18 +9029,18 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9049,18 +9057,18 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9075,9 +9083,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             rewardPercentOff: number;
             strategy: "CHEAPEST" | "HIGHEST";
             qualifier?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9085,9 +9093,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedBrandIds: string[];
             } | undefined;
             reward?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9100,9 +9108,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             rewardQuantity?: number | undefined;
             rewardPercentOff?: number | undefined;
             qualifier?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9110,9 +9118,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedBrandIds?: string[] | undefined;
             } | undefined;
             reward?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9175,18 +9183,18 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
                 excludedCategoryIds: string[];
                 excludedBrandIds: string[];
             }, {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9200,9 +9208,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 threshold: number;
             }[];
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9216,9 +9224,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 threshold: number;
             }[];
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9278,9 +9286,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } & {
             customerIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -9288,9 +9296,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             excludedBrandIds: string[];
             customerIds: string[];
         }, {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -9380,9 +9388,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "QUANTITY";
             operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9396,9 +9404,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } | {
             type: "HAS_ITEMS";
             selector: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9408,9 +9416,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } | {
             type: "MISSING_ITEMS";
             selector: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9449,9 +9457,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "PERCENT_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9463,9 +9471,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "FIXED_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9477,9 +9485,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "PRICE_OVERRIDE";
             price: number;
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9490,9 +9498,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "CHEAPEST_FREE";
             quantity: number;
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9503,9 +9511,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "ITEM_PERCENT_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9517,9 +9525,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "ITEM_FIXED_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9536,9 +9544,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             rewardPercentOff: number;
             strategy: "CHEAPEST" | "HIGHEST";
             qualifier?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9546,9 +9554,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedBrandIds: string[];
             } | undefined;
             reward?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9570,9 +9578,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 threshold: number;
             }[];
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9592,9 +9600,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             customerChooses: boolean;
         })[];
         targets: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -9648,9 +9656,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "QUANTITY";
             operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9664,9 +9672,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } | {
             type: "HAS_ITEMS";
             selector: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9676,9 +9684,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } | {
             type: "MISSING_ITEMS";
             selector: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9717,9 +9725,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "PERCENT_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9731,9 +9739,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "FIXED_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9745,9 +9753,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "PRICE_OVERRIDE";
             price: number;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9758,9 +9766,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "CHEAPEST_FREE";
             quantity?: number | undefined;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9771,9 +9779,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "ITEM_PERCENT_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9785,9 +9793,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "ITEM_FIXED_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9803,9 +9811,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             rewardQuantity?: number | undefined;
             rewardPercentOff?: number | undefined;
             qualifier?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9813,9 +9821,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedBrandIds?: string[] | undefined;
             } | undefined;
             reward?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9838,9 +9846,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 threshold: number;
             }[];
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -9860,9 +9868,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             customerChooses?: boolean | undefined;
         })[];
         targets: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;
@@ -9940,9 +9948,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "QUANTITY";
             operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9956,9 +9964,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } | {
             type: "HAS_ITEMS";
             selector: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -9968,9 +9976,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } | {
             type: "MISSING_ITEMS";
             selector: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -10009,9 +10017,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "PERCENT_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -10023,9 +10031,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "FIXED_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -10037,9 +10045,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "PRICE_OVERRIDE";
             price: number;
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -10050,9 +10058,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "CHEAPEST_FREE";
             quantity: number;
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -10063,9 +10071,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "ITEM_PERCENT_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -10077,9 +10085,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "ITEM_FIXED_OFF";
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -10096,9 +10104,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             rewardPercentOff: number;
             strategy: "CHEAPEST" | "HIGHEST";
             qualifier?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -10106,9 +10114,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedBrandIds: string[];
             } | undefined;
             reward?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -10130,9 +10138,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 threshold: number;
             }[];
             selector?: {
+                categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
-                categoryIds: string[];
                 brandIds: string[];
                 excludedProductIds: string[];
                 excludedVariantIds: string[];
@@ -10152,9 +10160,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             customerChooses: boolean;
         })[];
         targets: {
+            categoryIds: string[];
             productIds: string[];
             variantIds: string[];
-            categoryIds: string[];
             brandIds: string[];
             excludedProductIds: string[];
             excludedVariantIds: string[];
@@ -10218,9 +10226,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "QUANTITY";
             operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -10234,9 +10242,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } | {
             type: "HAS_ITEMS";
             selector: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -10246,9 +10254,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } | {
             type: "MISSING_ITEMS";
             selector: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -10287,9 +10295,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "PERCENT_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -10301,9 +10309,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "FIXED_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -10315,9 +10323,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "PRICE_OVERRIDE";
             price: number;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -10328,9 +10336,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             type: "CHEAPEST_FREE";
             quantity?: number | undefined;
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -10341,9 +10349,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "ITEM_PERCENT_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -10355,9 +10363,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             value: number;
             type: "ITEM_FIXED_OFF";
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -10373,9 +10381,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             rewardQuantity?: number | undefined;
             rewardPercentOff?: number | undefined;
             qualifier?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -10383,9 +10391,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedBrandIds?: string[] | undefined;
             } | undefined;
             reward?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -10408,9 +10416,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 threshold: number;
             }[];
             selector?: {
+                categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
                 variantIds?: string[] | undefined;
-                categoryIds?: string[] | undefined;
                 brandIds?: string[] | undefined;
                 excludedProductIds?: string[] | undefined;
                 excludedVariantIds?: string[] | undefined;
@@ -10430,9 +10438,9 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             customerChooses?: boolean | undefined;
         })[];
         targets: {
+            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
             variantIds?: string[] | undefined;
-            categoryIds?: string[] | undefined;
             brandIds?: string[] | undefined;
             excludedProductIds?: string[] | undefined;
             excludedVariantIds?: string[] | undefined;

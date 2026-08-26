@@ -5,38 +5,42 @@
 //     React/TanStack dedupe, error logger plugins, and sandbox detection (port/host/strictPort).
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
+import { loadEnv, type ConfigEnv } from "vite";
 
-const apiProxyTarget = process.env["VITE_API_PROXY_TARGET"]?.trim() || "http://127.0.0.1:3000";
+export default (configEnv: ConfigEnv) => {
+  const env = loadEnv(configEnv.mode, process.cwd(), "VITE_");
+  const apiProxyTarget = env["VITE_API_PROXY_TARGET"]?.trim() || "http://127.0.0.1:3000";
 
-export default defineConfig({
-  vite: {
-    server: {
-      host: "127.0.0.1",
-      port: 5173,
-      strictPort: true,
-      // Local phones and browsers cannot call the production API directly
-      // because its CORS policy only trusts deployed storefront origins.
-      // Keep development requests same-origin and let Vite forward them.
-      proxy: {
-        "/api/v1": {
-          target: apiProxyTarget,
-          changeOrigin: true,
-          secure: true,
+  return defineConfig({
+    vite: {
+      server: {
+        host: "127.0.0.1",
+        port: 5173,
+        strictPort: true,
+        // Local phones and browsers cannot call the production API directly
+        // because its CORS policy only trusts deployed storefront origins.
+        // Keep development requests same-origin and let Vite forward them.
+        proxy: {
+          "/api/v1": {
+            target: apiProxyTarget,
+            changeOrigin: true,
+            secure: true,
+          },
         },
       },
+      // The shared contracts package is emitted as CommonJS. It is a local file
+      // dependency, so Vite otherwise treats it as source and evaluates its
+      // `exports` calls inside the ESM SSR runner. Let Node load it through the
+      // package boundary instead; browser builds still use Vite's dependency
+      // optimizer.
+      ssr: {
+        external: ["@cosmetics/contracts"],
+      },
     },
-    // The shared contracts package is emitted as CommonJS. It is a local file
-    // dependency, so Vite otherwise treats it as source and evaluates its
-    // `exports` calls inside the ESM SSR runner. Let Node load it through the
-    // package boundary instead; browser builds still use Vite's dependency
-    // optimizer.
-    ssr: {
-      external: ["@cosmetics/contracts"],
+    tanstackStart: {
+      // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
+      // nitro/vite builds from this
+      server: { entry: "server" },
     },
-  },
-  tanstackStart: {
-    // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
-    // nitro/vite builds from this
-    server: { entry: "server" },
-  },
-});
+  })(configEnv);
+};

@@ -5,7 +5,7 @@ import {
   catalogListingParams,
   parseCatalogListingSearch,
 } from "@/components/shop/catalog-listing-state";
-import { loadAllBrands, loadCatalogFacets, loadCatalogPage } from "@/lib/catalog";
+import { allBrandsQuery, catalogFacetsQuery, catalogPageQuery } from "@/lib/catalog";
 import {
   breadcrumbSchema,
   absoluteUrl,
@@ -25,9 +25,11 @@ export const Route = createFileRoute("/brands/$slug")({
     const page = deps.page ?? 1;
     const scope = { brandSlug: params.slug };
     const [brands, catalog, facets] = await Promise.all([
-      loadAllBrands(),
-      loadCatalogPage(catalogListingParams(deps, scope, page), locale),
-      loadCatalogFacets(catalogFacetParams(deps, scope)),
+      context.queryClient.ensureQueryData(allBrandsQuery()),
+      context.queryClient.ensureQueryData(
+        catalogPageQuery(catalogListingParams(deps, scope, page), locale),
+      ),
+      context.queryClient.ensureQueryData(catalogFacetsQuery(catalogFacetParams(deps, scope))),
     ]);
     const brand = brands.find((item) => item.slug === params.slug);
     if (!brand || (page > 1 && page > catalog.meta.totalPages)) {

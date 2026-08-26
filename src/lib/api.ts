@@ -1120,6 +1120,7 @@ export const getPromotionPrices = (
     variantId: string;
     productId: string;
     categoryId: string;
+    categoryIds: string[];
     brandId: string | null;
     name: string;
     unitPrice: number;
