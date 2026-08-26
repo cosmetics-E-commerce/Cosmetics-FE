@@ -102,6 +102,7 @@ function InformationContents({
   const triggerRef = useRef<HTMLButtonElement>(null);
   const pendingSelectionRef = useRef<string | null>(null);
   const pendingHashNavigationRef = useRef<string | null>(null);
+  const observerPausedUntilRef = useRef(0);
   const labelId = useId();
   const triggerId = useId();
   const navigate = useNavigate();
@@ -188,7 +189,9 @@ function InformationContents({
                   Math.abs(right.boundingClientRect.top - observedTop),
               );
             const current = visible[0]?.target.id;
-            if (current) setActiveId(current);
+            if (current && performance.now() >= observerPausedUntilRef.current) {
+              setActiveId(current);
+            }
           },
           {
             // A one-pixel observation line sits immediately below the fixed
@@ -221,6 +224,7 @@ function InformationContents({
   useEffect(() => {
     let firstFrame = 0;
     let secondFrame = 0;
+    let timer = 0;
     const id = decodeURIComponent(routeHash.replace(/^#/, ""));
     if (!sections.some((section) => section.id === id)) return;
     if (pendingHashNavigationRef.current === id) {
@@ -228,29 +232,43 @@ function InformationContents({
       return;
     }
 
+    // Back/forward navigation can restore the previous scroll offset for a
+    // hash entry after popstate. Keep the URL-selected section authoritative
+    // while the component realigns that anchor below its sticky controls.
+    observerPausedUntilRef.current = performance.now() + 750;
+    setActiveId(id);
     firstFrame = window.requestAnimationFrame(() => {
-      secondFrame = window.requestAnimationFrame(() =>
-        scrollToSection(id, { updateHistory: false, smooth: false }),
-      );
+      secondFrame = window.requestAnimationFrame(() => {
+        timer = window.setTimeout(
+          () => scrollToSection(id, { updateHistory: false, smooth: false }),
+          0,
+        );
+      });
     });
     return () => {
       window.cancelAnimationFrame(firstFrame);
       window.cancelAnimationFrame(secondFrame);
+      window.clearTimeout(timer);
     };
   }, [routeHash, scrollToSection, sections]);
 
   useEffect(() => {
     let firstFrame = 0;
     let secondFrame = 0;
+    let timer = 0;
     const syncBrowserHistoryHash = () => {
       const id = decodeURIComponent(window.location.hash.replace(/^#/, ""));
       if (!sections.some((section) => section.id === id)) return;
       pendingHashNavigationRef.current = null;
+      observerPausedUntilRef.current = performance.now() + 750;
       setActiveId(id);
       firstFrame = window.requestAnimationFrame(() => {
-        secondFrame = window.requestAnimationFrame(() =>
-          scrollToSection(id, { updateHistory: false, smooth: false }),
-        );
+        secondFrame = window.requestAnimationFrame(() => {
+          timer = window.setTimeout(
+            () => scrollToSection(id, { updateHistory: false, smooth: false }),
+            0,
+          );
+        });
       });
     };
 
@@ -258,6 +276,7 @@ function InformationContents({
     return () => {
       window.cancelAnimationFrame(firstFrame);
       window.cancelAnimationFrame(secondFrame);
+      window.clearTimeout(timer);
       window.removeEventListener("popstate", syncBrowserHistoryHash);
     };
   }, [scrollToSection, sections]);
