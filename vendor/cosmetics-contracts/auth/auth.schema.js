@@ -82,7 +82,7 @@ exports.createAdminUserSchema = createUserBaseSchema
 exports.loginSchema = zod_1.z.object({
     identifier: zod_1.z.string().trim().min(3),
     password: zod_1.z.string().min(1, "Password is required"),
-});
+}).strict();
 exports.refreshSchema = zod_1.z.object({}).strict();
 exports.logoutSchema = zod_1.z.object({}).strict();
 exports.otpPurposeEnum = zod_1.z.enum([

@@ -9,7 +9,7 @@ const shipping_schema_1 = require("../shipping/shipping.schema");
 exports.orderItemInputSchema = zod_1.z.object({
     variantId: primitives_1.uuidSchema,
     quantity: zod_1.z.number().int().positive().max(99),
-});
+}).strict();
 /**
  * POST /orders — requires an Idempotency-Key header.
  * The customer may submit cart-derived items; the API always revalidates
@@ -24,7 +24,7 @@ exports.createOrderSchema = zod_1.z.object({
     couponCode: zod_1.z.string().trim().toUpperCase().min(3).max(32).optional(),
     giftVariantIds: zod_1.z.array(primitives_1.uuidSchema).max(10).optional(),
     notes: zod_1.z.string().trim().max(500).optional(),
-});
+}).strict();
 exports.checkoutOrderSchema = exports.createOrderSchema.omit({ items: true });
 exports.cancelOrderSchema = zod_1.z.object({
     reason: zod_1.z.string().trim().min(3).max(500),

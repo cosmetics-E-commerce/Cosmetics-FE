@@ -2,6 +2,8 @@
   --product-card-hover-duration: 600ms;
   --product-card-action-duration: 480ms;
   --product-card-hover-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --product-card-crossfade-duration: 800ms;
+  --product-card-crossfade-ease: cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   aspect-ratio: 4 / 5;
   overflow: hidden;
@@ -45,7 +47,7 @@
   object-position: center;
   transition:
     transform var(--product-card-hover-duration) var(--product-card-hover-ease),
-    opacity var(--product-card-hover-duration) var(--product-card-hover-ease);
+    opacity var(--product-card-crossfade-duration) var(--product-card-crossfade-ease);
 }
 
 .product-card .product-card-primary[data-loaded="true"] .product-card-image--primary {
@@ -59,7 +61,7 @@
 .product-card-layer {
   backface-visibility: hidden;
   transform: translateZ(0);
-  transition: opacity var(--product-card-hover-duration) var(--product-card-hover-ease);
+  transition: opacity var(--product-card-crossfade-duration) var(--product-card-crossfade-ease);
 }
 
 .quick-add {

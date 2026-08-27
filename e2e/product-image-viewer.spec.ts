@@ -100,6 +100,48 @@ test("product image stays calm on hover and opens the selected image in an acces
   await expect(trigger).toBeFocused();
 });
 
+test("product image viewer closes only through its explicit dismiss paths", async ({ page }) => {
+  await page.goto(productPath, { waitUntil: "networkidle" });
+
+  const trigger = page.locator(".product-viewer-trigger");
+  const viewer = page.getByRole("dialog", { name: "Product image viewer" });
+  const body = page.locator("body");
+
+  const openViewer = async () => {
+    await trigger.click();
+    await expect(viewer).toBeVisible();
+    await expect(body).toHaveCSS("overflow", "hidden");
+  };
+  const expectClosed = async () => {
+    await expect(viewer).toBeHidden();
+    await expect(body).not.toHaveCSS("overflow", "hidden");
+    await expect(trigger).toBeFocused();
+  };
+
+  await openViewer();
+  await viewer.getByRole("img", { name: "ACM Depiwhite eye contour cream" }).click();
+  await expect(viewer).toBeVisible();
+  await viewer.getByRole("button", { name: "Next product image" }).click();
+  await expect(viewer).toBeVisible();
+  await viewer.getByRole("button", { name: "Previous product image" }).click();
+  await expect(viewer).toBeVisible();
+  await viewer.getByRole("button", { name: "View product image 2" }).click();
+  await expect(viewer).toBeVisible();
+  await viewer.getByRole("button", { name: "Zoom in" }).click();
+  await expect(viewer).toBeVisible();
+
+  await viewer.locator(".product-viewer__canvas").click({ position: { x: 2, y: 2 } });
+  await expectClosed();
+
+  await openViewer();
+  await viewer.getByRole("button", { name: "Close image viewer" }).click();
+  await expectClosed();
+
+  await openViewer();
+  await page.keyboard.press("Escape");
+  await expectClosed();
+});
+
 test("100% is the independently fitted baseline for every image size", async ({ page }) => {
   await page.goto("/product/viewer-fit-product", { waitUntil: "networkidle" });
   await page.locator(".product-viewer-trigger").click();

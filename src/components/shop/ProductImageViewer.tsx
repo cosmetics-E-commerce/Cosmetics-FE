@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type MouseEvent as ReactMouseEvent,
   type PointerEvent as ReactPointerEvent,
   type WheelEvent as ReactWheelEvent,
 } from "react";
@@ -58,6 +59,7 @@ export function ProductImageViewer({
   const dragRef = useRef<
     { pointerId: number; startX: number; startY: number; x: number; y: number } | undefined
   >(undefined);
+  const suppressBackdropClickRef = useRef(false);
   const panRef = useRef({ x: 0, y: 0 });
   const image = images[index] ?? images[0];
   const hasNavigation = images.length > 1;
@@ -75,6 +77,20 @@ export function ProductImageViewer({
     applyPan(0, 0);
     dragRef.current = undefined;
   }, [applyPan]);
+
+  const dismissFromBackdrop = useCallback(
+    (event: ReactMouseEvent<HTMLElement>) => {
+      if (suppressBackdropClickRef.current) {
+        suppressBackdropClickRef.current = false;
+        event.stopPropagation();
+        return;
+      }
+      if (event.target !== event.currentTarget) return;
+      setOpen(false);
+      resetZoom();
+    },
+    [resetZoom],
+  );
 
   const recalculateFit = useCallback(() => {
     if (!image?.id) return null;
@@ -159,6 +175,7 @@ export function ProductImageViewer({
     const bounds = getPanBounds(activeFittedSize, zoom);
     if (bounds.x === 0 && bounds.y === 0) return;
     event.currentTarget.setPointerCapture(event.pointerId);
+    suppressBackdropClickRef.current = false;
     dragRef.current = {
       pointerId: event.pointerId,
       startX: event.clientX,
@@ -172,6 +189,9 @@ export function ProductImageViewer({
     const drag = dragRef.current;
     const stage = stageRef.current;
     if (!drag || drag.pointerId !== event.pointerId || !stage) return;
+    if (Math.abs(event.clientX - drag.startX) + Math.abs(event.clientY - drag.startY) > 4) {
+      suppressBackdropClickRef.current = true;
+    }
     const bounds = getPanBounds(activeFittedSize, zoom);
     applyPan(
       clamp(drag.x + event.clientX - drag.startX, -bounds.x, bounds.x),
@@ -235,13 +255,14 @@ export function ProductImageViewer({
         showCloseButton={false}
         overlayClassName="product-viewer__overlay"
         className="product-viewer"
+        onClick={dismissFromBackdrop}
       >
         <DialogTitle className="sr-only">{copy.title}</DialogTitle>
         <DialogClose className="product-viewer__close" aria-label={copy.close}>
           <X aria-hidden="true" />
         </DialogClose>
 
-        <div className="product-viewer__canvas">
+        <div className="product-viewer__canvas" onClick={dismissFromBackdrop}>
           <div
             ref={stageRef}
             className="product-viewer__stage"
@@ -256,7 +277,10 @@ export function ProductImageViewer({
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={stopDragging}
-            onPointerCancel={stopDragging}
+            onPointerCancel={(event) => {
+              stopDragging(event);
+              suppressBackdropClickRef.current = false;
+            }}
             onLostPointerCapture={() => {
               dragRef.current = undefined;
             }}
@@ -264,6 +288,7 @@ export function ProductImageViewer({
               if (activeFittedSize) setClampedZoom(zoom > MIN_ZOOM ? MIN_ZOOM : 2.5);
             }}
             onWheel={handleWheel}
+            onClick={dismissFromBackdrop}
           >
             <div className="product-viewer__media">
               <img
@@ -310,7 +335,7 @@ export function ProductImageViewer({
           ) : null}
         </div>
 
-        <div className="product-viewer__chrome">
+        <div className="product-viewer__chrome" onClick={dismissFromBackdrop}>
           {hasNavigation ? (
             <div className="product-viewer__footer">
               <span aria-live="polite">

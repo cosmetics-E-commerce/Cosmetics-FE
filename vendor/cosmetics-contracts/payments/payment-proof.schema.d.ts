@@ -4,7 +4,7 @@ export type ManualPaymentMethod = z.infer<typeof manualPaymentMethodSchema>;
 export declare const createPaymentSchema: z.ZodObject<{
     orderId: z.ZodString;
     method: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY"]>;
-}, "strip", z.ZodTypeAny, {
+}, "strict", z.ZodTypeAny, {
     orderId: string;
     method: "VODAFONE_CASH" | "INSTAPAY";
 }, {
