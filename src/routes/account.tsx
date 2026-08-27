@@ -732,6 +732,7 @@ function Account() {
                 </div>
                 <div className="account-address-form__fields">
                   <AddressForm
+                    locale={locale}
                     initialName={name}
                     initialPhone={profile.data?.phone ?? user.phone ?? ""}
                     pending={addressMutation.isPending}

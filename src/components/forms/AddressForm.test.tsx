@@ -63,25 +63,22 @@ describe("AddressForm", () => {
 
     const governorate = await screen.findByRole("combobox", { name: /governorate/i });
     await waitFor(() => expect(governorate).not.toBeDisabled());
-    fireEvent.change(governorate, {
-      target: { value: "CAI" },
-    });
-    await waitFor(() => expect(governorate).toHaveValue("CAI"));
+    fireEvent.click(governorate);
+    fireEvent.click(await screen.findByText("Cairo"));
+    await waitFor(() => expect(governorate).toHaveTextContent("Cairo"));
     await waitFor(() => expect(listShippingCitiesByGovernorate).toHaveBeenCalledWith("CAI"));
 
-    const city = await screen.findByRole("combobox", { name: /^city$/i });
+    const city = await screen.findByRole("combobox", { name: /city \/ markaz/i });
     await waitFor(() => expect(city).not.toBeDisabled());
-    fireEvent.change(city, {
-      target: { value: "bosta-cairo" },
-    });
-    await waitFor(() => expect(city).toHaveValue("bosta-cairo"));
+    fireEvent.click(city);
+    fireEvent.click(await screen.findByText("Nasr City"));
+    await waitFor(() => expect(city).toHaveTextContent("Nasr City"));
     await waitFor(() => expect(listShippingAreas).toHaveBeenCalledWith("bosta-cairo"));
 
     const area = await screen.findByRole("combobox", { name: /district \/ area/i });
     await waitFor(() => expect(area).not.toBeDisabled());
-    fireEvent.change(area, {
-      target: { value: "bosta-nasr-district-1" },
-    });
+    fireEvent.click(area);
+    fireEvent.click(await screen.findByText("Abbas El Akkad"));
     fireEvent.change(screen.getByLabelText(/^street/i), {
       target: { value: "Maher Badawy" },
     });
@@ -102,5 +99,33 @@ describe("AddressForm", () => {
         bostaZoneId: "bosta-nasr-district-1",
       }),
     );
+  });
+
+  it("searches bilingual areas and clears dependent selections", async () => {
+    renderAddressForm({ locale: "ar" });
+
+    const governorate = await screen.findByRole("combobox", { name: /المحافظة/i });
+    await waitFor(() => expect(governorate).not.toBeDisabled());
+    fireEvent.click(governorate);
+    fireEvent.click(await screen.findByText("القاهرة"));
+
+    const city = await screen.findByRole("combobox", { name: /المدينة/i });
+    await waitFor(() => expect(city).not.toBeDisabled());
+    fireEvent.click(city);
+    fireEvent.click(await screen.findByText("مدينة نصر"));
+
+    const area = await screen.findByRole("combobox", { name: /المنطقة/i });
+    await waitFor(() => expect(area).not.toBeDisabled());
+    fireEvent.click(area);
+    fireEvent.change(screen.getByPlaceholderText(/ابحث عن المنطقة/i), {
+      target: { value: "عباس" },
+    });
+    expect(await screen.findByText("عباس العقاد")).toBeVisible();
+    fireEvent.click(screen.getByText("عباس العقاد"));
+
+    fireEvent.click(governorate);
+    fireEvent.click(await screen.findByText("القاهرة"));
+    expect(city).toHaveTextContent("اختر المدينة");
+    expect(area).toBeDisabled();
   });
 });

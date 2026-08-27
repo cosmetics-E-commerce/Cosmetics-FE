@@ -16561,6 +16561,10 @@ body:has(.sf-contact-page) .store-header[data-scrolled] .store-header__bar {
   animation-duration: 130ms;
 }
 
+.location-combobox-dialog {
+  --dialog-max-width: 36rem;
+}
+
 @keyframes viewport-dialog-open {
   from {
     opacity: 0;
