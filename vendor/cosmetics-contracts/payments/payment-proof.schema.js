@@ -9,7 +9,7 @@ exports.manualPaymentMethodSchema = zod_1.z.enum(["VODAFONE_CASH", "INSTAPAY"]);
 exports.createPaymentSchema = zod_1.z.object({
     orderId: primitives_1.uuidSchema,
     method: exports.manualPaymentMethodSchema,
-});
+}).strict();
 /**
  * Customer-submitted proof of a Vodafone Cash / InstaPay transfer.
  * The API receives metadata for an uploaded image; binaries stay behind the

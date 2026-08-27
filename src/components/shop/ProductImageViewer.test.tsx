@@ -78,6 +78,35 @@ describe("ProductImageViewer", () => {
     expect(screen.queryByRole("button", { name: "Next product image" })).not.toBeInTheDocument();
     expect(screen.queryByText("1 / 1")).not.toBeInTheDocument();
   });
+
+  it("dismisses from the empty backdrop without closing for image or control clicks", async () => {
+    render(<ViewerHarness />);
+
+    const trigger = screen.getByRole("button", { name: /Open Product front/i });
+    fireEvent.click(trigger);
+    const dialog = screen.getByRole("dialog");
+    const activeImage = screen.getByRole("img", { name: "Product front" });
+
+    fireEvent.click(activeImage);
+    expect(dialog).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Next product image" }));
+    expect(dialog).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "View product image 1" }));
+    expect(dialog).toBeInTheDocument();
+
+    fireEvent.click(dialog.querySelector(".product-viewer__stage")!);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    await waitFor(() => expect(trigger).toHaveFocus());
+
+    fireEvent.click(trigger);
+    fireEvent.click(screen.getByRole("button", { name: "Close image viewer" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    fireEvent.click(trigger);
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
 });
 
 function fitActiveImage(

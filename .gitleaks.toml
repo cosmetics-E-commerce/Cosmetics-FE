@@ -1,0 +1,16 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Reviewed localStorage attribution key reported by the generic key heuristic"
+commits = ["fe6fadf757380a213cc9ffc9f57993f870cffa41"]
+
+[[allowlists]]
+description = "Campaign attribution localStorage key name is an identifier, not a credential"
+condition = "AND"
+regexTarget = "match"
+regexes = ['''ATTRIBUTION_KEY\s*=''']
+paths = [
+  '''^src/components/campaign/campaign-storage\.ts$''',
+  '''^\.output/server/_ssr/router-[^/]+\.mjs$''',
+]

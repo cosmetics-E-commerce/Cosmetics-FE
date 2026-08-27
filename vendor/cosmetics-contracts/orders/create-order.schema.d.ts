@@ -2,7 +2,7 @@ import { z } from "zod";
 export declare const orderItemInputSchema: z.ZodObject<{
     variantId: z.ZodString;
     quantity: z.ZodNumber;
-}, "strip", z.ZodTypeAny, {
+}, "strict", z.ZodTypeAny, {
     variantId: string;
     quantity: number;
 }, {
@@ -19,7 +19,7 @@ export declare const createOrderSchema: z.ZodObject<{
     items: z.ZodArray<z.ZodObject<{
         variantId: z.ZodString;
         quantity: z.ZodNumber;
-    }, "strip", z.ZodTypeAny, {
+    }, "strict", z.ZodTypeAny, {
         variantId: string;
         quantity: number;
     }, {
@@ -31,7 +31,7 @@ export declare const createOrderSchema: z.ZodObject<{
     couponCode: z.ZodOptional<z.ZodString>;
     giftVariantIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     notes: z.ZodOptional<z.ZodString>;
-}, "strip", z.ZodTypeAny, {
+}, "strict", z.ZodTypeAny, {
     paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
     items: {
         variantId: string;
@@ -57,7 +57,7 @@ export declare const checkoutOrderSchema: z.ZodObject<Omit<{
     items: z.ZodArray<z.ZodObject<{
         variantId: z.ZodString;
         quantity: z.ZodNumber;
-    }, "strip", z.ZodTypeAny, {
+    }, "strict", z.ZodTypeAny, {
         variantId: string;
         quantity: number;
     }, {
@@ -69,7 +69,7 @@ export declare const checkoutOrderSchema: z.ZodObject<Omit<{
     couponCode: z.ZodOptional<z.ZodString>;
     giftVariantIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     notes: z.ZodOptional<z.ZodString>;
-}, "items">, "strip", z.ZodTypeAny, {
+}, "items">, "strict", z.ZodTypeAny, {
     paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
     shippingAddressId: string;
     couponCode?: string | undefined;

@@ -29,6 +29,10 @@ test("product media keeps mixed aspect-ratio gallery images in one stable frame"
   expect(initial.primary).toEqual(initial.mediaLayer);
   await expect(primary).toHaveCSS("position", "absolute");
   await expect(secondary).toHaveCSS("position", "absolute");
+  await expect(primary).toHaveCSS("transition-duration", "0.8s");
+  await expect(secondary).toHaveCSS("transition-duration", "0.8s");
+  await expect(primary).toHaveCSS("transition-timing-function", "cubic-bezier(0.4, 0, 0.2, 1)");
+  await expect(secondary).toHaveCSS("transition-timing-function", "cubic-bezier(0.4, 0, 0.2, 1)");
   await expect(primaryImage).toHaveCSS("object-fit", "cover");
   await expect(secondaryImage).toHaveCSS("object-fit", "cover");
   await expect(card.locator(".quick-add__divider")).toHaveCount(0);

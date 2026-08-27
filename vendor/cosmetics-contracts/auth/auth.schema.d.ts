@@ -183,7 +183,7 @@ export type CreateAdminUserInput = z.infer<typeof createAdminUserSchema>;
 export declare const loginSchema: z.ZodObject<{
     identifier: z.ZodString;
     password: z.ZodString;
-}, "strip", z.ZodTypeAny, {
+}, "strict", z.ZodTypeAny, {
     password: string;
     identifier: string;
 }, {
