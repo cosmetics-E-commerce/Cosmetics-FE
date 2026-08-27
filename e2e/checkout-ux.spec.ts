@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
 
 const addressId = "22222222-2222-4222-8222-222222222222";
-const governorateId = "gov-cairo";
-const cityId = "city-nasr-city";
-const areaId = "area-district-7";
+const governorateId = "EG01";
+const cityId = "EG0126";
+const areaId = "EG012601";
 const cartItem = {
   variantId: "33333333-3333-4333-8333-333333333333",
   productId: "44444444-4444-4444-8444-444444444444",
@@ -92,7 +92,7 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
     }
     if (path.endsWith("/shipping/locations/areas")) {
       expect(new URL(request.url()).searchParams.get("city")).toBe(cityId);
-      return fulfill([{ id: areaId, name: "District 7", nameAr: "الحي السابع" }]);
+      return fulfill([{ id: areaId, name: "El-Tawfiq", nameAr: "التوفيق" }]);
     }
     if (path.endsWith("/shipping/rates")) {
       expect(new URL(request.url()).searchParams.get("addressId")).toBe(addressId);
@@ -119,7 +119,7 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
         country: "EG",
         governorate: "Cairo",
         city: "Nasr City",
-        area: "District 7",
+        area: "El-Tawfiq",
         street: "Mostafa El Nahas",
         building: "12",
         floor: null,
@@ -210,9 +210,16 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
   await page.getByRole("button", { name: "Continue to Delivery" }).click();
   await expect(page.getByRole("heading", { name: "Delivery", exact: true })).toBeVisible();
   await expect(page.getByLabel("Receiver name")).toHaveValue("Sara Ali");
-  await page.getByLabel("Governorate").selectOption(governorateId);
-  await page.getByLabel("City").selectOption(cityId);
-  await page.getByLabel("District / area").selectOption(areaId);
+  await page.getByRole("combobox", { name: "Governorate" }).click();
+  await page.getByText("Cairo", { exact: true }).click();
+  const city = page.getByRole("combobox", { name: "City / Markaz" });
+  await expect(city).toBeEnabled();
+  await city.click();
+  await page.getByText("Nasr City", { exact: true }).click();
+  const area = page.getByRole("combobox", { name: "District / area" });
+  await expect(area).toBeEnabled();
+  await area.click();
+  await page.getByText("El-Tawfiq", { exact: true }).click();
   await page.getByLabel("Street").fill("Mostafa El Nahas");
   await page.getByLabel("Building").fill("12");
   await page.getByRole("button", { name: "Save and use this address" }).click();

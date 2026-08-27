@@ -463,6 +463,7 @@ function Checkout() {
                         <div className={addresses.data?.length ? "sf-checkout-inline-form" : ""}>
                           <h3>Delivery details</h3>
                           <AddressForm
+                            locale={locale}
                             initialName={`${user.firstName} ${user.lastName}`.trim()}
                             initialPhone={user.phone ?? ""}
                             pending={addressMutation.isPending}

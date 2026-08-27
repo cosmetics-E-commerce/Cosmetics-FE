@@ -2,14 +2,12 @@ import { useRef, useState, type FormEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
+import { LocationCombobox } from "@/components/forms/LocationCombobox";
 import {
   listShippingAreas,
   listShippingCitiesByGovernorate,
   listShippingGovernorates,
   type CreateAddressInput,
-  type ShippingArea,
-  type ShippingCity,
-  type ShippingGovernorate,
 } from "@/lib/api";
 import { normalizeEgyptPhone } from "@/lib/forms";
 import { cn } from "@/lib/utils";
@@ -23,26 +21,14 @@ type AddressField =
   | "street"
   | "building";
 
-const requiredFields: Array<{ name: AddressField; minimum: number; message: string }> = [
-  { name: "receiverName", minimum: 2, message: "Enter the receiver's full name." },
-  {
-    name: "bostaGovernorateId",
-    minimum: 1,
-    message: "Choose a supported delivery governorate.",
-  },
-  { name: "bostaCityId", minimum: 1, message: "Choose a city from the delivery list." },
-  { name: "bostaZoneId", minimum: 1, message: "Choose an area from the delivery list." },
-  { name: "street", minimum: 3, message: "Enter a street name." },
-  { name: "building", minimum: 1, message: "Enter a building number or name." },
-];
-
 export function AddressForm({
   onSubmit,
   pending = false,
   initialName = "",
   initialPhone = "",
-  submitLabel = "Save and use this address",
+  submitLabel,
   onCancel,
+  locale = "en",
 }: {
   onSubmit: (address: CreateAddressInput) => Promise<void> | void;
   pending?: boolean;
@@ -50,7 +36,17 @@ export function AddressForm({
   initialPhone?: string;
   submitLabel?: string;
   onCancel?: () => void;
+  locale?: "ar" | "en";
 }) {
+  const copy = ADDRESS_COPY[locale];
+  const requiredFields: Array<{ name: AddressField; minimum: number; message: string }> = [
+    { name: "receiverName", minimum: 2, message: copy.receiverRequired },
+    { name: "bostaGovernorateId", minimum: 1, message: copy.governorateRequired },
+    { name: "bostaCityId", minimum: 1, message: copy.cityRequired },
+    { name: "bostaZoneId", minimum: 1, message: copy.areaRequired },
+    { name: "street", minimum: 3, message: copy.streetRequired },
+    { name: "building", minimum: 1, message: copy.buildingRequired },
+  ];
   const formRef = useRef<HTMLFormElement>(null);
   const submitting = useRef(false);
   const [errors, setErrors] = useState<Partial<Record<AddressField, string>>>({});
@@ -94,23 +90,21 @@ export function AddressForm({
     const selectedArea = areas.data?.find((item) => item.id === selectedAreaId);
 
     if (!selectedGovernorate) {
-      nextErrors.bostaGovernorateId = "Choose a supported delivery governorate.";
+      nextErrors.bostaGovernorateId = copy.governorateRequired;
     }
-    if (!selectedCity) nextErrors.bostaCityId = "Choose a city from the delivery list.";
-    if (!selectedArea) nextErrors.bostaZoneId = "Choose an area from the delivery list.";
+    if (!selectedCity) nextErrors.bostaCityId = copy.cityRequired;
+    if (!selectedArea) nextErrors.bostaZoneId = copy.areaRequired;
 
     const phone = normalizeEgyptPhone(value("phone"));
     if (!/^01[0125][0-9]{8}$/.test(phone)) {
-      nextErrors.phone = "Enter an 11-digit Egyptian mobile number, such as 01012345678.";
+      nextErrors.phone = copy.phoneRequired;
     }
 
     setErrors(nextErrors);
     const firstInvalid = Object.keys(nextErrors)[0];
     if (firstInvalid) {
       requestAnimationFrame(() =>
-        formRef.current
-          ?.querySelector<HTMLInputElement | HTMLSelectElement>(`[name="${firstInvalid}"]`)
-          ?.focus(),
+        formRef.current?.querySelector<HTMLElement>(`#${firstInvalid}`)?.focus(),
       );
       return;
     }
@@ -181,19 +175,22 @@ export function AddressForm({
       onSubmit={submit}
       className="grid min-w-0 grid-cols-1 gap-5 sm:grid-cols-2"
     >
-      {field("receiverName", "Receiver name", { autoComplete: "name" })}
-      {field("phone", "Egyptian mobile number", { autoComplete: "tel", type: "tel" })}
-      <LocationSelect
+      {field("receiverName", copy.receiverName, { autoComplete: "name" })}
+      {field("phone", copy.phone, { autoComplete: "tel", type: "tel" })}
+      <LocationCombobox
         id="bostaGovernorateId"
-        label="Governorate"
+        label={copy.governorate}
         value={selectedGovernorateId}
-        placeholder="Select governorate"
-        loadingLabel="Loading governorates..."
+        placeholder={copy.selectGovernorate}
+        searchPlaceholder={copy.searchGovernorate}
+        emptyLabel={copy.noGovernorates}
+        loadingLabel={copy.loadingGovernorates}
         loading={governorates.isLoading}
         error={errors.bostaGovernorateId}
         options={governorates.data ?? []}
+        locale={locale}
         errorState={governorates.isError}
-        errorMessage="Unable to load delivery governorates."
+        errorMessage={copy.governoratesError}
         retry={() => void governorates.refetch()}
         onChange={(id) => {
           setSelectedGovernorateId(id);
@@ -204,18 +201,21 @@ export function AddressForm({
           );
         }}
       />
-      <LocationSelect
+      <LocationCombobox
         id="bostaCityId"
-        label="City"
+        label={copy.city}
         value={selectedCityId}
-        placeholder={selectedGovernorateId ? "Select city" : "Select governorate first"}
-        loadingLabel="Loading cities..."
+        placeholder={selectedGovernorateId ? copy.selectCity : copy.selectGovernorateFirst}
+        searchPlaceholder={copy.searchCity}
+        emptyLabel={copy.noCities}
+        loadingLabel={copy.loadingCities}
         loading={cities.isLoading}
         disabled={!selectedGovernorateId || cities.isLoading}
         error={errors.bostaCityId}
         options={cities.data ?? []}
+        locale={locale}
         errorState={cities.isError}
-        errorMessage="Unable to load delivery cities."
+        errorMessage={copy.citiesError}
         retry={() => void cities.refetch()}
         onChange={(id) => {
           setSelectedCityId(id);
@@ -223,18 +223,21 @@ export function AddressForm({
           setErrors((current) => withoutErrors(current, ["bostaCityId", "bostaZoneId"]));
         }}
       />
-      <LocationSelect
+      <LocationCombobox
         id="bostaZoneId"
-        label="District / area"
+        label={copy.area}
         value={selectedAreaId}
-        placeholder={selectedCityId ? "Select district" : "Select city first"}
-        loadingLabel="Loading districts..."
+        placeholder={selectedCityId ? copy.selectArea : copy.selectCityFirst}
+        searchPlaceholder={copy.searchArea}
+        emptyLabel={copy.noAreas}
+        loadingLabel={copy.loadingAreas}
         loading={areas.isLoading}
         disabled={!selectedCityId || areas.isLoading}
         error={errors.bostaZoneId}
         options={areas.data ?? []}
+        locale={locale}
         errorState={areas.isError}
-        errorMessage="Unable to load delivery districts."
+        errorMessage={copy.areasError}
         retry={() => void areas.refetch()}
         onChange={(id) => {
           setSelectedAreaId(id);
@@ -243,10 +246,10 @@ export function AddressForm({
           }
         }}
       />
-      {field("street", "Street", { autoComplete: "street-address" })}
-      {field("building", "Building")}
+      {field("street", copy.street, { autoComplete: "street-address" })}
+      {field("building", copy.building)}
       <label className="label-xs min-w-0 text-taupe">
-        Floor <span className="normal-case tracking-normal">(optional)</span>
+        {copy.floor} <span className="normal-case tracking-normal">{copy.optional}</span>
         <input
           name="floor"
           autoComplete="address-line2"
@@ -254,7 +257,7 @@ export function AddressForm({
         />
       </label>
       <label className="label-xs min-w-0 text-taupe">
-        Apartment <span className="normal-case tracking-normal">(optional)</span>
+        {copy.apartment} <span className="normal-case tracking-normal">{copy.optional}</span>
         <input
           name="apartment"
           autoComplete="address-line3"
@@ -262,18 +265,18 @@ export function AddressForm({
         />
       </label>
       <label className="label-xs min-w-0 text-taupe">
-        Nearby landmark <span className="normal-case tracking-normal">(optional)</span>
+        {copy.landmark} <span className="normal-case tracking-normal">{copy.optional}</span>
         <input
           name="landmark"
           className="mt-2 h-12 w-full min-w-0 max-w-full border border-input bg-warm-white px-4 text-sm normal-case tracking-normal"
         />
       </label>
       <label className="label-xs min-w-0 text-taupe sm:col-span-2">
-        Delivery instructions <span className="normal-case tracking-normal">(optional)</span>
+        {copy.instructions} <span className="normal-case tracking-normal">{copy.optional}</span>
         <textarea
           name="deliveryInstructions"
           maxLength={1000}
-          placeholder="For example: call on arrival or leave with reception"
+          placeholder={copy.instructionsPlaceholder}
           className="mt-2 min-h-24 w-full min-w-0 max-w-full border border-input bg-warm-white p-4 text-sm normal-case tracking-normal"
         />
       </label>
@@ -285,7 +288,7 @@ export function AddressForm({
           loading={pending}
           className="h-auto min-h-12 w-full max-w-full whitespace-normal px-5 py-3 text-center leading-snug sm:w-auto"
         >
-          {submitLabel}
+          {submitLabel ?? copy.submit}
         </Button>
         {onCancel && (
           <Button
@@ -296,81 +299,11 @@ export function AddressForm({
             disabled={pending}
             className="w-full sm:w-auto"
           >
-            Cancel
+            {copy.cancel}
           </Button>
         )}
       </div>
     </form>
-  );
-}
-
-function LocationSelect({
-  id,
-  label,
-  value,
-  placeholder,
-  loadingLabel,
-  loading,
-  disabled = false,
-  error,
-  options,
-  errorState,
-  errorMessage,
-  retry,
-  onChange,
-}: {
-  id: Extract<AddressField, "bostaGovernorateId" | "bostaCityId" | "bostaZoneId">;
-  label: string;
-  value: string;
-  placeholder: string;
-  loadingLabel: string;
-  loading: boolean;
-  disabled?: boolean | undefined;
-  error?: string | undefined;
-  options: Array<ShippingGovernorate | ShippingCity | ShippingArea>;
-  errorState: boolean;
-  errorMessage: string;
-  retry: () => void;
-  onChange: (value: string) => void;
-}) {
-  return (
-    <div className="min-w-0">
-      <label htmlFor={id} className="label-xs text-taupe">
-        {label}
-      </label>
-      <select
-        id={id}
-        name={id}
-        required
-        value={value}
-        disabled={disabled || loading || errorState}
-        aria-invalid={Boolean(error)}
-        aria-describedby={error ? `${id}-error` : undefined}
-        onChange={(event) => onChange(event.target.value)}
-        className="mt-2 h-12 w-full min-w-0 max-w-full border border-input bg-warm-white px-4 text-sm normal-case tracking-normal aria-invalid:border-destructive aria-invalid:shadow-[0_0_0_1px_color-mix(in_oklab,var(--color-destructive)_35%,transparent)]"
-      >
-        <option value="">{loading ? loadingLabel : placeholder}</option>
-        {options.map((option) => (
-          <option key={option.id} value={option.id}>
-            {option.name}
-            {option.nameAr ? ` / ${option.nameAr}` : ""}
-          </option>
-        ))}
-      </select>
-      {error && <FieldError id={`${id}-error`}>{error}</FieldError>}
-      {errorState && (
-        <div className="mt-2 text-xs normal-case tracking-normal text-destructive">
-          {errorMessage}
-          <button
-            type="button"
-            onClick={retry}
-            className="ms-2 text-gold underline underline-offset-4"
-          >
-            Try again
-          </button>
-        </div>
-      )}
-    </div>
   );
 }
 
@@ -381,6 +314,91 @@ function FieldError({ id, children }: { id: string; children: string }) {
     </span>
   );
 }
+
+const ADDRESS_COPY = {
+  en: {
+    receiverName: "Receiver name",
+    phone: "Egyptian mobile number",
+    governorate: "Governorate",
+    city: "City / Markaz",
+    area: "District / area",
+    street: "Street",
+    building: "Building",
+    floor: "Floor",
+    apartment: "Apartment",
+    landmark: "Nearby landmark",
+    instructions: "Delivery instructions",
+    optional: "(optional)",
+    cancel: "Cancel",
+    submit: "Save and use this address",
+    selectGovernorate: "Select governorate",
+    selectCity: "Select city / markaz",
+    selectArea: "Select district / area",
+    selectGovernorateFirst: "Select governorate first",
+    selectCityFirst: "Select city first",
+    searchGovernorate: "Search governorates in Arabic or English",
+    searchCity: "Search cities and markaz in Arabic or English",
+    searchArea: "Search districts and areas in Arabic or English",
+    noGovernorates: "No governorate found.",
+    noCities: "No city or markaz found.",
+    noAreas: "No district or area found.",
+    loadingGovernorates: "Loading governorates...",
+    loadingCities: "Loading cities...",
+    loadingAreas: "Loading districts...",
+    governoratesError: "Unable to load delivery governorates.",
+    citiesError: "Unable to load delivery cities.",
+    areasError: "Unable to load delivery districts.",
+    receiverRequired: "Enter the receiver's full name.",
+    governorateRequired: "Choose a supported delivery governorate.",
+    cityRequired: "Choose a city or markaz from the delivery list.",
+    areaRequired: "Choose a district or area from the delivery list.",
+    streetRequired: "Enter a street name.",
+    buildingRequired: "Enter a building number or name.",
+    phoneRequired: "Enter an 11-digit Egyptian mobile number, such as 01012345678.",
+    instructionsPlaceholder: "For example: call on arrival or leave with reception",
+  },
+  ar: {
+    receiverName: "اسم المستلم",
+    phone: "رقم الموبايل المصري",
+    governorate: "المحافظة",
+    city: "المدينة / المركز",
+    area: "المنطقة / الحي",
+    street: "الشارع",
+    building: "المبنى",
+    floor: "الدور",
+    apartment: "الشقة",
+    landmark: "علامة مميزة قريبة",
+    instructions: "تعليمات التوصيل",
+    optional: "(اختياري)",
+    cancel: "إلغاء",
+    submit: "حفظ واستخدام هذا العنوان",
+    selectGovernorate: "اختر المحافظة",
+    selectCity: "اختر المدينة / المركز",
+    selectArea: "اختر المنطقة / الحي",
+    selectGovernorateFirst: "اختر المحافظة أولاً",
+    selectCityFirst: "اختر المدينة أولاً",
+    searchGovernorate: "ابحث عن المحافظة بالعربية أو الإنجليزية",
+    searchCity: "ابحث عن المدينة أو المركز بالعربية أو الإنجليزية",
+    searchArea: "ابحث عن المنطقة أو الحي بالعربية أو الإنجليزية",
+    noGovernorates: "لم يتم العثور على محافظة.",
+    noCities: "لم يتم العثور على مدينة أو مركز.",
+    noAreas: "لم يتم العثور على منطقة أو حي.",
+    loadingGovernorates: "جارٍ تحميل المحافظات...",
+    loadingCities: "جارٍ تحميل المدن...",
+    loadingAreas: "جارٍ تحميل المناطق...",
+    governoratesError: "تعذر تحميل محافظات التوصيل.",
+    citiesError: "تعذر تحميل مدن التوصيل.",
+    areasError: "تعذر تحميل مناطق التوصيل.",
+    receiverRequired: "أدخل الاسم الكامل للمستلم.",
+    governorateRequired: "اختر محافظة متاحة للتوصيل.",
+    cityRequired: "اختر مدينة أو مركزاً من القائمة.",
+    areaRequired: "اختر منطقة أو حياً من القائمة.",
+    streetRequired: "أدخل اسم الشارع.",
+    buildingRequired: "أدخل رقم أو اسم المبنى.",
+    phoneRequired: "أدخل رقم موبايل مصرياً صحيحاً من 11 رقماً، مثل 01012345678.",
+    instructionsPlaceholder: "مثال: الاتصال عند الوصول أو التسليم إلى الاستقبال",
+  },
+} as const;
 
 function withoutError(current: Partial<Record<AddressField, string>>, field: AddressField) {
   const next = { ...current };

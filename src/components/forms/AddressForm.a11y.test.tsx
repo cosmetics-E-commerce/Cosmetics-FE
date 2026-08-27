@@ -38,7 +38,7 @@ describe("AddressForm accessibility", () => {
       { id: "bosta-cairo", name: "Nasr City", nameAr: "مدينة نصر" },
     ]);
     vi.mocked(listShippingAreas).mockResolvedValue([
-      { id: "bosta-zone-1", name: "Abbas El Akkad", nameAr: "عباس العقاد" },
+      { id: "EG012604", name: "Al-Nadi Al-Ahli", nameAr: "النادي الأهلي" },
     ]);
   });
 
