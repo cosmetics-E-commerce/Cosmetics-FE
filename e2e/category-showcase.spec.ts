@@ -32,7 +32,8 @@ test.describe("homepage category showcase", () => {
     const cards = showcase.locator(".sf-category-showcase__card");
     await expect(showcase).toBeVisible();
     await expect(showcase).toHaveAttribute("data-enhanced", "true");
-    await expect(showcase.locator(".sf-category-showcase__slide")).toHaveCount(7);
+    await expect(showcase.locator(".sf-category-showcase__slide")).toHaveCount(6);
+    await expect(showcase.getByText("Cleansers", { exact: true })).toHaveCount(0);
     await expect(
       cards.filter({ has: page.getByText("Fragrance", { exact: true }) }),
     ).toHaveAttribute("data-active", "true");

@@ -57,7 +57,11 @@ function initialCategoryIndex(categoryCount: number) {
 export function CategoryShowcase({ initialCategories }: CategoryShowcaseProps) {
   const { locale } = useStore();
   const { reducedMotion } = useMotionPreferences();
-  const categories = useCategories(initialCategories).data ?? [];
+  const categoryData = useCategories(initialCategories).data;
+  const categories = useMemo(
+    () => (categoryData ?? []).filter((category) => category.parentId == null),
+    [categoryData],
+  );
   const rtl = locale === "ar";
   const startIndex = initialCategoryIndex(categories.length);
   const [activeIndex, setActiveIndex] = useState(startIndex);

@@ -3,6 +3,7 @@ import type { SVGProps } from "react";
 import { RotateCcw, ShieldCheck, Truck } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { Reveal } from "@/components/motion/Primitives";
+import { Logo } from "@/components/brand/Logo";
 import {
   Accordion,
   AccordionContent,
@@ -142,21 +143,9 @@ export function Footer() {
         <div className="sf-shell">
           <Reveal stagger staggerMs={55} distance={18} className="site-footer__main">
             <div className="site-footer__brand-column">
-              <Link to="/" className="site-footer__brand" aria-label="BIOREZA home">
-                <img
-                  src="/bioreza-logo.png"
-                  alt=""
-                  aria-hidden="true"
-                  width={64}
-                  height={64}
-                  loading="lazy"
-                  decoding="async"
-                />
-                <span>
-                  BIOREZA
-                  <small>COSMETICS</small>
-                </span>
-              </Link>
+              <div className="site-footer__brand">
+                <Logo size="lg" variant="soft-gold" />
+              </div>
               <p className="site-footer__tagline">
                 {ar
                   ? "منتجات عناية وجمال مختارة بعناية، بتجربة شراء هادئة وآمنة."

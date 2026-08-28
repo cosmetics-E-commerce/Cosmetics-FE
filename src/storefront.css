@@ -10,7 +10,7 @@
   --sf-clay: var(--color-primary-hover);
   --sf-gold-dark: var(--sf-clay);
   --sf-gold: var(--color-accent);
-  --sf-gold-fill: #c7a773;
+  --sf-gold-fill: var(--brand-gold);
   --sf-gold-soft: var(--color-accent-soft);
   --sf-taupe: var(--color-text-secondary);
   --sf-ash: var(--sf-taupe);
@@ -23,7 +23,7 @@
   --gold: var(--sf-gold);
   --gold-fill: var(--sf-gold-fill);
   --gold-soft: var(--sf-gold-soft);
-  --greige: #b8b0a5;
+  --greige: var(--brand-border-strong);
   --taupe: var(--sf-taupe);
   --stone: var(--color-surface-muted);
   --ink: var(--sf-carbon);
@@ -33,15 +33,15 @@
   --input: var(--color-border);
   --ring: var(--sf-gold);
 
-  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-serif: "Playfair Display", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --font-display: var(--font-serif);
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-arabic: "Noto Sans Arabic", ui-sans-serif, system-ui, sans-serif;
-  --font-arabic-display:
-    "IBM Plex Sans Arabic", "Noto Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+  --font-arabic-display: "Noto Serif Arabic", "Noto Sans Arabic", serif;
 }
 
 body {
-  background: #050505;
+  background: var(--brand-primary-dark);
   color: var(--sf-carbon);
   font-family: var(--font-sans);
   font-weight: 450;
@@ -51,7 +51,7 @@ body {
 }
 
 .storefront-shell {
-  background: #050505;
+  background: var(--brand-primary-dark);
 }
 
 .storefront-main {
@@ -116,7 +116,7 @@ h4,
 }
 
 .sf-shell {
-  width: min(100% - 40px, 1560px);
+  width: min(100% - 40px, var(--container-storefront));
   margin-inline: auto;
 }
 
@@ -323,25 +323,16 @@ h4,
   background: linear-gradient(90deg, transparent 2%, #fff 18%, transparent 46%);
 }
 
-.store-header[data-transparent] .brand-logo,
-.store-header[data-transparent] .brand-logo__wordmark {
-  color: #fff;
+.store-header[data-transparent] .brand-logo[data-variant="auto"] .brand-logo__asset--dark {
+  opacity: 0;
 }
 
-.store-header[data-transparent] .brand-logo__descriptor {
-  color: rgba(255, 255, 255, 0.78);
-}
-
-.store-header[data-transparent] .brand-logo__mark {
-  background: transparent;
-  box-shadow: none;
-  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.16));
+.store-header[data-transparent] .brand-logo[data-variant="auto"] .brand-logo__asset--light {
+  opacity: 1;
 }
 
 .store-header .brand-logo {
-  --brand-mark-size: 2.65rem;
-  --brand-word-size: 1.16rem;
-  --brand-gap: 0.74rem;
+  --brand-lockup-width: clamp(9rem, 9vw, 10rem);
 }
 
 /* Header interaction contract ---------------------------------------------
@@ -3241,14 +3232,14 @@ body:has(.account-page) .header-nav-indicator {
 .header-account-dropdown a:focus-visible,
 .header-account-dropdown button:focus-visible {
   background: #f7f7f7;
-  color: #9b642d;
+  color: var(--brand-gold);
   padding-inline-start: 18px;
 }
 
 .header-account-dropdown svg {
   width: 16px;
   height: 16px;
-  color: #9b642d;
+  color: var(--brand-gold);
 }
 
 .account-page {
@@ -3418,7 +3409,7 @@ body:has(.account-page) .header-nav-indicator {
   bottom: 10px;
   height: 2px;
   border-radius: 999px;
-  background: #9b642d;
+  background: var(--brand-gold);
 }
 
 .account-panel {
@@ -3525,7 +3516,7 @@ body:has(.account-page) .header-nav-indicator {
   place-items: center;
   border-radius: 999px;
   background: #f7f7f7;
-  color: #9b642d;
+  color: var(--brand-gold);
 }
 
 .account-orders__actions > button {
@@ -3537,8 +3528,8 @@ body:has(.account-page) .header-nav-indicator {
 
 .account-orders__actions > button:hover,
 .account-orders__actions > .account-orders__pay-button:hover {
-  border-color: #9b642d;
-  background: #9b642d;
+  border-color: var(--brand-gold);
+  background: var(--brand-gold);
   color: #fff;
 }
 
@@ -3567,8 +3558,8 @@ body:has(.account-page) .header-nav-indicator {
 
 .account-orders__actions > .account-orders__track-button:hover,
 .account-orders__actions > .account-orders__track-button[aria-expanded="true"] {
-  border-color: #9b642d !important;
-  background: #9b642d !important;
+  border-color: var(--brand-gold) !important;
+  background: var(--brand-gold) !important;
   color: #fff !important;
   box-shadow:
     0 16px 32px rgba(155, 100, 45, 0.18),
@@ -3611,7 +3602,7 @@ body:has(.account-page) .header-nav-indicator {
 }
 
 .account-tracking__carrier span {
-  color: #9b642d;
+  color: var(--brand-gold);
   font-size: 0.66rem;
   font-weight: 800;
   letter-spacing: 0.14em;
@@ -3846,30 +3837,23 @@ body:has(.account-page) .header-nav-indicator {
   }
 }
 
-/* BIOREZA lockup — preserve the monogram, align its optical and type scales. */
+/* Official BIOREZA lockup. The artwork is never reconstructed with live type. */
 .brand-logo {
-  --brand-mark-size: 2.55rem;
-  --brand-word-size: 1.22rem;
-  --brand-gap: 0.64rem;
+  --brand-lockup-width: 10.75rem;
   display: inline-flex;
+  width: var(--brand-lockup-width);
   min-width: 0;
   align-items: center;
-  gap: var(--brand-gap);
-  color: var(--sf-carbon);
-  transition: color 180ms ease;
+  color: inherit;
+  transition: opacity var(--motion-ui) var(--ease-premium);
 }
 
-.brand-logo:hover .brand-logo__mark {
-  opacity: 0.82;
-  transform: scale(0.96);
-}
-
-.brand-logo:hover .brand-logo__type {
-  transform: translate3d(2px, 0, 0);
+.brand-logo:hover {
+  opacity: 0.78;
 }
 
 .brand-logo:active {
-  opacity: 0.68;
+  opacity: 0.6;
 }
 
 .brand-logo:focus-visible {
@@ -3879,59 +3863,50 @@ body:has(.account-page) .header-nav-indicator {
 }
 
 .brand-logo--sm {
-  --brand-mark-size: 2.28rem;
-  --brand-word-size: 1.08rem;
-  --brand-gap: 0.54rem;
+  --brand-lockup-width: 9.25rem;
 }
 
 .brand-logo--lg {
-  --brand-mark-size: 4rem;
-  --brand-word-size: 1.9rem;
-  --brand-gap: 0.88rem;
+  --brand-lockup-width: clamp(13rem, 16vw, 15rem);
 }
 
-.brand-logo__mark {
+.brand-logo__art {
+  position: relative;
   display: block;
-  width: var(--brand-mark-size);
-  height: var(--brand-mark-size);
-  flex: none;
+  width: 100%;
+  aspect-ratio: 976 / 241;
+  flex: 0 0 auto;
+}
+
+.brand-logo__asset {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
   background: transparent;
-  box-shadow: none;
   object-fit: contain;
   object-position: center;
-  filter: drop-shadow(0 8px 18px rgba(156, 106, 53, 0.12));
-  transition:
-    opacity 240ms var(--header-ease, var(--ease-premium)),
-    transform 360ms var(--header-ease, var(--ease-premium));
+  transition: opacity var(--motion-ui) var(--ease-premium);
 }
 
-.brand-logo__type {
-  display: grid;
-  min-width: 0;
-  justify-items: center;
-  gap: 0.34rem;
-  transition: transform 360ms var(--header-ease, var(--ease-premium));
+.brand-logo__asset--dark {
+  opacity: 1;
 }
 
-.brand-logo__wordmark {
-  color: var(--sf-carbon);
-  font-family: var(--font-serif);
-  font-size: var(--brand-word-size);
-  font-weight: 600;
-  letter-spacing: 0.155em;
-  line-height: 1;
-  text-indent: 0.17em;
+.brand-logo__asset--light,
+.brand-logo__asset--soft-gold {
+  opacity: 0;
 }
 
-.brand-logo__descriptor {
-  color: var(--sf-gold);
-  font-family: var(--font-sans);
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.205em;
-  line-height: 1;
-  text-indent: 0.22em;
-  text-transform: uppercase;
+.brand-logo[data-variant="light"] .brand-logo__asset--dark,
+.brand-logo[data-variant="soft-gold"] .brand-logo__asset--dark {
+  opacity: 0;
+}
+
+.brand-logo[data-variant="light"] .brand-logo__asset--light,
+.brand-logo[data-variant="soft-gold"] .brand-logo__asset--soft-gold {
+  opacity: 1;
 }
 
 [dir="rtl"] .brand-logo {
@@ -3940,9 +3915,7 @@ body:has(.account-page) .header-nav-indicator {
 
 @media (min-width: 640px) {
   .brand-logo--md {
-    --brand-mark-size: 2.82rem;
-    --brand-word-size: 1.3rem;
-    --brand-gap: 0.68rem;
+    --brand-lockup-width: clamp(10.75rem, 11.5vw, 12rem);
   }
 }
 
@@ -6162,12 +6135,13 @@ html[data-motion-ready="true"]
 }
 
 .sf-concerns .sf-concerns__title {
-  max-width: 9.2ch;
+  max-width: 100%;
   margin-top: clamp(22px, 2vw, 32px);
-  font-size: clamp(3rem, 4.45vw, 5.1rem);
+  font-family: var(--font-serif);
+  font-size: clamp(2.85rem, 4.1vw, 4.75rem);
   font-weight: 500;
-  letter-spacing: -0.052em;
-  line-height: 1.015;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
   text-wrap: initial;
 }
 
@@ -6183,6 +6157,10 @@ html[data-motion-ready="true"]
     transform 880ms var(--ease-premium),
     opacity 620ms var(--ease-premium);
   transition-delay: calc(90ms + var(--motion-index, 0) * 105ms);
+}
+
+[dir="ltr"] .sf-concerns__title .motion-text-line {
+  white-space: nowrap;
 }
 
 [dir="rtl"] .sf-concerns .sf-concerns__title {
@@ -6335,8 +6313,8 @@ html[data-motion-ready="true"] .sf-concern-list[data-motion-state="hidden"]::bef
   font-family: var(--font-serif);
   font-size: clamp(1.45rem, 2.15vw, 2.25rem);
   font-weight: 500;
-  letter-spacing: -0.04em;
-  line-height: 1.1;
+  letter-spacing: -0.022em;
+  line-height: 1.2;
   transition:
     letter-spacing 520ms var(--ease-premium),
     transform 540ms var(--ease-premium);
@@ -6405,7 +6383,7 @@ html[data-motion-ready="true"] .sf-concern-list[data-motion-state="hidden"]::bef
 }
 
 .sf-concern-list li:is(:hover, :focus-within) .sf-concern-list__label {
-  letter-spacing: -0.027em;
+  letter-spacing: -0.012em;
   transform: translate3d(11px, 0, 0);
 }
 
@@ -7239,7 +7217,7 @@ html[data-motion-ready="true"] .sf-concern-list[data-motion-state="hidden"]::bef
 .sf-shop-filter-panel__close:hover,
 .sf-shop-filter-panel__close:focus-visible {
   border-color: #c89655;
-  color: #9b642d;
+  color: var(--brand-gold);
   box-shadow: 0 14px 26px rgba(156, 101, 45, 0.14);
   transform: rotate(90deg);
 }
@@ -7297,7 +7275,7 @@ html[data-motion-ready="true"] .sf-concern-list[data-motion-state="hidden"]::bef
 .sf-shop-filter-panel__option[data-active="true"] {
   border-color: rgba(200, 150, 85, 0.38);
   background: #f7efe4;
-  color: #9b642d;
+  color: var(--brand-gold);
 }
 .sf-shop-filter-panel__option[data-depth="child"] {
   padding-inline-start: 2rem;
@@ -7428,12 +7406,12 @@ html[data-motion-ready="true"] .sf-concern-list[data-motion-state="hidden"]::bef
 .sf-shop-filter-panel__clear:hover,
 .sf-shop-filter-panel__clear:focus-visible {
   border-color: #c89655;
-  color: #9b642d;
+  color: var(--brand-gold);
 }
 
 .sf-shop-filter-panel__apply:hover,
 .sf-shop-filter-panel__apply:focus-visible {
-  background: #9b642d;
+  background: var(--brand-gold);
   box-shadow: 0 18px 34px rgba(156, 101, 45, 0.2);
 }
 
@@ -7764,7 +7742,7 @@ body:has(.product-template-white) {
   --product-muted: #898989;
   --product-soft: #f7f7f7;
   --product-line: #e8e8e8;
-  --product-accent: #b8733b;
+  --product-accent: var(--brand-gold);
   --product-green: #67b75a;
   background: #fff;
   color: var(--product-ink);
@@ -8221,7 +8199,14 @@ body:has(.product-template-white) {
   }
 
   .product-viewer__thumbs {
-    display: none;
+    max-width: min(72vw, 280px);
+    gap: 5px;
+  }
+
+  .product-viewer__thumbs button {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
   }
 }
 
@@ -9172,7 +9157,7 @@ body:has(.sf-checkout-page) .sf-checkout-page > .motion-reveal:first-child {
 }
 
 .sf-checkout-eyebrow {
-  color: #9b642d;
+  color: var(--brand-gold);
   font-size: 0.72rem;
   font-weight: 760;
   letter-spacing: 0.14em;
@@ -9315,8 +9300,8 @@ body:has(.sf-checkout-page) .sf-checkout-page > .motion-reveal:first-child {
 }
 
 .sf-checkout-steps li[data-state="complete"] .sf-checkout-step__dot {
-  border-color: #9b642d;
-  background: #9b642d;
+  border-color: var(--brand-gold);
+  background: var(--brand-gold);
   color: #fff;
 }
 
@@ -9372,7 +9357,7 @@ body:has(.sf-checkout-page) .sf-checkout-page > .motion-reveal:first-child {
 }
 
 .sf-checkout-steps li[data-state="active"] small {
-  color: #9b642d;
+  color: var(--brand-gold);
 }
 
 .sf-checkout-shell {
@@ -9439,7 +9424,7 @@ body:has(.sf-checkout-page) .sf-checkout-page > .motion-reveal:first-child {
   border: 1px solid #eeeeee;
   border-radius: 14px;
   background: #fff;
-  color: #9b642d;
+  color: var(--brand-gold);
 }
 
 .sf-checkout-card__icon svg,
@@ -9606,7 +9591,7 @@ body:has(.sf-checkout-page) .sf-checkout-page > .motion-reveal:first-child {
 
 .sf-checkout-review-grid span {
   display: block;
-  color: #9b642d;
+  color: var(--brand-gold);
   font-size: 0.68rem;
   font-weight: 760;
   letter-spacing: 0.12em;
@@ -9793,7 +9778,7 @@ body:has(.sf-checkout-page) .sf-checkout-page > .motion-reveal:first-child {
 }
 
 .sf-checkout-black-button.premium-button:hover {
-  background: #9b642d;
+  background: var(--brand-gold);
   color: #fff;
   box-shadow: 0 18px 34px rgba(155, 100, 45, 0.2);
 }
@@ -9822,7 +9807,7 @@ body:has(.sf-checkout-page) .sf-checkout-page > .motion-reveal:first-child {
   width: 17px;
   height: 17px;
   flex: none;
-  color: #9b642d;
+  color: var(--brand-gold);
 }
 
 .sf-checkout-proof {
@@ -12894,9 +12879,22 @@ body:has(.sf-offers-page) .store-header[data-transparent] .store-header__bar {
 
 body:has(.sf-offers-page) .store-header .nav-link,
 body:has(.sf-offers-page) .header-action,
-body:has(.sf-offers-page) .store-header[data-transparent] .brand-logo,
-body:has(.sf-offers-page) .store-header[data-transparent] .brand-logo__wordmark {
+body:has(.sf-offers-page) .store-header[data-transparent] .brand-logo {
   color: #5f5a54;
+}
+
+body:has(.sf-offers-page)
+  .store-header[data-transparent]
+  .brand-logo[data-variant="auto"]
+  .brand-logo__asset--dark {
+  opacity: 1;
+}
+
+body:has(.sf-offers-page)
+  .store-header[data-transparent]
+  .brand-logo[data-variant="auto"]
+  .brand-logo__asset--light {
+  opacity: 0;
 }
 
 body:has(.sf-offers-page) .header-action:hover,
@@ -16588,14 +16586,14 @@ body:has(.sf-contact-page) .store-header[data-scrolled] .store-header__bar {
 
 /* Footer - premium commerce utility surface. */
 .site-footer {
-  --footer-accent: #c99b55;
+  --footer-accent: var(--brand-soft-gold);
   --footer-ease: cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  border-top: 1px solid rgba(201, 155, 85, 0.5);
-  background: #050505;
-  color: #fffaf2;
+  border-top: 1px solid color-mix(in srgb, var(--brand-soft-gold) 46%, transparent);
+  background: var(--brand-primary-dark);
+  color: var(--brand-surface);
 }
 
 .site-footer__body {
@@ -16647,53 +16645,20 @@ body:has(.sf-contact-page) .store-header[data-scrolled] .store-header__bar {
 
 .site-footer__brand {
   display: inline-flex;
+  min-height: 68px;
   align-items: center;
-  gap: 18px;
-  color: #fffaf2;
-  transition:
-    color 260ms var(--footer-ease),
-    transform 260ms var(--footer-ease);
 }
 
-.site-footer__brand:hover {
-  color: #ffffff;
+.site-footer__brand .brand-logo {
+  display: block;
 }
 
-.site-footer__brand img {
-  width: 70px;
-  height: 70px;
+.site-footer__brand .brand-logo__asset {
+  width: 100%;
+  height: 100%;
   background: transparent;
   box-shadow: none;
   object-fit: contain;
-  filter: drop-shadow(0 14px 24px rgba(201, 155, 85, 0.18));
-  transition:
-    opacity 260ms var(--footer-ease),
-    transform 420ms var(--footer-ease);
-}
-
-.site-footer__brand:hover img {
-  opacity: 0.9;
-  transform: scale(0.96);
-}
-
-.site-footer__brand span {
-  display: grid;
-  gap: 7px;
-  font-family: var(--font-serif);
-  font-size: clamp(1.65rem, 2.1vw, 2.35rem);
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  line-height: 1;
-  text-indent: 0.15em;
-}
-
-.site-footer__brand small {
-  color: var(--footer-accent);
-  font-family: var(--font-sans);
-  font-size: 0.44em;
-  font-weight: 750;
-  letter-spacing: 0.32em;
-  line-height: 1;
 }
 
 .site-footer__tagline {
@@ -16718,7 +16683,7 @@ body:has(.sf-contact-page) .store-header[data-scrolled] .store-header__bar {
   gap: 9px;
   padding: 0 13px;
   border: 1px solid rgba(255, 250, 242, 0.13);
-  border-radius: 999px;
+  border-radius: var(--radius-control);
   background: rgba(255, 255, 255, 0.045);
   color: rgba(255, 250, 242, 0.82);
   font-size: 0.76rem;
@@ -17071,16 +17036,7 @@ body:has(.sf-contact-page) .store-header[data-scrolled] .store-header__bar {
   }
 
   .site-footer__brand {
-    gap: 14px;
-  }
-
-  .site-footer__brand img {
-    width: 58px;
-    height: 58px;
-  }
-
-  .site-footer__brand span {
-    font-size: 1.42rem;
+    min-height: 58px;
   }
 
   .site-footer__navigation,
@@ -18016,7 +17972,7 @@ body:has(.sf-contact-page) .store-header[data-scrolled] .store-header__bar {
   }
 
   .sf-concerns .sf-concerns__title {
-    max-width: 9.2ch;
+    max-width: 100%;
     margin-top: 18px;
     font-size: clamp(2.55rem, 12.6vw, 4rem);
     line-height: 1.015;
@@ -18110,7 +18066,7 @@ body:has(.sf-contact-page) .store-header[data-scrolled] .store-header__bar {
   }
 
   .sf-concern-list li:hover:not(:focus-within):not(:active) .sf-concern-list__label {
-    letter-spacing: -0.04em;
+    letter-spacing: -0.022em;
     transform: none;
   }
 
@@ -20062,14 +20018,14 @@ body:has(.account-page) .header-nav-indicator {
 .header-account-dropdown a:focus-visible,
 .header-account-dropdown button:focus-visible {
   background: #f8f5f1;
-  color: #9b642d;
+  color: var(--brand-gold);
   padding-inline-start: 18px;
 }
 
 .header-account-dropdown svg {
   width: 16px;
   height: 16px;
-  color: #9b642d;
+  color: var(--brand-gold);
 }
 
 .account-page {
@@ -20255,7 +20211,7 @@ body:has(.account-page) .header-nav-indicator {
   bottom: 10px !important;
   height: 2px !important;
   border-radius: 999px !important;
-  background: #9b642d !important;
+  background: var(--brand-gold) !important;
 }
 
 .account-overview__grid {
@@ -20320,7 +20276,7 @@ body:has(.account-page) .header-nav-indicator {
   place-items: center !important;
   border-radius: 999px !important;
   background: #f7f7f7 !important;
-  color: #9b642d !important;
+  color: var(--brand-gold) !important;
 }
 
 .account-tracking {
@@ -20571,7 +20527,7 @@ body:has(.account-page) .header-nav-indicator {
   width: 40px !important;
   height: 40px !important;
   background: #faf7f3 !important;
-  color: #9b642d !important;
+  color: var(--brand-gold) !important;
   font-size: 0.72rem !important;
   font-weight: 800 !important;
 }
@@ -20640,8 +20596,8 @@ body:has(.account-page) .header-nav-indicator {
 .account-page .account-orders__actions > .account-orders__track-button[aria-expanded="true"],
 .account-page .account-orders__actions > .account-orders__pay-button:hover,
 .account-page .account-orders__actions > .account-orders__pay-button[aria-expanded="true"] {
-  border-color: #9b642d !important;
-  background: #9b642d !important;
+  border-color: var(--brand-gold) !important;
+  background: var(--brand-gold) !important;
   color: #fff !important;
   box-shadow:
     0 18px 34px rgba(155, 100, 45, 0.2),
@@ -20719,7 +20675,7 @@ body:has(.account-page) .header-nav-indicator {
   border: 1px solid #e4dcd0;
   border-radius: 12px;
   background: #fff;
-  color: #9b642d;
+  color: var(--brand-gold);
 }
 
 .review-gate h3 {
@@ -21120,4 +21076,461 @@ body:has(.account-page) .header-nav-indicator {
 .sf-auth-control__input:-webkit-autofill:focus-visible {
   -webkit-text-fill-color: var(--foreground) !important;
   box-shadow: inset 0 0 0 1000px var(--color-input-background) !important;
+}
+
+/* --------------------------------------------------------------------------
+   Official identity convergence layer
+
+   These selectors bridge older route-specific presentation rules back to the
+   centralized official tokens above. They intentionally change presentation
+   only; commerce state, navigation structure, and interaction contracts stay
+   owned by their existing components.
+   -------------------------------------------------------------------------- */
+
+/* Global shell and navigation */
+.store-header__bar,
+.store-header[data-scrolled] .store-header__bar {
+  border-bottom-color: color-mix(in srgb, var(--brand-border) 82%, transparent);
+  background: color-mix(in srgb, var(--brand-surface-muted) 96%, transparent);
+  box-shadow: var(--shadow-subtle);
+}
+
+body:has(.sf-shop-page) .store-header__bar,
+body:has(.sf-shop-page) .store-header[data-scrolled] .store-header__bar,
+body:has(.sf-product-page) .store-header__bar,
+body:has(.sf-product-page) .store-header[data-scrolled] .store-header__bar,
+body:has(.sf-checkout-page) .store-header__bar,
+body:has(.sf-checkout-page) .store-header[data-scrolled] .store-header__bar,
+body:has(.sf-offers-page) .store-header__bar,
+body:has(.sf-offers-page) .store-header[data-scrolled] .store-header__bar,
+body:has(.sf-offers-page) .store-header[data-transparent] .store-header__bar {
+  border-bottom-color: var(--brand-border);
+  background: color-mix(in srgb, var(--brand-surface-muted) 97%, transparent);
+  box-shadow: var(--shadow-subtle);
+}
+
+.store-header .nav-link {
+  color: color-mix(in srgb, var(--brand-text-secondary) 82%, transparent);
+  font-weight: 680;
+}
+
+.store-header .nav-link:is(:hover, :focus-visible, [data-state="open"], [data-active="true"]),
+.store-header .nav-link[aria-current="page"] {
+  color: var(--brand-text);
+}
+
+/* The homepage header overlays campaign photography. Keep its navigation and
+   utilities light after the global brand-color convergence rules above. */
+.store-header[data-transparent] .nav-link {
+  color: rgba(255, 255, 255, 0.82);
+  text-shadow: 0 1px 12px rgba(23, 23, 22, 0.2);
+}
+
+.store-header[data-transparent]
+  .nav-link:is(:hover, :focus-visible, [data-state="open"], [data-active="true"]),
+.store-header[data-transparent] .nav-link[aria-current="page"] {
+  color: #fff;
+}
+
+.store-header[data-transparent] .nav-link[data-active="true"]::before,
+.store-header[data-transparent] .nav-link[aria-current="page"]::before {
+  background: var(--brand-soft-gold);
+}
+
+.store-header[data-transparent] .header-action {
+  color: #fff;
+  opacity: 0.84;
+}
+
+.store-header[data-transparent] .header-action:is(:hover, :focus-visible) {
+  color: var(--brand-soft-gold);
+  opacity: 1;
+}
+
+.store-header[data-transparent] .header-actions__divider {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.store-header .nav-link[data-active="true"]::before,
+.store-header .nav-link[aria-current="page"]::before {
+  position: absolute;
+  inset-inline: 18%;
+  bottom: 0.85rem;
+  height: 1px;
+  background: var(--brand-gold);
+  content: "";
+}
+
+.header-mega-viewport,
+.header-mega-viewport:has(.header-mega-panel--brands),
+.header-mega-panel,
+.header-mega-panel--brands,
+.mobile-nav {
+  border-color: var(--brand-border);
+  background: var(--brand-surface);
+}
+
+.header-mega-viewport {
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-lift);
+}
+
+.header-mega-viewport::before {
+  border-radius: 0;
+  background: var(--brand-gold);
+}
+
+.header-mega-panel,
+.header-mega-panel--brands {
+  background: var(--brand-surface);
+}
+
+.mobile-nav__head {
+  border-bottom-color: var(--brand-border);
+  background: var(--brand-surface-muted);
+}
+
+/* Controls, search, forms and state surfaces */
+.search-overlay {
+  border-color: var(--brand-border);
+  border-radius: var(--radius-panel);
+  background: color-mix(in srgb, var(--brand-surface) 98%, transparent) !important;
+  box-shadow: var(--shadow-lift);
+}
+
+.search-command {
+  border-color: var(--brand-border-strong);
+  border-radius: var(--radius-control);
+  background: var(--brand-surface);
+  box-shadow: none;
+}
+
+.search-command__submit {
+  border-radius: var(--radius-control);
+  background: var(--brand-primary-dark);
+  color: var(--brand-surface);
+}
+
+.search-command__submit:is(:hover, :focus-visible) {
+  background: var(--brand-gold);
+}
+
+:where(
+  input[data-form-control="input"],
+  textarea[data-form-control="textarea"],
+  button[data-form-control="select"],
+  .sf-auth-control,
+  .sf-checkout-page input,
+  .sf-checkout-page select,
+  .sf-checkout-page textarea,
+  .sf-contact-page input,
+  .sf-contact-page textarea
+) {
+  border-color: var(--brand-border);
+  border-radius: var(--radius-control);
+  background: var(--brand-surface);
+}
+
+.premium-button,
+.sf-checkout-black-button.premium-button {
+  border-radius: var(--radius-control);
+  background: var(--brand-primary-dark);
+  color: var(--brand-surface);
+  box-shadow: none;
+}
+
+.premium-button:is(:hover, :focus-visible),
+.sf-checkout-black-button.premium-button:is(:hover, :focus-visible) {
+  background: var(--brand-text-secondary);
+  color: var(--brand-surface);
+  box-shadow: none;
+}
+
+/* Product cards and repeated commerce modules */
+.sf-product-card,
+.sf-shop-page .sf-product-card {
+  border-color: var(--brand-border-subtle, var(--color-border-subtle));
+  border-radius: var(--radius-card);
+  background: var(--brand-surface);
+  box-shadow: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sf-product-card:hover,
+  .sf-shop-page .sf-product-card:hover {
+    border-color: color-mix(in srgb, var(--brand-gold) 46%, var(--brand-border));
+    box-shadow: var(--shadow-subtle);
+    transform: translateY(-2px);
+  }
+}
+
+.sf-product-card__media,
+.sf-shop-page .sf-product-card__media,
+.product-reference-related .sf-product-card__media {
+  border-color: var(--brand-border);
+  border-radius: calc(var(--radius-card) - 1px) calc(var(--radius-card) - 1px) 0 0;
+  background: var(--brand-surface-muted);
+}
+
+.sf-product-card__info,
+.sf-shop-page .sf-product-card__info {
+  padding: 1rem 1rem 1.125rem;
+}
+
+.sf-product-card__badge {
+  border-radius: var(--radius-control);
+}
+
+.sf-product-card__wish {
+  border-color: var(--brand-border);
+  background: color-mix(in srgb, var(--brand-surface) 94%, transparent);
+  box-shadow: none;
+}
+
+.sf-product-card__wish[aria-pressed="true"] {
+  border-color: var(--brand-gold);
+  background: var(--brand-soft-gold);
+  color: var(--brand-gold);
+}
+
+/* Listing pages */
+.sf-shop-page,
+body:has(.sf-shop-page) #main-content,
+body:has(.sf-shop-page) .motion-page {
+  background: var(--brand-background);
+  color: var(--brand-text);
+}
+
+.sf-shop-hero {
+  border: 1px solid var(--brand-border);
+  border-radius: var(--radius-panel);
+  background: var(--brand-surface-muted);
+}
+
+.sf-shop-hero h1 {
+  color: var(--brand-text);
+  font-family: var(--font-serif);
+  font-weight: 500;
+}
+
+[dir="rtl"] .sf-shop-hero h1 {
+  font-family: var(--font-arabic-display);
+}
+
+.sf-shop-breadcrumb,
+.sf-shop-page-count {
+  color: var(--brand-text-muted);
+}
+
+.sf-shop-tab,
+.catalog-listing-toolbar button,
+.catalog-listing-toolbar [role="combobox"] {
+  border-color: var(--brand-border);
+  background: var(--brand-surface);
+}
+
+/* Product detail */
+body:has(.product-template-white),
+.product-template-white,
+body:has(.product-template-white) #main-content,
+body:has(.product-template-white) .motion-page {
+  background: var(--brand-background);
+}
+
+.product-template-white {
+  --product-ink: var(--brand-text);
+  --product-muted: var(--brand-text-muted);
+  --product-soft: var(--brand-surface-muted);
+  --product-line: var(--brand-border);
+  --product-accent: var(--brand-gold);
+  color: var(--brand-text);
+}
+
+.product-template-white .product-gallery-active,
+.product-reference-main-image {
+  border-color: var(--brand-border);
+  border-radius: var(--radius-card);
+  background: var(--brand-surface-muted);
+  box-shadow: none;
+}
+
+.product-reference-image-shell,
+.product-reference-main-image .image-reveal-shell::after,
+.product-reference-reviews {
+  background: var(--brand-surface-muted);
+}
+
+.product-reference-thumbs button,
+.product-reference-variant,
+.product-reference-quantity {
+  border-color: var(--brand-border);
+  border-radius: var(--radius-control);
+  background: var(--brand-surface);
+}
+
+/* Cart, checkout, account and authentication */
+.sf-cart-page,
+.sf-checkout-page,
+.sf-account-page,
+.account-page,
+.sf-auth-shell {
+  background: var(--brand-background);
+  color: var(--brand-text);
+}
+
+.sf-auth-shell > div:first-child {
+  background: var(--brand-surface);
+}
+
+.sf-auth-shell > div:last-child::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--brand-primary-dark) 18%, transparent),
+    transparent 45%
+  );
+  content: "";
+  pointer-events: none;
+}
+
+.sf-checkout-page,
+body:has(.sf-checkout-page) #main-content,
+body:has(.sf-checkout-page) .motion-page,
+body:has(.sf-checkout-page) .store-header {
+  background: var(--brand-background);
+  color: var(--brand-text);
+}
+
+.sf-checkout-hero .display {
+  color: var(--brand-text);
+}
+
+.sf-checkout-eyebrow,
+.sf-checkout-review-grid span,
+.sf-checkout-secure svg {
+  color: var(--brand-gold);
+}
+
+.sf-checkout-intro,
+.sf-checkout-card__header p,
+.sf-checkout-bag-item__meta,
+.sf-checkout-choice__meta,
+.sf-checkout-choice__copy,
+.sf-checkout-payment-option__copy > span,
+.sf-checkout-summary-row,
+.sf-checkout-summary__hint {
+  color: var(--brand-text-muted);
+}
+
+.sf-checkout-steps,
+.sf-checkout-card,
+.sf-checkout-summary,
+.sf-checkout-pending,
+.sf-checkout-bag-item,
+.sf-checkout-choice,
+.sf-checkout-payment-option,
+.sf-checkout-review-grid > div,
+.sf-checkout-review-gift,
+.sf-checkout-secure,
+.sf-checkout-transfer-box,
+.sf-checkout-payment-logo {
+  border-color: var(--brand-border);
+  border-radius: var(--radius-card);
+  background: var(--brand-surface);
+  box-shadow: none;
+}
+
+.sf-checkout-steps {
+  border-radius: var(--radius-panel);
+}
+
+.sf-checkout-card__icon,
+.sf-checkout-summary__icon,
+.sf-checkout-pending__icon {
+  border-color: var(--brand-border);
+  border-radius: var(--radius-control);
+  background: var(--brand-surface-muted);
+  color: var(--brand-gold);
+}
+
+.sf-checkout-step__dot {
+  border-color: var(--brand-border-strong);
+  background: var(--brand-surface);
+}
+
+.sf-checkout-steps li[data-state="active"] .sf-checkout-step__dot {
+  border-color: var(--brand-primary-dark);
+  background: var(--brand-primary-dark);
+  color: var(--brand-surface);
+}
+
+.sf-checkout-steps li[data-state="complete"] .sf-checkout-step__dot {
+  border-color: var(--brand-gold);
+  background: var(--brand-gold);
+  color: var(--brand-surface);
+}
+
+.sf-checkout-choice:is(:hover, :focus-within),
+.sf-checkout-payment-option:is(:hover, :focus-within),
+.sf-checkout-choice[data-active="true"],
+.sf-checkout-payment-option[data-active="true"] {
+  border-color: var(--brand-gold);
+  background: color-mix(in srgb, var(--brand-soft-gold) 24%, var(--brand-surface));
+  box-shadow: none;
+}
+
+/* One consistent, quiet loading language. */
+.animate-pulse,
+[data-loading="true"] .skeleton {
+  animation-duration: 1.6s;
+}
+
+@media (max-width: 640px) {
+  .sf-shop-page,
+  .sf-checkout-page,
+  .account-page {
+    width: 100%;
+  }
+
+  .sf-shop-hero,
+  .sf-checkout-steps,
+  .sf-checkout-card,
+  .sf-checkout-summary {
+    border-radius: var(--radius-card);
+  }
+}
+
+/* Accessible identity contrast: every text role stays within the official palette. */
+.site-footer__credit {
+  color: var(--brand-border-strong);
+}
+
+.site-footer__tagline {
+  color: var(--brand-border-strong);
+}
+
+.site-footer .site-footer__accordion-trigger {
+  color: var(--brand-border-strong);
+}
+
+.sf-shop-tab,
+.catalog-listing-toolbar__count,
+.sf-shop-page .sf-product-card__category,
+.storefront-breadcrumb a,
+.product-ingredient-intelligence > header p,
+.product-ingredient-intelligence > header > span,
+.ingredient-unmapped,
+.review-studio__score span:last-child {
+  color: var(--brand-text-muted);
+}
+
+.product-reference-meta .is-stock {
+  color: var(--color-success);
+}
+
+.review-studio__eyebrow,
+.review-studio__compose label > span,
+.review-composer__rating legend {
+  color: var(--brand-text-secondary);
 }

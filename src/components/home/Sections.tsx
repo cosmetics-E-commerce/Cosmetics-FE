@@ -143,6 +143,7 @@ export function Hero() {
 
   return (
     <section
+      id="home-hero"
       className="sf-hero"
       aria-label={ar ? "واجهة متجر بيوريزا" : "BIOREZA storefront introduction"}
       onPointerEnter={() => setIsPaused(true)}
@@ -266,7 +267,15 @@ export function Benefits() {
             {locale === "ar" ? "الثقة جزء من روتينك." : "Confidence, built into the ritual."}
           </h2>
         </Reveal>
-        <Reveal as="ul" stagger staggerMs={40} distance={14} className="sf-proof__list">
+        <Reveal
+          as="ul"
+          stagger
+          staggerMs={40}
+          distance={14}
+          className="sf-proof__list"
+          tabIndex={0}
+          aria-label={locale === "ar" ? "مزايا بيوريزا" : "BioReza benefits"}
+        >
           {benefits.map(({ icon: Icon, en, ar }) => (
             <li key={en}>
               <Icon strokeWidth={1.1} aria-hidden="true" />
