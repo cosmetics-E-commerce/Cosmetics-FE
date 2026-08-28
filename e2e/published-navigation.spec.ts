@@ -58,6 +58,10 @@ test("published navigation renders resolved categories in English and Arabic", a
   await expect(page.getByRole("link", { name: "Cleansers" })).toBeVisible();
   await expect(classicMenu).toHaveScreenshot("classic-categories-mega-menu.png", {
     animations: "disabled",
+    // Playwright's Linux runners rasterize the editorial display font slightly
+    // differently even after document.fonts is ready. Keep the tolerance below
+    // a layout-level change while ignoring glyph-edge antialiasing noise.
+    maxDiffPixelRatio: 0.01,
   });
 
   await page.goto("/about?lang=ar");

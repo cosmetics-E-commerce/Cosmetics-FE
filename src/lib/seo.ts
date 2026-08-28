@@ -7,7 +7,7 @@ export type SeoPageType = "website" | "article" | "product";
 
 export const SITE_NAME = "BIOREZA Cosmetics";
 export const DEFAULT_SITE_ORIGIN = "https://bioreza.com";
-export const DEFAULT_SOCIAL_IMAGE = "/bioreza-logo.png";
+export const DEFAULT_SOCIAL_IMAGE = "/brand/bioreza-og.jpg";
 
 type SeoOptions = {
   title: string;
@@ -167,7 +167,7 @@ export function organizationGraph() {
         url: origin,
         logo: {
           "@type": "ImageObject",
-          url: absoluteUrl("/bioreza-logo.png"),
+          url: absoluteUrl("/brand/bioreza-lockup-dark.png"),
         },
         email: "hello@bioreza.com",
         contactPoint: {

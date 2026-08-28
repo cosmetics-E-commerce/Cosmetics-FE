@@ -1,28 +1,69 @@
 import { Link } from "@tanstack/react-router";
+import type { MouseEvent } from "react";
 import { cn } from "@/lib/utils";
 
 export function Logo({
   size = "md",
-  tagline = true,
+  variant = "auto",
 }: {
   size?: "sm" | "md" | "lg";
-  tagline?: boolean;
+  variant?: "auto" | "dark" | "light" | "soft-gold";
 }) {
+  const isPriority = variant === "auto";
+  const returnToHero = (event: MouseEvent<HTMLAnchorElement>) => {
+    const hero = document.getElementById("home-hero");
+    if (!hero) return;
+    event.preventDefault();
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    hero.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+  };
+
   return (
-    <Link to="/" className={cn("brand-logo", `brand-logo--${size}`)} aria-label="BIOREZA home">
-      <img
-        src="/bioreza-logo.png"
-        alt=""
-        width={64}
-        height={64}
-        loading="lazy"
-        decoding="async"
-        aria-hidden="true"
-        className="brand-logo__mark"
-      />
-      <span className="brand-logo__type">
-        <span className="brand-logo__wordmark">BIOREZA</span>
-        {tagline && <span className="brand-logo__descriptor">Cosmetics</span>}
+    <Link
+      to="/"
+      hash="home-hero"
+      onClick={returnToHero}
+      className={cn("brand-logo", `brand-logo--${size}`)}
+      data-variant={variant}
+      aria-label="BIOREZA — Back to homepage"
+    >
+      <span className="brand-logo__art" aria-hidden="true">
+        {(variant === "auto" || variant === "dark") && (
+          <img
+            src="/brand/bioreza-lockup-dark.png"
+            alt=""
+            width={976}
+            height={241}
+            loading={isPriority ? "eager" : "lazy"}
+            fetchPriority={isPriority ? "high" : "auto"}
+            decoding="async"
+            className="brand-logo__asset brand-logo__asset--dark"
+          />
+        )}
+        {(variant === "auto" || variant === "light") && (
+          <img
+            src="/brand/bioreza-lockup-light.png"
+            alt=""
+            width={976}
+            height={241}
+            loading={isPriority ? "eager" : "lazy"}
+            fetchPriority={isPriority ? "high" : "auto"}
+            decoding="async"
+            className="brand-logo__asset brand-logo__asset--light"
+          />
+        )}
+        {variant === "soft-gold" && (
+          <img
+            src="/brand/bioreza-lockup-soft-gold.png"
+            alt=""
+            width={976}
+            height={241}
+            loading="lazy"
+            fetchPriority="auto"
+            decoding="async"
+            className="brand-logo__asset brand-logo__asset--soft-gold"
+          />
+        )}
       </span>
     </Link>
   );

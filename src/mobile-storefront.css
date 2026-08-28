@@ -224,14 +224,7 @@
   }
 
   .store-header .brand-logo {
-    --brand-mark-size: 2.18rem;
-    --brand-word-size: 0.98rem;
-    --brand-gap: 0.46rem;
-  }
-
-  .store-header .brand-logo__descriptor {
-    font-size: 0.5rem;
-    letter-spacing: 0.2em;
+    --brand-lockup-width: clamp(8.4rem, 38vw, 9.25rem);
   }
 
   .store-header .header-action:active,
@@ -1642,9 +1635,7 @@
   }
 
   .store-header .brand-logo {
-    --brand-mark-size: 1.9rem;
-    --brand-word-size: 0.86rem;
-    --brand-gap: 0.34rem;
+    --brand-lockup-width: 7.9rem;
   }
 
   .sf-hero__title,

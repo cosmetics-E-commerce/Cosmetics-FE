@@ -122,17 +122,28 @@ describe("CategoryShowcase", () => {
     expect(container.querySelectorAll('a[href^="/categories/"]')).toHaveLength(2);
   });
 
-  it("renders every admin-managed category and exposes a branded failed-image fallback", () => {
+  it("renders every root category and excludes child categories from the homepage rail", () => {
     const categories = Array.from({ length: 10 }, (_, index) =>
       category(
         index,
         index === 5 ? { imageUrl: "/missing.jpg", nameEn: "Long Body Care Name" } : {},
       ),
     );
+    categories.splice(
+      3,
+      0,
+      category(20, {
+        parentId: categories[0]!.id,
+        nameEn: "Child Category",
+        slug: "child-category",
+      }),
+    );
     const { container } = render(<CategoryShowcase initialCategories={categories} />);
 
     expect(container.querySelectorAll(".sf-category-showcase__slide")).toHaveLength(10);
     expect(container.querySelectorAll('a[href^="/categories/"]')).toHaveLength(10);
+    expect(screen.queryByText("Child Category")).not.toBeInTheDocument();
+    expect(container.querySelector('a[href="/categories/child-category"]')).not.toBeInTheDocument();
     fireEvent.error(container.querySelector('img[src="/missing.jpg"]')!);
     expect(screen.getByText("BIOREZA")).toBeInTheDocument();
     expect(screen.getByText("Long Body Care Name")).toBeInTheDocument();

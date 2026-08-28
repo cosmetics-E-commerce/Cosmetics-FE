@@ -96,6 +96,7 @@ export function Hero() {
 
   return (
     <section
+      id="home-hero"
       className="sf-hero"
       aria-label={ar ? "واجهة متجر بيوريزا" : "BIOREZA storefront introduction"}
       onPointerEnter={() => setIsPaused(true)}

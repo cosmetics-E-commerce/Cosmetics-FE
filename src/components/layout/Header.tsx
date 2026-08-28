@@ -626,7 +626,7 @@ export function Header({
         >
           <SheetTitle className="sr-only">{t("nav.menu")}</SheetTitle>
           <div className="mobile-nav__head">
-            <Logo size="sm" tagline={false} />
+            <Logo size="sm" />
             <button
               type="button"
               onClick={closeMobileMenu}

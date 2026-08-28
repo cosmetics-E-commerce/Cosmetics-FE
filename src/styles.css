@@ -8,23 +8,23 @@
 @custom-variant dark (&:is(.dark *));
 
 /* ============================================================
-   BIOREZA — quiet luxury design system
+   BIOREZA — official identity tokens
    ============================================================ */
 
 @theme inline {
   --radius-sm: 2px;
-  --radius-md: 2px;
-  --radius-lg: 3px;
-  --radius-xl: 4px;
-  --radius-2xl: 6px;
-  --radius-3xl: 8px;
-  --radius-4xl: 10px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-2xl: 8px;
+  --radius-3xl: 12px;
+  --radius-4xl: 12px;
 
-  --font-serif: "Lora", Georgia, "Times New Roman", serif;
+  --font-serif: "Playfair Display", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --font-display: "Playfair Display", "Iowan Old Style", Georgia, "Times New Roman", serif;
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
   --font-arabic: "Noto Sans Arabic", ui-sans-serif, system-ui, sans-serif;
-  --font-arabic-display:
-    "IBM Plex Sans Arabic", "Noto Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+  --font-arabic-display: "Noto Serif Arabic", "Noto Sans Arabic", serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -70,28 +70,56 @@
 }
 
 :root {
-  --radius: 2px;
+  /* Direct from the official identity reference. */
+  --brand-background: #f5f0e8;
+  --brand-surface: #fffaf3;
+  --brand-surface-muted: #eee7dc;
+  --brand-primary-dark: #211d19;
+  --brand-text: #171716;
+  --brand-text-secondary: #514a43;
+  --brand-text-muted: #746b62;
+  --brand-gold: #805a20;
+  --brand-soft-gold: #e5d1ad;
+  --brand-border: #d6cdbf;
+  --brand-border-strong: #b9ac9b;
 
-  --color-background: #f5f0e8;
-  --color-surface: #fffaf3;
-  --color-surface-muted: #eee7dc;
+  /* Derived ecommerce rules: conservative extensions of the official system. */
+  --radius: 4px;
+  --radius-control: 4px;
+  --radius-card: 8px;
+  --radius-panel: 12px;
+  --radius-pill: 999px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --container-storefront: 97.5rem;
+  --section-rhythm: clamp(4.75rem, 7vw, 8.5rem);
+
+  --color-background: var(--brand-background);
+  --color-surface: var(--brand-surface);
+  --color-surface-muted: var(--brand-surface-muted);
   --color-surface-elevated: #fffdf8;
-  --color-input-background: #fffaf4;
-  --color-primary: #211d19;
-  --color-primary-hover: #4f3325;
-  --color-primary-active: #16120f;
-  --color-secondary: #eee7dc;
+  --color-input-background: var(--brand-surface);
+  --color-primary: var(--brand-primary-dark);
+  --color-primary-hover: var(--brand-text-secondary);
+  --color-primary-active: var(--brand-text);
+  --color-secondary: var(--brand-surface-muted);
   --color-secondary-hover: #e4d8c8;
-  --color-accent: #805a20;
+  --color-accent: var(--brand-gold);
   --color-accent-hover: #684616;
-  --color-accent-soft: #e5d1ad;
-  --color-text-primary: #171716;
-  --color-text-secondary: #514a43;
-  --color-text-muted: #746b62;
-  --color-text-inverse: #fffaf4;
-  --color-border: #d6cdbf;
+  --color-accent-soft: var(--brand-soft-gold);
+  --color-text-primary: var(--brand-text);
+  --color-text-secondary: var(--brand-text-secondary);
+  --color-text-muted: var(--brand-text-muted);
+  --color-text-inverse: var(--brand-surface);
+  --color-border: var(--brand-border);
   --color-border-subtle: #e7dfd4;
-  --color-border-strong: #b9ac9b;
+  --color-border-strong: var(--brand-border-strong);
   --color-success: #405d43;
   --color-success-soft: #e7efe3;
   --color-warning: #876326;
@@ -105,15 +133,15 @@
   --color-info-soft: #eee4d5;
   --color-link: var(--color-accent);
   --color-link-hover: var(--color-accent-hover);
-  --color-shadow-soft: rgba(56, 41, 24, 0.08);
-  --color-shadow-medium: rgba(56, 41, 24, 0.15);
+  --color-shadow-soft: rgba(33, 29, 25, 0.07);
+  --color-shadow-medium: rgba(33, 29, 25, 0.13);
 
   --ivory: var(--color-background);
   --warm-white: var(--color-surface);
   --gold: var(--color-accent);
-  --gold-fill: #c7a773;
+  --gold-fill: var(--brand-gold);
   --gold-soft: var(--color-accent-soft);
-  --greige: #b8b0a5;
+  --greige: var(--brand-border-strong);
   --taupe: var(--color-text-secondary);
   --stone: var(--color-surface-muted);
   --ink: var(--color-text-primary);
@@ -152,7 +180,8 @@
   --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
-  --shadow-lift: 0 18px 42px -30px oklch(0.315 0.011 62 / 0.42);
+  --shadow-subtle: 0 12px 34px -28px rgba(33, 29, 25, 0.32);
+  --shadow-lift: 0 20px 48px -34px rgba(33, 29, 25, 0.42);
 }
 
 @layer base {
