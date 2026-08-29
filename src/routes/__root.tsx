@@ -62,6 +62,7 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
+  const reference = uiErrorReference(error);
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
@@ -72,11 +73,12 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
       <meta name="robots" content="noindex,nofollow" />
       <div className="flex min-h-[70vh] items-center justify-center bg-background px-5">
         <div className="max-w-md text-center">
-          <p className="label-xs text-gold">Something went wrong</p>
+          <p className="label-xs text-gold">Page unavailable</p>
           <h1 className="display mt-5 text-[clamp(2.6rem,5vw,4rem)]">This page didn't load.</h1>
           <div className="rule-gold mx-auto my-8 max-w-[180px]" />
           <p className="text-sm leading-relaxed text-muted-foreground">
-            Something went wrong on our end. You can try refreshing, or head back to the collection.
+            A rendering problem prevented this page from opening. Try loading it again; if the
+            problem continues, share reference {reference} with BioReza support.
           </p>
           <div className="mt-10 flex flex-wrap justify-center gap-4">
             <Button
@@ -97,6 +99,16 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
       </div>
     </>
   );
+}
+
+function uiErrorReference(error: Error): string {
+  const input = `${error.name}:${error.message}`;
+  let hash = 2166136261;
+  for (let index = 0; index < input.length; index += 1) {
+    hash ^= input.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return `BRZ-UI-${(hash >>> 0).toString(16).toUpperCase().padStart(8, "0")}`;
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
@@ -245,6 +257,17 @@ function RootComponent() {
   const headerScrollSentinelRef = useRef<HTMLSpanElement>(null);
   const isFirstRender = useRef(true);
   const isHome = pathname === "/";
+
+  useEffect(() => {
+    // Expose an explicit, non-visual readiness boundary for browser automation
+    // and integrations that must not mutate SSR markup before React owns it.
+    // The attribute is applied after hydration, so server and first-client
+    // markup remain identical.
+    document.documentElement.dataset["hydrated"] = "true";
+    return () => {
+      delete document.documentElement.dataset["hydrated"];
+    };
+  }, []);
 
   useEffect(() => {
     if (isFirstRender.current) {

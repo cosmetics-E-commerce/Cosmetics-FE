@@ -80,6 +80,7 @@ function PurchasableProductAction({
   labels: QuickAddLabels;
 }) {
   const { add } = useProductCardStore();
+  const [hydrated, setHydrated] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [state, setState] = useState<AddState>("idle");
   const feedbackTimer = useRef<number | null>(null);
@@ -89,6 +90,10 @@ function PurchasableProductAction({
   const requiresSelection = availableVariants.length > 1;
   const maximum = Math.max(1, variant?.stock ?? product.stock ?? 99);
   const busy = state === "adding";
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   useEffect(() => {
     setQuantity((current) => Math.min(current, maximum));
@@ -132,7 +137,7 @@ function PurchasableProductAction({
     }
   };
 
-  const disabled = busy || !variant?.id || !product.id;
+  const disabled = !hydrated || busy || !variant?.id || !product.id;
 
   return (
     <div

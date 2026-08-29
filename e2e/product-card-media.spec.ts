@@ -10,6 +10,7 @@ test("product media keeps mixed aspect-ratio gallery images in one stable frame"
   page.on("pageerror", (error) => runtimeIssues.push(error.message));
   await page.route("**/api/v1/**", (route) => route.fulfill({ json: { success: true, data: [] } }));
   await page.goto("/privacy-policy", { waitUntil: "networkidle" });
+  await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
   await mountProductCardFixture(page);
 
   const card = page.locator(".sf-product-card");
@@ -82,6 +83,14 @@ test("product media keeps mixed aspect-ratio gallery images in one stable frame"
     const restored = await measureCard(card);
     expect(restored.card.height).toBeCloseTo(initial.card.height, 4);
     expect(restored.media.height).toBeCloseTo(initial.media.height, 4);
+  } else if (
+    await page.evaluate(() => window.matchMedia("(hover: hover) and (pointer: fine)").matches)
+  ) {
+    await expect(primary).toHaveCSS("opacity", "1");
+    await expect(secondary).toHaveCSS("opacity", "0");
+    await expect(quickAdd).toHaveCSS("opacity", "0");
+    await card.hover();
+    await expect(quickAdd).toHaveCSS("opacity", "1");
   } else {
     await expect(primary).toHaveCSS("opacity", "1");
     await expect(secondary).toHaveCSS("opacity", "0");
@@ -94,6 +103,7 @@ test("product media keeps mixed aspect-ratio gallery images in one stable frame"
 test("a one-image product never fades into an empty media layer", async ({ page }, testInfo) => {
   await page.route("**/api/v1/**", (route) => route.fulfill({ json: { success: true, data: [] } }));
   await page.goto("/privacy-policy", { waitUntil: "networkidle" });
+  await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
   await mountProductCardFixture(page);
   const media = page.locator(".sf-product-card__media");
   await media.evaluate((element) => {

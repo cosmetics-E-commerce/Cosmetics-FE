@@ -42,10 +42,10 @@ export declare const bannerMessageSchema: z.ZodObject<{
     couponCode?: string | null | undefined;
     url?: string | null | undefined;
     icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+    emoji?: string | null | undefined;
     textAr?: string | null | undefined;
     secondaryTextEn?: string | null | undefined;
     secondaryTextAr?: string | null | undefined;
-    emoji?: string | null | undefined;
     ctaTextEn?: string | null | undefined;
     ctaTextAr?: string | null | undefined;
     couponId?: string | null | undefined;
@@ -60,10 +60,10 @@ export declare const bannerMessageSchema: z.ZodObject<{
         emphasis?: boolean | undefined;
     } | undefined;
     icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+    emoji?: string | null | undefined;
     textAr?: string | null | undefined;
     secondaryTextEn?: string | null | undefined;
     secondaryTextAr?: string | null | undefined;
-    emoji?: string | null | undefined;
     openInNewTab?: boolean | undefined;
     ctaTextEn?: string | null | undefined;
     ctaTextAr?: string | null | undefined;
@@ -131,7 +131,7 @@ export declare const bannerDesignSchema: z.ZodObject<{
     borderWidth: number;
     borderColor: string;
     borderStyle: "SOLID" | "DASHED" | "DOTTED";
-    shadow: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG";
+    shadow: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE";
     zIndex: number;
     ctaBackground: string;
     ctaColor: string;
@@ -168,7 +168,7 @@ export declare const bannerDesignSchema: z.ZodObject<{
     borderWidth?: number | undefined;
     borderColor?: string | undefined;
     borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-    shadow?: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG" | undefined;
+    shadow?: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE" | undefined;
     zIndex?: number | undefined;
     ctaBackground?: string | undefined;
     ctaColor?: string | undefined;
@@ -195,9 +195,9 @@ export declare const bannerAnimationSchema: z.ZodObject<{
     separatorSize: z.ZodDefault<z.ZodNumber>;
     separatorSpacing: z.ZodDefault<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
-    entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
+    entrance: "NONE" | "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "REVEAL";
     exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
-    transition: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
+    transition: "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
     durationMs: number;
     delayMs: number;
     easing: "STANDARD" | "PREMIUM" | "LINEAR";
@@ -212,9 +212,9 @@ export declare const bannerAnimationSchema: z.ZodObject<{
     separatorSize: number;
     separatorSpacing: number;
 }, {
-    entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
+    entrance?: "NONE" | "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "REVEAL" | undefined;
     exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
-    transition?: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
+    transition?: "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
     durationMs?: number | undefined;
     delayMs?: number | undefined;
     easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
@@ -254,12 +254,12 @@ export declare const bannerBehaviorSchema: z.ZodObject<{
     showProgress: z.ZodDefault<z.ZodBoolean>;
     inheritPromotionSchedule: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
+    autoplay: boolean;
     loop: boolean;
     sticky: "FIXED" | "STICKY" | "NON_STICKY";
     dismissible: boolean;
     dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
     dismissalDuration: number | null;
-    autoplay: boolean;
     intervalMs: number;
     arrows: boolean;
     pagination: boolean;
@@ -267,7 +267,7 @@ export declare const bannerBehaviorSchema: z.ZodObject<{
     countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
     expirationMessageEn: string | null;
     expirationMessageAr: string | null;
-    freeShippingThresholdSource: "STORE" | "CUSTOM";
+    freeShippingThresholdSource: "CUSTOM" | "STORE";
     freeShippingThreshold: number | null;
     remainingMessageEn: string;
     remainingMessageAr: string;
@@ -278,12 +278,12 @@ export declare const bannerBehaviorSchema: z.ZodObject<{
     redirectUrl?: string | null | undefined;
     nextBannerId?: string | null | undefined;
 }, {
+    autoplay?: boolean | undefined;
     loop?: boolean | undefined;
     sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
     dismissible?: boolean | undefined;
     dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
     dismissalDuration?: number | null | undefined;
-    autoplay?: boolean | undefined;
     intervalMs?: number | undefined;
     arrows?: boolean | undefined;
     pagination?: boolean | undefined;
@@ -293,7 +293,7 @@ export declare const bannerBehaviorSchema: z.ZodObject<{
     expirationMessageAr?: string | null | undefined;
     redirectUrl?: string | null | undefined;
     nextBannerId?: string | null | undefined;
-    freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
+    freeShippingThresholdSource?: "CUSTOM" | "STORE" | undefined;
     freeShippingThreshold?: number | null | undefined;
     remainingMessageEn?: string | undefined;
     remainingMessageAr?: string | undefined;
@@ -321,7 +321,7 @@ export declare const bannerTargetingSchema: z.ZodObject<{
     devices: ("desktop" | "tablet" | "mobile")[];
     authentication: "ALL" | "GUEST" | "LOGGED_IN";
     customerType: "ALL" | "RETURNING" | "NEW";
-    pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
+    pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
     urlPatterns: string[];
     cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
     cartSubtotalMin: number | null;
@@ -334,7 +334,7 @@ export declare const bannerTargetingSchema: z.ZodObject<{
     devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
     authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
     customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-    pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
+    pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
     urlPatterns?: string[] | undefined;
     cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
     cartSubtotalMin?: number | null | undefined;
@@ -359,9 +359,9 @@ export declare const bannerResponsiveSchema: z.ZodObject<{
     showDesktop: boolean;
     showTablet: boolean;
     showMobile: boolean;
-    desktopMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-    tabletMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-    mobileMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+    desktopMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
+    tabletMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
+    mobileMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
     desktopTextEn: string | null;
     desktopTextAr: string | null;
     mobileTextEn: string | null;
@@ -372,9 +372,9 @@ export declare const bannerResponsiveSchema: z.ZodObject<{
     showDesktop?: boolean | undefined;
     showTablet?: boolean | undefined;
     showMobile?: boolean | undefined;
-    desktopMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
-    tabletMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
-    mobileMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+    desktopMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+    tabletMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+    mobileMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
     desktopTextEn?: string | null | undefined;
     desktopTextAr?: string | null | undefined;
     mobileTextEn?: string | null | undefined;
@@ -484,7 +484,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth: number;
         borderColor: string;
         borderStyle: "SOLID" | "DASHED" | "DOTTED";
-        shadow: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG";
+        shadow: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE";
         zIndex: number;
         ctaBackground: string;
         ctaColor: string;
@@ -521,7 +521,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth?: number | undefined;
         borderColor?: string | undefined;
         borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-        shadow?: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG" | undefined;
+        shadow?: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE" | undefined;
         zIndex?: number | undefined;
         ctaBackground?: string | undefined;
         ctaColor?: string | undefined;
@@ -548,9 +548,9 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         separatorSize: z.ZodDefault<z.ZodNumber>;
         separatorSpacing: z.ZodDefault<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
-        entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
+        entrance: "NONE" | "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "REVEAL";
         exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
-        transition: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
+        transition: "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
         durationMs: number;
         delayMs: number;
         easing: "STANDARD" | "PREMIUM" | "LINEAR";
@@ -565,9 +565,9 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         separatorSize: number;
         separatorSpacing: number;
     }, {
-        entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
+        entrance?: "NONE" | "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "REVEAL" | undefined;
         exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
-        transition?: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
+        transition?: "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
         durationMs?: number | undefined;
         delayMs?: number | undefined;
         easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
@@ -607,12 +607,12 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         showProgress: z.ZodDefault<z.ZodBoolean>;
         inheritPromotionSchedule: z.ZodDefault<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
+        autoplay: boolean;
         loop: boolean;
         sticky: "FIXED" | "STICKY" | "NON_STICKY";
         dismissible: boolean;
         dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
         dismissalDuration: number | null;
-        autoplay: boolean;
         intervalMs: number;
         arrows: boolean;
         pagination: boolean;
@@ -620,7 +620,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
         expirationMessageEn: string | null;
         expirationMessageAr: string | null;
-        freeShippingThresholdSource: "STORE" | "CUSTOM";
+        freeShippingThresholdSource: "CUSTOM" | "STORE";
         freeShippingThreshold: number | null;
         remainingMessageEn: string;
         remainingMessageAr: string;
@@ -631,12 +631,12 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         redirectUrl?: string | null | undefined;
         nextBannerId?: string | null | undefined;
     }, {
+        autoplay?: boolean | undefined;
         loop?: boolean | undefined;
         sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
         dismissible?: boolean | undefined;
         dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
         dismissalDuration?: number | null | undefined;
-        autoplay?: boolean | undefined;
         intervalMs?: number | undefined;
         arrows?: boolean | undefined;
         pagination?: boolean | undefined;
@@ -646,7 +646,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         expirationMessageAr?: string | null | undefined;
         redirectUrl?: string | null | undefined;
         nextBannerId?: string | null | undefined;
-        freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
+        freeShippingThresholdSource?: "CUSTOM" | "STORE" | undefined;
         freeShippingThreshold?: number | null | undefined;
         remainingMessageEn?: string | undefined;
         remainingMessageAr?: string | undefined;
@@ -674,7 +674,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         devices: ("desktop" | "tablet" | "mobile")[];
         authentication: "ALL" | "GUEST" | "LOGGED_IN";
         customerType: "ALL" | "RETURNING" | "NEW";
-        pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
+        pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
         urlPatterns: string[];
         cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
         cartSubtotalMin: number | null;
@@ -687,7 +687,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
         authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
         customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-        pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
+        pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
         urlPatterns?: string[] | undefined;
         cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
         cartSubtotalMin?: number | null | undefined;
@@ -712,9 +712,9 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         showDesktop: boolean;
         showTablet: boolean;
         showMobile: boolean;
-        desktopMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-        tabletMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-        mobileMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+        desktopMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
+        tabletMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
+        mobileMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
         desktopTextEn: string | null;
         desktopTextAr: string | null;
         mobileTextEn: string | null;
@@ -725,9 +725,9 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         showDesktop?: boolean | undefined;
         showTablet?: boolean | undefined;
         showMobile?: boolean | undefined;
-        desktopMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
-        tabletMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
-        mobileMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        desktopMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        tabletMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        mobileMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
         desktopTextEn?: string | null | undefined;
         desktopTextAr?: string | null | undefined;
         mobileTextEn?: string | null | undefined;
@@ -774,10 +774,10 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         couponCode?: string | null | undefined;
         url?: string | null | undefined;
         icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+        emoji?: string | null | undefined;
         textAr?: string | null | undefined;
         secondaryTextEn?: string | null | undefined;
         secondaryTextAr?: string | null | undefined;
-        emoji?: string | null | undefined;
         ctaTextEn?: string | null | undefined;
         ctaTextAr?: string | null | undefined;
         couponId?: string | null | undefined;
@@ -792,10 +792,10 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
             emphasis?: boolean | undefined;
         } | undefined;
         icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+        emoji?: string | null | undefined;
         textAr?: string | null | undefined;
         secondaryTextEn?: string | null | undefined;
         secondaryTextAr?: string | null | undefined;
-        emoji?: string | null | undefined;
         openInNewTab?: boolean | undefined;
         ctaTextEn?: string | null | undefined;
         ctaTextAr?: string | null | undefined;
@@ -806,7 +806,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     sortOrder: number;
     promotionId: string | null;
-    position: "TOP" | "BELOW_HEADER" | "BOTTOM";
+    position: "TOP" | "BOTTOM" | "BELOW_HEADER";
     state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
     priority: number;
     timezone: string;
@@ -822,16 +822,16 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         couponCode?: string | null | undefined;
         url?: string | null | undefined;
         icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+        emoji?: string | null | undefined;
         textAr?: string | null | undefined;
         secondaryTextEn?: string | null | undefined;
         secondaryTextAr?: string | null | undefined;
-        emoji?: string | null | undefined;
         ctaTextEn?: string | null | undefined;
         ctaTextAr?: string | null | undefined;
         couponId?: string | null | undefined;
         countdownAt?: string | null | undefined;
     }[];
-    mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
+    mode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS";
     internalName: string;
     recurringSchedule: {
         enabled: boolean;
@@ -864,7 +864,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth: number;
         borderColor: string;
         borderStyle: "SOLID" | "DASHED" | "DOTTED";
-        shadow: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG";
+        shadow: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE";
         zIndex: number;
         ctaBackground: string;
         ctaColor: string;
@@ -876,9 +876,9 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         backgroundImage?: string | null | undefined;
     };
     animation: {
-        entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
+        entrance: "NONE" | "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "REVEAL";
         exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
-        transition: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
+        transition: "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
         durationMs: number;
         delayMs: number;
         easing: "STANDARD" | "PREMIUM" | "LINEAR";
@@ -894,12 +894,12 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         separatorSpacing: number;
     };
     behavior: {
+        autoplay: boolean;
         loop: boolean;
         sticky: "FIXED" | "STICKY" | "NON_STICKY";
         dismissible: boolean;
         dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
         dismissalDuration: number | null;
-        autoplay: boolean;
         intervalMs: number;
         arrows: boolean;
         pagination: boolean;
@@ -907,7 +907,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
         expirationMessageEn: string | null;
         expirationMessageAr: string | null;
-        freeShippingThresholdSource: "STORE" | "CUSTOM";
+        freeShippingThresholdSource: "CUSTOM" | "STORE";
         freeShippingThreshold: number | null;
         remainingMessageEn: string;
         remainingMessageAr: string;
@@ -924,7 +924,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         devices: ("desktop" | "tablet" | "mobile")[];
         authentication: "ALL" | "GUEST" | "LOGGED_IN";
         customerType: "ALL" | "RETURNING" | "NEW";
-        pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
+        pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
         urlPatterns: string[];
         cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
         cartSubtotalMin: number | null;
@@ -936,9 +936,9 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         showDesktop: boolean;
         showTablet: boolean;
         showMobile: boolean;
-        desktopMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-        tabletMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-        mobileMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+        desktopMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
+        tabletMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
+        mobileMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
         desktopTextEn: string | null;
         desktopTextAr: string | null;
         mobileTextEn: string | null;
@@ -959,10 +959,10 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
             emphasis?: boolean | undefined;
         } | undefined;
         icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+        emoji?: string | null | undefined;
         textAr?: string | null | undefined;
         secondaryTextEn?: string | null | undefined;
         secondaryTextAr?: string | null | undefined;
-        emoji?: string | null | undefined;
         openInNewTab?: boolean | undefined;
         ctaTextEn?: string | null | undefined;
         ctaTextAr?: string | null | undefined;
@@ -973,13 +973,13 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     internalName: string;
     sortOrder?: number | undefined;
     promotionId?: string | null | undefined;
-    position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
+    position?: "TOP" | "BOTTOM" | "BELOW_HEADER" | undefined;
     state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
     priority?: number | undefined;
     startsAt?: string | null | undefined;
     endsAt?: string | null | undefined;
     timezone?: string | undefined;
-    mode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | undefined;
+    mode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | undefined;
     recurringSchedule?: {
         enabled?: boolean | undefined;
         weekdays?: number[] | undefined;
@@ -1013,7 +1013,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth?: number | undefined;
         borderColor?: string | undefined;
         borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-        shadow?: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG" | undefined;
+        shadow?: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE" | undefined;
         zIndex?: number | undefined;
         ctaBackground?: string | undefined;
         ctaColor?: string | undefined;
@@ -1023,9 +1023,9 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         ctaRadius?: number | undefined;
     } | undefined;
     animation?: {
-        entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
+        entrance?: "NONE" | "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "REVEAL" | undefined;
         exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
-        transition?: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
+        transition?: "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
         durationMs?: number | undefined;
         delayMs?: number | undefined;
         easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
@@ -1041,12 +1041,12 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         separatorSpacing?: number | undefined;
     } | undefined;
     behavior?: {
+        autoplay?: boolean | undefined;
         loop?: boolean | undefined;
         sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
         dismissible?: boolean | undefined;
         dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
         dismissalDuration?: number | null | undefined;
-        autoplay?: boolean | undefined;
         intervalMs?: number | undefined;
         arrows?: boolean | undefined;
         pagination?: boolean | undefined;
@@ -1056,7 +1056,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         expirationMessageAr?: string | null | undefined;
         redirectUrl?: string | null | undefined;
         nextBannerId?: string | null | undefined;
-        freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
+        freeShippingThresholdSource?: "CUSTOM" | "STORE" | undefined;
         freeShippingThreshold?: number | null | undefined;
         remainingMessageEn?: string | undefined;
         remainingMessageAr?: string | undefined;
@@ -1071,7 +1071,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
         authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
         customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-        pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
+        pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
         urlPatterns?: string[] | undefined;
         cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
         cartSubtotalMin?: number | null | undefined;
@@ -1083,9 +1083,9 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         showDesktop?: boolean | undefined;
         showTablet?: boolean | undefined;
         showMobile?: boolean | undefined;
-        desktopMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
-        tabletMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
-        mobileMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        desktopMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        tabletMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        mobileMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
         desktopTextEn?: string | null | undefined;
         desktopTextAr?: string | null | undefined;
         mobileTextEn?: string | null | undefined;
@@ -1096,7 +1096,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
 }>, {
     sortOrder: number;
     promotionId: string | null;
-    position: "TOP" | "BELOW_HEADER" | "BOTTOM";
+    position: "TOP" | "BOTTOM" | "BELOW_HEADER";
     state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
     priority: number;
     timezone: string;
@@ -1112,16 +1112,16 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         couponCode?: string | null | undefined;
         url?: string | null | undefined;
         icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+        emoji?: string | null | undefined;
         textAr?: string | null | undefined;
         secondaryTextEn?: string | null | undefined;
         secondaryTextAr?: string | null | undefined;
-        emoji?: string | null | undefined;
         ctaTextEn?: string | null | undefined;
         ctaTextAr?: string | null | undefined;
         couponId?: string | null | undefined;
         countdownAt?: string | null | undefined;
     }[];
-    mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
+    mode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS";
     internalName: string;
     recurringSchedule: {
         enabled: boolean;
@@ -1154,7 +1154,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth: number;
         borderColor: string;
         borderStyle: "SOLID" | "DASHED" | "DOTTED";
-        shadow: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG";
+        shadow: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE";
         zIndex: number;
         ctaBackground: string;
         ctaColor: string;
@@ -1166,9 +1166,9 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         backgroundImage?: string | null | undefined;
     };
     animation: {
-        entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
+        entrance: "NONE" | "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "REVEAL";
         exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
-        transition: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
+        transition: "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
         durationMs: number;
         delayMs: number;
         easing: "STANDARD" | "PREMIUM" | "LINEAR";
@@ -1184,12 +1184,12 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         separatorSpacing: number;
     };
     behavior: {
+        autoplay: boolean;
         loop: boolean;
         sticky: "FIXED" | "STICKY" | "NON_STICKY";
         dismissible: boolean;
         dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
         dismissalDuration: number | null;
-        autoplay: boolean;
         intervalMs: number;
         arrows: boolean;
         pagination: boolean;
@@ -1197,7 +1197,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
         expirationMessageEn: string | null;
         expirationMessageAr: string | null;
-        freeShippingThresholdSource: "STORE" | "CUSTOM";
+        freeShippingThresholdSource: "CUSTOM" | "STORE";
         freeShippingThreshold: number | null;
         remainingMessageEn: string;
         remainingMessageAr: string;
@@ -1214,7 +1214,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         devices: ("desktop" | "tablet" | "mobile")[];
         authentication: "ALL" | "GUEST" | "LOGGED_IN";
         customerType: "ALL" | "RETURNING" | "NEW";
-        pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
+        pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
         urlPatterns: string[];
         cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
         cartSubtotalMin: number | null;
@@ -1226,9 +1226,9 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         showDesktop: boolean;
         showTablet: boolean;
         showMobile: boolean;
-        desktopMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-        tabletMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-        mobileMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+        desktopMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
+        tabletMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
+        mobileMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
         desktopTextEn: string | null;
         desktopTextAr: string | null;
         mobileTextEn: string | null;
@@ -1249,10 +1249,10 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
             emphasis?: boolean | undefined;
         } | undefined;
         icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+        emoji?: string | null | undefined;
         textAr?: string | null | undefined;
         secondaryTextEn?: string | null | undefined;
         secondaryTextAr?: string | null | undefined;
-        emoji?: string | null | undefined;
         openInNewTab?: boolean | undefined;
         ctaTextEn?: string | null | undefined;
         ctaTextAr?: string | null | undefined;
@@ -1263,13 +1263,13 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     internalName: string;
     sortOrder?: number | undefined;
     promotionId?: string | null | undefined;
-    position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
+    position?: "TOP" | "BOTTOM" | "BELOW_HEADER" | undefined;
     state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
     priority?: number | undefined;
     startsAt?: string | null | undefined;
     endsAt?: string | null | undefined;
     timezone?: string | undefined;
-    mode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | undefined;
+    mode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | undefined;
     recurringSchedule?: {
         enabled?: boolean | undefined;
         weekdays?: number[] | undefined;
@@ -1303,7 +1303,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth?: number | undefined;
         borderColor?: string | undefined;
         borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-        shadow?: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG" | undefined;
+        shadow?: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE" | undefined;
         zIndex?: number | undefined;
         ctaBackground?: string | undefined;
         ctaColor?: string | undefined;
@@ -1313,9 +1313,9 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         ctaRadius?: number | undefined;
     } | undefined;
     animation?: {
-        entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
+        entrance?: "NONE" | "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "REVEAL" | undefined;
         exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
-        transition?: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
+        transition?: "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
         durationMs?: number | undefined;
         delayMs?: number | undefined;
         easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
@@ -1331,12 +1331,12 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         separatorSpacing?: number | undefined;
     } | undefined;
     behavior?: {
+        autoplay?: boolean | undefined;
         loop?: boolean | undefined;
         sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
         dismissible?: boolean | undefined;
         dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
         dismissalDuration?: number | null | undefined;
-        autoplay?: boolean | undefined;
         intervalMs?: number | undefined;
         arrows?: boolean | undefined;
         pagination?: boolean | undefined;
@@ -1346,7 +1346,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         expirationMessageAr?: string | null | undefined;
         redirectUrl?: string | null | undefined;
         nextBannerId?: string | null | undefined;
-        freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
+        freeShippingThresholdSource?: "CUSTOM" | "STORE" | undefined;
         freeShippingThreshold?: number | null | undefined;
         remainingMessageEn?: string | undefined;
         remainingMessageAr?: string | undefined;
@@ -1361,7 +1361,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
         authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
         customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-        pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
+        pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
         urlPatterns?: string[] | undefined;
         cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
         cartSubtotalMin?: number | null | undefined;
@@ -1373,9 +1373,9 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         showDesktop?: boolean | undefined;
         showTablet?: boolean | undefined;
         showMobile?: boolean | undefined;
-        desktopMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
-        tabletMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
-        mobileMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        desktopMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        tabletMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+        mobileMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
         desktopTextEn?: string | null | undefined;
         desktopTextAr?: string | null | undefined;
         mobileTextEn?: string | null | undefined;
@@ -1400,14 +1400,14 @@ export declare const bannerQuerySchema: z.ZodObject<{
     direction: "asc" | "desc";
     search?: string | undefined;
     state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
-    mode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | undefined;
+    mode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | undefined;
 }, {
     sort?: "updatedAt" | "name" | "priority" | "startsAt" | undefined;
     page?: number | undefined;
     limit?: number | undefined;
     search?: string | undefined;
     state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
-    mode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | undefined;
+    mode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | undefined;
     direction?: "asc" | "desc" | undefined;
 }>;
 export declare const reorderBannersSchema: z.ZodObject<{
@@ -1434,8 +1434,8 @@ export declare const bannerEventSchema: z.ZodObject<{
 }, {
     type: "IMPRESSION" | "CLICK" | "CTA_CLICK" | "COUPON_COPY" | "DISMISS";
     page?: string | undefined;
-    messageId?: string | null | undefined;
     locale?: "en" | "ar" | undefined;
+    messageId?: string | null | undefined;
     device?: "desktop" | "tablet" | "mobile" | undefined;
     sessionHash?: string | null | undefined;
 }>;
@@ -1491,13 +1491,13 @@ export declare const bannerSettingsSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     enabled: boolean;
     displayStrategy: "STACK" | "HIGHEST_PRIORITY" | "ROTATE" | "SEQUENCE";
-    defaultPosition: "TOP" | "BELOW_HEADER" | "BOTTOM";
+    defaultPosition: "TOP" | "BOTTOM" | "BELOW_HEADER";
     analyticsEnabled: boolean;
     defaultConfig: Record<string, unknown>;
 }, {
     enabled: boolean;
     displayStrategy: "STACK" | "HIGHEST_PRIORITY" | "ROTATE" | "SEQUENCE";
-    defaultPosition: "TOP" | "BELOW_HEADER" | "BOTTOM";
+    defaultPosition: "TOP" | "BOTTOM" | "BELOW_HEADER";
     analyticsEnabled: boolean;
     defaultConfig?: Record<string, unknown> | undefined;
 }>;
@@ -1590,7 +1590,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth: number;
             borderColor: string;
             borderStyle: "SOLID" | "DASHED" | "DOTTED";
-            shadow: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG";
+            shadow: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE";
             zIndex: number;
             ctaBackground: string;
             ctaColor: string;
@@ -1627,7 +1627,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth?: number | undefined;
             borderColor?: string | undefined;
             borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-            shadow?: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG" | undefined;
+            shadow?: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE" | undefined;
             zIndex?: number | undefined;
             ctaBackground?: string | undefined;
             ctaColor?: string | undefined;
@@ -1654,9 +1654,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             separatorSize: z.ZodDefault<z.ZodNumber>;
             separatorSpacing: z.ZodDefault<z.ZodNumber>;
         }, "strip", z.ZodTypeAny, {
-            entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
+            entrance: "NONE" | "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "REVEAL";
             exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
-            transition: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
+            transition: "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
             durationMs: number;
             delayMs: number;
             easing: "STANDARD" | "PREMIUM" | "LINEAR";
@@ -1671,9 +1671,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             separatorSize: number;
             separatorSpacing: number;
         }, {
-            entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
+            entrance?: "NONE" | "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "REVEAL" | undefined;
             exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
-            transition?: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
+            transition?: "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
             durationMs?: number | undefined;
             delayMs?: number | undefined;
             easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
@@ -1713,12 +1713,12 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             showProgress: z.ZodDefault<z.ZodBoolean>;
             inheritPromotionSchedule: z.ZodDefault<z.ZodBoolean>;
         }, "strip", z.ZodTypeAny, {
+            autoplay: boolean;
             loop: boolean;
             sticky: "FIXED" | "STICKY" | "NON_STICKY";
             dismissible: boolean;
             dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
             dismissalDuration: number | null;
-            autoplay: boolean;
             intervalMs: number;
             arrows: boolean;
             pagination: boolean;
@@ -1726,7 +1726,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
             expirationMessageEn: string | null;
             expirationMessageAr: string | null;
-            freeShippingThresholdSource: "STORE" | "CUSTOM";
+            freeShippingThresholdSource: "CUSTOM" | "STORE";
             freeShippingThreshold: number | null;
             remainingMessageEn: string;
             remainingMessageAr: string;
@@ -1737,12 +1737,12 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             redirectUrl?: string | null | undefined;
             nextBannerId?: string | null | undefined;
         }, {
+            autoplay?: boolean | undefined;
             loop?: boolean | undefined;
             sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
             dismissible?: boolean | undefined;
             dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
             dismissalDuration?: number | null | undefined;
-            autoplay?: boolean | undefined;
             intervalMs?: number | undefined;
             arrows?: boolean | undefined;
             pagination?: boolean | undefined;
@@ -1752,7 +1752,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             expirationMessageAr?: string | null | undefined;
             redirectUrl?: string | null | undefined;
             nextBannerId?: string | null | undefined;
-            freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
+            freeShippingThresholdSource?: "CUSTOM" | "STORE" | undefined;
             freeShippingThreshold?: number | null | undefined;
             remainingMessageEn?: string | undefined;
             remainingMessageAr?: string | undefined;
@@ -1780,7 +1780,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             devices: ("desktop" | "tablet" | "mobile")[];
             authentication: "ALL" | "GUEST" | "LOGGED_IN";
             customerType: "ALL" | "RETURNING" | "NEW";
-            pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
+            pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
             urlPatterns: string[];
             cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
             cartSubtotalMin: number | null;
@@ -1793,7 +1793,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
             authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
             customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-            pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
+            pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
             urlPatterns?: string[] | undefined;
             cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
             cartSubtotalMin?: number | null | undefined;
@@ -1818,9 +1818,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             showDesktop: boolean;
             showTablet: boolean;
             showMobile: boolean;
-            desktopMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-            tabletMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-            mobileMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+            desktopMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
+            tabletMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
+            mobileMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
             desktopTextEn: string | null;
             desktopTextAr: string | null;
             mobileTextEn: string | null;
@@ -1831,9 +1831,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             showDesktop?: boolean | undefined;
             showTablet?: boolean | undefined;
             showMobile?: boolean | undefined;
-            desktopMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
-            tabletMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
-            mobileMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            desktopMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            tabletMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            mobileMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
             desktopTextEn?: string | null | undefined;
             desktopTextAr?: string | null | undefined;
             mobileTextEn?: string | null | undefined;
@@ -1880,10 +1880,10 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             couponCode?: string | null | undefined;
             url?: string | null | undefined;
             icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+            emoji?: string | null | undefined;
             textAr?: string | null | undefined;
             secondaryTextEn?: string | null | undefined;
             secondaryTextAr?: string | null | undefined;
-            emoji?: string | null | undefined;
             ctaTextEn?: string | null | undefined;
             ctaTextAr?: string | null | undefined;
             couponId?: string | null | undefined;
@@ -1898,10 +1898,10 @@ export declare const bannerTemplateSchema: z.ZodObject<{
                 emphasis?: boolean | undefined;
             } | undefined;
             icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+            emoji?: string | null | undefined;
             textAr?: string | null | undefined;
             secondaryTextEn?: string | null | undefined;
             secondaryTextAr?: string | null | undefined;
-            emoji?: string | null | undefined;
             openInNewTab?: boolean | undefined;
             ctaTextEn?: string | null | undefined;
             ctaTextAr?: string | null | undefined;
@@ -1912,7 +1912,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         sortOrder: number;
         promotionId: string | null;
-        position: "TOP" | "BELOW_HEADER" | "BOTTOM";
+        position: "TOP" | "BOTTOM" | "BELOW_HEADER";
         state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         priority: number;
         timezone: string;
@@ -1928,16 +1928,16 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             couponCode?: string | null | undefined;
             url?: string | null | undefined;
             icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+            emoji?: string | null | undefined;
             textAr?: string | null | undefined;
             secondaryTextEn?: string | null | undefined;
             secondaryTextAr?: string | null | undefined;
-            emoji?: string | null | undefined;
             ctaTextEn?: string | null | undefined;
             ctaTextAr?: string | null | undefined;
             couponId?: string | null | undefined;
             countdownAt?: string | null | undefined;
         }[];
-        mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
+        mode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS";
         internalName: string;
         recurringSchedule: {
             enabled: boolean;
@@ -1970,7 +1970,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth: number;
             borderColor: string;
             borderStyle: "SOLID" | "DASHED" | "DOTTED";
-            shadow: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG";
+            shadow: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE";
             zIndex: number;
             ctaBackground: string;
             ctaColor: string;
@@ -1982,9 +1982,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             backgroundImage?: string | null | undefined;
         };
         animation: {
-            entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
+            entrance: "NONE" | "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "REVEAL";
             exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
-            transition: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
+            transition: "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
             durationMs: number;
             delayMs: number;
             easing: "STANDARD" | "PREMIUM" | "LINEAR";
@@ -2000,12 +2000,12 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             separatorSpacing: number;
         };
         behavior: {
+            autoplay: boolean;
             loop: boolean;
             sticky: "FIXED" | "STICKY" | "NON_STICKY";
             dismissible: boolean;
             dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
             dismissalDuration: number | null;
-            autoplay: boolean;
             intervalMs: number;
             arrows: boolean;
             pagination: boolean;
@@ -2013,7 +2013,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
             expirationMessageEn: string | null;
             expirationMessageAr: string | null;
-            freeShippingThresholdSource: "STORE" | "CUSTOM";
+            freeShippingThresholdSource: "CUSTOM" | "STORE";
             freeShippingThreshold: number | null;
             remainingMessageEn: string;
             remainingMessageAr: string;
@@ -2030,7 +2030,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             devices: ("desktop" | "tablet" | "mobile")[];
             authentication: "ALL" | "GUEST" | "LOGGED_IN";
             customerType: "ALL" | "RETURNING" | "NEW";
-            pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
+            pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
             urlPatterns: string[];
             cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
             cartSubtotalMin: number | null;
@@ -2042,9 +2042,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             showDesktop: boolean;
             showTablet: boolean;
             showMobile: boolean;
-            desktopMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-            tabletMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-            mobileMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+            desktopMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
+            tabletMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
+            mobileMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
             desktopTextEn: string | null;
             desktopTextAr: string | null;
             mobileTextEn: string | null;
@@ -2065,10 +2065,10 @@ export declare const bannerTemplateSchema: z.ZodObject<{
                 emphasis?: boolean | undefined;
             } | undefined;
             icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+            emoji?: string | null | undefined;
             textAr?: string | null | undefined;
             secondaryTextEn?: string | null | undefined;
             secondaryTextAr?: string | null | undefined;
-            emoji?: string | null | undefined;
             openInNewTab?: boolean | undefined;
             ctaTextEn?: string | null | undefined;
             ctaTextAr?: string | null | undefined;
@@ -2079,13 +2079,13 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         internalName: string;
         sortOrder?: number | undefined;
         promotionId?: string | null | undefined;
-        position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
+        position?: "TOP" | "BOTTOM" | "BELOW_HEADER" | undefined;
         state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
         priority?: number | undefined;
         startsAt?: string | null | undefined;
         endsAt?: string | null | undefined;
         timezone?: string | undefined;
-        mode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | undefined;
+        mode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | undefined;
         recurringSchedule?: {
             enabled?: boolean | undefined;
             weekdays?: number[] | undefined;
@@ -2119,7 +2119,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth?: number | undefined;
             borderColor?: string | undefined;
             borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-            shadow?: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG" | undefined;
+            shadow?: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE" | undefined;
             zIndex?: number | undefined;
             ctaBackground?: string | undefined;
             ctaColor?: string | undefined;
@@ -2129,9 +2129,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             ctaRadius?: number | undefined;
         } | undefined;
         animation?: {
-            entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
+            entrance?: "NONE" | "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "REVEAL" | undefined;
             exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
-            transition?: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
+            transition?: "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
             durationMs?: number | undefined;
             delayMs?: number | undefined;
             easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
@@ -2147,12 +2147,12 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             separatorSpacing?: number | undefined;
         } | undefined;
         behavior?: {
+            autoplay?: boolean | undefined;
             loop?: boolean | undefined;
             sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
             dismissible?: boolean | undefined;
             dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
             dismissalDuration?: number | null | undefined;
-            autoplay?: boolean | undefined;
             intervalMs?: number | undefined;
             arrows?: boolean | undefined;
             pagination?: boolean | undefined;
@@ -2162,7 +2162,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             expirationMessageAr?: string | null | undefined;
             redirectUrl?: string | null | undefined;
             nextBannerId?: string | null | undefined;
-            freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
+            freeShippingThresholdSource?: "CUSTOM" | "STORE" | undefined;
             freeShippingThreshold?: number | null | undefined;
             remainingMessageEn?: string | undefined;
             remainingMessageAr?: string | undefined;
@@ -2177,7 +2177,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
             authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
             customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-            pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
+            pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
             urlPatterns?: string[] | undefined;
             cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
             cartSubtotalMin?: number | null | undefined;
@@ -2189,9 +2189,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             showDesktop?: boolean | undefined;
             showTablet?: boolean | undefined;
             showMobile?: boolean | undefined;
-            desktopMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
-            tabletMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
-            mobileMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            desktopMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            tabletMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            mobileMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
             desktopTextEn?: string | null | undefined;
             desktopTextAr?: string | null | undefined;
             mobileTextEn?: string | null | undefined;
@@ -2202,7 +2202,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
     }>, {
         sortOrder: number;
         promotionId: string | null;
-        position: "TOP" | "BELOW_HEADER" | "BOTTOM";
+        position: "TOP" | "BOTTOM" | "BELOW_HEADER";
         state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         priority: number;
         timezone: string;
@@ -2218,16 +2218,16 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             couponCode?: string | null | undefined;
             url?: string | null | undefined;
             icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+            emoji?: string | null | undefined;
             textAr?: string | null | undefined;
             secondaryTextEn?: string | null | undefined;
             secondaryTextAr?: string | null | undefined;
-            emoji?: string | null | undefined;
             ctaTextEn?: string | null | undefined;
             ctaTextAr?: string | null | undefined;
             couponId?: string | null | undefined;
             countdownAt?: string | null | undefined;
         }[];
-        mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
+        mode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS";
         internalName: string;
         recurringSchedule: {
             enabled: boolean;
@@ -2260,7 +2260,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth: number;
             borderColor: string;
             borderStyle: "SOLID" | "DASHED" | "DOTTED";
-            shadow: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG";
+            shadow: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE";
             zIndex: number;
             ctaBackground: string;
             ctaColor: string;
@@ -2272,9 +2272,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             backgroundImage?: string | null | undefined;
         };
         animation: {
-            entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
+            entrance: "NONE" | "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "REVEAL";
             exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
-            transition: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
+            transition: "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
             durationMs: number;
             delayMs: number;
             easing: "STANDARD" | "PREMIUM" | "LINEAR";
@@ -2290,12 +2290,12 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             separatorSpacing: number;
         };
         behavior: {
+            autoplay: boolean;
             loop: boolean;
             sticky: "FIXED" | "STICKY" | "NON_STICKY";
             dismissible: boolean;
             dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
             dismissalDuration: number | null;
-            autoplay: boolean;
             intervalMs: number;
             arrows: boolean;
             pagination: boolean;
@@ -2303,7 +2303,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
             expirationMessageEn: string | null;
             expirationMessageAr: string | null;
-            freeShippingThresholdSource: "STORE" | "CUSTOM";
+            freeShippingThresholdSource: "CUSTOM" | "STORE";
             freeShippingThreshold: number | null;
             remainingMessageEn: string;
             remainingMessageAr: string;
@@ -2320,7 +2320,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             devices: ("desktop" | "tablet" | "mobile")[];
             authentication: "ALL" | "GUEST" | "LOGGED_IN";
             customerType: "ALL" | "RETURNING" | "NEW";
-            pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
+            pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
             urlPatterns: string[];
             cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
             cartSubtotalMin: number | null;
@@ -2332,9 +2332,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             showDesktop: boolean;
             showTablet: boolean;
             showMobile: boolean;
-            desktopMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-            tabletMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-            mobileMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+            desktopMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
+            tabletMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
+            mobileMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
             desktopTextEn: string | null;
             desktopTextAr: string | null;
             mobileTextEn: string | null;
@@ -2355,10 +2355,10 @@ export declare const bannerTemplateSchema: z.ZodObject<{
                 emphasis?: boolean | undefined;
             } | undefined;
             icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+            emoji?: string | null | undefined;
             textAr?: string | null | undefined;
             secondaryTextEn?: string | null | undefined;
             secondaryTextAr?: string | null | undefined;
-            emoji?: string | null | undefined;
             openInNewTab?: boolean | undefined;
             ctaTextEn?: string | null | undefined;
             ctaTextAr?: string | null | undefined;
@@ -2369,13 +2369,13 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         internalName: string;
         sortOrder?: number | undefined;
         promotionId?: string | null | undefined;
-        position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
+        position?: "TOP" | "BOTTOM" | "BELOW_HEADER" | undefined;
         state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
         priority?: number | undefined;
         startsAt?: string | null | undefined;
         endsAt?: string | null | undefined;
         timezone?: string | undefined;
-        mode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | undefined;
+        mode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | undefined;
         recurringSchedule?: {
             enabled?: boolean | undefined;
             weekdays?: number[] | undefined;
@@ -2409,7 +2409,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth?: number | undefined;
             borderColor?: string | undefined;
             borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-            shadow?: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG" | undefined;
+            shadow?: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE" | undefined;
             zIndex?: number | undefined;
             ctaBackground?: string | undefined;
             ctaColor?: string | undefined;
@@ -2419,9 +2419,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             ctaRadius?: number | undefined;
         } | undefined;
         animation?: {
-            entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
+            entrance?: "NONE" | "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "REVEAL" | undefined;
             exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
-            transition?: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
+            transition?: "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
             durationMs?: number | undefined;
             delayMs?: number | undefined;
             easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
@@ -2437,12 +2437,12 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             separatorSpacing?: number | undefined;
         } | undefined;
         behavior?: {
+            autoplay?: boolean | undefined;
             loop?: boolean | undefined;
             sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
             dismissible?: boolean | undefined;
             dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
             dismissalDuration?: number | null | undefined;
-            autoplay?: boolean | undefined;
             intervalMs?: number | undefined;
             arrows?: boolean | undefined;
             pagination?: boolean | undefined;
@@ -2452,7 +2452,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             expirationMessageAr?: string | null | undefined;
             redirectUrl?: string | null | undefined;
             nextBannerId?: string | null | undefined;
-            freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
+            freeShippingThresholdSource?: "CUSTOM" | "STORE" | undefined;
             freeShippingThreshold?: number | null | undefined;
             remainingMessageEn?: string | undefined;
             remainingMessageAr?: string | undefined;
@@ -2467,7 +2467,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
             authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
             customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-            pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
+            pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
             urlPatterns?: string[] | undefined;
             cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
             cartSubtotalMin?: number | null | undefined;
@@ -2479,9 +2479,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             showDesktop?: boolean | undefined;
             showTablet?: boolean | undefined;
             showMobile?: boolean | undefined;
-            desktopMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
-            tabletMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
-            mobileMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            desktopMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            tabletMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            mobileMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
             desktopTextEn?: string | null | undefined;
             desktopTextAr?: string | null | undefined;
             mobileTextEn?: string | null | undefined;
@@ -2495,7 +2495,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
     configuration: {
         sortOrder: number;
         promotionId: string | null;
-        position: "TOP" | "BELOW_HEADER" | "BOTTOM";
+        position: "TOP" | "BOTTOM" | "BELOW_HEADER";
         state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         priority: number;
         timezone: string;
@@ -2511,16 +2511,16 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             couponCode?: string | null | undefined;
             url?: string | null | undefined;
             icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+            emoji?: string | null | undefined;
             textAr?: string | null | undefined;
             secondaryTextEn?: string | null | undefined;
             secondaryTextAr?: string | null | undefined;
-            emoji?: string | null | undefined;
             ctaTextEn?: string | null | undefined;
             ctaTextAr?: string | null | undefined;
             couponId?: string | null | undefined;
             countdownAt?: string | null | undefined;
         }[];
-        mode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS";
+        mode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS";
         internalName: string;
         recurringSchedule: {
             enabled: boolean;
@@ -2553,7 +2553,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth: number;
             borderColor: string;
             borderStyle: "SOLID" | "DASHED" | "DOTTED";
-            shadow: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG";
+            shadow: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE";
             zIndex: number;
             ctaBackground: string;
             ctaColor: string;
@@ -2565,9 +2565,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             backgroundImage?: string | null | undefined;
         };
         animation: {
-            entrance: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL";
+            entrance: "NONE" | "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "REVEAL";
             exit: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP";
-            transition: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
+            transition: "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT";
             durationMs: number;
             delayMs: number;
             easing: "STANDARD" | "PREMIUM" | "LINEAR";
@@ -2583,12 +2583,12 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             separatorSpacing: number;
         };
         behavior: {
+            autoplay: boolean;
             loop: boolean;
             sticky: "FIXED" | "STICKY" | "NON_STICKY";
             dismissible: boolean;
             dismissalMode: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT";
             dismissalDuration: number | null;
-            autoplay: boolean;
             intervalMs: number;
             arrows: boolean;
             pagination: boolean;
@@ -2596,7 +2596,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             countdownEnd: "HIDE" | "ZERO" | "MESSAGE" | "REDIRECT" | "NEXT_BANNER";
             expirationMessageEn: string | null;
             expirationMessageAr: string | null;
-            freeShippingThresholdSource: "STORE" | "CUSTOM";
+            freeShippingThresholdSource: "CUSTOM" | "STORE";
             freeShippingThreshold: number | null;
             remainingMessageEn: string;
             remainingMessageAr: string;
@@ -2613,7 +2613,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             devices: ("desktop" | "tablet" | "mobile")[];
             authentication: "ALL" | "GUEST" | "LOGGED_IN";
             customerType: "ALL" | "RETURNING" | "NEW";
-            pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
+            pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
             urlPatterns: string[];
             cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
             cartSubtotalMin: number | null;
@@ -2625,9 +2625,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             showDesktop: boolean;
             showTablet: boolean;
             showMobile: boolean;
-            desktopMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-            tabletMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
-            mobileMode: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null;
+            desktopMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
+            tabletMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
+            mobileMode: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null;
             desktopTextEn: string | null;
             desktopTextAr: string | null;
             mobileTextEn: string | null;
@@ -2652,10 +2652,10 @@ export declare const bannerTemplateSchema: z.ZodObject<{
                 emphasis?: boolean | undefined;
             } | undefined;
             icon?: "truck" | "gift" | "star" | "heart" | "bag" | "sparkle" | "tag" | "clock" | "info" | "warning" | null | undefined;
+            emoji?: string | null | undefined;
             textAr?: string | null | undefined;
             secondaryTextEn?: string | null | undefined;
             secondaryTextAr?: string | null | undefined;
-            emoji?: string | null | undefined;
             openInNewTab?: boolean | undefined;
             ctaTextEn?: string | null | undefined;
             ctaTextAr?: string | null | undefined;
@@ -2666,13 +2666,13 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         internalName: string;
         sortOrder?: number | undefined;
         promotionId?: string | null | undefined;
-        position?: "TOP" | "BELOW_HEADER" | "BOTTOM" | undefined;
+        position?: "TOP" | "BOTTOM" | "BELOW_HEADER" | undefined;
         state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
         priority?: number | undefined;
         startsAt?: string | null | undefined;
         endsAt?: string | null | undefined;
         timezone?: string | undefined;
-        mode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | undefined;
+        mode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | undefined;
         recurringSchedule?: {
             enabled?: boolean | undefined;
             weekdays?: number[] | undefined;
@@ -2706,7 +2706,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth?: number | undefined;
             borderColor?: string | undefined;
             borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-            shadow?: "NONE" | "MEDIUM" | "SUBTLE" | "STRONG" | undefined;
+            shadow?: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE" | undefined;
             zIndex?: number | undefined;
             ctaBackground?: string | undefined;
             ctaColor?: string | undefined;
@@ -2716,9 +2716,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             ctaRadius?: number | undefined;
         } | undefined;
         animation?: {
-            entrance?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "REVEAL" | undefined;
+            entrance?: "NONE" | "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "REVEAL" | undefined;
             exit?: "NONE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | undefined;
-            transition?: "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SCALE" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
+            transition?: "SCALE" | "FADE" | "SLIDE_DOWN" | "SLIDE_UP" | "SLIDE_LEFT" | "SLIDE_RIGHT" | "CROSSFADE" | "BLUR" | "INSTANT" | undefined;
             durationMs?: number | undefined;
             delayMs?: number | undefined;
             easing?: "STANDARD" | "PREMIUM" | "LINEAR" | undefined;
@@ -2734,12 +2734,12 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             separatorSpacing?: number | undefined;
         } | undefined;
         behavior?: {
+            autoplay?: boolean | undefined;
             loop?: boolean | undefined;
             sticky?: "FIXED" | "STICKY" | "NON_STICKY" | undefined;
             dismissible?: boolean | undefined;
             dismissalMode?: "REFRESH" | "SESSION" | "HOURS" | "DAYS" | "PERMANENT" | undefined;
             dismissalDuration?: number | null | undefined;
-            autoplay?: boolean | undefined;
             intervalMs?: number | undefined;
             arrows?: boolean | undefined;
             pagination?: boolean | undefined;
@@ -2749,7 +2749,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             expirationMessageAr?: string | null | undefined;
             redirectUrl?: string | null | undefined;
             nextBannerId?: string | null | undefined;
-            freeShippingThresholdSource?: "STORE" | "CUSTOM" | undefined;
+            freeShippingThresholdSource?: "CUSTOM" | "STORE" | undefined;
             freeShippingThreshold?: number | null | undefined;
             remainingMessageEn?: string | undefined;
             remainingMessageAr?: string | undefined;
@@ -2764,7 +2764,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             devices?: ("desktop" | "tablet" | "mobile")[] | undefined;
             authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
             customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
-            pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "EVERYWHERE" | "PRODUCTS" | "CATEGORIES" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
+            pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
             urlPatterns?: string[] | undefined;
             cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
             cartSubtotalMin?: number | null | undefined;
@@ -2776,9 +2776,9 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             showDesktop?: boolean | undefined;
             showTablet?: boolean | undefined;
             showMobile?: boolean | undefined;
-            desktopMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
-            tabletMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
-            mobileMode?: "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "COUNTDOWN" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            desktopMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            tabletMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
+            mobileMode?: "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "CAROUSEL" | "FREE_SHIPPING_PROGRESS" | null | undefined;
             desktopTextEn?: string | null | undefined;
             desktopTextAr?: string | null | undefined;
             mobileTextEn?: string | null | undefined;

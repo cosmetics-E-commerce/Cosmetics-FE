@@ -19,7 +19,7 @@ export const Route = createFileRoute("/brands/")({
     const description =
       locale === "ar"
         ? "اكتشفي كل علامات العناية والجمال المتاحة لدى بيوريزا وتصفحي منتجات كل علامة."
-        : "Explore every skincare, makeup, haircare and fragrance brand available at BIOREZA.";
+        : "Explore every skincare, haircare, body care and fragrance brand available at BIOREZA.";
     return {
       ...createSeoHead({ title, description, path: "/brands", locale }),
       scripts: [

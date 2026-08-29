@@ -965,8 +965,8 @@ html[data-motion-ready="true"]
 }
 
 .sf-brand-landing-logo-shell {
-  width: min(100%, clamp(22rem, 38vw, 36rem));
-  height: clamp(10rem, 17vw, 16rem);
+  width: min(100%, 26.25rem);
+  height: clamp(10rem, 13.2vw, 11.25rem);
   margin-bottom: 0;
   background: transparent;
 }

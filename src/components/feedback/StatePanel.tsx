@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { AlertCircle, PackageOpen, SearchX } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -34,12 +34,20 @@ export function StatePanel({
   children?: ReactNode;
 }) {
   const Icon = icons[kind];
+  const panelRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (kind === "error") panelRef.current?.focus({ preventScroll: true });
+  }, [kind]);
 
   return (
     <section
+      ref={panelRef}
       className={cn("state-panel border border-border px-6 py-14 text-center sm:px-10", className)}
       role={kind === "error" ? "alert" : "status"}
       aria-live={kind === "error" ? "assertive" : "polite"}
+      aria-atomic="true"
+      tabIndex={kind === "error" ? -1 : undefined}
     >
       <span
         className={cn(

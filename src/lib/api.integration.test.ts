@@ -3,12 +3,16 @@ import {
   clearSession,
   createSupportRequest,
   getWishlist,
+  hasRefreshSession,
   listAllBrands,
+  listBrands,
   listProductsPage,
   listMyReviews,
   listProductReviews,
+  logoutRequest,
   normalizeProductReviews,
   refreshSession,
+  rememberSession,
   register,
   resolveApiBase,
   resendRegistrationOtp,
@@ -48,7 +52,7 @@ describe("client session transport", () => {
     window.localStorage.setItem("bioreza.csrf", "still-valid");
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("offline")));
 
-    await expect(refreshSession()).rejects.toMatchObject({ code: "NETWORK_ERROR" });
+    await expect(refreshSession()).rejects.toMatchObject({ code: "NETWORK_UNAVAILABLE" });
     expect(window.localStorage.getItem("bioreza.csrf")).toBe("still-valid");
   });
 
@@ -68,6 +72,30 @@ describe("client session transport", () => {
 
     await expect(refreshSession()).rejects.toMatchObject({ code: "INVALID_REFRESH_TOKEN" });
     expect(window.localStorage.getItem("bioreza.csrf")).toBeNull();
+  });
+
+  it("keeps the session marker when logout fails and clears it only after confirmation", async () => {
+    rememberSession({
+      user: {} as never,
+      tokens: { accessToken: "access", expiresIn: 900 },
+      csrfToken: "logout-csrf",
+    });
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("offline")));
+
+    await expect(logoutRequest()).rejects.toMatchObject({ code: "NETWORK_UNAVAILABLE" });
+    expect(hasRefreshSession()).toBe(true);
+
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        new Response(JSON.stringify({ success: true, data: { loggedOut: true } }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      ),
+    );
+    await expect(logoutRequest()).resolves.toBeUndefined();
+    expect(hasRefreshSession()).toBe(false);
   });
 });
 
@@ -153,7 +181,27 @@ describe("catalog pagination API", () => {
     expect(String(fetchMock.mock.calls[0]?.[0])).toContain("/products?page=2&limit=24");
   });
 
-  it("loads every brand page without duplicating records", async () => {
+  it("keeps merchandising brand requests bounded to one page", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          success: true,
+          data: [],
+          meta: { page: 1, limit: 100, total: 10_000, totalPages: 100 },
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      ),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(listBrands()).resolves.toEqual([]);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(String(fetchMock.mock.calls[0]?.[0])).toContain(
+      "/brands?limit=100&sortBy=name&sortOrder=asc",
+    );
+  });
+
+  it("loads every brand page without duplicating records for the directory", async () => {
     const firstPage = Array.from({ length: 100 }, (_, index) => ({
       id: `brand-${index + 1}`,
       name: `Brand ${index + 1}`,

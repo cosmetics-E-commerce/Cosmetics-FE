@@ -1,5 +1,6 @@
 export * from "./common/primitives";
 export * from "./common/pagination";
+export * from "./common/error";
 export * from "./enums";
 export * from "./auth/auth.schema";
 export * from "./admin/admin.schema";
@@ -10,6 +11,8 @@ export * from "./catalog/product.schema";
 export * from "./cart/cart.schema";
 export * from "./wishlist/wishlist.schema";
 export * from "./navigation/navigation.schema";
+export * from "./routine-builder/routine-builder.schema";
+export * from "./page-builder/page-builder.schema";
 export * from "./inventory/inventory.schema";
 export * from "./shipping/shipping.schema";
 export * from "./permissions/permission.schema";

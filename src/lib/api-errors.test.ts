@@ -10,7 +10,7 @@ describe("customer-facing API errors", () => {
         code: "CART_INSUFFICIENT_STOCK",
         message: "reservation invariant conflict",
       }),
-    ).toContain("not enough stock");
+    ).toContain("quantity is no longer available");
   });
 
   it("does not expose server internals for 5xx failures", () => {
@@ -27,5 +27,15 @@ describe("customer-facing API errors", () => {
     expect(
       apiErrorMessage({ statusCode: 0, code: "NETWORK_ERROR", message: "fetch failed" }, "ar"),
     ).toContain("الاتصال");
+  });
+
+  it("explains final promotion-limit conflicts in English and Arabic", () => {
+    const error = {
+      statusCode: 409,
+      code: "PROMOTION_USAGE_CHANGED",
+      message: "P2034 transaction conflict",
+    };
+    expect(apiErrorMessage(error, "en")).toContain("Refresh your bag");
+    expect(apiErrorMessage(error, "ar")).toContain("حدّثي الحقيبة");
   });
 });

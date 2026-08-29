@@ -26,7 +26,7 @@ ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
 # No explicit version: corepack resolves the `packageManager` field in
 # package.json, so the image always matches what the repo pins.
-RUN corepack enable
+RUN corepack enable && corepack prepare pnpm@11.9.0 --activate
 
 WORKDIR /app
 
@@ -74,7 +74,7 @@ COPY . .
 
 RUN test -n "$VITE_API_BASE_URL" || (echo "VITE_API_BASE_URL build arg is required" && exit 1)
 
-RUN pnpm build
+RUN ./node_modules/.bin/vite build
 
 # ═══════════════════════════════════════════════════════════
 # production — .output is self-contained, nothing else needed

@@ -3,13 +3,14 @@ import { useQuery } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { LocationCombobox } from "@/components/forms/LocationCombobox";
+import { InternationalPhoneField } from "@/components/forms/InternationalPhoneField";
+import { isValidInternationalPhone } from "@/lib/international-phone";
 import {
   listShippingAreas,
   listShippingCitiesByGovernorate,
   listShippingGovernorates,
   type CreateAddressInput,
 } from "@/lib/api";
-import { normalizeEgyptPhone } from "@/lib/forms";
 import { cn } from "@/lib/utils";
 
 type AddressField =
@@ -95,8 +96,8 @@ export function AddressForm({
     if (!selectedCity) nextErrors.bostaCityId = copy.cityRequired;
     if (!selectedArea) nextErrors.bostaZoneId = copy.areaRequired;
 
-    const phone = normalizeEgyptPhone(value("phone"));
-    if (!/^01[0125][0-9]{8}$/.test(phone)) {
+    const phone = value("phone");
+    if (!isValidInternationalPhone(phone)) {
       nextErrors.phone = copy.phoneRequired;
     }
 
@@ -104,7 +105,11 @@ export function AddressForm({
     const firstInvalid = Object.keys(nextErrors)[0];
     if (firstInvalid) {
       requestAnimationFrame(() =>
-        formRef.current?.querySelector<HTMLElement>(`#${firstInvalid}`)?.focus(),
+        formRef.current
+          ?.querySelector<HTMLElement>(
+            `#${firstInvalid === "phone" ? "phone-number" : firstInvalid}`,
+          )
+          ?.focus(),
       );
       return;
     }
@@ -176,7 +181,15 @@ export function AddressForm({
       className="grid min-w-0 grid-cols-1 gap-5 sm:grid-cols-2"
     >
       {field("receiverName", copy.receiverName, { autoComplete: "name" })}
-      {field("phone", copy.phone, { autoComplete: "tel", type: "tel" })}
+      <InternationalPhoneField
+        label={copy.phone}
+        locale={locale}
+        defaultValue={initialPhone}
+        {...(errors.phone ? { error: errors.phone } : {})}
+        onValueChange={() => {
+          if (errors.phone) setErrors((current) => withoutError(current, "phone"));
+        }}
+      />
       <LocationCombobox
         id="bostaGovernorateId"
         label={copy.governorate}
@@ -318,7 +331,7 @@ function FieldError({ id, children }: { id: string; children: string }) {
 const ADDRESS_COPY = {
   en: {
     receiverName: "Receiver name",
-    phone: "Egyptian mobile number",
+    phone: "Phone Number",
     governorate: "Governorate",
     city: "City / Markaz",
     area: "District / area",
@@ -354,12 +367,12 @@ const ADDRESS_COPY = {
     areaRequired: "Choose a district or area from the delivery list.",
     streetRequired: "Enter a street name.",
     buildingRequired: "Enter a building number or name.",
-    phoneRequired: "Enter an 11-digit Egyptian mobile number, such as 01012345678.",
+    phoneRequired: "Enter a valid phone number using the selected country code.",
     instructionsPlaceholder: "For example: call on arrival or leave with reception",
   },
   ar: {
     receiverName: "اسم المستلم",
-    phone: "رقم الموبايل المصري",
+    phone: "رقم الهاتف",
     governorate: "المحافظة",
     city: "المدينة / المركز",
     area: "المنطقة / الحي",
@@ -395,7 +408,7 @@ const ADDRESS_COPY = {
     areaRequired: "اختر منطقة أو حياً من القائمة.",
     streetRequired: "أدخل اسم الشارع.",
     buildingRequired: "أدخل رقم أو اسم المبنى.",
-    phoneRequired: "أدخل رقم موبايل مصرياً صحيحاً من 11 رقماً، مثل 01012345678.",
+    phoneRequired: "أدخل رقم هاتف صحيحاً باستخدام رمز الدولة المحدد.",
     instructionsPlaceholder: "مثال: الاتصال عند الوصول أو التسليم إلى الاستقبال",
   },
 } as const;

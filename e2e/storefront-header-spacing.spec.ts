@@ -20,6 +20,7 @@ test("storefront pages share a comfortable header-to-breadcrumb boundary", async
 
   for (const url of routes) {
     await page.goto(url, { waitUntil: "networkidle" });
+    await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
     const geometry = await page.evaluate(() => {
       const header = document.querySelector<HTMLElement>(".store-header__bar")!;
       const breadcrumb = document.querySelector<HTMLElement>(".storefront-breadcrumb")!;

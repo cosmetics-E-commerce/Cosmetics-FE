@@ -45,18 +45,18 @@ describe("AddressForm accessibility", () => {
   it("labels every field and has no automatic accessibility violations", async () => {
     const { container } = renderAddressForm();
     expect(screen.getByLabelText("Receiver name")).toBeInTheDocument();
-    expect(screen.getByLabelText("Egyptian mobile number")).toBeInTheDocument();
+    expect(screen.getByLabelText("Phone Number")).toBeInTheDocument();
     expect((await axe.run(container)).violations).toEqual([]);
   });
 
   it("focuses the first invalid field and keeps the entered values", async () => {
     renderAddressForm();
-    const phone = screen.getByLabelText("Egyptian mobile number");
+    const phone = screen.getByLabelText("Phone Number");
     fireEvent.change(phone, { target: { value: "0123" } });
     fireEvent.submit(phone.closest("form")!);
 
     await waitFor(() => expect(screen.getByLabelText("Receiver name")).toHaveFocus());
     expect(phone).toHaveValue("0123");
-    expect(screen.getByText(/11-digit Egyptian mobile number/)).toBeInTheDocument();
+    expect(screen.getByText(/valid phone number/)).toBeInTheDocument();
   });
 });

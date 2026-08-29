@@ -4,7 +4,7 @@ export type OtpDeliveryChannel = z.infer<typeof otpDeliveryChannelEnum>;
 export declare const createUserSchema: z.ZodEffects<z.ZodObject<{
     firstName: z.ZodString;
     lastName: z.ZodString;
-    phone: z.ZodString;
+    phone: z.ZodEffects<z.ZodString, string, string>;
     email: z.ZodOptional<z.ZodString>;
     password: z.ZodString;
     gender: z.ZodOptional<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>;
@@ -46,11 +46,11 @@ export type CreateUserInput = z.infer<typeof createUserSchema>;
 export declare const registerSchema: z.ZodEffects<z.ZodObject<{
     firstName: z.ZodString;
     lastName: z.ZodString;
-    phone: z.ZodString;
+    phone: z.ZodEffects<z.ZodString, string, string>;
     password: z.ZodString;
+    gender: z.ZodOptional<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>;
 } & {
     email: z.ZodString;
-    gender: z.ZodEnum<["MALE", "FEMALE", "OTHER"]>;
     rePassword: z.ZodString;
     otpChannel: z.ZodDefault<z.ZodEnum<["SMS", "EMAIL"]>>;
 }, "strict", z.ZodTypeAny, {
@@ -59,17 +59,17 @@ export declare const registerSchema: z.ZodEffects<z.ZodObject<{
     phone: string;
     email: string;
     password: string;
-    gender: "MALE" | "FEMALE" | "OTHER";
     otpChannel: "SMS" | "EMAIL";
     rePassword: string;
+    gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
 }, {
     firstName: string;
     lastName: string;
     phone: string;
     email: string;
     password: string;
-    gender: "MALE" | "FEMALE" | "OTHER";
     rePassword: string;
+    gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
     otpChannel?: "SMS" | "EMAIL" | undefined;
 }>, {
     firstName: string;
@@ -77,17 +77,17 @@ export declare const registerSchema: z.ZodEffects<z.ZodObject<{
     phone: string;
     email: string;
     password: string;
-    gender: "MALE" | "FEMALE" | "OTHER";
     otpChannel: "SMS" | "EMAIL";
     rePassword: string;
+    gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
 }, {
     firstName: string;
     lastName: string;
     phone: string;
     email: string;
     password: string;
-    gender: "MALE" | "FEMALE" | "OTHER";
     rePassword: string;
+    gender?: "MALE" | "FEMALE" | "OTHER" | undefined;
     otpChannel?: "SMS" | "EMAIL" | undefined;
 }>;
 export type RegisterInput = z.infer<typeof registerSchema>;
@@ -152,7 +152,7 @@ export type ResendRegistrationOtpResult = z.infer<typeof resendRegistrationOtpRe
 export declare const createAdminUserSchema: z.ZodObject<{
     firstName: z.ZodString;
     lastName: z.ZodString;
-    phone: z.ZodString;
+    phone: z.ZodEffects<z.ZodString, string, string>;
     password: z.ZodString;
     gender: z.ZodOptional<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>;
 } & {

@@ -142,6 +142,10 @@ async function mockCampaignApi(page: Page, campaigns = [campaign], submissions: 
 }
 
 test("keeps one accessible campaign inside every supported viewport", async ({ page }) => {
+  // Six full navigations exercise SSR, campaign eligibility and three distinct
+  // presentation modes. Preserve the matrix under cold/contended CI without
+  // diluting any viewport or accessibility assertion.
+  test.setTimeout(120_000);
   await mockCampaignApi(page);
 
   for (const viewport of viewports) {

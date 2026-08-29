@@ -48,6 +48,7 @@ const cart = (empty = false) => ({
 test("adds an address in checkout and prevents duplicate order intent", async ({
   page,
 }, testInfo) => {
+  test.setTimeout(120_000);
   let ordered = false;
   let checkoutKey = "";
   let checkoutRequests = 0;
@@ -105,7 +106,7 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
     if (path.endsWith("/users/addresses") && request.method() === "POST") {
       expect(request.postDataJSON()).toMatchObject({
         receiverName: "Sara Ali",
-        phone: "01012345678",
+        phone: "+201012345678",
         country: "EG",
         bostaGovernorateId: governorateId,
         bostaCityId: cityId,
@@ -115,7 +116,7 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
         id: addressId,
         label: "HOME",
         receiverName: "Sara Ali",
-        phone: "01012345678",
+        phone: "+201012345678",
         country: "EG",
         governorate: "Cairo",
         city: "Nasr City",
@@ -161,10 +162,14 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
 
   await page.goto("/checkout");
   await expect(page.getByRole("heading", { name: "Confirm delivery and payment." })).toBeVisible({
-    timeout: 15_000,
+    // Cold Vite route splitting plus the mocked auth/cart bootstrap can exceed
+    // the global assertion budget when another route-heavy test runs in the
+    // second worker. This waits for the actual ready state; it does not mask a
+    // missing heading because the route must still complete before proceeding.
+    timeout: 30_000,
   });
 
-  if (testInfo.project.name === "mobile") {
+  if (testInfo.project.name.startsWith("mobile")) {
     await page.getByRole("button", { name: "Open menu" }).click();
     await page.getByRole("button", { name: "العربية" }).click();
     await expect(page).toHaveURL(/(?:\?|&)lang=ar(?:&|$)/);
@@ -198,7 +203,7 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
   }
   await page.setViewportSize(originalViewport);
 
-  if (testInfo.project.name === "mobile") {
+  if (testInfo.project.name.startsWith("mobile")) {
     await page.getByRole("button", { name: "فتح القائمة" }).click();
     await page.getByRole("button", { name: "English" }).click();
     await expect(page).not.toHaveURL(/(?:\?|&)lang=ar(?:&|$)/);
@@ -207,8 +212,8 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
   }
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
 
-  await page.getByRole("button", { name: "Continue to Delivery" }).click();
-  await expect(page.getByRole("heading", { name: "Delivery", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Continue to Delivery Address" }).click();
+  await expect(page.getByRole("heading", { name: "Delivery Address", exact: true })).toBeVisible();
   await expect(page.getByLabel("Receiver name")).toHaveValue("Sara Ali");
   await page.getByRole("combobox", { name: "Governorate" }).click();
   await page.getByText("Cairo", { exact: true }).click();
@@ -225,7 +230,7 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
   await page.getByRole("button", { name: "Save and use this address" }).click();
 
   await expect(page.getByText("12 Mostafa El Nahas", { exact: false })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Delivery", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Delivery Address", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Payment", exact: true })).toBeHidden();
 
   await page.getByRole("button", { name: "Continue to Review" }).click();

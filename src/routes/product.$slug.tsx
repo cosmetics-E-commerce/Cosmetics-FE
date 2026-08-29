@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useNavigate, useRouter } from "@tanstack/react-router";
 import {
   Check,
   CircleHelp,
@@ -24,11 +24,12 @@ import {
   type ProductInfoSection,
 } from "@/components/shop/ProductInfoAccordion";
 import { ProductReviews } from "@/components/shop/ProductReviews";
+import { StatePanel } from "@/components/feedback/StatePanel";
 import { IngredientExplorer } from "@/components/shop/IngredientExplorer";
 import { WishlistPicker } from "@/components/shop/WishlistPicker";
 import { formatPrice, type Product } from "@/lib/products";
 import { merchandisingQuery, productQuery, useProduct } from "@/lib/catalog";
-import { listProductReviews, type ProductReviews as ProductReviewsData } from "@/lib/api";
+import { listProductReviews } from "@/lib/api";
 import { useStore } from "@/lib/store";
 import { trackCommerceEvent } from "@/lib/analytics";
 import {
@@ -182,10 +183,10 @@ export const Route = createFileRoute("/product/$slug")({
     const locale: SeoLocale = context.locale === "ar" ? "ar" : "en";
     try {
       const product = await context.queryClient.ensureQueryData(productQuery(params.slug, locale));
-      const [reviews, related] = await Promise.all([
+      const [reviews, relatedResult] = await Promise.all([
         product.id
-          ? listProductReviews(product.id).catch(() => emptyReviews())
-          : Promise.resolve(emptyReviews()),
+          ? listProductReviews(product.id).catch(() => undefined)
+          : Promise.resolve(undefined),
         context.queryClient
           .ensureQueryData(
             merchandisingQuery(
@@ -198,12 +199,14 @@ export const Route = createFileRoute("/product/$slug")({
               locale,
             ),
           )
-          .catch(() => []),
+          .then((products) => ({ products, unavailable: false }))
+          .catch(() => ({ products: [] as Product[], unavailable: true })),
       ]);
       return {
         product,
         reviews,
-        related,
+        related: relatedResult.products,
+        relatedUnavailable: relatedResult.unavailable,
         locale,
       };
     } catch (error) {
@@ -254,7 +257,7 @@ export const Route = createFileRoute("/product/$slug")({
     return {
       ...seo,
       scripts: [
-        jsonLd(productSchema(product, locale, loaderData?.reviews.items ?? [])),
+        jsonLd(productSchema(product, locale, loaderData?.reviews?.items ?? [])),
         jsonLd(breadcrumbSchema(crumbs, locale)),
       ],
     };
@@ -265,6 +268,7 @@ export const Route = createFileRoute("/product/$slug")({
 function ProductPage() {
   const { slug } = Route.useParams();
   const navigate = useNavigate();
+  const router = useRouter();
   const { locale, add, wishlist, pendingVariants } = useStore();
   const labels = productCopy[locale];
   const initial = Route.useLoaderData();
@@ -274,11 +278,14 @@ function ProductPage() {
   const [variantSelection, setVariantSelection] = useState<VariantSelection>({});
   const [quantity, setQuantity] = useState(1);
   const [imageIndex, setImageIndex] = useState(0);
+  const [hydrated, setHydrated] = useState(false);
   const [added, setAdded] = useState(false);
   const [buyNowLoading, setBuyNowLoading] = useState(false);
   const [shared, setShared] = useState(false);
   const firstAvailableVariant =
     product?.sizes.findIndex((item) => item.stock === undefined || item.stock > 0) ?? -1;
+
+  useEffect(() => setHydrated(true), []);
 
   useEffect(() => {
     if (!product?.id) return;
@@ -480,6 +487,7 @@ function ProductPage() {
                 <button
                   key={image.id}
                   type="button"
+                  disabled={!hydrated}
                   onClick={() => setImageIndex(index)}
                   aria-label={labels.image(index + 1)}
                   aria-current={imageIndex === index}
@@ -862,15 +870,56 @@ function ProductPage() {
       </div>
       {product.id ? (
         <div id="product-reviews" className="product-reference-reviews">
-          <ProductReviews productId={product.id} initialData={initial.reviews} />
+          <ProductReviews
+            productId={product.id}
+            {...(initial.reviews ? { initialData: initial.reviews } : {})}
+          />
         </div>
       ) : null}
-      <RelatedProducts products={initial.related} title={labels.related} />
+      <RelatedProducts
+        products={initial.related}
+        title={labels.related}
+        unavailable={initial.relatedUnavailable}
+        locale={locale}
+        onRetry={() => void router.invalidate()}
+      />
     </div>
   );
 }
 
-function RelatedProducts({ products, title }: { products: Product[]; title: string }) {
+function RelatedProducts({
+  products,
+  title,
+  unavailable,
+  locale,
+  onRetry,
+}: {
+  products: Product[];
+  title: string;
+  unavailable: boolean;
+  locale: "en" | "ar";
+  onRetry: () => void;
+}) {
+  if (unavailable) {
+    return (
+      <StatePanel
+        kind="error"
+        title={
+          locale === "ar"
+            ? "التوصيات غير متاحة مؤقتاً"
+            : "Recommendations are temporarily unavailable"
+        }
+        description={
+          locale === "ar"
+            ? "تعذر تحميل المنتجات المشابهة، لكن بقية صفحة المنتج تعمل بشكل طبيعي."
+            : "Similar products could not be loaded, but the rest of this product page is still available."
+        }
+        action={onRetry}
+        actionLabel={locale === "ar" ? "إعادة المحاولة" : "Try again"}
+        className="product-reference-related"
+      />
+    );
+  }
   if (!products.length) return null;
 
   return (
@@ -883,14 +932,6 @@ function RelatedProducts({ products, title }: { products: Product[]; title: stri
       </div>
     </section>
   );
-}
-
-function emptyReviews(): ProductReviewsData {
-  return {
-    items: [],
-    summary: { average: 0, count: 0, distribution: {} },
-    meta: { page: 1, totalPages: 0, total: 0 },
-  };
 }
 
 function isNotFoundError(error: unknown) {

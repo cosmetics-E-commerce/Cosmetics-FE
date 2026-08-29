@@ -59,6 +59,7 @@ export declare const auditLogSchema: z.ZodObject<{
     id: string;
     action: string;
     createdAt: string;
+    ip: string | null;
     actorId: string | null;
     actor: {
         id: string;
@@ -70,7 +71,6 @@ export declare const auditLogSchema: z.ZodObject<{
     } | null;
     resourceType: string;
     resourceId: string | null;
-    ip: string | null;
     userAgent: string | null;
     before?: unknown;
     after?: unknown;
@@ -78,6 +78,7 @@ export declare const auditLogSchema: z.ZodObject<{
     id: string;
     action: string;
     createdAt: string;
+    ip: string | null;
     actorId: string | null;
     actor: {
         id: string;
@@ -89,7 +90,6 @@ export declare const auditLogSchema: z.ZodObject<{
     } | null;
     resourceType: string;
     resourceId: string | null;
-    ip: string | null;
     userAgent: string | null;
     before?: unknown;
     after?: unknown;
@@ -168,6 +168,7 @@ export declare const auditLogListSchema: z.ZodObject<{
         id: string;
         action: string;
         createdAt: string;
+        ip: string | null;
         actorId: string | null;
         actor: {
             id: string;
@@ -179,7 +180,6 @@ export declare const auditLogListSchema: z.ZodObject<{
         } | null;
         resourceType: string;
         resourceId: string | null;
-        ip: string | null;
         userAgent: string | null;
         before?: unknown;
         after?: unknown;
@@ -187,6 +187,7 @@ export declare const auditLogListSchema: z.ZodObject<{
         id: string;
         action: string;
         createdAt: string;
+        ip: string | null;
         actorId: string | null;
         actor: {
             id: string;
@@ -198,7 +199,6 @@ export declare const auditLogListSchema: z.ZodObject<{
         } | null;
         resourceType: string;
         resourceId: string | null;
-        ip: string | null;
         userAgent: string | null;
         before?: unknown;
         after?: unknown;
@@ -230,6 +230,7 @@ export declare const auditLogListSchema: z.ZodObject<{
         id: string;
         action: string;
         createdAt: string;
+        ip: string | null;
         actorId: string | null;
         actor: {
             id: string;
@@ -241,7 +242,6 @@ export declare const auditLogListSchema: z.ZodObject<{
         } | null;
         resourceType: string;
         resourceId: string | null;
-        ip: string | null;
         userAgent: string | null;
         before?: unknown;
         after?: unknown;
@@ -259,6 +259,7 @@ export declare const auditLogListSchema: z.ZodObject<{
         id: string;
         action: string;
         createdAt: string;
+        ip: string | null;
         actorId: string | null;
         actor: {
             id: string;
@@ -270,7 +271,6 @@ export declare const auditLogListSchema: z.ZodObject<{
         } | null;
         resourceType: string;
         resourceId: string | null;
-        ip: string | null;
         userAgent: string | null;
         before?: unknown;
         after?: unknown;

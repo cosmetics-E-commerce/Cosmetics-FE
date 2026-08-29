@@ -10,7 +10,10 @@ export default defineConfig({
     {
       command: "node e2e/mock-storefront-api.mjs",
       url: "http://127.0.0.1:4174/health",
-      reuseExistingServer: !process.env.CI,
+      // Never reuse an arbitrary process on the mock API port. A Vite SPA
+      // responds 200 for unknown paths, so a stale preview server can satisfy
+      // this readiness probe and turn every API call into a misleading 404.
+      reuseExistingServer: false,
     },
     {
       command: "./node_modules/.bin/vite --host 127.0.0.1 --port 4173",
@@ -26,6 +29,9 @@ export default defineConfig({
   ],
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    { name: "firefox", use: { ...devices["Desktop Firefox"] } },
+    { name: "webkit", use: { ...devices["Desktop Safari"] } },
     { name: "mobile", use: { ...devices["Pixel 7"] } },
+    { name: "mobile-webkit", use: { ...devices["iPhone 13"] } },
   ],
 });

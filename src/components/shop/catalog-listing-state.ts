@@ -22,8 +22,9 @@ export function parseCatalogListingSearch(raw: Record<string, unknown>): Catalog
       ? raw["sort"]
       : undefined;
   const tags = tagSlugs(raw["tags"]);
+  const brands = tagSlugs(raw["brand"]);
   return {
-    ...stringValue("brand", raw["brand"]),
+    ...(brands ? { brand: brands } : {}),
     ...stringValue("category", raw["category"]),
     ...stringValue("concern", raw["concern"]),
     ...stringValue("search", raw["search"]),
@@ -51,7 +52,8 @@ export function catalogListingParams(
   return {
     page,
     limit: 24,
-    brandSlug: scope.brandSlug ?? search.brand?.toLowerCase(),
+    brandSlug: scope.brandSlug,
+    brandSlugs: scope.brandSlug ? undefined : search.brand?.toLowerCase(),
     categorySlug: scope.categorySlug ?? search.category?.toLowerCase(),
     search: search.search ?? search.concern,
     tags: search.tags,
@@ -67,10 +69,13 @@ export function catalogFacetParams(
   scope: { brandSlug?: string; categorySlug?: string } = {},
 ) {
   return {
-    brandSlug: scope.brandSlug ?? search.brand?.toLowerCase(),
+    brandSlug: scope.brandSlug,
     categorySlug: scope.categorySlug ?? search.category?.toLowerCase(),
     search: search.search ?? search.concern,
+    tags: search.tags,
     inStock: search.stock === "in-stock" ? "true" : undefined,
+    minPrice: search.minPrice !== undefined ? Math.round(search.minPrice * 100) : undefined,
+    maxPrice: search.maxPrice !== undefined ? Math.round(search.maxPrice * 100) : undefined,
   };
 }
 

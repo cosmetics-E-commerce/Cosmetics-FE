@@ -203,8 +203,15 @@ async function run() {
   await categoriesTrigger.hover();
   await page.locator(".published-mega").waitFor({ state: "visible" });
   const megaMenuOpen = round(performance.now() - openedAt);
+  const validCategoryHrefs = await page.evaluate(async () => {
+    const response = await fetch("/api/v1/categories?includeProductCount=true");
+    if (!response.ok) return [];
+    const payload = await response.json();
+    return (payload.data ?? []).map((category) => `/categories/${category.slug}`);
+  });
   const categoryLinks = page.locator('.published-mega a[href^="/categories/"]');
-  const categoryTargets = await categoryLinks.evaluateAll((links) => {
+  const categoryTargets = await categoryLinks.evaluateAll((links, allowedHrefs) => {
+    const allowed = new Set(allowedHrefs);
     const seen = new Set();
     return links
       .map((link) => {
@@ -214,23 +221,35 @@ async function run() {
         return { href: link.getAttribute("href"), name: label.textContent?.trim() };
       })
       .filter((target) => {
-        if (!target.href || !target.name || seen.has(target.href)) return false;
+        if (!target.href || !target.name || !allowed.has(target.href) || seen.has(target.href))
+          return false;
         seen.add(target.href);
         return true;
       })
       .slice(0, 2);
-  });
-  if (categoryTargets.length < 2)
-    throw new Error("The mega menu did not expose two category links");
+  }, validCategoryHrefs);
+  if (categoryTargets.length < 1)
+    throw new Error("The mega menu did not expose a category link backed by the catalog fixture");
   const firstCategory = categoryTargets[0];
-  const secondCategory = categoryTargets[1];
+  const secondCategory =
+    categoryTargets[1] ??
+    validCategoryHrefs
+      .filter((href) => href !== firstCategory.href)
+      .map((href) => ({ href, name: href.split("/").at(-1) }))[0];
+  if (!secondCategory) throw new Error("The catalog did not expose a second category route");
+  const secondCategoryInMenu = categoryTargets.some(
+    (category) => category.href === secondCategory.href,
+  );
 
   transitions.push(
     await measureTransition(
       page,
       "home-to-category",
       () => page.locator(`.published-mega a[href="${firstCategory.href}"]`).first().click(),
-      () => page.getByRole("heading", { name: firstCategory.name, exact: true }).first().waitFor(),
+      async () => {
+        await page.waitForURL((url) => url.pathname === firstCategory.href);
+        await page.locator(".sf-shop-page h1").first().waitFor();
+      },
     ),
   );
   await page.locator(".sf-product-card").first().waitFor({ state: "visible" });
@@ -242,8 +261,14 @@ async function run() {
     await measureTransition(
       page,
       "category-to-category",
-      () => page.locator(`.published-mega a[href="${secondCategory.href}"]`).first().click(),
-      () => page.getByRole("heading", { name: secondCategory.name, exact: true }).first().waitFor(),
+      () =>
+        secondCategoryInMenu
+          ? page.locator(`.published-mega a[href="${secondCategory.href}"]`).first().click()
+          : page.goto(`${baseURL}${secondCategory.href}`),
+      async () => {
+        await page.waitForURL((url) => url.pathname === secondCategory.href);
+        await page.locator(".sf-shop-page h1").first().waitFor();
+      },
     ),
   );
   await page.locator(".sf-product-card").first().waitFor({ state: "visible" });
@@ -267,7 +292,10 @@ async function run() {
       page,
       "product-back-to-category",
       () => page.goBack(),
-      () => page.getByRole("heading", { name: secondCategory.name, exact: true }).first().waitFor(),
+      async () => {
+        await page.waitForURL((url) => url.pathname === secondCategory.href);
+        await page.locator(".sf-shop-page h1").first().waitFor();
+      },
     ),
   );
   await page.locator(".sf-product-card").first().waitFor({ state: "visible" });

@@ -1,4 +1,5 @@
 import { z } from "zod";
+export declare const INVENTORY_OPERATION_MAX_QUANTITY = 1000000;
 export declare const reservationStatusEnum: z.ZodEnum<["ACTIVE", "COMMITTED", "RELEASED", "RESTORED"]>;
 export type ReservationStatusValue = z.infer<typeof reservationStatusEnum>;
 export declare const stockStatusEnum: z.ZodEnum<["IN_STOCK", "LOW_STOCK", "OUT_OF_STOCK"]>;
@@ -1496,4 +1497,291 @@ export declare const writeOffInventorySchema: z.ZodObject<{
     batchId: string;
 }>;
 export type WriteOffInventoryInput = z.infer<typeof writeOffInventorySchema>;
+export declare const inventoryRemovalReasonEnum: z.ZodEnum<["STOCK_CORRECTION", "DAMAGED", "EXPIRED", "LOST_MISSING", "INTERNAL_USE", "SUPPLIER_ISSUE", "OTHER"]>;
+export type InventoryRemovalReason = z.infer<typeof inventoryRemovalReasonEnum>;
+/**
+ * User-facing stock removal command. Batch allocation is automatic (FEFO) by
+ * default; batchId is only supplied when an administrator intentionally
+ * chooses a specific batch.
+ */
+export declare const removeInventoryStockSchema: z.ZodEffects<z.ZodObject<{
+    variantId: z.ZodString;
+    quantity: z.ZodOptional<z.ZodNumber>;
+    removeAllAvailable: z.ZodDefault<z.ZodBoolean>;
+    reason: z.ZodDefault<z.ZodEnum<["STOCK_CORRECTION", "DAMAGED", "EXPIRED", "LOST_MISSING", "INTERNAL_USE", "SUPPLIER_ISSUE", "OTHER"]>>;
+    note: z.ZodOptional<z.ZodString>;
+    batchId: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    variantId: string;
+    reason: "OTHER" | "EXPIRED" | "DAMAGED" | "STOCK_CORRECTION" | "LOST_MISSING" | "INTERNAL_USE" | "SUPPLIER_ISSUE";
+    removeAllAvailable: boolean;
+    quantity?: number | undefined;
+    note?: string | undefined;
+    batchId?: string | undefined;
+}, {
+    variantId: string;
+    quantity?: number | undefined;
+    reason?: "OTHER" | "EXPIRED" | "DAMAGED" | "STOCK_CORRECTION" | "LOST_MISSING" | "INTERNAL_USE" | "SUPPLIER_ISSUE" | undefined;
+    note?: string | undefined;
+    batchId?: string | undefined;
+    removeAllAvailable?: boolean | undefined;
+}>, {
+    variantId: string;
+    reason: "OTHER" | "EXPIRED" | "DAMAGED" | "STOCK_CORRECTION" | "LOST_MISSING" | "INTERNAL_USE" | "SUPPLIER_ISSUE";
+    removeAllAvailable: boolean;
+    quantity?: number | undefined;
+    note?: string | undefined;
+    batchId?: string | undefined;
+}, {
+    variantId: string;
+    quantity?: number | undefined;
+    reason?: "OTHER" | "EXPIRED" | "DAMAGED" | "STOCK_CORRECTION" | "LOST_MISSING" | "INTERNAL_USE" | "SUPPLIER_ISSUE" | undefined;
+    note?: string | undefined;
+    batchId?: string | undefined;
+    removeAllAvailable?: boolean | undefined;
+}>;
+export type RemoveInventoryStockInput = z.infer<typeof removeInventoryStockSchema>;
+export declare const inventoryRemovalAllocationSchema: z.ZodObject<{
+    batchId: z.ZodString;
+    batchNumber: z.ZodString;
+    quantity: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    quantity: number;
+    batchNumber: string;
+    batchId: string;
+}, {
+    quantity: number;
+    batchNumber: string;
+    batchId: string;
+}>;
+export declare const removeInventoryStockResponseSchema: z.ZodObject<{
+    variantId: z.ZodString;
+    removedQuantity: z.ZodNumber;
+    onHand: z.ZodNumber;
+    reserved: z.ZodNumber;
+    available: z.ZodNumber;
+    allocations: z.ZodArray<z.ZodObject<{
+        batchId: z.ZodString;
+        batchNumber: z.ZodString;
+        quantity: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        quantity: number;
+        batchNumber: string;
+        batchId: string;
+    }, {
+        quantity: number;
+        batchNumber: string;
+        batchId: string;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    variantId: string;
+    available: number;
+    onHand: number;
+    reserved: number;
+    removedQuantity: number;
+    allocations: {
+        quantity: number;
+        batchNumber: string;
+        batchId: string;
+    }[];
+}, {
+    variantId: string;
+    available: number;
+    onHand: number;
+    reserved: number;
+    removedQuantity: number;
+    allocations: {
+        quantity: number;
+        batchNumber: string;
+        batchId: string;
+    }[];
+}>;
+export type RemoveInventoryStockResponse = z.infer<typeof removeInventoryStockResponseSchema>;
+export declare const inventoryMovementQuerySchema: z.ZodObject<{
+    page: z.ZodDefault<z.ZodNumber>;
+    limit: z.ZodDefault<z.ZodNumber>;
+    sortBy: z.ZodOptional<z.ZodString>;
+    sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
+} & {
+    variantId: z.ZodOptional<z.ZodString>;
+    search: z.ZodOptional<z.ZodString>;
+}, "strip", z.ZodTypeAny, {
+    page: number;
+    limit: number;
+    sortOrder: "asc" | "desc";
+    sortBy?: string | undefined;
+    search?: string | undefined;
+    variantId?: string | undefined;
+}, {
+    page?: number | undefined;
+    limit?: number | undefined;
+    sortBy?: string | undefined;
+    sortOrder?: "asc" | "desc" | undefined;
+    search?: string | undefined;
+    variantId?: string | undefined;
+}>;
+export type InventoryMovementQuery = z.infer<typeof inventoryMovementQuerySchema>;
+export declare const inventoryMovementSchema: z.ZodObject<{
+    id: z.ZodString;
+    variantId: z.ZodString;
+    batchId: z.ZodNullable<z.ZodString>;
+    batchNumber: z.ZodNullable<z.ZodString>;
+    type: z.ZodEnum<["RECEIPT", "RESERVE", "RELEASE", "COMMIT", "ADJUSTMENT", "RETURN", "EXPIRY_WRITE_OFF"]>;
+    quantity: z.ZodNumber;
+    reason: z.ZodNullable<z.ZodString>;
+    createdAt: z.ZodString;
+    createdBy: z.ZodNullable<z.ZodObject<{
+        id: z.ZodString;
+        name: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        name: string;
+    }, {
+        id: string;
+        name: string;
+    }>>;
+}, "strip", z.ZodTypeAny, {
+    type: "RECEIPT" | "RESERVE" | "RELEASE" | "COMMIT" | "ADJUSTMENT" | "RETURN" | "EXPIRY_WRITE_OFF";
+    id: string;
+    createdAt: string;
+    variantId: string;
+    quantity: number;
+    reason: string | null;
+    createdBy: {
+        id: string;
+        name: string;
+    } | null;
+    batchNumber: string | null;
+    batchId: string | null;
+}, {
+    type: "RECEIPT" | "RESERVE" | "RELEASE" | "COMMIT" | "ADJUSTMENT" | "RETURN" | "EXPIRY_WRITE_OFF";
+    id: string;
+    createdAt: string;
+    variantId: string;
+    quantity: number;
+    reason: string | null;
+    createdBy: {
+        id: string;
+        name: string;
+    } | null;
+    batchNumber: string | null;
+    batchId: string | null;
+}>;
+export declare const paginatedInventoryMovementsSchema: z.ZodObject<{
+    data: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        variantId: z.ZodString;
+        batchId: z.ZodNullable<z.ZodString>;
+        batchNumber: z.ZodNullable<z.ZodString>;
+        type: z.ZodEnum<["RECEIPT", "RESERVE", "RELEASE", "COMMIT", "ADJUSTMENT", "RETURN", "EXPIRY_WRITE_OFF"]>;
+        quantity: z.ZodNumber;
+        reason: z.ZodNullable<z.ZodString>;
+        createdAt: z.ZodString;
+        createdBy: z.ZodNullable<z.ZodObject<{
+            id: z.ZodString;
+            name: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            name: string;
+        }, {
+            id: string;
+            name: string;
+        }>>;
+    }, "strip", z.ZodTypeAny, {
+        type: "RECEIPT" | "RESERVE" | "RELEASE" | "COMMIT" | "ADJUSTMENT" | "RETURN" | "EXPIRY_WRITE_OFF";
+        id: string;
+        createdAt: string;
+        variantId: string;
+        quantity: number;
+        reason: string | null;
+        createdBy: {
+            id: string;
+            name: string;
+        } | null;
+        batchNumber: string | null;
+        batchId: string | null;
+    }, {
+        type: "RECEIPT" | "RESERVE" | "RELEASE" | "COMMIT" | "ADJUSTMENT" | "RETURN" | "EXPIRY_WRITE_OFF";
+        id: string;
+        createdAt: string;
+        variantId: string;
+        quantity: number;
+        reason: string | null;
+        createdBy: {
+            id: string;
+            name: string;
+        } | null;
+        batchNumber: string | null;
+        batchId: string | null;
+    }>, "many">;
+    meta: z.ZodObject<{
+        page: z.ZodNumber;
+        limit: z.ZodNumber;
+        total: z.ZodNumber;
+        totalPages: z.ZodNumber;
+        hasNext: z.ZodBoolean;
+        hasPrev: z.ZodBoolean;
+    }, "strip", z.ZodTypeAny, {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    }, {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    data: {
+        type: "RECEIPT" | "RESERVE" | "RELEASE" | "COMMIT" | "ADJUSTMENT" | "RETURN" | "EXPIRY_WRITE_OFF";
+        id: string;
+        createdAt: string;
+        variantId: string;
+        quantity: number;
+        reason: string | null;
+        createdBy: {
+            id: string;
+            name: string;
+        } | null;
+        batchNumber: string | null;
+        batchId: string | null;
+    }[];
+    meta: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    };
+}, {
+    data: {
+        type: "RECEIPT" | "RESERVE" | "RELEASE" | "COMMIT" | "ADJUSTMENT" | "RETURN" | "EXPIRY_WRITE_OFF";
+        id: string;
+        createdAt: string;
+        variantId: string;
+        quantity: number;
+        reason: string | null;
+        createdBy: {
+            id: string;
+            name: string;
+        } | null;
+        batchNumber: string | null;
+        batchId: string | null;
+    }[];
+    meta: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    };
+}>;
+export type InventoryMovementResponse = z.infer<typeof inventoryMovementSchema>;
 //# sourceMappingURL=inventory.schema.d.ts.map

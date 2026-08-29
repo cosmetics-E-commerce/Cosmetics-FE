@@ -32,6 +32,7 @@ test("commerce controls respond to their card width instead of the viewport alon
   await page.goto("/shop", { waitUntil: "networkidle" });
   const products = page.locator(".sf-shop-products");
   const toolbar = page.locator(".sf-shop-page .quick-add").first();
+  await expect(toolbar.getByRole("button", { name: /Increase quantity/ })).toBeEnabled();
 
   for (const width of [160, 180, 200, 240, 280, 320]) {
     await products.evaluate((element, nextWidth) => {
@@ -47,6 +48,11 @@ test("commerce controls respond to their card width instead of the viewport alon
     expect(geometry.root.width).toBeCloseTo(width, 0);
     expect(geometry.documentOverflow).toBeLessThanOrEqual(0.5);
   }
+
+  // Restore the SSR-owned element before another test navigation can hydrate
+  // over this page. Leaving the synthetic measurement styles in place causes
+  // a test-only React hydration mismatch during the next document handoff.
+  await products.evaluate((element) => element.removeAttribute("style"));
 });
 
 test("quantity digits and stock states do not move the stepper zones", async ({ page }) => {

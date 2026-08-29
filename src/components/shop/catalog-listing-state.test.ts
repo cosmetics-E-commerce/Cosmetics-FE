@@ -64,4 +64,18 @@ describe("catalog listing URL state", () => {
       sortOrder: "desc",
     });
   });
+
+  it("normalizes multi-brand URL state and sends an OR brand set to the server", () => {
+    const state = parseCatalogListingSearch({
+      brand: " cerave, bioderma,cerave,../bad ",
+      page: "8",
+    });
+    expect(state).toEqual({ brand: "cerave,bioderma", page: 8 });
+    expect(catalogListingParams(state)).toMatchObject({
+      brandSlug: undefined,
+      brandSlugs: "cerave,bioderma",
+      page: 8,
+    });
+    expect(withResetPage(state, { brand: "cerave" })).toEqual({ brand: "cerave" });
+  });
 });

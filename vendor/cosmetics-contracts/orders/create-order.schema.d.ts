@@ -28,7 +28,7 @@ export declare const createOrderSchema: z.ZodObject<{
     }>, "many">;
     shippingAddressId: z.ZodString;
     paymentMethod: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>;
-    couponCode: z.ZodOptional<z.ZodString>;
+    couponCode: z.ZodOptional<z.ZodEffects<z.ZodPipeline<z.ZodEffects<z.ZodString, string, string>, z.ZodEffects<z.ZodString, string, string>>, string, string>>;
     giftVariantIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     notes: z.ZodOptional<z.ZodString>;
 }, "strict", z.ZodTypeAny, {
@@ -66,7 +66,7 @@ export declare const checkoutOrderSchema: z.ZodObject<Omit<{
     }>, "many">;
     shippingAddressId: z.ZodString;
     paymentMethod: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>;
-    couponCode: z.ZodOptional<z.ZodString>;
+    couponCode: z.ZodOptional<z.ZodEffects<z.ZodPipeline<z.ZodEffects<z.ZodString, string, string>, z.ZodEffects<z.ZodString, string, string>>, string, string>>;
     giftVariantIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     notes: z.ZodOptional<z.ZodString>;
 }, "items">, "strict", z.ZodTypeAny, {

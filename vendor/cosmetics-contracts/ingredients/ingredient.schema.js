@@ -52,7 +52,7 @@ exports.createIngredientSchema = exports.ingredientInputSchema;
 exports.updateIngredientSchema = exports.ingredientInputSchema.partial();
 exports.ingredientQuerySchema = pagination_1.paginationQuerySchema.extend({
     search: zod_1.z.string().trim().min(1).max(120).optional(),
-    status: zod_1.z.enum(["active", "inactive", "all"]).default("active"),
+    status: zod_1.z.enum(["active", "inactive", "archived", "all"]).default("active"),
     source: exports.ingredientSourceSchema.optional(),
     featured: zod_1.z.coerce.boolean().optional(),
     sortBy: zod_1.z

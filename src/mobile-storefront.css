@@ -149,6 +149,9 @@
   }
   :root {
     --mobile-page-gutter: 20px;
+    /* Match the server-rendered non-home offset to the compact mobile header.
+       ResizeObserver refines this value after hydration without a 39px jump. */
+    --store-header-offset: 64px;
   }
 
   .storefront-main {

@@ -8,11 +8,15 @@ export const getRouter = () => {
       queries: {
         staleTime: 60_000,
         retry: (count, error) => {
+          const retryable =
+            typeof error === "object" && error && "retryable" in error
+              ? Boolean(error.retryable)
+              : undefined;
           const status =
             typeof error === "object" && error && "statusCode" in error
               ? Number(error.statusCode)
               : 0;
-          return !(status >= 400 && status < 500) && count < 2;
+          return (retryable ?? !(status >= 400 && status < 500)) && count < 2;
         },
         refetchOnWindowFocus: false,
       },

@@ -36,6 +36,7 @@ function ForgotPassword() {
   const { locale } = useStore();
   const ar = locale === "ar";
   const copy = ar ? arabicCopy : englishCopy;
+  const [hydrated, setHydrated] = useState(false);
   const [step, setStep] = useState<RecoveryStep>("request");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
@@ -49,6 +50,8 @@ function ForgotPassword() {
   const [otpState, setOtpState] = useState<"idle" | "invalid" | "expired">("idle");
   const [pending, setPending] = useState(false);
   const [resending, setResending] = useState(false);
+
+  useEffect(() => setHydrated(true), []);
 
   useEffect(() => {
     if (resendAvailableAt <= Date.now()) {
@@ -202,7 +205,13 @@ function ForgotPassword() {
             autoFocus
           />
           <RecoveryError message={error} />
-          <Button type="submit" variant="solid" size="wide" loading={pending}>
+          <Button
+            type="submit"
+            variant="solid"
+            size="wide"
+            loading={pending}
+            disabled={!hydrated || pending}
+          >
             {pending ? copy.sending : copy.sendCode}
           </Button>
         </form>

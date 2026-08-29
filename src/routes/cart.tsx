@@ -85,13 +85,13 @@ function CartPage() {
           </Button>
         </Reveal>
       ) : (
-        <Reveal stagger className="mt-14 grid gap-12 lg:grid-cols-[1fr_380px]">
+        <Reveal stagger className="mt-14 grid min-w-0 gap-12 lg:grid-cols-[1fr_380px]">
           <Reveal
             as="ul"
             stagger
             staggerMs={40}
             distance={20}
-            className="divide-y divide-border border-y border-border"
+            className="min-w-0 divide-y divide-border border-y border-border"
             aria-live="polite"
           >
             {lines.map((line) => {
@@ -99,7 +99,7 @@ function CartPage() {
               return (
                 <li
                   key={line.variantId}
-                  className="flex gap-4 py-7 sm:gap-5"
+                  className="cart-line flex min-w-0 gap-4 py-7 sm:gap-5"
                   aria-busy={pending || undefined}
                 >
                   <PolishedImage
@@ -178,7 +178,7 @@ function CartPage() {
               );
             })}
           </Reveal>
-          <aside className="h-fit border border-border bg-ivory p-8 lg:sticky lg:top-32">
+          <aside className="min-w-0 h-fit border border-border bg-ivory p-5 sm:p-8 lg:sticky lg:top-32">
             <h2 className="label-sm">{t("cart.summary")}</h2>
             <div className="rule-gold my-6" />
             {promotionMessages.length > 0 && (
@@ -269,11 +269,11 @@ function CartPage() {
               </p>
             )}
             {hasIssues ? (
-              <Button variant="solid" size="wide" className="mt-8" disabled>
+              <Button variant="solid" size="wide" className="mt-8 hidden lg:inline-flex" disabled>
                 {t("cart.checkout")}
               </Button>
             ) : (
-              <Button asChild variant="solid" size="wide" className="mt-8">
+              <Button asChild variant="solid" size="wide" className="mt-8 hidden lg:inline-flex">
                 <Link to="/checkout">{t("cart.checkout")}</Link>
               </Button>
             )}
@@ -286,18 +286,40 @@ function CartPage() {
             {lines.length} {t("common.products")}, {t("cart.estimated")}{" "}
             {formatPrice(estimatedTotal)}
           </p>
-          <div className="mobile-primary-bar fixed inset-x-0 bottom-0 z-30 border-t border-border bg-warm-white px-4 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.4)] lg:hidden">
-            <div className="mx-auto flex max-w-lg items-center gap-3">
+          <div className="mobile-primary-bar fixed inset-x-0 bottom-0 z-30 border-t border-border bg-warm-white px-3 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.4)] lg:hidden">
+            {hasIssues ? (
+              <p
+                id="mobile-cart-issue"
+                role="alert"
+                className="mx-auto mb-2 max-w-lg text-xs text-destructive"
+              >
+                {t("cart.issue")}
+              </p>
+            ) : null}
+            <div className="mx-auto grid max-w-lg grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
               <div className="min-w-0 flex-1">
-                <p className="label-xs text-taupe">{t("cart.estimated")}</p>
-                <p className="font-serif text-xl">{formatPrice(estimatedTotal)}</p>
+                <p className="label-xs truncate text-taupe">{t("cart.estimated")}</p>
+                <p className="whitespace-nowrap font-serif text-[clamp(1rem,5.2vw,1.25rem)] leading-tight">
+                  {formatPrice(estimatedTotal)}
+                </p>
               </div>
               {hasIssues ? (
-                <Button variant="solid" size="pill" className="h-12 shrink-0 px-6" disabled>
+                <Button
+                  variant="solid"
+                  size="pill"
+                  className="h-12 max-w-[11rem] shrink-0 px-3 text-[0.63rem] sm:px-6 sm:text-xs"
+                  aria-describedby="mobile-cart-issue"
+                  disabled
+                >
                   {t("cart.checkout")}
                 </Button>
               ) : (
-                <Button asChild variant="solid" size="pill" className="h-12 shrink-0 px-6">
+                <Button
+                  asChild
+                  variant="solid"
+                  size="pill"
+                  className="h-12 max-w-[11rem] shrink-0 px-3 text-[0.63rem] sm:px-6 sm:text-xs"
+                >
                   <Link to="/checkout">{t("cart.checkout")}</Link>
                 </Button>
               )}

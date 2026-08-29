@@ -8,6 +8,7 @@ import {
 import { PolishedImage } from "@/components/ui/polished-image";
 import type { CatalogFacetResponse, PaginationMeta } from "@/lib/api";
 import type { Product } from "@/lib/products";
+import { groupBrandProducts } from "@/components/shop/brand-product-groups";
 
 type Props = {
   kind: "brand" | "category";
@@ -47,6 +48,15 @@ export function SeoCatalogLanding({
   onSearchChange,
 }: Props) {
   const hasBrandLogo = kind === "brand" && Boolean(logo);
+  const brandGroups = kind === "brand" ? groupBrandProducts(products, facets, locale) : [];
+  const filtered = Boolean(
+    search.category ||
+    search.search ||
+    search.stock ||
+    search.tags ||
+    search.minPrice !== undefined ||
+    search.maxPrice !== undefined,
+  );
 
   return (
     <div className={`sf-shop-page sf-shop-page--minimal sf-shop-page--${kind}`}>
@@ -155,29 +165,85 @@ export function SeoCatalogLanding({
           resultCount={meta.total}
           facets={facets}
           hideCategory={kind === "category"}
-          hideBrand
+          hideBrand={kind === "brand"}
           onChange={onSearchChange}
         />
-        <div
-          className={`sf-shop-products ${search.view === "list" ? "sf-shop-products--list" : "sf-shop-products--grid"}`}
-        >
-          {products.map((product) => (
-            <ProductCard
-              key={product.slug}
-              product={product}
-              compact={search.view !== "list"}
-              layout={search.view === "list" ? "list" : "grid"}
-            />
-          ))}
-        </div>
+        {kind === "brand" && brandGroups.length > 1 ? (
+          <nav
+            className="sf-brand-category-jumps"
+            aria-label={locale === "ar" ? "فئات العلامة التجارية" : "Brand categories"}
+          >
+            {brandGroups.map((group) => (
+              <a key={group.id} href={`#brand-category-${group.slug}`}>
+                {group.name}
+              </a>
+            ))}
+          </nav>
+        ) : null}
+        {kind === "brand" ? (
+          <div className="sf-brand-category-groups">
+            {brandGroups.map((group) => (
+              <section
+                key={group.id}
+                id={`brand-category-${group.slug}`}
+                className="sf-brand-category-group"
+                aria-labelledby={`brand-category-title-${group.id}`}
+              >
+                <header>
+                  <p className="label-xs text-gold">
+                    {locale === "ar" ? "مجموعة العلامة" : "Brand collection"}
+                  </p>
+                  <h2 id={`brand-category-title-${group.id}`}>{group.name}</h2>
+                </header>
+                <div
+                  className={`sf-shop-products ${search.view === "list" ? "sf-shop-products--list" : "sf-shop-products--grid"}`}
+                >
+                  {group.products.map((product) => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                      compact={search.view !== "list"}
+                      layout={search.view === "list" ? "list" : "grid"}
+                    />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        ) : (
+          <div
+            className={`sf-shop-products ${search.view === "list" ? "sf-shop-products--list" : "sf-shop-products--grid"}`}
+          >
+            {products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                compact={search.view !== "list"}
+                layout={search.view === "list" ? "list" : "grid"}
+              />
+            ))}
+          </div>
+        )}
         {meta.total === 0 ? (
           <div className="sf-catalog-empty" role="status">
-            <p className="label-xs text-gold">{locale === "ar" ? "قريباً" : "Coming soon"}</p>
+            <p className="label-xs text-gold">
+              {filtered
+                ? locale === "ar"
+                  ? "لا توجد نتائج"
+                  : "No matches"
+                : locale === "ar"
+                  ? "قريباً"
+                  : "Coming soon"}
+            </p>
             <h2>
               {kind === "brand"
                 ? locale === "ar"
-                  ? `لا توجد منتجات متاحة من ${name} حالياً.`
-                  : `No ${name} products are available yet.`
+                  ? filtered
+                    ? `لا توجد منتجات من ${name} تطابق هذه الفلاتر.`
+                    : `لا توجد منتجات متاحة من ${name} حالياً.`
+                  : filtered
+                    ? `No ${name} products match these filters.`
+                    : `No products are currently available from ${name}.`
                 : locale === "ar"
                   ? "لا توجد منتجات متاحة في هذا القسم حالياً."
                   : "No products are available in this category yet."}
@@ -187,7 +253,17 @@ export function SeoCatalogLanding({
                 ? "تصفّحي المجموعة الكاملة الآن، وعودي قريباً لرؤية المنتجات الجديدة."
                 : "Explore the full collection now, and check back soon for new arrivals."}
             </p>
-            <Link to="/shop">{locale === "ar" ? "تصفّح كل المنتجات" : "Shop all products"}</Link>
+            {filtered ? (
+              <button
+                type="button"
+                onClick={() => onSearchChange({})}
+                className="cursor-pointer underline underline-offset-4"
+              >
+                {locale === "ar" ? "مسح الفلاتر" : "Clear filters"}
+              </button>
+            ) : (
+              <Link to="/shop">{locale === "ar" ? "تصفّح كل المنتجات" : "Shop all products"}</Link>
+            )}
           </div>
         ) : null}
         {meta.totalPages > 1 ? (

@@ -2,22 +2,22 @@ import { Link } from "@tanstack/react-router";
 import { useMemo, useState, type CSSProperties } from "react";
 
 import type { PublicBrandListItemResponse } from "@/lib/api";
-import { useAllBrands } from "@/lib/catalog";
+import { useBrandMarquee, usePublicStoreSettings } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 import { sortBrands } from "@/components/layout/brand-directory-data";
+import { brandMarqueeDuration } from "@/lib/brand-marquee";
 import { useDraggableMarquee } from "./useDraggableMarquee";
 
 type BrandMarqueeProps = {
   initialBrands?: PublicBrandListItemResponse[];
 };
 
-const marqueeSecondsPerBrand = 4.6;
-const minimumMarqueeDuration = 36;
 const priorityLogoCount = 10;
 
 export function BrandMarquee({ initialBrands }: BrandMarqueeProps) {
   const { locale } = useStore();
-  const { data } = useAllBrands(initialBrands);
+  const { data } = useBrandMarquee(initialBrands);
+  const settings = usePublicStoreSettings();
   const brands = useMemo(() => sortBrands(data ?? [], locale), [data, locale]);
   const moving = brands.length > 1;
   const marquee = useDraggableMarquee({
@@ -26,11 +26,9 @@ export function BrandMarquee({ initialBrands }: BrandMarqueeProps) {
   });
 
   if (!brands.length) return null;
+  const speed = settings.data?.brandMarqueeSpeed;
   const style = {
-    "--brand-marquee-duration": `${Math.max(
-      minimumMarqueeDuration,
-      brands.length * marqueeSecondsPerBrand,
-    )}s`,
+    "--brand-marquee-duration": `${brandMarqueeDuration(brands.length, speed)}s`,
   } as CSSProperties;
   const heading = locale === "ar" ? "العلامات التجارية المتاحة" : "Available brands";
 

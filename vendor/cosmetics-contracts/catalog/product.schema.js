@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.merchandisingProductQuerySchema = exports.adminProductSchema = exports.adminProductImageSchema = exports.adminProductVariantSchema = exports.publicProductSchema = exports.publicProductVariantSchema = exports.publicProductOptionSchema = exports.publicProductOptionValueSchema = exports.publicProductImageSchema = exports.updateBrandSchema = exports.createBrandSchema = exports.publicBrandListItemSchema = exports.publicBrandSchema = exports.updateCategorySchema = exports.createCategorySchema = exports.publicCategorySchema = exports.adminProductQuerySchema = exports.publicBrandQuerySchema = exports.catalogFacetSchema = exports.catalogFacetQuerySchema = exports.publicCatalogQuerySchema = exports.receiveBatchSchema = exports.reassignArchivedCategoryProductsSchema = exports.reassignArchivedProductSchema = exports.updateProductSchema = exports.productVariantUpdateSchema = exports.createProductSchema = exports.productDimensionsInputSchema = exports.productOptionInputSchema = exports.productOptionValueInputSchema = exports.productImageInputSchema = exports.productVariantInputSchema = exports.catalogEntityOptionSchema = exports.catalogEntityOptionQuerySchema = exports.updateTagSchema = exports.createTagSchema = exports.tagQuerySchema = exports.adminTagSchema = exports.tagSummarySchema = exports.variantOpeningStockSchema = exports.PRODUCT_VARIANT_LIMIT = exports.PRODUCT_OPTION_VALUE_LIMIT = exports.PRODUCT_OPTION_LIMIT = exports.PRODUCT_GALLERY_LIMIT = exports.skinTypeEnum = void 0;
+exports.merchandisingProductQuerySchema = exports.adminProductSchema = exports.adminProductImageSchema = exports.adminProductVariantSchema = exports.publicProductSchema = exports.publicProductVariantSchema = exports.publicProductOptionSchema = exports.publicProductOptionValueSchema = exports.publicProductImageSchema = exports.updateBrandSchema = exports.createBrandSchema = exports.publicBrandListItemSchema = exports.publicBrandSchema = exports.updateCategorySchema = exports.createCategorySchema = exports.publicCategorySchema = exports.adminProductQuerySchema = exports.publicBrandQuerySchema = exports.catalogFacetSchema = exports.catalogFacetQuerySchema = exports.publicProductIdsQuerySchema = exports.publicCatalogQuerySchema = exports.receiveBatchSchema = exports.reassignArchivedCategoryProductsSchema = exports.reassignArchivedProductSchema = exports.updateProductSchema = exports.productVariantUpdateSchema = exports.createProductSchema = exports.productDimensionsInputSchema = exports.productOptionInputSchema = exports.productOptionValueInputSchema = exports.productImageInputSchema = exports.productVariantInputSchema = exports.catalogEntityOptionSchema = exports.catalogEntityOptionQuerySchema = exports.updateTagSchema = exports.createTagSchema = exports.tagQuerySchema = exports.adminTagSchema = exports.tagSummarySchema = exports.variantOpeningStockSchema = exports.PRODUCT_VARIANT_LIMIT = exports.PRODUCT_OPTION_VALUE_LIMIT = exports.PRODUCT_OPTION_LIMIT = exports.PRODUCT_GALLERY_LIMIT = exports.skinTypeEnum = void 0;
 const zod_1 = require("zod");
 const image_reference_schema_1 = require("../media/image-reference.schema");
 const primitives_1 = require("../common/primitives");
@@ -22,7 +22,7 @@ exports.variantOpeningStockSchema = zod_1.z
     .object({
     quantity: zod_1.z.number().int().positive().max(1_000_000),
     expiresAt: zod_1.z.coerce.date(),
-    costPrice: primitives_1.piastresSchema,
+    costPrice: primitives_1.databasePiastresSchema,
     batchNumber: zod_1.z.string().trim().min(1).max(64).optional(),
 })
     .refine((value) => value.expiresAt > new Date(), {
@@ -49,6 +49,16 @@ const tagSlugQuerySchema = zod_1.z.preprocess((value) => {
         .map((item) => item.trim())
         .filter(Boolean);
 }, zod_1.z.array(primitives_1.slugSchema).max(20).optional());
+const brandSlugQuerySchema = zod_1.z.preprocess((value) => {
+    if (value === undefined)
+        return undefined;
+    if (Array.isArray(value))
+        return value;
+    return String(value)
+        .split(",")
+        .map((item) => item.trim())
+        .filter(Boolean);
+}, zod_1.z.array(primitives_1.slugSchema).max(20).transform((items) => [...new Set(items)]).optional());
 const booleanQuerySchema = zod_1.z.preprocess((value) => {
     if (value === undefined || value === "")
         return undefined;
@@ -93,12 +103,12 @@ exports.catalogEntityOptionSchema = zod_1.z.object({
 });
 exports.productVariantInputSchema = zod_1.z.object({
     id: primitives_1.uuidSchema.optional(),
-    sku: zod_1.z.string().trim().min(1).max(64),
+    sku: (0, primitives_1.compactIdentifierSchema)(1, 64),
     nameEn: zod_1.z.string().trim().min(1).max(100),
     nameAr: zod_1.z.string().trim().min(1).max(100),
     barcode: zod_1.z.string().trim().max(64).optional(),
-    priceOverride: primitives_1.piastresSchema.optional(),
-    compareAtPrice: primitives_1.piastresSchema.positive().optional(),
+    priceOverride: primitives_1.databasePiastresSchema.optional(),
+    compareAtPrice: primitives_1.databasePiastresSchema.positive().optional(),
     optionValueIds: zod_1.z.array(primitives_1.uuidSchema).max(exports.PRODUCT_OPTION_LIMIT).optional(),
     /** Swatch colour for shade variants, e.g. "#C21807". */
     shadeHex: zod_1.z
@@ -108,6 +118,22 @@ exports.productVariantInputSchema = zod_1.z.object({
     /** Optional first receipt for a newly created variant. Uses the inventory batch ledger. */
     openingStock: exports.variantOpeningStockSchema.optional(),
 });
+function validateUniqueVariantSkus(variants, context) {
+    const seen = new Set();
+    variants.forEach((variant, index) => {
+        if (!variant.sku)
+            return;
+        const identity = variant.sku.normalize("NFKC").toLocaleUpperCase("en-US");
+        if (seen.has(identity)) {
+            context.addIssue({
+                code: zod_1.z.ZodIssueCode.custom,
+                path: ["variants", index, "sku"],
+                message: "Each variant SKU must be unique.",
+            });
+        }
+        seen.add(identity);
+    });
+}
 exports.productImageInputSchema = zod_1.z.object({
     id: primitives_1.uuidSchema.optional(),
     variantId: primitives_1.uuidSchema.nullable().optional(),
@@ -175,8 +201,8 @@ const productBaseSchema = zod_1.z.object({
     howToUseAr: zod_1.z.string().trim().max(2000).optional(),
     skinType: zod_1.z.array(exports.skinTypeEnum).default([]),
     tagIds: zod_1.z.array(primitives_1.uuidSchema).max(50).optional(),
-    basePrice: primitives_1.piastresSchema.positive(),
-    compareAtPrice: primitives_1.piastresSchema.positive().optional(),
+    basePrice: primitives_1.databasePiastresSchema.positive(),
+    compareAtPrice: primitives_1.databasePiastresSchema.positive().optional(),
     isActive: zod_1.z.boolean().default(false),
     publishedAt: zod_1.z.coerce.date().nullable().optional(),
     variants: zod_1.z
@@ -201,7 +227,8 @@ exports.createProductSchema = productBaseSchema
     .refine((v) => v.compareAtPrice === undefined || v.compareAtPrice > v.basePrice, {
     message: "Compare-at price must be greater than base price",
     path: ["compareAtPrice"],
-});
+})
+    .superRefine((value, context) => validateUniqueVariantSkus(value.variants, context));
 exports.productVariantUpdateSchema = zod_1.z.union([
     exports.productVariantInputSchema.extend({
         isActive: zod_1.z.boolean().optional(),
@@ -209,8 +236,8 @@ exports.productVariantUpdateSchema = zod_1.z.union([
     exports.productVariantInputSchema.partial().extend({
         id: primitives_1.uuidSchema,
         barcode: zod_1.z.string().trim().max(64).nullable().optional(),
-        priceOverride: primitives_1.piastresSchema.nullable().optional(),
-        compareAtPrice: primitives_1.piastresSchema.positive().nullable().optional(),
+        priceOverride: primitives_1.databasePiastresSchema.nullable().optional(),
+        compareAtPrice: primitives_1.databasePiastresSchema.positive().nullable().optional(),
         shadeHex: zod_1.z
             .string()
             .regex(/^#[0-9a-fA-F]{6}$/, "Must be a hex colour like #C21807")
@@ -219,7 +246,8 @@ exports.productVariantUpdateSchema = zod_1.z.union([
         isActive: zod_1.z.boolean().optional(),
     }),
 ]);
-exports.updateProductSchema = zod_1.z.object({
+exports.updateProductSchema = zod_1.z
+    .object({
     categoryIds: zod_1.z
         .array(primitives_1.uuidSchema)
         .min(1, "Select at least one category")
@@ -243,8 +271,8 @@ exports.updateProductSchema = zod_1.z.object({
     howToUseAr: zod_1.z.string().trim().max(2000).nullable().optional(),
     skinType: zod_1.z.array(exports.skinTypeEnum).optional(),
     tagIds: zod_1.z.array(primitives_1.uuidSchema).max(50).optional(),
-    basePrice: primitives_1.piastresSchema.positive().optional(),
-    compareAtPrice: primitives_1.piastresSchema.positive().nullable().optional(),
+    basePrice: primitives_1.databasePiastresSchema.positive().optional(),
+    compareAtPrice: primitives_1.databasePiastresSchema.positive().nullable().optional(),
     weight: zod_1.z.number().nonnegative().max(1000).nullable().optional(),
     height: zod_1.z.number().nonnegative().max(500).nullable().optional(),
     width: zod_1.z.number().nonnegative().max(500).nullable().optional(),
@@ -265,6 +293,10 @@ exports.updateProductSchema = zod_1.z.object({
         .max(exports.PRODUCT_GALLERY_LIMIT)
         .optional(),
     ingredientLinks: zod_1.z.array(ingredient_schema_1.productIngredientInputSchema).max(300).optional(),
+})
+    .superRefine((value, context) => {
+    if (value.variants)
+        validateUniqueVariantSkus(value.variants, context);
 });
 exports.reassignArchivedProductSchema = zod_1.z
     .object({ categoryId: primitives_1.uuidSchema })
@@ -281,7 +313,7 @@ exports.receiveBatchSchema = zod_1.z
     expiresAt: zod_1.z.coerce.date(),
     paoMonths: zod_1.z.number().int().positive().max(120).optional(),
     quantity: zod_1.z.number().int().positive(),
-    costPrice: primitives_1.piastresSchema,
+    costPrice: primitives_1.databasePiastresSchema,
 })
     .refine((v) => v.expiresAt > new Date(), {
     message: "Cannot receive stock that has already expired",
@@ -296,6 +328,7 @@ exports.publicCatalogQuerySchema = pagination_1.paginationQuerySchema
     search: zod_1.z.string().trim().min(1).max(120).optional(),
     categorySlug: primitives_1.slugSchema.optional(),
     brandSlug: primitives_1.slugSchema.optional(),
+    brandSlugs: brandSlugQuerySchema,
     skinType: skinTypeQuerySchema,
     tags: tagSlugQuerySchema,
     inStock: booleanQuerySchema,
@@ -309,13 +342,40 @@ exports.publicCatalogQuerySchema = pagination_1.paginationQuerySchema
     message: "minPrice must be less than or equal to maxPrice",
     path: ["minPrice"],
 });
-exports.catalogFacetQuerySchema = zod_1.z.object({
+exports.publicProductIdsQuerySchema = zod_1.z.object({
+    ids: zod_1.z.preprocess((value) => typeof value === "string"
+        ? value
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean)
+        : value, zod_1.z
+        .array(primitives_1.uuidSchema)
+        .min(1)
+        .max(24)
+        .transform((ids) => [...new Set(ids)])),
+});
+exports.catalogFacetQuerySchema = zod_1.z
+    .object({
     search: zod_1.z.string().trim().min(1).max(120).optional(),
     categorySlug: primitives_1.slugSchema.optional(),
     brandSlug: primitives_1.slugSchema.optional(),
+    skinType: skinTypeQuerySchema,
+    tags: tagSlugQuerySchema,
     inStock: booleanQuerySchema,
-});
+    minPrice: zod_1.z.coerce.number().int().nonnegative().optional(),
+    maxPrice: zod_1.z.coerce.number().int().nonnegative().optional(),
+})
+    .refine((value) => value.minPrice === undefined ||
+    value.maxPrice === undefined ||
+    value.minPrice <= value.maxPrice, { message: "minPrice must be less than or equal to maxPrice", path: ["minPrice"] });
 exports.catalogFacetSchema = zod_1.z.object({
+    brands: zod_1.z.array(zod_1.z.object({
+        id: primitives_1.uuidSchema,
+        slug: primitives_1.slugSchema,
+        name: zod_1.z.string(),
+        logoUrl: zod_1.z.string().nullable(),
+        count: zod_1.z.number().int().nonnegative(),
+    })),
     tags: zod_1.z.array(exports.tagSummarySchema.extend({ count: zod_1.z.number().int().nonnegative() })),
     categories: zod_1.z.array(zod_1.z.object({
         id: primitives_1.uuidSchema,

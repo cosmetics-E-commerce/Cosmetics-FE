@@ -9,6 +9,7 @@ import type {
   PublicCategoryResponse,
   PublicProductResponse,
   NavigationPublicSnapshot,
+  LandingPagePublicSnapshot,
   CustomerReviewLibraryResponse,
   ReviewEligibilityResponse,
   ReviewResponse,
@@ -19,8 +20,15 @@ import type {
   SharedWishlistResponse,
   WishlistCollectionResponse,
   WishlistResponse,
+  PublicStoreSettingsResponse,
 } from "../../vendor/cosmetics-contracts/index.js";
 import { randomUuid } from "@/lib/uuid";
+import {
+  humanErrorMessage,
+  normalizeStoreApiError,
+  type PublicErrorPayload,
+  type StoreApiError,
+} from "@/lib/error-system";
 
 export type {
   AuthSession,
@@ -31,6 +39,7 @@ export type {
   PublicCategoryResponse,
   PublicProductResponse,
   NavigationPublicSnapshot,
+  LandingPagePublicSnapshot,
   CustomerReviewLibraryResponse,
   ReviewEligibilityResponse,
   ReviewResponse,
@@ -41,10 +50,39 @@ export type {
   SharedWishlistResponse,
   WishlistCollectionResponse,
   WishlistResponse,
+  PublicStoreSettingsResponse,
 };
+
+export async function getPublicStoreSettings(signal?: AbortSignal) {
+  return rawRequest<PublicStoreSettingsResponse>("/store/settings", {
+    auth: false,
+    ...(signal ? { signal } : {}),
+  });
+}
 
 export async function getPublishedNavigation(signal?: AbortSignal) {
   return rawRequest<NavigationPublicSnapshot>("/navigation", {
+    auth: false,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+export async function getPublishedHomepage(signal?: AbortSignal) {
+  return rawRequest<LandingPagePublicSnapshot | null>("/pages/homepage", {
+    auth: false,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+export async function getPublishedLandingPage(slug: string, signal?: AbortSignal) {
+  return rawRequest<LandingPagePublicSnapshot>(`/pages/${encodeURIComponent(slug)}`, {
+    auth: false,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+export async function getLandingPagePreview(token: string, signal?: AbortSignal) {
+  return rawRequest<LandingPagePublicSnapshot>(`/pages/preview/${encodeURIComponent(token)}`, {
     auth: false,
     ...(signal ? { signal } : {}),
   });
@@ -108,12 +146,7 @@ export type StorefrontOffer = {
   brandIds: string[];
 };
 
-export type ApiError = {
-  statusCode: number;
-  code: string;
-  message: string;
-  details?: unknown;
-};
+export type ApiError = StoreApiError;
 
 export type CheckoutResult = {
   order: {
@@ -377,11 +410,7 @@ async function rawEnvelope<T>(path: string, options: RequestOptions = {}): Promi
     response = await fetch(`${API_BASE}${path}`, requestInit);
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") throw error;
-    throw {
-      statusCode: 0,
-      code: "NETWORK_ERROR",
-      message: "The store could not reach the server. Check your connection and try again.",
-    } satisfies ApiError;
+    throw normalizeStoreApiError(null, 0, browserLocale(), "NETWORK_UNAVAILABLE");
   }
 
   if (
@@ -394,15 +423,18 @@ async function rawEnvelope<T>(path: string, options: RequestOptions = {}): Promi
     return rawEnvelope<T>(path, { ...options, retry: false });
   }
 
-  const payload = (await response.json().catch(() => null)) as Envelope<T> | ApiError | null;
+  const payload = (await response.json().catch(() => null)) as
+    Envelope<T> | PublicErrorPayload | null;
   if (!response.ok) {
-    const problem = payload as ApiError | null;
-    throw {
-      statusCode: response.status,
-      code: problem?.code ?? "REQUEST_FAILED",
-      message: problem?.message ?? "The request could not be completed.",
-      details: problem?.details,
-    } satisfies ApiError;
+    const retryAfter = Number(response.headers.get("Retry-After"));
+    throw normalizeStoreApiError(
+      payload as PublicErrorPayload | null,
+      response.status,
+      browserLocale(),
+      "REQUEST_FAILED",
+      response.headers.get("X-Trace-Id"),
+      Number.isFinite(retryAfter) ? retryAfter : null,
+    );
   }
   return payload as Envelope<T>;
 }
@@ -412,136 +444,7 @@ export async function rawRequest<T>(path: string, options: RequestOptions = {}):
 }
 
 export function apiErrorMessage(error: unknown, locale: "en" | "ar" = "en") {
-  const problem = error as ApiError | undefined;
-  const arabic = locale === "ar";
-  const messages: Record<string, [string, string]> = {
-    NETWORK_ERROR: [
-      "We could not reach the store. Check your connection and try again.",
-      "تعذر الاتصال بالمتجر. تحققي من اتصال الإنترنت وحاولي مرة أخرى.",
-    ],
-    UNAUTHENTICATED: [
-      "Your session has expired. Sign in again to continue.",
-      "انتهت جلستك. سجّلي الدخول مرة أخرى للمتابعة.",
-    ],
-    CART_VARIANT_NOT_SELLABLE: [
-      "This product is currently unavailable.",
-      "هذا المنتج غير متاح حالياً.",
-    ],
-    CART_INSUFFICIENT_STOCK: [
-      "There is not enough stock for that quantity. Your bag has been refreshed.",
-      "الكمية المطلوبة غير متاحة. تم تحديث حقيبتك بأحدث كمية.",
-    ],
-    CHECKOUT_CART_EMPTY: ["Your bag is empty.", "حقيبتك فارغة."],
-    CHECKOUT_CART_HAS_ISSUES: [
-      "Some items changed while you were shopping. Review your bag before continuing.",
-      "تغيّرت بعض المنتجات أثناء التسوق. راجعي حقيبتك قبل المتابعة.",
-    ],
-    SHIPPING_ADDRESS_NOT_FOUND: [
-      "That delivery address is no longer available. Choose or add another address.",
-      "عنوان التوصيل هذا لم يعد متاحاً. اختاري عنواناً آخر أو أضيفي عنواناً جديداً.",
-    ],
-    SHIPPING_ZONE_UNAVAILABLE: [
-      "Delivery is not available to this area yet. Choose another address or contact support.",
-      "التوصيل غير متاح لهذه المنطقة حالياً. اختاري عنواناً آخر أو تواصلي مع الدعم.",
-    ],
-    INVALID_SHIPPING_ZONE: [
-      "Delivery is not available for this governorate. Choose a supported delivery governorate.",
-      "التوصيل غير متاح لهذه المحافظة. اختاري محافظة مدعومة للتوصيل.",
-    ],
-    INVALID_SHIPPING_LOCATION: [
-      "Choose governorate, city and area from the delivery lists.",
-      "اختاري المحافظة والمدينة والمنطقة من قوائم التوصيل.",
-    ],
-    INVALID_CITY: [
-      "Choose a delivery city that belongs to the selected governorate.",
-      "اختاري مدينة توصيل تابعة للمحافظة المحددة.",
-    ],
-    SHIPPING_ADDRESS_MISSING_CARRIER_CITY: [
-      "Choose the delivery city from the supported cities list, then try again.",
-      "اختاري مدينة التوصيل من قائمة المدن المتاحة ثم حاولي مرة أخرى.",
-    ],
-    SHIPPING_ADDRESS_MISSING_CARRIER_ZONE: [
-      "Choose the delivery area from the supported areas list, then try again.",
-      "اختاري منطقة التوصيل من قائمة المناطق المتاحة ثم حاولي مرة أخرى.",
-    ],
-    SHIPPING_ADDRESS_REQUIRES_VERIFICATION: [
-      "This address needs to be updated before checkout.",
-      "هذا العنوان يحتاج إلى تحديث قبل إتمام الطلب.",
-    ],
-    SHIPPING_ADDRESS_NOT_OWNED: [
-      "Choose one of your saved delivery addresses.",
-      "اختاري أحد عناوين التوصيل المحفوظة لديك.",
-    ],
-    BOSTA_CITY_UNKNOWN: [
-      "Delivery is currently unavailable for this city.",
-      "التوصيل غير متاح لهذه المدينة حالياً.",
-    ],
-    BOSTA_PICKUP_CITY_UNKNOWN: [
-      "The store pickup city is not configured correctly. Please contact support.",
-      "مدينة استلام المتجر غير مضبوطة بشكل صحيح. تواصلي مع الدعم.",
-    ],
-    BOSTA_TIMEOUT: [
-      "Shipping rates took too long to respond. Please try again.",
-      "استغرق حساب الشحن وقتاً أطول من المتوقع. حاولي مرة أخرى.",
-    ],
-    BOSTA_UNAUTHORIZED: [
-      "Shipping is temporarily unavailable. Please contact support.",
-      "الشحن غير متاح مؤقتاً. تواصلي مع الدعم.",
-    ],
-    BOSTA_UNAVAILABLE: [
-      "Shipping is temporarily unavailable. Please try again shortly.",
-      "الشحن غير متاح مؤقتاً. حاولي مرة أخرى بعد قليل.",
-    ],
-    BOSTA_API_KEY_MISSING: [
-      "Shipping is not configured yet. Please contact support.",
-      "إعدادات الشحن لم تكتمل بعد. تواصلي مع الدعم.",
-    ],
-    SHIPPING_CART_EMPTY: [
-      "Add at least one item to your bag before requesting delivery.",
-      "أضيفي منتجاً واحداً على الأقل قبل حساب التوصيل.",
-    ],
-    SHIPPING_PROVIDER_UNAVAILABLE: [
-      "Shipping rates are temporarily unavailable. Please try again shortly.",
-      "أسعار الشحن غير متاحة مؤقتاً. حاولي مرة أخرى بعد قليل.",
-    ],
-    SHIPPING_PROVIDER_INVALID_RESPONSE: [
-      "Shipping rates are temporarily unavailable for this address.",
-      "أسعار الشحن غير متاحة مؤقتاً لهذا العنوان.",
-    ],
-    PAYMENT_METHOD_NOT_AVAILABLE: [
-      "That payment method is temporarily unavailable. Choose another method.",
-      "طريقة الدفع هذه غير متاحة مؤقتاً. اختاري طريقة أخرى.",
-    ],
-    COUPON_NOT_APPLICABLE: [
-      "This code does not apply to the items in your bag.",
-      "هذا الرمز لا ينطبق على المنتجات في حقيبتك.",
-    ],
-    PROMOTION_COUPON_INVALID: [
-      "This promo code is invalid or has expired.",
-      "رمز الخصم غير صالح أو انتهت صلاحيته.",
-    ],
-    PROMOTION_GIFT_SELECTION_REQUIRED: [
-      "Choose your complimentary gift before placing the order.",
-      "اختاري هديتك المجانية قبل تأكيد الطلب.",
-    ],
-    REQUEST_IN_PROGRESS: [
-      "This request is already being processed. Please wait a moment.",
-      "طلبك قيد التنفيذ بالفعل. انتظري لحظة من فضلك.",
-    ],
-  };
-  const mapped = problem?.code ? messages[problem.code] : undefined;
-  if (mapped) return mapped[arabic ? 1 : 0];
-  if ((problem?.statusCode ?? 0) >= 500) {
-    return arabic
-      ? "حدث عطل مؤقت في المتجر. لم نفقد بياناتك—حاولي مرة أخرى."
-      : "The store hit a temporary problem. Your work is still here—try again.";
-  }
-  return (
-    problem?.message ??
-    (arabic
-      ? "تعذر إكمال الطلب. حاولي مرة أخرى."
-      : "The request could not be completed. Try again.")
-  );
+  return humanErrorMessage(error, locale);
 }
 
 export function apiErrorCode(error: unknown) {
@@ -555,6 +458,10 @@ export function apiRetryAfter(error: unknown) {
   return typeof retryAfter === "number" && Number.isFinite(retryAfter)
     ? Math.max(0, Math.ceil(retryAfter))
     : 0;
+}
+
+function browserLocale(): "en" | "ar" {
+  return browserValue("bioreza.locale") === "ar" ? "ar" : "en";
 }
 
 export function refreshSession() {
@@ -694,16 +601,13 @@ export const resendRegistrationOtp = (email: string) =>
 
 export async function logoutRequest() {
   const csrf = browserValue(CSRF_KEY);
-  try {
-    await rawRequest("/auth/logout", {
-      method: "POST",
-      retry: false,
-      body: {},
-      headers: csrf ? { "X-CSRF-Token": csrf } : {},
-    });
-  } finally {
-    clearSession();
-  }
+  await rawRequest("/auth/logout", {
+    method: "POST",
+    retry: false,
+    body: {},
+    headers: csrf ? { "X-CSRF-Token": csrf } : {},
+  });
+  clearSession();
 }
 
 export const forgotPassword = (email: string) =>
@@ -786,6 +690,17 @@ export async function listProducts(
   const result = await rawRequest<
     PublicProductResponse[] | { items?: PublicProductResponse[]; data?: PublicProductResponse[] }
   >(`/products${query.size ? `?${query}` : ""}`, {
+    auth: false,
+    ...(signal ? { signal } : {}),
+  });
+  return normalizeList(result);
+}
+
+export async function listProductsByIds(ids: string[], signal?: AbortSignal) {
+  if (!ids.length) return [];
+  const result = await rawRequest<
+    PublicProductResponse[] | { items?: PublicProductResponse[]; data?: PublicProductResponse[] }
+  >(`/products/by-ids?ids=${encodeURIComponent(ids.slice(0, 24).join(","))}`, {
     auth: false,
     ...(signal ? { signal } : {}),
   });
@@ -1115,6 +1030,141 @@ export const applyCartCoupon = (code: string) =>
   rawRequest<CommerceCartResponse>("/cart/coupon", { method: "POST", body: { code } });
 export const removeCartCoupon = () =>
   rawRequest<CommerceCartResponse>("/cart/coupon", { method: "DELETE" });
+
+export type RoutinePublicQuestion = {
+  id: string;
+  key: string;
+  type:
+    | "SINGLE_CHOICE"
+    | "MULTIPLE_CHOICE"
+    | "RANKED_CHOICE"
+    | "YES_NO"
+    | "SCALE"
+    | "OPTIONAL_TEXT"
+    | "NUMERIC_RANGE"
+    | "PRODUCT_SELECTION"
+    | "INGREDIENT_PREFERENCE";
+  label: { en: string; ar: string };
+  description: { en: string; ar: string };
+  helpText: { en: string; ar: string };
+  required: boolean;
+  enabled: boolean;
+  order: number;
+  visibility: {
+    mode: "ALL" | "ANY";
+    conditions: Array<{
+      id: string;
+      questionKey: string;
+      operator: string;
+      value: string | number | boolean | string[];
+    }>;
+  } | null;
+  answers: Array<{
+    id: string;
+    key: string;
+    label: { en: string; ar: string };
+    description: { en: string; ar: string };
+    order: number;
+    enabled: boolean;
+  }>;
+  minSelections: number;
+  maxSelections: number;
+  scale: { min: number; max: number; step: number } | null;
+};
+export type RoutinePublicConfig = {
+  versionId: string;
+  version: number;
+  publishedAt: string;
+  sessionId?: string;
+  config: {
+    schemaVersion: number;
+    title: { en: string; ar: string };
+    introduction: { en: string; ar: string };
+    estimatedMinutes: number;
+    startLabel: { en: string; ar: string };
+    resultTitle: { en: string; ar: string };
+    disclaimer: { en: string; ar: string };
+    noResult: { en: string; ar: string };
+    questions: RoutinePublicQuestion[];
+    concerns: Array<{ id: string; key: string; label: { en: string; ar: string } }>;
+    roles: Array<{ id: string; key: string; label: { en: string; ar: string } }>;
+  };
+};
+export type RoutineRecommendationProduct = {
+  productId: string;
+  variantId: string;
+  slug: string;
+  name: string;
+  variantName: string;
+  imageUrl: string | null;
+  price: number;
+  compareAtPrice: number | null;
+  stock: number;
+  brandName: string | null;
+  explanation: string;
+};
+export type RoutineRecommendationStep = {
+  id: string;
+  roleKey: string;
+  roleLabel: string;
+  period: "AM" | "PM";
+  order: number;
+  required: boolean;
+  product: RoutineRecommendationProduct;
+  alternatives: RoutineRecommendationProduct[];
+  warnings: string[];
+};
+export type RoutineResult = {
+  sessionId: string;
+  version: number;
+  templateKey: string | null;
+  answers: Record<string, string | number | boolean | string[]>;
+  profileSummary: string[];
+  morningSteps: RoutineRecommendationStep[];
+  eveningSteps: RoutineRecommendationStep[];
+  warnings: string[];
+  noResult: boolean;
+  noResultMessage: string | null;
+  total: number;
+};
+export const getRoutineBuilder = () =>
+  rawRequest<RoutinePublicConfig>("/routine-builder", { auth: false });
+export const startRoutineSession = (locale: "en" | "ar") =>
+  rawRequest<RoutinePublicConfig>("/routine-builder/sessions", {
+    method: "POST",
+    body: { locale },
+    auth: false,
+  });
+export const evaluateRoutine = (input: {
+  sessionId?: string;
+  answers: Record<string, string | number | boolean | string[]>;
+  locale: "en" | "ar";
+  selectedVariants?: Record<string, string>;
+}) =>
+  rawRequest<RoutineResult>("/routine-builder/evaluate", {
+    method: "POST",
+    body: { ...input, selectedVariants: input.selectedVariants ?? {}, includeDiagnostics: false },
+    auth: false,
+  });
+export const recordRoutineEvent = (
+  sessionId: string,
+  input: {
+    type:
+      | "QUESTION_ANSWERED"
+      | "BUILDER_ABANDONED"
+      | "ROUTINE_GENERATED"
+      | "PRODUCT_SWAPPED"
+      | "ROUTINE_ADD_TO_CART"
+      | "ROUTINE_PRODUCT_ADD_TO_CART";
+    questionKey?: string;
+    productId?: string;
+  },
+) =>
+  rawRequest(`/routine-builder/sessions/${sessionId}/events`, {
+    method: "POST",
+    body: input,
+    auth: false,
+  });
 export const getPromotionPrices = (
   lines: Array<{
     variantId: string;

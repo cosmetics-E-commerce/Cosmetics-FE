@@ -341,9 +341,9 @@ const categories = [
   {
     ...category,
     id: "20000000-0000-4000-8000-000000000002",
-    slug: "makeup",
-    nameEn: "Makeup",
-    nameAr: "المكياج",
+    slug: "personal-care",
+    nameEn: "Personal Care",
+    nameAr: "العناية الشخصية",
     imageUrl: null,
     sortOrder: 2,
     productCount: 7,
@@ -470,7 +470,7 @@ const product = {
   reviewCount: 12,
   imageUrl: "/bioreza-logo.png",
   category,
-  categories: [category],
+  categories: [category, categories.at(-1)],
   brand: brands[0],
   options: [],
   variants: [
@@ -570,6 +570,13 @@ const server = createServer((request, response) => {
   }
   if (path === "/products/facets") {
     return success(response, {
+      brands: brands.map(({ id, name, slug, productCount }) => ({
+        id,
+        name,
+        slug,
+        logoUrl: null,
+        count: productCount,
+      })),
       tags: [
         {
           id: "50000000-0000-4000-8000-000000000001",
@@ -648,6 +655,18 @@ const server = createServer((request, response) => {
   if (path === "/categories") return success(response, categories);
   if (path === "/brands") return success(response, brands);
   if (path === "/navigation") return success(response, publishedNavigation);
+  if (path === "/store/settings") {
+    return success(response, {
+      status: "OPEN",
+      statusMessageEn: null,
+      statusMessageAr: null,
+      paymentWindowHours: 24,
+      codEnabled: true,
+      codFee: 0,
+      freeShippingThreshold: null,
+      brandMarqueeSpeed: "FAST",
+    });
+  }
   if (path === "/promotions/prices") return success(response, []);
   if (path === "/cart") return success(response, emptyCart);
   if (path === "/campaigns/eligible") {

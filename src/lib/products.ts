@@ -2,7 +2,6 @@ import serum from "@/assets/product-serum.jpg";
 import cream from "@/assets/product-cream.jpg";
 import collection from "@/assets/collection.jpg";
 import catSkincare from "@/assets/cat-skincare.jpg";
-import catMakeup from "@/assets/cat-makeup.jpg";
 import catHaircare from "@/assets/cat-haircare.jpg";
 import catFragrance from "@/assets/cat-fragrance.jpg";
 import storyLarge from "@/assets/story-large.jpg";
@@ -19,7 +18,6 @@ export const images = {
   cream,
   collection,
   catSkincare,
-  catMakeup,
   catHaircare,
   catFragrance,
   storyLarge,
@@ -117,12 +115,12 @@ export type Product = {
 };
 
 export const concerns = [
-  { name: "Hydration", token: "var(--color-line-ice)" },
-  { name: "Brightening", token: "var(--color-line-rose)" },
+  { name: "Dry Skin", token: "var(--color-line-ice)" },
   { name: "Sensitive Skin", token: "var(--color-line-sage)" },
-  { name: "Anti-Aging", token: "var(--color-line-plum)" },
-  { name: "Night Repair", token: "var(--color-line-midnight)" },
+  { name: "Combination Skin", token: "var(--color-line-plum)" },
   { name: "Oily Skin", token: "var(--color-line-graphite)" },
+  { name: "Acne-Prone Skin", token: "var(--color-line-rose)" },
+  { name: "All Skin Types", token: "var(--color-line-midnight)" },
 ];
 
 export const formatPrice = (n: number) =>

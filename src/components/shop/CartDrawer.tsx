@@ -40,6 +40,10 @@ export function CartDrawer() {
       <SheetContent
         side={locale === "ar" ? "left" : "right"}
         className="flex w-full flex-col gap-0 border-l border-border bg-warm-white p-0 sm:max-w-md"
+        onPointerDownOutside={(event) => {
+          const target = event.target as Element | null;
+          if (target?.closest("[data-sonner-toast]")) event.preventDefault();
+        }}
       >
         <SheetHeader className="border-b border-border px-6 py-5 text-start">
           <SheetTitle className="label-sm font-normal">

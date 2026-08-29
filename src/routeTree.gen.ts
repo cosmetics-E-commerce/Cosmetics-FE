@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LandingSlugRouteImport } from './routes/$landingSlug'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as BrandsRouteImport } from './routes/brands'
@@ -28,6 +29,7 @@ import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReturnsRouteImport } from './routes/returns'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as RoutineRouteImport } from './routes/routine'
 import { Route as ShippingPolicyRouteImport } from './routes/shipping-policy'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SignInRouteImport } from './routes/sign-in'
@@ -43,10 +45,16 @@ import { Route as SitemapsCategoriesDotxmlRouteImport } from './routes/sitemaps/
 import { Route as SitemapsPagesDotxmlRouteImport } from './routes/sitemaps/pages[.]xml'
 import { Route as SitemapsProductsDotxmlRouteImport } from './routes/sitemaps/products[.]xml'
 import { Route as WishlistShareTokenRouteImport } from './routes/wishlist.$shareToken'
+import { Route as PreviewPageTokenRouteImport } from './routes/preview.page.$token'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LandingSlugRoute = LandingSlugRouteImport.update({
+  id: '/$landingSlug',
+  path: '/$landingSlug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -139,6 +147,11 @@ const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   path: '/robots.txt',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RoutineRoute = RoutineRouteImport.update({
+  id: '/routine',
+  path: '/routine',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ShippingPolicyRoute = ShippingPolicyRouteImport.update({
   id: '/shipping-policy',
   path: '/shipping-policy',
@@ -215,9 +228,15 @@ const WishlistShareTokenRoute = WishlistShareTokenRouteImport.update({
   path: '/wishlist/$shareToken',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PreviewPageTokenRoute = PreviewPageTokenRouteImport.update({
+  id: '/preview/page/$token',
+  path: '/preview/page/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$landingSlug': typeof LandingSlugRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/brands': typeof BrandsRouteWithChildren
@@ -236,6 +255,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/returns': typeof ReturnsRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/routine': typeof RoutineRoute
   '/shipping-policy': typeof ShippingPolicyRoute
   '/shop': typeof ShopRoute
   '/sign-in': typeof SignInRoute
@@ -251,9 +271,11 @@ export interface FileRoutesByFullPath {
   '/sitemaps/products.xml': typeof SitemapsProductsDotxmlRoute
   '/wishlist/$shareToken': typeof WishlistShareTokenRoute
   '/brands/': typeof BrandsIndexRoute
+  '/preview/page/$token': typeof PreviewPageTokenRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$landingSlug': typeof LandingSlugRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/cart': typeof CartRoute
@@ -271,6 +293,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/returns': typeof ReturnsRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/routine': typeof RoutineRoute
   '/shipping-policy': typeof ShippingPolicyRoute
   '/shop': typeof ShopRoute
   '/sign-in': typeof SignInRoute
@@ -286,10 +309,12 @@ export interface FileRoutesByTo {
   '/sitemaps/products.xml': typeof SitemapsProductsDotxmlRoute
   '/wishlist/$shareToken': typeof WishlistShareTokenRoute
   '/brands': typeof BrandsIndexRoute
+  '/preview/page/$token': typeof PreviewPageTokenRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$landingSlug': typeof LandingSlugRoute
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/brands': typeof BrandsRouteWithChildren
@@ -308,6 +333,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/returns': typeof ReturnsRoute
   '/robots.txt': typeof RobotsDottxtRoute
+  '/routine': typeof RoutineRoute
   '/shipping-policy': typeof ShippingPolicyRoute
   '/shop': typeof ShopRoute
   '/sign-in': typeof SignInRoute
@@ -323,11 +349,13 @@ export interface FileRoutesById {
   '/sitemaps/products.xml': typeof SitemapsProductsDotxmlRoute
   '/wishlist/$shareToken': typeof WishlistShareTokenRoute
   '/brands/': typeof BrandsIndexRoute
+  '/preview/page/$token': typeof PreviewPageTokenRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$landingSlug'
     | '/about'
     | '/account'
     | '/brands'
@@ -346,6 +374,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/returns'
     | '/robots.txt'
+    | '/routine'
     | '/shipping-policy'
     | '/shop'
     | '/sign-in'
@@ -361,9 +390,11 @@ export interface FileRouteTypes {
     | '/sitemaps/products.xml'
     | '/wishlist/$shareToken'
     | '/brands/'
+    | '/preview/page/$token'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/$landingSlug'
     | '/about'
     | '/account'
     | '/cart'
@@ -381,6 +412,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/returns'
     | '/robots.txt'
+    | '/routine'
     | '/shipping-policy'
     | '/shop'
     | '/sign-in'
@@ -396,9 +428,11 @@ export interface FileRouteTypes {
     | '/sitemaps/products.xml'
     | '/wishlist/$shareToken'
     | '/brands'
+    | '/preview/page/$token'
   id:
     | '__root__'
     | '/'
+    | '/$landingSlug'
     | '/about'
     | '/account'
     | '/brands'
@@ -417,6 +451,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/returns'
     | '/robots.txt'
+    | '/routine'
     | '/shipping-policy'
     | '/shop'
     | '/sign-in'
@@ -432,10 +467,12 @@ export interface FileRouteTypes {
     | '/sitemaps/products.xml'
     | '/wishlist/$shareToken'
     | '/brands/'
+    | '/preview/page/$token'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  LandingSlugRoute: typeof LandingSlugRoute
   AboutRoute: typeof AboutRoute
   AccountRoute: typeof AccountRoute
   BrandsRoute: typeof BrandsRouteWithChildren
@@ -454,6 +491,7 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   ReturnsRoute: typeof ReturnsRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
+  RoutineRoute: typeof RoutineRoute
   ShippingPolicyRoute: typeof ShippingPolicyRoute
   ShopRoute: typeof ShopRoute
   SignInRoute: typeof SignInRoute
@@ -467,6 +505,7 @@ export interface RootRouteChildren {
   SitemapsPagesDotxmlRoute: typeof SitemapsPagesDotxmlRoute
   SitemapsProductsDotxmlRoute: typeof SitemapsProductsDotxmlRoute
   WishlistShareTokenRoute: typeof WishlistShareTokenRoute
+  PreviewPageTokenRoute: typeof PreviewPageTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -476,6 +515,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$landingSlug': {
+      id: '/$landingSlug'
+      path: '/$landingSlug'
+      fullPath: '/$landingSlug'
+      preLoaderRoute: typeof LandingSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -604,6 +650,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RobotsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/routine': {
+      id: '/routine'
+      path: '/routine'
+      fullPath: '/routine'
+      preLoaderRoute: typeof RoutineRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shipping-policy': {
       id: '/shipping-policy'
       path: '/shipping-policy'
@@ -709,6 +762,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WishlistShareTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/preview/page/$token': {
+      id: '/preview/page/$token'
+      path: '/preview/page/$token'
+      fullPath: '/preview/page/$token'
+      preLoaderRoute: typeof PreviewPageTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -727,6 +787,7 @@ const BrandsRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  LandingSlugRoute: LandingSlugRoute,
   AboutRoute: AboutRoute,
   AccountRoute: AccountRoute,
   BrandsRoute: BrandsRouteWithChildren,
@@ -745,6 +806,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   ReturnsRoute: ReturnsRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
+  RoutineRoute: RoutineRoute,
   ShippingPolicyRoute: ShippingPolicyRoute,
   ShopRoute: ShopRoute,
   SignInRoute: SignInRoute,
@@ -758,6 +820,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapsPagesDotxmlRoute: SitemapsPagesDotxmlRoute,
   SitemapsProductsDotxmlRoute: SitemapsProductsDotxmlRoute,
   WishlistShareTokenRoute: WishlistShareTokenRoute,
+  PreviewPageTokenRoute: PreviewPageTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

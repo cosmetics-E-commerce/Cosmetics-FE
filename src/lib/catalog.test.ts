@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { mapProduct } from "./catalog";
+import { concerns } from "./products";
 
 const product = {
   id: "11111111-1111-4111-8111-111111111111",
@@ -239,5 +240,18 @@ describe("mapProduct", () => {
       price: 0,
       inStock: false,
     });
+  });
+});
+
+describe("homepage skin-type merchandising", () => {
+  it("uses the approved six canonical skin types in exact order", () => {
+    expect(concerns.map((concern) => concern.name)).toEqual([
+      "Dry Skin",
+      "Sensitive Skin",
+      "Combination Skin",
+      "Oily Skin",
+      "Acne-Prone Skin",
+      "All Skin Types",
+    ]);
   });
 });

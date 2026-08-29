@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useEffect, useId, useState } from "react";
 
 import {
   Accordion,
@@ -22,6 +22,8 @@ export function ProductInfoAccordion({
   label: string;
 }) {
   const accordionId = useId();
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
   const availableSections = sections.filter(
     (section) => section.content.trim() || section.benefits?.length,
   );
@@ -48,6 +50,7 @@ export function ProductInfoAccordion({
             <AccordionTrigger
               id={triggerId}
               aria-controls={panelId}
+              disabled={!hydrated}
               className="product-info-accordion__trigger"
               indicator={<span className="product-info-accordion__indicator" aria-hidden="true" />}
             >

@@ -10,6 +10,7 @@ import {
 } from "react";
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 import {
   ChevronDown,
   ChevronRight,
@@ -39,9 +40,14 @@ import {
 } from "@/components/ui/accordion";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { useAllBrands, useCategories } from "@/lib/catalog";
-import type { PublicBrandListItemResponse, PublicCategoryResponse } from "@/lib/api";
+import {
+  apiErrorMessage,
+  type PublicBrandListItemResponse,
+  type PublicCategoryResponse,
+} from "@/lib/api";
 import { buildCategoryTree, categoryProductCount } from "@/lib/category-hierarchy";
 import { useStore } from "@/lib/store";
+import { displayCountBadge } from "@/lib/count-badge";
 import { GlobalBannerSlot } from "@/components/banner/GlobalBannerSlot";
 import { useI18n, type MessageKey } from "@/lib/i18n";
 import { CustomerAvatar } from "@/components/account/CustomerAvatar";
@@ -176,6 +182,7 @@ export function Header({
   });
   const [scrolled, setScrolled] = useState(false);
   const [menu, setMenu] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const [megaMenu, setMegaMenu] = useState<MegaMenuValue | "">("");
   const scrolledRef = useRef(false);
   const copy = headerCopy[locale];
@@ -571,12 +578,32 @@ export function Header({
                   <button
                     type="button"
                     role="menuitem"
+                    disabled={signingOut}
+                    className="header-account-dropdown__signout"
                     onClick={() => {
-                      void signOut().then(() => navigate({ to: "/" }));
+                      if (signingOut) return;
+                      setSigningOut(true);
+                      void signOut()
+                        .then(() => navigate({ to: "/" }))
+                        .catch((error) =>
+                          toast.error(apiErrorMessage(error, locale), {
+                            description:
+                              locale === "ar"
+                                ? "لم يتم تسجيل خروجك. حاولي مرة أخرى."
+                                : "You are still signed in. Please try again.",
+                          }),
+                        )
+                        .finally(() => setSigningOut(false));
                     }}
                   >
                     <LogOut strokeWidth={1.35} aria-hidden="true" />
-                    {locale === "ar" ? "تسجيل الخروج" : "Sign out"}
+                    {signingOut
+                      ? locale === "ar"
+                        ? "جارٍ تسجيل الخروج…"
+                        : "Signing out…"
+                      : locale === "ar"
+                        ? "تسجيل الخروج"
+                        : "Sign out"}
                   </button>
                 </div>
               </div>
@@ -594,10 +621,18 @@ export function Header({
               to={accountTo}
               search={user ? { section: "wishlist" } : { returnTo: undefined }}
               aria-label={`${copy.wishlist}, ${wishlist.length}`}
-              className="header-action header-action--wishlist relative hidden h-11 w-11 place-items-center sm:grid"
+              className="header-action header-action--wishlist relative grid h-11 w-11 place-items-center"
             >
               <Heart strokeWidth={1.25} className="size-[18px]" aria-hidden="true" />
-              {wishlist.length > 0 && <span className="header-dot" aria-hidden="true" />}
+              {wishlist.length > 0 && (
+                <span
+                  key={wishlist.length}
+                  className="count-change header-badge"
+                  aria-hidden="true"
+                >
+                  {displayCountBadge(wishlist.length)}
+                </span>
+              )}
             </Link>
             <button
               type="button"
@@ -608,7 +643,7 @@ export function Header({
               <ShoppingBag strokeWidth={1.25} className="size-[18px]" aria-hidden="true" />
               {count > 0 && (
                 <span key={count} className="count-change header-badge" aria-hidden="true">
-                  {count}
+                  {displayCountBadge(count)}
                 </span>
               )}
             </button>

@@ -18,8 +18,8 @@ export function AuthShell({
   footer: ReactNode;
 }) {
   return (
-    <div className="sf-auth-shell grid min-h-[80vh] lg:grid-cols-2">
-      <div className="flex items-center justify-center px-5 py-20 md:px-16">
+    <div className="sf-auth-shell grid min-h-[80vh] min-w-0 grid-cols-[minmax(0,1fr)] lg:grid-cols-2">
+      <div className="flex min-w-0 items-center justify-center px-5 py-20 md:px-16">
         <Reveal stagger staggerMs={45} distance={22} className="w-full max-w-sm">
           <p className="label-xs text-gold">{label}</p>
           <h1 className="display mt-5 text-[clamp(2.1rem,3.6vw,3rem)]">{title}</h1>
