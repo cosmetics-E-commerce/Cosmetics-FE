@@ -127,6 +127,8 @@ test("desktop grid and list cards keep the toolbar inside the product media", as
 
     assertStableToolbar(geometry);
     expect(geometry.layout).toBe("inline");
+    expect(geometry.quantity.height).toBeLessThanOrEqual(44.5);
+    expect(geometry.action.height).toBeLessThanOrEqual(44.5);
     expect(geometry.root.left).toBeGreaterThanOrEqual(media.left);
     expect(geometry.root.right).toBeLessThanOrEqual(media.right);
     expect(geometry.root.top).toBeGreaterThanOrEqual(media.top);

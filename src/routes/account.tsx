@@ -438,17 +438,6 @@ function Account() {
                 </button>
               </li>
             ))}
-            <li className="account-nav__signout">
-              <button
-                ref={signOutTriggerRef}
-                type="button"
-                onClick={() => setSignOutOpen(true)}
-                className="account-nav__button account-nav__button--signout"
-              >
-                <LogOut aria-hidden="true" strokeWidth={1.7} />
-                <span>{signOutCopy.trigger}</span>
-              </button>
-            </li>
           </ul>
         </nav>
         <section key={tab} className="account-panel">
@@ -1012,6 +1001,26 @@ function Account() {
               </div>
             </div>
           )}
+        </section>
+        <section className="account-signout-action" aria-labelledby="account-signout-title">
+          <div>
+            <h2 id="account-signout-title">{signOutCopy.eyebrow}</h2>
+            <p>
+              {locale === "ar"
+                ? "أنهي جلستك بأمان على هذا الجهاز."
+                : "End your session securely on this device."}
+            </p>
+          </div>
+          <button
+            ref={signOutTriggerRef}
+            type="button"
+            disabled={isSigningOut}
+            onClick={() => setSignOutOpen(true)}
+            className="account-signout-action__button"
+          >
+            <LogOut aria-hidden="true" strokeWidth={1.7} />
+            <span>{isSigningOut ? signOutCopy.pending : signOutCopy.trigger}</span>
+          </button>
         </section>
       </div>
       <Dialog
