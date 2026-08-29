@@ -15,6 +15,7 @@
     "test:unit": "vitest run --exclude '**/*.a11y.test.tsx'",
     "test:a11y": "vitest run a11y.test",
     "test:e2e": "playwright test",
+    "test:e2e:production": "env NITRO_PRESET=node-server NODE_ENV=production VITE_API_BASE_URL=http://127.0.0.1:4174/api/v1 VITE_SITE_URL=https://bioreza.com VITE_ENFORCE_CANONICAL_HOST=false pnpm build && playwright test --config playwright.production.config.ts",
     "test:e2e:webkit": "bash scripts/test-webkit-docker.sh",
     "perf:benchmark": "node scripts/performance-benchmark.mjs",
     "contracts:sync": "pnpm --dir ../Cosmetics-BE contracts:sync",

@@ -13,30 +13,6 @@ export default (configEnv: ConfigEnv) => {
 
   return defineConfig({
     vite: {
-      environments: {
-        client: {
-          build: {
-            rolldownOptions: {
-              output: {
-                // Keep the initial browser payload cacheable and below the
-                // release threshold. Nitro already emits its own server-side
-                // module graph and is not governed by these group sizes.
-                codeSplitting: {
-                  groups: [
-                    {
-                      name: "initial",
-                      tags: ["$initial"],
-                      entriesAware: true,
-                      maxSize: 450_000,
-                      minSize: 20_000,
-                    },
-                  ],
-                },
-              },
-            },
-          },
-        },
-      },
       server: {
         host: "127.0.0.1",
         port: 5173,
