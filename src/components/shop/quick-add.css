@@ -75,11 +75,16 @@
 }
 
 .quick-add {
+  --product-card-control-height: 44px;
+  --product-card-control-radius: var(--radius-control);
+  --product-card-control-icon-size: 15px;
+  --product-card-quantity-icon-size: 14px;
+  --product-card-control-label-size: 10px;
   position: absolute;
   inset-inline: 12px;
   inset-block-end: 12px;
   z-index: 6;
-  min-height: 46px;
+  min-height: var(--product-card-control-height);
   overflow: hidden;
   /* Keep the action inside the media bounds throughout its reveal. A downward
      starting offset briefly exposed the toolbar below the image when hover
@@ -87,7 +92,7 @@
   transform: translate3d(0, 0, 0) scale(0.985);
   transform-origin: center bottom;
   border: 1px solid color-mix(in srgb, var(--color-text-primary) 12%, transparent);
-  border-radius: 999px;
+  border-radius: var(--product-card-control-radius);
   background: color-mix(in srgb, var(--color-surface-elevated) 96%, transparent);
   color: var(--color-text-primary);
   opacity: 0;
@@ -102,7 +107,7 @@
 
 .quick-add__content {
   display: grid;
-  min-height: 46px;
+  min-height: var(--product-card-control-height);
   grid-template-columns: minmax(84px, 38fr) minmax(0, 62fr);
   column-gap: 8px;
   align-items: stretch;
@@ -171,7 +176,7 @@
   display: grid;
   width: 100%;
   height: 100%;
-  min-height: 44px;
+  min-height: var(--product-card-control-height);
   flex-shrink: 0;
   place-items: center;
   transition:
@@ -195,8 +200,8 @@
 }
 
 .quick-add__quantity svg {
-  width: 14px;
-  height: 14px;
+  width: var(--product-card-quantity-icon-size);
+  height: var(--product-card-quantity-icon-size);
   stroke-width: 1.25;
 }
 
@@ -217,14 +222,14 @@
 
 .quick-add__action {
   display: flex;
-  min-height: 44px;
+  min-height: var(--product-card-control-height);
   align-items: center;
   justify-content: center;
   gap: 8px;
   background: var(--color-primary);
   color: var(--color-text-inverse);
   padding-inline: 10px;
-  font-size: 10px;
+  font-size: var(--product-card-control-label-size);
   font-weight: 700;
   letter-spacing: 0.09em;
   line-height: 1.2;
@@ -262,8 +267,8 @@
 }
 
 .quick-add__action svg {
-  width: 15px;
-  height: 15px;
+  width: var(--product-card-control-icon-size);
+  height: var(--product-card-control-icon-size);
   flex: none;
   stroke-width: 1.25;
 }
@@ -328,14 +333,14 @@
 
 @media (hover: none), (pointer: coarse) {
   .quick-add {
-    min-height: 48px;
+    min-height: var(--product-card-control-height);
     transform: translate3d(0, 0, 0);
     opacity: 1;
     pointer-events: auto;
   }
 
   .quick-add__content {
-    min-height: 48px;
+    min-height: var(--product-card-control-height);
     transform: translate3d(0, 0, 0);
     opacity: 1;
   }
@@ -367,7 +372,7 @@
   }
 
   .product-card .quick-add__content {
-    min-height: 44px;
+    min-height: var(--product-card-control-height);
     transform: none;
     opacity: 1;
   }
@@ -375,9 +380,9 @@
   .product-card .quick-add__quantity,
   .product-card .quick-add__action,
   .product-card .quick-add__unavailable {
-    min-height: 44px;
+    min-height: var(--product-card-control-height);
     overflow: hidden;
-    border-radius: 999px;
+    border-radius: var(--product-card-control-radius);
   }
 
   .product-card .quick-add__quantity {

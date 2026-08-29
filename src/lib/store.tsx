@@ -444,11 +444,19 @@ export function StoreProvider({
   const signOut = useCallback(async () => {
     await logoutRequest();
     setUser(null);
+    const isPrivateCustomerQuery = (query: { queryKey: readonly unknown[] }) =>
+      [
+        "wishlist",
+        "account",
+        "orders",
+        "addresses",
+        "profile",
+        "shipping",
+        "payment-instructions",
+      ].includes(String(query.queryKey[0]));
+    await queryClient.cancelQueries({ predicate: isPrivateCustomerQuery }).catch(() => undefined);
     queryClient.removeQueries({
-      predicate: (query) =>
-        ["wishlist", "account", "orders", "addresses", "profile"].includes(
-          String(query.queryKey[0]),
-        ),
+      predicate: isPrivateCustomerQuery,
     });
     void queryClient.invalidateQueries({ queryKey: ["cart"] });
   }, [queryClient]);

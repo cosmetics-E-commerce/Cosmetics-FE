@@ -1205,8 +1205,16 @@
 
   .sf-checkout-steps {
     margin-top: 20px;
-    padding: 12px 4px;
+    padding: 12px 6px;
     border-radius: 12px;
+  }
+
+  .sf-checkout-step__label--desktop {
+    display: none;
+  }
+
+  .sf-checkout-step__label--mobile {
+    display: inline;
   }
 
   .sf-checkout-shell {

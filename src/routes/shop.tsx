@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 
 import { Reveal } from "@/components/brand/Reveal";
@@ -25,6 +25,7 @@ import {
   useCategories,
 } from "@/lib/catalog";
 import { useI18n } from "@/lib/i18n";
+import { scrollElementHorizontallyIntoView } from "@/lib/horizontal-nav";
 import {
   breadcrumbSchema,
   createSeoHead,
@@ -126,6 +127,7 @@ export const Route = createFileRoute("/shop")({
 function Shop() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
+  const categoryTabsRef = useRef<HTMLDivElement>(null);
   const { locale } = useStore();
   const { t } = useI18n();
   const page = search.page ?? 1;
@@ -181,6 +183,20 @@ function Shop() {
       ? "تسوّقي العناية بالبشرة والشعر والجسم والعطور"
       : "Shop Skincare, Haircare, Body Care & Fragrance";
 
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      const scroller = categoryTabsRef.current;
+      const selected = scroller?.querySelector<HTMLElement>('[aria-selected="true"]');
+      if (scroller && selected) {
+        scrollElementHorizontallyIntoView(scroller, selected, {
+          behavior: "auto",
+          edgePadding: 16,
+        });
+      }
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [locale, search.category]);
+
   return (
     <div className="sf-shop-page sf-shop-page--minimal">
       <nav
@@ -195,7 +211,12 @@ function Shop() {
         <h1>{shopHeadline}</h1>
       </Reveal>
       <section className="sf-shop-catalog" aria-labelledby="shop-products-title">
-        <div className="sf-shop-tabs" role="tablist" aria-label={t("shop.category")}>
+        <div
+          ref={categoryTabsRef}
+          className="sf-shop-tabs"
+          role="tablist"
+          aria-label={t("shop.category")}
+        >
           {categoryTabs.map((category) => {
             const selected =
               search.category === category.slug || (!search.category && !category.slug);

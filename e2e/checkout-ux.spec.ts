@@ -160,7 +160,10 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
     return route.fulfill({ status: 404, json: { code: "NOT_MOCKED", message: path } });
   });
 
-  await page.goto("/checkout");
+  await page.goto("/cart");
+  await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
+  await page.getByRole("link", { name: "Proceed to checkout" }).click();
+  await expect(page).toHaveURL(/\/checkout/);
   await expect(page.getByRole("heading", { name: "Confirm delivery and payment." })).toBeVisible({
     // Cold Vite route splitting plus the mocked auth/cart bootstrap can exceed
     // the global assertion budget when another route-heavy test runs in the
@@ -180,7 +183,7 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
   await expect(page.getByRole("heading", { name: "أكّدي التوصيل وطريقة الدفع." })).toBeVisible();
 
   const originalViewport = page.viewportSize()!;
-  for (const width of [320, 375, 390, 430]) {
+  for (const width of [320, 360, 375, 390, 414, 430]) {
     await page.setViewportSize({ width, height: 820 });
     const layout = await page.evaluate(() => ({
       overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -212,8 +215,11 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
   }
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
 
-  await page.getByRole("button", { name: "Continue to Delivery Address" }).click();
+  const stepper = page.getByRole("list", { name: "Checkout progress" });
+  await expect(stepper.getByRole("listitem")).toHaveCount(4);
+  await expect(stepper.getByText("Bag", { exact: true })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "Delivery Address", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Place order" })).toHaveCount(0);
   await expect(page.getByLabel("Receiver name")).toHaveValue("Sara Ali");
   await page.getByRole("combobox", { name: "Governorate" }).click();
   await page.getByText("Cairo", { exact: true }).click();
@@ -235,10 +241,19 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
 
   await page.getByRole("button", { name: "Continue to Review" }).click();
   await expect(page.getByRole("heading", { name: "Review", exact: true })).toBeVisible();
+  await expect(page.getByRole("list", { name: "Order products" })).toContainText("Calm Serum");
   await expect(page.getByText("12 Mostafa El Nahas", { exact: false })).toBeVisible();
+
+  await page.getByRole("button", { name: "Back to Delivery Address" }).click();
+  await expect(page.getByRole("heading", { name: "Delivery Address", exact: true })).toBeVisible();
+  await expect(page.getByText("12 Mostafa El Nahas", { exact: false })).toBeVisible();
+  await page.getByRole("button", { name: "Continue to Review" }).click();
 
   await page.getByRole("button", { name: "Continue to Payment" }).click();
   await expect(page.getByRole("heading", { name: "Payment", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Back to Review" }).click();
+  await expect(page.getByRole("heading", { name: "Review", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Continue to Payment" }).click();
   const placeOrder = page.getByRole("button", { name: "Place order" }).last();
   await expect(placeOrder).toBeEnabled();
   await placeOrder.dblclick();
@@ -247,4 +262,42 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
   await expect(page.getByRole("heading", { name: "Thank you." })).toBeVisible();
   expect(checkoutKey).not.toBe("");
   expect(checkoutRequests).toBe(1);
+});
+
+test("empty carts cannot enter checkout steps", async ({ page }) => {
+  await page.addInitScript(() => {
+    window.localStorage.setItem("bioreza.csrf", "x".repeat(32));
+  });
+  await page.route("**/api/v1/**", async (route) => {
+    const path = new URL(route.request().url()).pathname;
+    const fulfill = (data: unknown) => route.fulfill({ json: { success: true, data } });
+    if (path.endsWith("/auth/refresh")) {
+      return fulfill({
+        user: {
+          id: "11111111-1111-4111-8111-111111111111",
+          firstName: "Sara",
+          lastName: "Ali",
+          phone: "01012345678",
+          email: "sara@example.com",
+          role: "CLIENT",
+          permissions: [],
+        },
+        tokens: { accessToken: "test-access-token", expiresIn: 900 },
+        csrfToken: "y".repeat(32),
+      });
+    }
+    if (path.endsWith("/cart/merge") || path.endsWith("/cart")) return fulfill(cart(true));
+    if (path.endsWith("/wishlist")) {
+      return fulfill({ items: [], totalItems: 0, updatedAt: null });
+    }
+    return route.fallback();
+  });
+
+  await page.goto("/checkout", { waitUntil: "domcontentloaded" });
+  await expect(page.getByRole("heading", { name: "Your bag is empty" })).toBeVisible();
+  await expect(page.getByRole("list", { name: "Checkout progress" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Browse products" })).toHaveAttribute(
+    "href",
+    "/shop",
+  );
 });

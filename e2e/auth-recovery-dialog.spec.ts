@@ -14,7 +14,7 @@ async function fulfill(route: Route, data: unknown) {
   await route.fulfill({ json: { success: true, data } });
 }
 
-async function mockAuthenticatedAccount(page: Page) {
+async function mockAuthenticatedAccount(page: Page, options: { logoutFails?: boolean } = {}) {
   let logoutRequests = 0;
   await page.addInitScript(() => {
     window.localStorage.setItem("bioreza.csrf", "x".repeat(32));
@@ -31,6 +31,12 @@ async function mockAuthenticatedAccount(page: Page) {
     }
     if (path.endsWith("/auth/logout")) {
       logoutRequests += 1;
+      if (options.logoutFails) {
+        return route.fulfill({
+          status: 503,
+          json: { code: "LOGOUT_UNAVAILABLE", message: "Logout is temporarily unavailable." },
+        });
+      }
       return fulfill(route, { success: true });
     }
     if (path.endsWith("/cart/merge") || path.endsWith("/cart")) {
@@ -74,7 +80,7 @@ test("sign-out dialog stays viewport-safe, modal, and keyboard accessible", asyn
     { width: 360, height: 740 },
     { width: 375, height: 812 },
     { width: 390, height: 844 },
-    { width: 412, height: 860 },
+    { width: 414, height: 860 },
     { width: 430, height: 900 },
     { width: 768, height: 900 },
     { width: 1024, height: 768 },
@@ -86,6 +92,9 @@ test("sign-out dialog stays viewport-safe, modal, and keyboard accessible", asyn
     await page.goto("/account", { waitUntil: "domcontentloaded" });
     const trigger = page.getByRole("button", { name: "Sign out" });
     await expect(trigger).toBeVisible();
+    await expect(
+      page.locator(".account-nav").getByRole("button", { name: "Sign out" }),
+    ).toHaveCount(0);
     await trigger.click();
 
     const dialog = page.getByRole("dialog", { name: "Sign out of BIOREZA?" });
@@ -157,6 +166,25 @@ test("sign-out dialog remains centered in RTL", async ({ page }) => {
   await expect(dialog.getByRole("button", { name: "إغلاق" })).toBeVisible();
 });
 
+test("failed sign out keeps the customer signed in and reports the error", async ({ page }) => {
+  const state = await mockAuthenticatedAccount(page, { logoutFails: true });
+  await page.goto("/account", { waitUntil: "domcontentloaded" });
+  await page.getByRole("button", { name: "Sign out" }).click();
+  await page
+    .getByRole("dialog", { name: "Sign out of BIOREZA?" })
+    .getByRole("button", {
+      name: "Yes, sign out",
+    })
+    .click();
+
+  await expect.poll(state.logoutRequests).toBe(1);
+  await expect(page).toHaveURL(/\/account/);
+  await expect(
+    page.getByText("You are still signed in. Check your connection and try again."),
+  ).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "Sign out of BIOREZA?" })).toBeVisible();
+});
+
 test("sign-out dialog respects reduced-motion preferences", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await mockAuthenticatedAccount(page);
@@ -210,6 +238,7 @@ test("email recovery supports paste, correction, resend, and a one-time reset gr
   await page.setViewportSize({ width: 320, height: 700 });
   await page.goto("/forgot-password", { waitUntil: "domcontentloaded" });
   await page.waitForLoadState("networkidle");
+  await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
   await expect(page.getByRole("heading", { name: "Forgot your password?" })).toBeVisible();
   await expect(page.getByText(/SMS|mobile number/i)).toHaveCount(0);
   await page.getByLabel("Email address").fill("Sara@Example.com");
