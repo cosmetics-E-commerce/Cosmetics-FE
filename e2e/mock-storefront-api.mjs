@@ -203,6 +203,72 @@ categoriesNavigationItem.megaMenu = {
     },
   ],
 };
+const multiCategoryBlockIds = {
+  body: "c5000000-0000-4000-8000-000000000001",
+  hair: "c5000000-0000-4000-8000-000000000002",
+  korean: "c5000000-0000-4000-8000-000000000003",
+};
+const multiCategoryBlocks = [
+  categoryList(
+    multiCategoryBlockIds.body,
+    { en: "Body Care", ar: "العناية بالجسم" },
+    "CHILDREN",
+    "b5000000-0000-4000-8000-000000000001",
+  ),
+  categoryList(
+    multiCategoryBlockIds.hair,
+    { en: "Hair Care", ar: "العناية بالشعر" },
+    "CHILDREN",
+    "b5000000-0000-4000-8000-000000000002",
+  ),
+  categoryList(
+    multiCategoryBlockIds.korean,
+    { en: "Korean", ar: "الكوري" },
+    "CHILDREN",
+    "b5000000-0000-4000-8000-000000000003",
+  ),
+].map((block, index) => ({
+  ...block,
+  maximumItems: 24,
+  showViewAll: true,
+  viewAllDestination: {
+    type: "CATEGORY",
+    id: `b5000000-0000-4000-8000-00000000000${index + 1}`,
+  },
+  mobileOrder: index,
+}));
+const multiCategoryItem = {
+  ...categoriesNavigationItem,
+  id: "c1000000-0000-4000-8000-000000000010",
+  key: "departments",
+  label: { en: "Departments", ar: "الأقسام" },
+  megaMenu: {
+    enabled: true,
+    width: "FULL",
+    style: "CLASSIC",
+    mobilePresentation: "ACCORDION",
+    rows: [
+      {
+        id: "c2000000-0000-4000-8000-000000000010",
+        preset: "THREE_EQUAL",
+        presentation: "DEFAULT",
+        columnSeparators: true,
+        enabled: true,
+        visibility: navigationVisibility,
+        columns: multiCategoryBlocks.map((block, index) => ({
+          id: `c3000000-0000-4000-8000-00000000001${index}`,
+          span: 4,
+          blocks: [block],
+        })),
+      },
+    ],
+  },
+};
+classicNavigationConfig.items.splice(
+  classicNavigationConfig.items.indexOf(categoriesNavigationItem) + 1,
+  0,
+  multiCategoryItem,
+);
 const publishedNavigation = {
   schemaVersion: 1,
   revisionId: "a0000000-0000-4000-8000-000000000020",
@@ -287,6 +353,27 @@ const publishedNavigation = {
         productCount: 9,
       },
     ],
+    [multiCategoryBlockIds.body]: Array.from({ length: 8 }, (_, index) => ({
+      kind: "CATEGORY",
+      id: `b6000000-0000-4000-8000-0000000000${String(index + 1).padStart(2, "0")}`,
+      labelEn: `Body care ${index + 1}`,
+      labelAr: `العناية بالجسم ${index + 1}`,
+      href: `/categories/body-care-${index + 1}`,
+      secondaryLabel: "b5000000-0000-4000-8000-000000000001",
+      productCount: index + 2,
+    })),
+    [multiCategoryBlockIds.hair]: [
+      {
+        kind: "CATEGORY",
+        id: "b7000000-0000-4000-8000-000000000001",
+        labelEn: "Conditioner",
+        labelAr: "بلسم الشعر",
+        href: "/categories/conditioner",
+        secondaryLabel: "b5000000-0000-4000-8000-000000000002",
+        productCount: 4,
+      },
+    ],
+    [multiCategoryBlockIds.korean]: [],
     [classicBlockIds.brands]: [
       {
         kind: "BRAND",
@@ -319,6 +406,9 @@ const publishedNavigation = {
 for (const blockId of Object.values(classicBlockIds))
   publishedNavigation.resolvedLinks[blockId] =
     blockId === classicBlockIds.brands ? "/brands" : "/shop";
+publishedNavigation.resolvedLinks[multiCategoryBlockIds.body] = "/categories/body-care";
+publishedNavigation.resolvedLinks[multiCategoryBlockIds.hair] = "/categories/hair-care";
+publishedNavigation.resolvedLinks[multiCategoryBlockIds.korean] = "/categories/korean";
 
 const category = {
   id: "20000000-0000-4000-8000-000000000001",
@@ -541,6 +631,88 @@ const emptyCart = {
   updatedAt: "2026-08-18T00:00:00.000Z",
 };
 
+const pageBuilderImageIds = {
+  page: "e1000000-0000-4000-8000-000000000001",
+  revision: "e1000000-0000-4000-8000-000000000002",
+  section: "e1000000-0000-4000-8000-000000000003",
+  desktop: "e1000000-0000-4000-8000-000000000004",
+  mobile: "e1000000-0000-4000-8000-000000000005",
+};
+const pageBuilderImageSnapshot = {
+  pageId: pageBuilderImageIds.page,
+  slug: "page-builder-image-test",
+  type: "CAMPAIGN",
+  revisionId: pageBuilderImageIds.revision,
+  revision: 1,
+  publishedAt: "2026-08-29T12:00:00.000Z",
+  resolvedAt: "2026-08-29T12:00:00.000Z",
+  preview: false,
+  config: {
+    schemaVersion: 1,
+    title: { en: "Page Builder image", ar: "صورة منشئ الصفحات" },
+    seo: {
+      title: { en: "Page Builder image", ar: "صورة منشئ الصفحات" },
+      description: { en: "Published image fixture", ar: "نموذج صورة منشورة" },
+      canonicalPath: "/page-builder-image-test",
+      openGraphMediaId: null,
+      indexable: false,
+    },
+    sections: [
+      {
+        id: pageBuilderImageIds.section,
+        analyticsKey: "published-image",
+        label: "Published image",
+        enabled: true,
+        visibility: {
+          devices: ["DESKTOP", "TABLET", "MOBILE"],
+          locales: ["en", "ar"],
+          startsAt: null,
+          endsAt: null,
+        },
+        surface: "DEFAULT",
+        spacing: "MEDIUM",
+        width: "FULL",
+        type: "IMAGE",
+        desktopMediaId: pageBuilderImageIds.desktop,
+        mobileMediaId: pageBuilderImageIds.mobile,
+        imageAlt: { en: "Published responsive image", ar: "صورة منشورة متجاوبة" },
+        caption: { en: "Published from Page Builder", ar: "منشورة من منشئ الصفحات" },
+        destination: { type: "SHOP" },
+        openInNewTab: true,
+        imageWidth: "CUSTOM",
+        customWidthPercent: 72,
+        alignment: "CENTER",
+        aspectRatio: "4_3",
+        customAspectRatio: { width: 4, height: 3 },
+        objectFit: "COVER",
+        objectPosition: "CENTER",
+        borderRadius: 12,
+        maxHeight: 720,
+        backgroundColor: "#f4efe7",
+      },
+    ],
+  },
+  entities: {},
+  products: {},
+  media: {
+    [pageBuilderImageIds.desktop]: {
+      id: pageBuilderImageIds.desktop,
+      url: `http://${host}:${port}/api/v1/page-builder-fixtures/desktop.svg`,
+      width: 1600,
+      height: 900,
+      altText: null,
+    },
+    [pageBuilderImageIds.mobile]: {
+      id: pageBuilderImageIds.mobile,
+      url: `http://${host}:${port}/api/v1/page-builder-fixtures/mobile.svg`,
+      width: 750,
+      height: 1000,
+      altText: null,
+    },
+  },
+  links: { [pageBuilderImageIds.section]: "/shop" },
+};
+
 const server = createServer((request, response) => {
   const url = new URL(request.url || "/", `http://${host}:${port}`);
   const path = url.pathname.replace(/^\/api\/v1/, "");
@@ -562,6 +734,20 @@ const server = createServer((request, response) => {
   }
 
   if (url.pathname === "/health") return json(response, 200, { ok: true });
+  if (path === "/pages/page-builder-image-test") {
+    return success(response, pageBuilderImageSnapshot);
+  }
+  if (path.startsWith("/page-builder-fixtures/")) {
+    const mobile = path.endsWith("/mobile.svg");
+    const width = mobile ? 750 : 1600;
+    const height = mobile ? 1000 : 900;
+    const color = mobile ? "#a7c7b4" : "#d8ad6b";
+    response.writeHead(200, { "content-type": "image/svg+xml", "cache-control": "no-store" });
+    response.end(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="100%" height="100%" fill="${color}"/><text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-size="48">${mobile ? "mobile" : "desktop"}</text></svg>`,
+    );
+    return;
+  }
   if (path === `/products/${product.slug}`) return success(response, product);
   if (path === `/products/${viewerFitProduct.slug}`) return success(response, viewerFitProduct);
   if (path.startsWith("/viewer-fixtures/")) {

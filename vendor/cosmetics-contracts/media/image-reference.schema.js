@@ -79,13 +79,18 @@ function resolveImageReferenceUrl(value, publicBaseUrl) {
     const normalized = normalizeImageReference(value);
     if (!normalized)
         return null;
-    if (isAbsoluteHttpImageUrl(normalized))
-        return normalized;
+    if (isAbsoluteHttpImageUrl(normalized)) {
+        return isSafeExternalImageUrl(normalized) ? normalized : null;
+    }
     const storageKey = normalized.replace(/^\/+/, "");
     if (!isSafeStorageImageKey(storageKey))
         return null;
     const base = publicBaseUrl?.trim().replace(/\/+$/, "");
-    return base ? `${base}/${storageKey}` : storageKey;
+    const encodedKey = storageKey
+        .split("/")
+        .map((segment) => encodeURIComponent(decodeURIComponent(segment)))
+        .join("/");
+    return base ? `${base}/${encodedKey}` : encodedKey;
 }
 exports.imageReferenceValueSchema = zod_1.z
     .string()

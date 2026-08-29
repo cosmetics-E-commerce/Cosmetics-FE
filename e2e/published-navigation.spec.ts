@@ -83,7 +83,111 @@ test("published categories remain usable in the mobile menu", async ({ page }, t
   const mobileNavigation = page.getByRole("dialog", { name: "Open menu" });
   await mobileNavigation.getByRole("button", { name: "Categories", exact: true }).click();
   await expect(mobileNavigation.getByRole("link", { name: /Face Care/ })).toBeVisible();
+  await mobileNavigation
+    .locator(".published-mobile-category-group > summary")
+    .filter({ hasText: "Face Care" })
+    .click();
   await expect(mobileNavigation.getByRole("link", { name: "Cleansers" })).toBeVisible();
+});
+
+test("multi-category navigation stays compact, content-driven, and interactive", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "chromium", "The primary menu is desktop-only");
+
+  for (const viewport of [
+    { width: 1366, height: 768 },
+    { width: 1440, height: 900 },
+    { width: 1920, height: 1080 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/about", { waitUntil: "networkidle" });
+    const trigger = page
+      .getByRole("navigation", { name: "Primary" })
+      .getByRole("button", { name: "Departments", exact: true });
+    await trigger.hover();
+    const menu = page.locator('.published-mega[data-category-columns="3"]');
+    await expect(menu).toBeVisible();
+    await menu.getByRole("link", { name: "Body care 1" }).hover();
+    await expect(trigger).toHaveAttribute("data-state", "open");
+    await expect(menu.getByRole("link", { name: "View all" })).toHaveCount(3);
+    await expect(menu.getByRole("link", { name: "View all" }).nth(0)).toHaveAttribute(
+      "href",
+      "/categories/body-care",
+    );
+
+    const geometry = await menu.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      const columns = [...element.querySelectorAll<HTMLElement>(".published-mega__column")].map(
+        (column) => {
+          const bounds = column.getBoundingClientRect();
+          return { top: bounds.top, bottom: bounds.bottom, height: bounds.height };
+        },
+      );
+      return {
+        width: rect.width,
+        height: rect.height,
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        columns,
+      };
+    });
+    expect(geometry.width).toBeLessThan(820);
+    expect(geometry.width).toBeLessThan(geometry.viewportWidth - 40);
+    expect(geometry.height).toBeLessThan(geometry.viewportHeight * 0.68);
+    expect(geometry.overflow).toBeLessThanOrEqual(1);
+    expect(Math.max(...geometry.columns.map((column) => column.top))).toBeCloseTo(
+      Math.min(...geometry.columns.map((column) => column.top)),
+      0,
+    );
+
+    await page.keyboard.press("Escape");
+    await expect(menu).toBeHidden();
+    await trigger.focus();
+    await page.keyboard.press("Enter");
+    await expect(menu).toBeVisible();
+    await page.mouse.click(viewport.width - 16, viewport.height - 16);
+    await expect(menu).toBeHidden();
+  }
+
+  await page.goto("/about?lang=ar", { waitUntil: "networkidle" });
+  const arabicTrigger = page
+    .getByRole("navigation", { name: "Primary" })
+    .getByRole("button", { name: "الأقسام", exact: true });
+  await arabicTrigger.hover();
+  const arabicMenu = page.locator('.published-mega[data-category-columns="3"]');
+  await expect(arabicMenu).toHaveAttribute("dir", "rtl");
+  await expect(arabicMenu.getByRole("heading", { name: "العناية بالجسم" })).toBeVisible();
+  await arabicMenu.getByRole("link", { name: "العناية بالجسم 1" }).click();
+  await expect(page).toHaveURL(/\/categories\/body-care-1/);
+});
+
+test("multi-category navigation uses parent disclosures on mobile", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "This assertion targets the mobile drawer");
+  for (const width of [320, 360, 375, 390, 414, 430]) {
+    await page.setViewportSize({ width, height: width === 320 ? 568 : 844 });
+    await page.goto("/about?lang=ar", { waitUntil: "networkidle" });
+    await page.getByRole("button", { name: "فتح القائمة", exact: true }).click();
+    const mobileNavigation = page.getByRole("dialog", { name: "فتح القائمة" });
+    await mobileNavigation.getByRole("button", { name: "الأقسام", exact: true }).click();
+    const bodyDisclosure = mobileNavigation
+      .locator(".published-mobile-category-group > summary")
+      .filter({ hasText: "العناية بالجسم" });
+    await expect(bodyDisclosure).toBeVisible();
+    await expect(mobileNavigation.getByRole("link", { name: "العناية بالجسم 1" })).toBeHidden();
+    await bodyDisclosure.click();
+    await expect(mobileNavigation.getByRole("link", { name: "العناية بالجسم 1" })).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      ),
+    ).toBeLessThanOrEqual(1);
+    if (width === 430) {
+      await mobileNavigation.getByRole("link", { name: "العناية بالجسم 1" }).click();
+      await expect(page).toHaveURL(/\/categories\/body-care-1/);
+    }
+  }
 });
 
 test("published alphabetical Brands remains usable in the mobile menu", async ({

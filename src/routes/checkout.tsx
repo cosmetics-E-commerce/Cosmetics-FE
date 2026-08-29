@@ -49,29 +49,71 @@ export const Route = createFileRoute("/checkout")({
   component: Checkout,
 });
 
-const checkoutPaymentOptions = [
-  {
-    value: "CASH_ON_DELIVERY",
-    title: "Cash on delivery",
-    copy: "Pay the courier when your order arrives.",
-    logo: null,
-    logoClassName: "",
+const checkoutPaymentOptions = {
+  en: [
+    {
+      value: "CASH_ON_DELIVERY",
+      title: "Cash on delivery",
+      copy: "Pay the courier when your order arrives.",
+      logo: null,
+      logoClassName: "",
+    },
+    {
+      value: "INSTAPAY",
+      title: "InstaPay",
+      copy: "Transfer, then upload your payment screenshot.",
+      logo: "/payment-methods/instapay-logo.png",
+      logoClassName: "sf-checkout-payment-logo--instapay",
+    },
+    {
+      value: "VODAFONE_CASH",
+      title: "Vodafone Cash",
+      copy: "Transfer, then upload your payment screenshot.",
+      logo: "/payment-methods/vodafone-icon.svg",
+      logoClassName: "sf-checkout-payment-logo--vodafone",
+    },
+  ],
+  ar: [
+    {
+      value: "CASH_ON_DELIVERY",
+      title: "الدفع عند الاستلام",
+      copy: "ادفعي للمندوب عند وصول طلبك.",
+      logo: null,
+      logoClassName: "",
+    },
+    {
+      value: "INSTAPAY",
+      title: "إنستا باي",
+      copy: "حوّلي المبلغ، ثم ارفعي صورة إثبات الدفع.",
+      logo: "/payment-methods/instapay-logo.png",
+      logoClassName: "sf-checkout-payment-logo--instapay",
+    },
+    {
+      value: "VODAFONE_CASH",
+      title: "فودافون كاش",
+      copy: "حوّلي المبلغ، ثم ارفعي صورة إثبات الدفع.",
+      logo: "/payment-methods/vodafone-icon.svg",
+      logoClassName: "sf-checkout-payment-logo--vodafone",
+    },
+  ],
+} as const;
+
+const paymentCopy = {
+  en: {
+    notes: "Order notes",
+    notesPlaceholder: "Optional delivery instructions",
+    finalTotal: "Final total",
+    place: "Place order",
+    placing: "Placing order…",
   },
-  {
-    value: "INSTAPAY",
-    title: "InstaPay",
-    copy: "Transfer, then upload your payment screenshot.",
-    logo: "/payment-methods/instapay-logo.png",
-    logoClassName: "sf-checkout-payment-logo--instapay",
+  ar: {
+    notes: "ملاحظات الطلب",
+    notesPlaceholder: "تعليمات توصيل اختيارية",
+    finalTotal: "الإجمالي النهائي",
+    place: "تأكيد الطلب",
+    placing: "جارٍ تأكيد الطلب…",
   },
-  {
-    value: "VODAFONE_CASH",
-    title: "Vodafone Cash",
-    copy: "Transfer, then upload your payment screenshot.",
-    logo: "/payment-methods/vodafone-icon.svg",
-    logoClassName: "sf-checkout-payment-logo--vodafone",
-  },
-] as const;
+} as const;
 
 function Checkout() {
   const { t } = useI18n();
@@ -88,6 +130,7 @@ function Checkout() {
   } = useStore();
   const navigate = useNavigate();
   const client = useQueryClient();
+  const paymentLabels = paymentCopy[locale];
   const addresses = useQuery({
     queryKey: ["account", "addresses"],
     queryFn: listAddresses,
@@ -712,7 +755,7 @@ function Checkout() {
                     }
                   />
                   <div className="sf-checkout-payment-grid">
-                    {checkoutPaymentOptions.map((option) => (
+                    {checkoutPaymentOptions[locale].map((option) => (
                       <label
                         key={option.value}
                         className="sf-checkout-payment-option"
@@ -747,16 +790,16 @@ function Checkout() {
                     <Instruction data={instructions.data.find((item) => item.method === method)!} />
                   )}
                   <label className="sf-checkout-notes">
-                    <span>Order notes</span>
+                    <span>{paymentLabels.notes}</span>
                     <textarea
                       value={notes}
                       onChange={(event) => setNotes(event.target.value)}
                       className="min-h-24 w-full border border-input bg-white p-4 text-sm normal-case tracking-normal"
                       maxLength={500}
-                      placeholder="Optional delivery instructions"
+                      placeholder={paymentLabels.notesPlaceholder}
                     />
                   </label>
-                  <div className="sf-checkout-step-actions">
+                  <div className="sf-checkout-step-actions sf-checkout-payment-actions">
                     <Button
                       type="button"
                       variant="quiet"
@@ -769,14 +812,13 @@ function Checkout() {
                       type="button"
                       variant="solid"
                       size="pill"
-                      className="sf-checkout-black-button"
+                      className="sf-checkout-black-button sf-checkout-place-order sf-checkout-place-order--inline"
+                      aria-label={place.isPending ? paymentLabels.placing : paymentLabels.place}
                       disabled={!canSubmitCurrentStep}
                       loading={place.isPending}
                       onClick={submitOrder}
                     >
-                      {manualPaymentSelected
-                        ? "Create order and upload proof"
-                        : t("checkout.place")}
+                      {place.isPending ? paymentLabels.placing : paymentLabels.place}
                     </Button>
                   </div>
                 </section>
@@ -850,18 +892,6 @@ function Checkout() {
                 {apiErrorMessage(place.error, locale)}
               </p>
             )}
-            {activeStep === 3 && (
-              <Button
-                variant="solid"
-                size="wide"
-                className="sf-checkout-black-button mt-7"
-                disabled={!canSubmitCurrentStep}
-                loading={place.isPending}
-                onClick={submitOrder}
-              >
-                {t("checkout.place")}
-              </Button>
-            )}
             {!selectedAddress && (
               <p className="sf-checkout-summary__hint">
                 Add or select a verified delivery address to continue.
@@ -885,22 +915,23 @@ function Checkout() {
         </div>
       )}
       {!result && activeStep === 3 && (
-        <div className="mobile-primary-bar fixed inset-x-0 bottom-0 z-30 border-t border-border bg-white px-4 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.18)] lg:hidden">
+        <div className="mobile-primary-bar sf-checkout-mobile-purchase fixed inset-x-0 bottom-0 z-30 border-t border-border bg-white px-4 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.18)] lg:hidden">
           <div className="mx-auto flex max-w-lg items-center gap-3">
             <div className="min-w-0 flex-1">
-              <p className="label-xs text-taupe">{t("checkout.beforeDelivery")}</p>
+              <p className="label-xs text-taupe">{paymentLabels.finalTotal}</p>
               <p className="font-serif text-xl">{formatPrice(checkoutPreviewTotal)}</p>
             </div>
             <Button
               type="button"
               variant="solid"
               size="pill"
-              className="sf-checkout-black-button h-12 shrink-0 px-6"
+              className="sf-checkout-black-button sf-checkout-place-order sf-checkout-place-order--sticky h-12 shrink-0 px-6"
+              aria-label={place.isPending ? paymentLabels.placing : paymentLabels.place}
               disabled={!canSubmitCurrentStep}
               loading={place.isPending}
               onClick={submitOrder}
             >
-              {t("checkout.place")}
+              {place.isPending ? paymentLabels.placing : paymentLabels.place}
             </Button>
           </div>
         </div>
