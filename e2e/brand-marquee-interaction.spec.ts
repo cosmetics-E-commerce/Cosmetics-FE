@@ -219,6 +219,8 @@ test.describe("brand presentation", () => {
         const logo = pageElement.querySelector(".sf-brand-landing-logo-shell")!;
         const catalog = pageElement.querySelector(".sf-shop-catalog")!;
         const toolbar = pageElement.querySelector(".catalog-listing-toolbar")!;
+        const jumps = pageElement.querySelector(".sf-brand-category-jumps");
+        const groupHeader = pageElement.querySelector(".sf-brand-category-group > header")!;
         const grid = pageElement.querySelector(".sf-shop-products")!;
         const firstProduct = grid.firstElementChild!;
         const rect = (element: Element) => element.getBoundingClientRect();
@@ -226,6 +228,8 @@ test.describe("brand presentation", () => {
         const introRect = rect(intro);
         const logoRect = rect(logo);
         const toolbarRect = rect(toolbar);
+        const merchandisingRect = rect(jumps ?? groupHeader);
+        const groupHeaderRect = rect(groupHeader);
         const gridRect = rect(grid);
         const productRect = rect(firstProduct);
         const introStyle = getComputedStyle(intro);
@@ -242,7 +246,8 @@ test.describe("brand presentation", () => {
           catalogMarginTop: Number.parseFloat(catalogStyle.marginTop),
           breadcrumbToLogo: logoRect.top - breadcrumbRect.bottom,
           logoToToolbar: toolbarRect.top - logoRect.bottom,
-          toolbarToGrid: gridRect.top - toolbarRect.bottom,
+          toolbarToMerchandising: merchandisingRect.top - toolbarRect.bottom,
+          groupHeaderToGrid: gridRect.top - groupHeaderRect.bottom,
           productTop: productRect.top,
         };
       });
@@ -256,8 +261,10 @@ test.describe("brand presentation", () => {
       expect(layout.breadcrumbToLogo).toBeLessThanOrEqual(65);
       expect(layout.logoToToolbar).toBeGreaterThanOrEqual(27);
       expect(layout.logoToToolbar).toBeLessThanOrEqual(46);
-      expect(layout.toolbarToGrid).toBeGreaterThanOrEqual(23);
-      expect(layout.toolbarToGrid).toBeLessThanOrEqual(33);
+      expect(layout.toolbarToMerchandising).toBeGreaterThanOrEqual(23);
+      expect(layout.toolbarToMerchandising).toBeLessThanOrEqual(33);
+      expect(layout.groupHeaderToGrid).toBeGreaterThanOrEqual(23);
+      expect(layout.groupHeaderToGrid).toBeLessThanOrEqual(33);
       expect(layout.productTop).toBeLessThan(
         viewport.height * (viewport.width >= 1024 ? 0.82 : 0.9),
       );

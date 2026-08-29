@@ -21722,6 +21722,11 @@ body:has(.sf-checkout-page) .store-header {
 .sf-brand-category-groups {
   display: grid;
   gap: clamp(52px, 7vw, 92px);
+  margin-top: 26px;
+}
+
+.sf-brand-category-jumps + .sf-brand-category-groups {
+  margin-top: 0;
 }
 
 .sf-brand-category-group {
