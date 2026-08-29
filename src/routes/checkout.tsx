@@ -154,11 +154,13 @@ function Checkout() {
   const [draftLoaded, setDraftLoaded] = useState(false);
   const [activeStep, setActiveStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(() => new Set());
+  const [purchaseBarDocked, setPurchaseBarDocked] = useState(false);
   const initialLineCount = useRef(lines.length);
   const checkoutIdempotencyKey = useRef<string | null>(null);
   const paymentIdempotencyKey = useRef<string | null>(null);
   const placingOrder = useRef(false);
   const preparingPayment = useRef(false);
+  const checkoutEndSentinel = useRef<HTMLSpanElement>(null);
   const idempotencyKey = (ref: { current: string | null }) => {
     ref.current ??= randomUuid();
     return ref.current;
@@ -358,6 +360,27 @@ function Checkout() {
     if (!proofSubmitted) return;
     setCompletedSteps((current) => new Set([...current, 1, 2, 3]));
   }, [proofSubmitted]);
+  useEffect(() => {
+    const sentinel = checkoutEndSentinel.current;
+    if (!sentinel || activeStep !== 3 || result) {
+      setPurchaseBarDocked(false);
+      return;
+    }
+
+    const updateDockedState = (top: number) => setPurchaseBarDocked(top <= window.innerHeight);
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry) updateDockedState(entry.boundingClientRect.top);
+    });
+    observer.observe(sentinel);
+    updateDockedState(sentinel.getBoundingClientRect().top);
+
+    const handleViewportChange = () => updateDockedState(sentinel.getBoundingClientRect().top);
+    window.addEventListener("resize", handleViewportChange, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", handleViewportChange);
+    };
+  }, [activeStep, result]);
   if (!authHydrated) return <Loading />;
   if (!user)
     return (
@@ -915,24 +938,30 @@ function Checkout() {
         </div>
       )}
       {!result && activeStep === 3 && (
-        <div className="mobile-primary-bar sf-checkout-mobile-purchase fixed inset-x-0 bottom-0 z-30 border-t border-border bg-white px-4 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.18)] lg:hidden">
-          <div className="mx-auto flex max-w-lg items-center gap-3">
-            <div className="min-w-0 flex-1">
-              <p className="label-xs text-taupe">{paymentLabels.finalTotal}</p>
-              <p className="font-serif text-xl">{formatPrice(checkoutPreviewTotal)}</p>
+        <div className="sf-checkout-purchase-boundary">
+          <span ref={checkoutEndSentinel} className="sf-checkout-end-sentinel" aria-hidden="true" />
+          <div
+            className="mobile-primary-bar sf-checkout-mobile-purchase z-30 border-t border-border bg-white px-4 pb-[max(0.8rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-12px_30px_-24px_rgba(0,0,0,0.18)] lg:hidden"
+            data-position={purchaseBarDocked ? "docked" : "fixed"}
+          >
+            <div className="mx-auto flex max-w-lg items-center gap-3">
+              <div className="min-w-0 flex-1">
+                <p className="label-xs text-taupe">{paymentLabels.finalTotal}</p>
+                <p className="font-serif text-xl">{formatPrice(checkoutPreviewTotal)}</p>
+              </div>
+              <Button
+                type="button"
+                variant="solid"
+                size="pill"
+                className="sf-checkout-black-button sf-checkout-place-order sf-checkout-place-order--sticky h-12 shrink-0 px-6"
+                aria-label={place.isPending ? paymentLabels.placing : paymentLabels.place}
+                disabled={!canSubmitCurrentStep}
+                loading={place.isPending}
+                onClick={submitOrder}
+              >
+                {place.isPending ? paymentLabels.placing : paymentLabels.place}
+              </Button>
             </div>
-            <Button
-              type="button"
-              variant="solid"
-              size="pill"
-              className="sf-checkout-black-button sf-checkout-place-order sf-checkout-place-order--sticky h-12 shrink-0 px-6"
-              aria-label={place.isPending ? paymentLabels.placing : paymentLabels.place}
-              disabled={!canSubmitCurrentStep}
-              loading={place.isPending}
-              onClick={submitOrder}
-            >
-              {place.isPending ? paymentLabels.placing : paymentLabels.place}
-            </Button>
           </div>
         </div>
       )}

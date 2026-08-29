@@ -193,19 +193,124 @@ test("multi-category navigation uses parent disclosures on mobile", async ({ pag
 test("published alphabetical Brands remains usable in the mobile menu", async ({
   page,
 }, testInfo) => {
-  test.skip(testInfo.project.name !== "mobile", "This assertion targets the mobile drawer");
+  test.skip(
+    !testInfo.project.name.startsWith("mobile"),
+    "This assertion targets the mobile drawer",
+  );
   await page.goto("/about", { waitUntil: "networkidle" });
   await page.getByRole("button", { name: "Open menu", exact: true }).click();
   const mobileNavigation = page.getByRole("dialog", { name: "Open menu" });
   await mobileNavigation.getByRole("button", { name: "Brands", exact: true }).click();
   const directory = mobileNavigation.locator(".published-brand-directory");
+  const groups = directory.locator(".published-brand-directory__groups");
   await expect(directory.locator(".published-brand-directory__group > h3")).toHaveText([
     "A",
     "B",
     "C",
     "E",
   ]);
-  await directory.getByPlaceholder("Search brands…").fill("cos");
+
+  for (const width of [320, 360, 375, 390, 414, 430]) {
+    await page.setViewportSize({ width, height: 780 });
+    const geometry = await mobileNavigation.evaluate((drawer) => {
+      const measure = (element: Element) => {
+        const node = element as HTMLElement;
+        return {
+          clientWidth: node.clientWidth,
+          scrollWidth: node.scrollWidth,
+        };
+      };
+      const body = drawer.querySelector<HTMLElement>(".mobile-nav__body")!;
+      const menu = drawer.querySelector<HTMLElement>(".published-mobile-menu")!;
+      const brandDirectory = drawer.querySelector<HTMLElement>(".published-brand-directory")!;
+      const brandGroups = drawer.querySelector<HTMLElement>(".published-brand-directory__groups")!;
+      const groupChildren = [
+        ...brandGroups.querySelectorAll<HTMLElement>(
+          ".published-brand-directory__group, .published-brand-directory__group a",
+        ),
+      ];
+      const style = getComputedStyle(brandGroups);
+      return {
+        containers: [drawer, body, menu, brandDirectory, brandGroups].map(measure),
+        children: groupChildren.map(measure),
+        overflowX: style.overflowX,
+        overflowY: style.overflowY,
+        touchAction: style.touchAction,
+        documentOverflow:
+          document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        documentScrollLeft: document.documentElement.scrollLeft,
+        bodyScrollLeft: document.body.scrollLeft,
+      };
+    });
+
+    for (const container of geometry.containers) {
+      expect(container.scrollWidth).toBeLessThanOrEqual(container.clientWidth + 1);
+    }
+    for (const child of geometry.children) {
+      expect(child.scrollWidth).toBeLessThanOrEqual(child.clientWidth + 1);
+    }
+    expect(geometry.overflowX).toBe("hidden");
+    expect(geometry.overflowY).toBe("auto");
+    expect(geometry.touchAction).toBe("pan-y");
+    expect(geometry.documentOverflow).toBeLessThanOrEqual(1);
+    expect(geometry.documentScrollLeft).toBe(0);
+    expect(geometry.bodyScrollLeft).toBe(0);
+  }
+
+  await groups.evaluate((element) => {
+    element.scrollTop = 0;
+    element.scrollLeft = 0;
+  });
+  const groupBox = await groups.boundingBox();
+  expect(groupBox).not.toBeNull();
+  if (testInfo.project.name === "mobile-webkit") {
+    await groups.evaluate((element) => {
+      element.scrollTop = 180;
+    });
+  } else {
+    await page.mouse.move(groupBox!.x + groupBox!.width / 2, groupBox!.y + groupBox!.height / 2);
+    await page.mouse.wheel(70, 180);
+  }
+  await expect.poll(() => groups.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+  expect(await groups.evaluate((element) => element.scrollLeft)).toBe(0);
+
+  const search = directory.getByPlaceholder("Search brands…");
+  await search.fill("cos");
   await expect(directory.getByRole("link", { name: "COSRX" })).toBeVisible();
   await expect(directory.getByRole("link", { name: "Anua" })).toHaveCount(0);
+  await expect(search).toBeFocused();
+  await expect
+    .poll(() => groups.evaluate((element) => element.scrollWidth - element.clientWidth))
+    .toBeLessThanOrEqual(1);
+
+  await search.fill("");
+  await expect(directory.getByRole("link", { name: "Anua" })).toBeVisible();
+  await mobileNavigation.getByRole("button", { name: "Close menu" }).click();
+  await expect(mobileNavigation).toBeHidden();
+  await page.getByRole("button", { name: "Open menu", exact: true }).click();
+  await mobileNavigation.getByRole("button", { name: "Brands", exact: true }).click();
+  await expect(mobileNavigation.getByRole("link", { name: "Anua" })).toBeVisible();
+  expect(
+    await groups.evaluate((element) => element.scrollWidth - element.clientWidth),
+  ).toBeLessThanOrEqual(1);
+
+  await page.goto("/about?lang=ar", { waitUntil: "networkidle" });
+  await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await page.getByRole("button", { name: "فتح القائمة", exact: true }).click();
+  const arabicNavigation = page.getByRole("dialog", { name: "فتح القائمة" });
+  await arabicNavigation.getByRole("button", { name: "العلامات", exact: true }).click();
+  const arabicGroups = arabicNavigation.locator(".published-brand-directory__groups");
+  await expect(arabicGroups).toBeVisible();
+  const rtlGeometry = await arabicGroups.evaluate((element) => ({
+    overflow: element.scrollWidth - element.clientWidth,
+    overflowX: getComputedStyle(element).overflowX,
+    touchAction: getComputedStyle(element).touchAction,
+    scrollLeft: element.scrollLeft,
+    documentOverflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  }));
+  expect(rtlGeometry.overflow).toBeLessThanOrEqual(1);
+  expect(rtlGeometry.overflowX).toBe("hidden");
+  expect(rtlGeometry.touchAction).toBe("pan-y");
+  expect(rtlGeometry.scrollLeft).toBe(0);
+  expect(rtlGeometry.documentOverflow).toBeLessThanOrEqual(1);
 });

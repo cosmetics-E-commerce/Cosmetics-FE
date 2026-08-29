@@ -208,8 +208,11 @@ export function CatalogListingControls({
             {activeFilters.length ? <span>{activeFilters.length}</span> : null}
           </button>
           <label className="catalog-listing-toolbar__sort">
-            <span className="sr-only">{copy.sort}</span>
+            <span className="catalog-listing-toolbar__sort-prefix" aria-hidden="true">
+              {copy.sortPrefix}
+            </span>
             <select
+              aria-label={copy.sort}
               disabled={!hydrated}
               value={search.sort ?? "newest"}
               onChange={(event) =>
@@ -457,6 +460,7 @@ const listingCopy = {
     products: "products",
     filters: "Filters",
     sort: "Sort products",
+    sortPrefix: "Sort:",
     newest: "Newest",
     priceLow: "Price: low to high",
     priceHigh: "Price: high to low",
@@ -484,6 +488,7 @@ const listingCopy = {
     products: "منتج",
     filters: "التصفية",
     sort: "ترتيب المنتجات",
+    sortPrefix: "الترتيب:",
     newest: "الأحدث",
     priceLow: "السعر: من الأقل إلى الأعلى",
     priceHigh: "السعر: من الأعلى إلى الأقل",

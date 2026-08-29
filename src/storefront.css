@@ -2723,6 +2723,9 @@ body:has(.sf-product-page) .header-actions__divider {
 
 .published-mobile-menu {
   display: grid;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   gap: 16px;
   padding-block: 4px 12px;
 }
@@ -2748,14 +2751,50 @@ body:has(.sf-product-page) .header-actions__divider {
 }
 .published-mobile-menu .published-brand-directory > header {
   display: grid;
+  min-width: 0;
 }
 .published-mobile-menu .published-brand-directory label {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.published-mobile-menu .published-brand-directory {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 .published-mobile-menu .published-brand-directory__groups {
-  columns: 1;
+  display: grid;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1fr);
+  column-count: initial;
+  column-width: initial;
+  column-gap: normal;
   max-height: 360px;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+.published-mobile-menu .published-brand-directory__group,
+.published-mobile-menu .published-brand-directory__group ul,
+.published-mobile-menu .published-brand-directory__group li,
+.published-mobile-menu .published-brand-directory__group a {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.published-mobile-menu .published-brand-directory__group {
+  display: block;
+}
+.published-mobile-menu .published-brand-directory__group a {
+  overflow-wrap: anywhere;
 }
 .published-mobile-menu .published-mega__row {
   display: block;
@@ -2851,10 +2890,14 @@ body:has(.sf-product-page) .header-actions__divider {
 /* Mobile drawer ------------------------------------------------------------ */
 .mobile-nav {
   display: flex;
+  max-width: 100%;
+  min-width: 0;
   flex-direction: column;
   gap: 0;
+  overflow-x: hidden;
   border-color: color-mix(in srgb, var(--sf-line) 70%, transparent);
   background: #faf8f4;
+  box-sizing: border-box;
 }
 
 .mobile-nav::before {
@@ -2899,14 +2942,20 @@ body:has(.sf-product-page) .header-actions__divider {
 
 .mobile-nav__body {
   display: flex;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   flex: 1;
   flex-direction: column;
   justify-content: space-between;
   gap: 32px;
   min-height: 0;
+  overflow-x: hidden;
   overflow-y: auto;
-  overscroll-behavior: contain;
+  overscroll-behavior-x: none;
+  overscroll-behavior-y: contain;
   padding: 8px 24px 28px;
+  box-sizing: border-box;
 }
 
 .mobile-nav__list > li {
@@ -4589,21 +4638,48 @@ body:has(.account-page) .header-nav-indicator {
   }
 }
 
+.sf-checkout-purchase-boundary {
+  display: none;
+}
+
 @media (max-width: 1023px) {
-  .sf-checkout-page--with-mobile-action {
-    padding-bottom: calc(116px + env(safe-area-inset-bottom, 0px));
+  .sf-checkout-page.sf-checkout-page--with-mobile-action {
+    padding-bottom: 0;
   }
 
   .sf-checkout-place-order--inline {
     display: none;
   }
 
+  .sf-checkout-purchase-boundary {
+    position: relative;
+    display: block;
+    min-height: calc(76px + env(safe-area-inset-bottom, 0px));
+    margin-top: clamp(20px, 4vw, 32px);
+  }
+
+  .sf-checkout-end-sentinel {
+    position: absolute;
+    inset-inline-start: 0;
+    bottom: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+  }
+
   .sf-checkout-mobile-purchase {
+    inset-inline: 0;
+    bottom: 0;
+    width: auto;
     min-height: calc(76px + env(safe-area-inset-bottom, 0px));
   }
 
-  body:has(.sf-checkout-page--with-mobile-action) .site-footer {
-    margin-block-end: calc(76px + env(safe-area-inset-bottom, 0px));
+  .sf-checkout-mobile-purchase[data-position="fixed"] {
+    position: fixed;
+  }
+
+  .sf-checkout-mobile-purchase[data-position="docked"] {
+    position: absolute;
   }
 }
 
@@ -7103,6 +7179,10 @@ html[data-motion-ready="true"] .sf-concern-list[data-motion-state="hidden"]::bef
   width: 16px;
   height: 16px;
   stroke-width: 1.5;
+}
+
+.catalog-listing-toolbar__sort-prefix {
+  display: none;
 }
 
 .catalog-listing-toolbar__sort select {
@@ -17496,7 +17576,7 @@ body:has(.sf-contact-page) .store-header[data-scrolled] .store-header__bar {
   }
 
   .sf-checkout-page--with-mobile-action {
-    padding-bottom: calc(116px + env(safe-area-inset-bottom, 0px));
+    padding-bottom: 0;
   }
 
   .sf-checkout-hero {

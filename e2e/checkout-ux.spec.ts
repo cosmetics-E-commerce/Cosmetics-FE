@@ -263,16 +263,63 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
   await expect(visiblePlaceOrders).toHaveCount(1);
   if (testInfo.project.name.startsWith("mobile")) {
     await expect(page.locator(".sf-checkout-place-order--inline")).toBeHidden();
+    const mobileBar = page.locator(".sf-checkout-mobile-purchase");
     await expect(page.locator(".sf-checkout-place-order--sticky")).toBeVisible();
     await expect(page.getByText("Final total", { exact: true })).toBeVisible();
-    await page.locator(".site-footer__bottom").scrollIntoViewIfNeeded();
-    const footerClearance = await page.evaluate(() => {
-      const footer = document.querySelector<HTMLElement>(".site-footer__bottom");
-      const bar = document.querySelector<HTMLElement>(".sf-checkout-mobile-purchase");
-      if (!footer || !bar) return -1;
-      return bar.getBoundingClientRect().top - footer.getBoundingClientRect().bottom;
-    });
-    expect(footerClearance).toBeGreaterThanOrEqual(-1);
+    const originalViewport = page.viewportSize()!;
+    for (const width of [320, 360, 375, 390, 414, 430]) {
+      await page.setViewportSize({ width, height: width === 320 ? 568 : 844 });
+      await page.getByRole("heading", { name: "Payment", exact: true }).scrollIntoViewIfNeeded();
+      await expect(mobileBar).toHaveAttribute("data-position", "fixed");
+      const stickyGeometry = await mobileBar.evaluate((element) => {
+        const bounds = element.getBoundingClientRect();
+        return {
+          bottom: bounds.bottom,
+          viewportHeight: window.innerHeight,
+          position: getComputedStyle(element).position,
+        };
+      });
+      expect(stickyGeometry.position).toBe("fixed");
+      expect(stickyGeometry.bottom).toBeCloseTo(stickyGeometry.viewportHeight, 0);
+
+      await page.locator(".site-footer").evaluate((element) =>
+        element.scrollIntoView({
+          block: "start",
+          behavior: "instant",
+        }),
+      );
+      await expect(mobileBar).toHaveAttribute("data-position", "docked");
+      const footerBoundary = await page.evaluate(() => {
+        const checkout = document.querySelector<HTMLElement>(".sf-checkout-page");
+        const footer = document.querySelector<HTMLElement>(".site-footer");
+        const bar = document.querySelector<HTMLElement>(".sf-checkout-mobile-purchase");
+        if (!checkout || !footer || !bar) return null;
+        const footerBounds = footer.getBoundingClientRect();
+        const barBounds = bar.getBoundingClientRect();
+        return {
+          barBottom: barBounds.bottom,
+          checkoutBottom: checkout.getBoundingClientRect().bottom,
+          footerTop: footerBounds.top,
+          overlap: Math.max(
+            0,
+            Math.min(barBounds.bottom, footerBounds.bottom) -
+              Math.max(barBounds.top, footerBounds.top),
+          ),
+          position: getComputedStyle(bar).position,
+          checkoutPaddingBottom: Number.parseFloat(getComputedStyle(checkout).paddingBottom),
+        };
+      });
+      expect(footerBoundary).not.toBeNull();
+      expect(footerBoundary!.position).toBe("absolute");
+      expect(footerBoundary!.barBottom).toBeLessThanOrEqual(footerBoundary!.checkoutBottom + 1);
+      expect(footerBoundary!.barBottom).toBeLessThanOrEqual(footerBoundary!.footerTop + 1);
+      expect(footerBoundary!.overlap).toBeLessThanOrEqual(0.5);
+      expect(footerBoundary!.checkoutPaddingBottom).toBeLessThanOrEqual(1);
+    }
+    await page.setViewportSize(originalViewport);
+    await page.getByRole("heading", { name: "Payment", exact: true }).scrollIntoViewIfNeeded();
+    await expect(mobileBar).toHaveAttribute("data-position", "fixed");
+    await expect(page.locator(".sf-checkout-place-order--sticky")).toBeVisible();
   } else {
     await expect(page.locator(".sf-checkout-place-order--inline")).toBeVisible();
     await expect(page.locator(".sf-checkout-place-order--sticky")).toBeHidden();
