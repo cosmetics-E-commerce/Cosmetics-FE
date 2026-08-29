@@ -34,7 +34,6 @@ exports.createUserSchema = createUserBaseSchema.superRefine((input, ctx) => {
 exports.registerSchema = createUserBaseSchema
     .extend({
     email: primitives_1.emailSchema,
-    gender: enums_1.GenderEnum,
     rePassword: zod_1.z.string().min(1, "Repeat password is required"),
     otpChannel: exports.otpDeliveryChannelEnum.default("EMAIL"),
 })
@@ -110,7 +109,7 @@ function validateOtpChannelIdentifier(input, ctx) {
         ctx.addIssue({
             code: zod_1.z.ZodIssueCode.custom,
             path: ["identifier"],
-            message: "SMS OTP requires a valid Egyptian mobile number.",
+            message: "SMS OTP requires a valid international phone number.",
         });
     }
     if (input.channel === "EMAIL" &&

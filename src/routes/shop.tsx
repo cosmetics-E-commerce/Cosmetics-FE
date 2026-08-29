@@ -75,13 +75,13 @@ export const Route = createFileRoute("/shop")({
           : `Shop Products - Page ${page}`
         : locale === "ar"
           ? "تسوّقي منتجات العناية والجمال"
-          : "Shop Skincare, Makeup, Haircare & Fragrance";
+          : "Shop Skincare, Haircare, Body Care & Fragrance";
     const seo = createSeoHead({
       title,
       description:
         locale === "ar"
-          ? "تصفّحي منتجات العناية بالبشرة والمكياج والشعر والعطور المتاحة من بيوريزا."
-          : "Browse BIOREZA skincare, makeup, haircare and fragrance products with current prices and availability.",
+          ? "تصفّحي منتجات العناية بالبشرة والشعر والجسم والعطور المتاحة من بيوريزا."
+          : "Browse BIOREZA skincare, haircare, body care and fragrance products with current prices and availability.",
       path: canonicalPath,
       locale,
       page: filtered ? undefined : page,
@@ -178,8 +178,8 @@ function Shop() {
       ? `نتائج البحث عن «${search.search}»`
       : `Search results for “${search.search}”`
     : locale === "ar"
-      ? "تسوّقي العناية بالبشرة والمكياج والشعر والعطور"
-      : "Shop Skincare, Makeup, Haircare & Fragrance";
+      ? "تسوّقي العناية بالبشرة والشعر والجسم والعطور"
+      : "Shop Skincare, Haircare, Body Care & Fragrance";
 
   return (
     <div className="sf-shop-page sf-shop-page--minimal">

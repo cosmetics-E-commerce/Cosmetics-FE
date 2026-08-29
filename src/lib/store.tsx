@@ -25,7 +25,6 @@ import {
   addWishlist,
   apiErrorMessage,
   clearCartRequest,
-  clearSession,
   getCart,
   getWishlist,
   hasRefreshSession,
@@ -443,9 +442,14 @@ export function StoreProvider({
   );
 
   const signOut = useCallback(async () => {
-    await logoutRequest().catch(() => clearSession());
+    await logoutRequest();
     setUser(null);
-    queryClient.removeQueries({ queryKey: ["wishlist"] });
+    queryClient.removeQueries({
+      predicate: (query) =>
+        ["wishlist", "account", "orders", "addresses", "profile"].includes(
+          String(query.queryKey[0]),
+        ),
+    });
     void queryClient.invalidateQueries({ queryKey: ["cart"] });
   }, [queryClient]);
 

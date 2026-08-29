@@ -67,7 +67,7 @@ export type AdminAccountsQuery = z.infer<typeof adminAccountsQuerySchema>;
 export declare const updateManagedAdminSchema: z.ZodEffects<z.ZodObject<{
     firstName: z.ZodOptional<z.ZodString>;
     lastName: z.ZodOptional<z.ZodString>;
-    phone: z.ZodOptional<z.ZodString>;
+    phone: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
     email: z.ZodOptional<z.ZodString>;
 }, "strict", z.ZodTypeAny, {
     firstName?: string | undefined;

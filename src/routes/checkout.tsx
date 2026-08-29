@@ -306,6 +306,7 @@ function Checkout() {
         </p>
       </Reveal>
       <CheckoutSteps
+        locale={locale}
         current={result && manualPaymentSelected ? 4 : activeStep}
         completed={completedSteps}
         manualPending={proofSubmitted || Boolean(result && payment)}
@@ -370,7 +371,9 @@ function Checkout() {
                       className="sf-checkout-black-button"
                       onClick={() => completeStep(1, 2)}
                     >
-                      Continue to Delivery
+                      {locale === "ar"
+                        ? "المتابعة إلى عنوان التوصيل"
+                        : "Continue to Delivery Address"}
                     </Button>
                   </div>
                 </section>
@@ -382,9 +385,13 @@ function Checkout() {
                 <section className="sf-checkout-card">
                   <CheckoutCardHeader
                     icon={<MapPin />}
-                    eyebrow="Step 2"
-                    title="Delivery"
-                    copy="Select the address we should ship to."
+                    eyebrow={locale === "ar" ? "الخطوة 2" : "Step 2"}
+                    title={locale === "ar" ? "عنوان التوصيل" : "Delivery Address"}
+                    copy={
+                      locale === "ar"
+                        ? "اختاري العنوان الذي سنرسل طلبك إليه."
+                        : "Select the address we should ship to."
+                    }
                   />
                   {addresses.isLoading ? (
                     <div className="sf-checkout-skeletons" aria-label="Loading delivery addresses">
@@ -607,7 +614,7 @@ function Checkout() {
                       size="pill"
                       onClick={() => setActiveStep(2)}
                     >
-                      Back to Delivery
+                      {locale === "ar" ? "العودة إلى عنوان التوصيل" : "Back to Delivery Address"}
                     </Button>
                     <Button
                       type="button"
@@ -871,25 +878,39 @@ function CheckoutCardHeader({
 }
 
 function CheckoutSteps({
+  locale,
   current,
   completed,
   manualPending,
   onSelect,
 }: {
+  locale: "ar" | "en";
   current: number;
   completed: Set<number>;
   manualPending: boolean;
   onSelect: (step: number) => void;
 }) {
-  const steps = [
-    { number: 1, label: "Bag" },
-    { number: 2, label: "Delivery", sub: "Select address" },
-    { number: 3, label: "Review" },
-    { number: 4, label: "Payment", sub: manualPending ? "Pending" : undefined },
-    { number: 5, label: "Confirmed" },
-  ];
+  const steps =
+    locale === "ar"
+      ? [
+          { number: 1, label: "الحقيبة" },
+          { number: 2, label: "عنوان التوصيل", sub: "اختيار العنوان" },
+          { number: 3, label: "المراجعة" },
+          { number: 4, label: "الدفع", sub: manualPending ? "قيد الانتظار" : undefined },
+          { number: 5, label: "تم التأكيد" },
+        ]
+      : [
+          { number: 1, label: "Bag" },
+          { number: 2, label: "Delivery Address", sub: "Select address" },
+          { number: 3, label: "Review" },
+          { number: 4, label: "Payment", sub: manualPending ? "Pending" : undefined },
+          { number: 5, label: "Confirmed" },
+        ];
   return (
-    <ol className="sf-checkout-steps" aria-label="Checkout progress">
+    <ol
+      className="sf-checkout-steps"
+      aria-label={locale === "ar" ? "خطوات إتمام الطلب" : "Checkout progress"}
+    >
       {steps.map((step) => {
         const state =
           step.number === current ? "active" : completed.has(step.number) ? "complete" : "next";

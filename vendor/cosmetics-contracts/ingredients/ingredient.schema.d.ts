@@ -254,12 +254,12 @@ export declare const ingredientQuerySchema: z.ZodObject<{
     sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
 } & {
     search: z.ZodOptional<z.ZodString>;
-    status: z.ZodDefault<z.ZodEnum<["active", "inactive", "all"]>>;
+    status: z.ZodDefault<z.ZodEnum<["active", "inactive", "archived", "all"]>>;
     source: z.ZodOptional<z.ZodEnum<["CURATED", "COSING", "PUBCHEM", "OPEN_BEAUTY_FACTS", "ADMIN", "IMPORT"]>>;
     featured: z.ZodOptional<z.ZodBoolean>;
     sortBy: z.ZodDefault<z.ZodEnum<["inciName", "commonName", "createdAt", "updatedAt"]>>;
 }, "strip", z.ZodTypeAny, {
-    status: "active" | "inactive" | "all";
+    status: "active" | "inactive" | "archived" | "all";
     page: number;
     limit: number;
     sortBy: "createdAt" | "updatedAt" | "inciName" | "commonName";
@@ -268,7 +268,7 @@ export declare const ingredientQuerySchema: z.ZodObject<{
     source?: "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
     featured?: boolean | undefined;
 }, {
-    status?: "active" | "inactive" | "all" | undefined;
+    status?: "active" | "inactive" | "archived" | "all" | undefined;
     page?: number | undefined;
     limit?: number | undefined;
     sortBy?: "createdAt" | "updatedAt" | "inciName" | "commonName" | undefined;

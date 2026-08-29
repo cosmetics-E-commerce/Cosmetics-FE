@@ -45,7 +45,6 @@ const CAROUSEL_DURATION = 24;
 
 const fallbackImages: Record<string, string> = {
   skincare: images.catSkincare,
-  makeup: images.catMakeup,
   haircare: images.catHaircare,
   fragrance: images.catFragrance,
 };

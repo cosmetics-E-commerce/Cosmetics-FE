@@ -533,30 +533,25 @@ function EntityList({
   return (
     <section className={`published-mega__entity-list is-${presentation}`}>
       {block.showHeading ? <BlockHeading value={block.heading} locale={locale} /> : null}
-      <div>
-        {entities.map((entity) => (
-          <SafeLink href={entity.href} key={entity.id} onNavigate={onNavigate}>
-            {block.type === "CATEGORY_LIST" && block.showIcon ? (
-              entity.imageUrl ? (
+      {block.type === "CATEGORY_LIST" ? (
+        <CategoryEntityTree
+          block={block}
+          entities={entities}
+          locale={locale}
+          onNavigate={onNavigate}
+        />
+      ) : (
+        <div>
+          {entities.map((entity) => (
+            <SafeLink href={entity.href} key={entity.id} onNavigate={onNavigate}>
+              {"presentation" in block && entity.imageUrl ? (
                 <img src={entity.imageUrl} alt="" />
-              ) : (
-                <Grid2X2 aria-hidden="true" />
-              )
-            ) : "presentation" in block && block.presentation !== "PLAIN" && entity.imageUrl ? (
-              <img src={entity.imageUrl} alt="" />
-            ) : null}
-            <span>{entityLabel(entity, locale)}</span>
-            {"showProductCount" in block &&
-            block.showProductCount &&
-            entity.productCount !== undefined ? (
-              <small>{entity.productCount}</small>
-            ) : null}
-            {block.type === "CATEGORY_LIST" && block.showChevron ? (
-              <ChevronRight className="published-mega__entity-chevron" aria-hidden="true" />
-            ) : null}
-          </SafeLink>
-        ))}
-      </div>
+              ) : null}
+              <span>{entityLabel(entity, locale)}</span>
+            </SafeLink>
+          ))}
+        </div>
+      )}
       {block.showViewAll && snapshot.resolvedLinks[block.id] ? (
         <SafeLink
           href={snapshot.resolvedLinks[block.id]!}
@@ -567,6 +562,66 @@ function EntityList({
         </SafeLink>
       ) : null}
     </section>
+  );
+}
+
+function CategoryEntityTree({
+  block,
+  entities,
+  locale,
+  onNavigate,
+}: {
+  block: Extract<NavigationBlock, { type: "CATEGORY_LIST" }>;
+  entities: NavigationResolvedEntity[];
+  locale: Locale;
+  onNavigate: () => void;
+}) {
+  const categories = [
+    ...new Map(
+      entities.filter((entity) => entity.kind === "CATEGORY").map((entity) => [entity.id, entity]),
+    ).values(),
+  ];
+  const ids = new Set(categories.map((entity) => entity.id));
+  const children = new Map<string, NavigationResolvedEntity[]>();
+  categories.forEach((entity) => {
+    const parentId = entity.secondaryLabel ?? "root";
+    const key = ids.has(parentId) ? parentId : "root";
+    children.set(key, [...(children.get(key) ?? []), entity]);
+  });
+  const renderCategory = (entity: NavigationResolvedEntity, depth: number) => {
+    const descendants = children.get(entity.id) ?? [];
+    return (
+      <li key={entity.id} data-depth={Math.min(depth, 2)}>
+        <SafeLink
+          href={entity.href}
+          onNavigate={onNavigate}
+          className={`published-mega__category-item is-depth-${Math.min(depth, 2)}${descendants.length ? " has-children" : ""}`}
+        >
+          {block.showIcon && depth === 0 ? (
+            entity.imageUrl ? (
+              <img src={entity.imageUrl} alt="" />
+            ) : (
+              <Grid2X2 aria-hidden="true" />
+            )
+          ) : null}
+          <span>{entityLabel(entity, locale)}</span>
+          {block.showProductCount && entity.productCount !== undefined ? (
+            <small>{entity.productCount}</small>
+          ) : null}
+          {block.showChevron || descendants.length ? (
+            <ChevronRight className="published-mega__entity-chevron" aria-hidden="true" />
+          ) : null}
+        </SafeLink>
+        {descendants.length ? (
+          <ul>{descendants.map((child) => renderCategory(child, depth + 1))}</ul>
+        ) : null}
+      </li>
+    );
+  };
+  return (
+    <ul className="published-mega__category-tree">
+      {(children.get("root") ?? []).map((entity) => renderCategory(entity, 0))}
+    </ul>
   );
 }
 

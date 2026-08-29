@@ -57,8 +57,8 @@ const heroSlides = [
       ar: ["مجموعة العناية", "والجمال"],
     },
     copy: {
-      en: "Explore skincare, makeup, haircare, and fragrance with clear product details and current availability.",
-      ar: "اكتشفي العناية بالبشرة والمكياج والشعر والعطور مع تفاصيل واضحة وحالة التوفر الحالية.",
+      en: "Explore skincare, haircare, body care, and fragrance with clear product details and current availability.",
+      ar: "اكتشفي العناية بالبشرة والشعر والجسم والعطور مع تفاصيل واضحة وحالة التوفر الحالية.",
     },
     cta: {
       en: "Shop Now",
@@ -488,20 +488,20 @@ export function Concerns() {
   const sectionRef = useRef<HTMLElement>(null);
   const pointerFrameRef = useRef<number | null>(null);
   const arabicConcerns: Record<string, string> = {
-    Hydration: "الترطيب",
-    Brightening: "الإشراقة",
+    "Dry Skin": "البشرة الجافة",
     "Sensitive Skin": "البشرة الحساسة",
-    "Anti-Aging": "مقاومة علامات التقدم",
-    "Night Repair": "العناية الليلية",
+    "Combination Skin": "البشرة المختلطة",
     "Oily Skin": "البشرة الدهنية",
+    "Acne-Prone Skin": "البشرة المعرّضة للحبوب",
+    "All Skin Types": "جميع أنواع البشرة",
   };
   const concernIds: Record<string, string> = {
-    Hydration: "hydration",
-    Brightening: "brightening",
+    "Dry Skin": "dry-skin",
     "Sensitive Skin": "sensitive-skin",
-    "Anti-Aging": "anti-aging",
-    "Night Repair": "night-repair",
+    "Combination Skin": "combination-skin",
     "Oily Skin": "oily-skin",
+    "Acne-Prone Skin": "acne-prone-skin",
+    "All Skin Types": "all-skin-types",
   };
   const headlineLines = ar
     ? ["روتين يبدأ", "من بشرتك."]
@@ -572,7 +572,7 @@ export function Concerns() {
               data-concern={concernIds[concern.name]}
               style={{ "--concern-color": concern.token } as CSSProperties}
             >
-              <Link to="/shop" search={{ concern: concern.name }}>
+              <Link to="/shop" search={{ tags: concernIds[concern.name]! }}>
                 <span className="sf-concern-list__dot" aria-hidden="true" />
                 <span className="sf-concern-list__label">
                   {ar ? arabicConcerns[concern.name] : concern.name}

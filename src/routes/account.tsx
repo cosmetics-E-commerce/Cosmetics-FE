@@ -38,6 +38,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AddressForm } from "@/components/forms/AddressForm";
+import { InternationalPhoneField } from "@/components/forms/InternationalPhoneField";
 import { CustomerAvatar } from "@/components/account/CustomerAvatar";
 import { ReviewLibrary } from "@/components/account/ReviewLibrary";
 import { WishlistStudio } from "@/components/account/WishlistStudio";
@@ -309,6 +310,13 @@ function Account() {
       await signOut();
       setSignOutOpen(false);
       await navigate({ to: "/" });
+    } catch (error) {
+      toast.error(apiErrorMessage(error, locale), {
+        description:
+          locale === "ar"
+            ? "لم يتم تسجيل خروجك. تحققي من الاتصال ثم حاولي مرة أخرى."
+            : "You are still signed in. Check your connection and try again.",
+      });
     } finally {
       setIsSigningOut(false);
     }
@@ -878,7 +886,6 @@ function Account() {
                         locale === "ar" ? "اسم العائلة" : "Last name",
                         profile.data?.lastName ?? user.lastName,
                       ],
-                      ["phone", locale === "ar" ? "رقم الهاتف" : "Phone number", currentPhone],
                     ].map(([id, label, value]) => (
                       <label key={id}>
                         <span>{label}</span>
@@ -898,6 +905,16 @@ function Account() {
                         />
                       </label>
                     ))}
+                    <InternationalPhoneField
+                      label={locale === "ar" ? "رقم الهاتف" : "Phone Number"}
+                      locale={locale}
+                      defaultValue={currentPhone}
+                      hint={
+                        locale === "ar"
+                          ? "أدخلي الرقم باستخدام رمز الدولة المحدد."
+                          : "Enter the number using the selected country code."
+                      }
+                    />
                   </div>
                   <div
                     className={`account-phone-verification${
@@ -1479,7 +1496,13 @@ function PaymentContinuation({ order, locale }: { order: OrderSummary; locale: "
                       setCopied(true);
                       window.setTimeout(() => setCopied(false), 1600);
                     })
-                    .catch(() => toast.error(ar ? "تعذر النسخ" : "Could not copy the details"));
+                    .catch(() =>
+                      toast.error(
+                        ar
+                          ? "تعذر نسخ التفاصيل. حدديها وانسخيها يدويًا."
+                          : "The details couldn’t be copied. Select and copy them manually.",
+                      ),
+                    );
                 }}
               >
                 <strong>{destination}</strong>

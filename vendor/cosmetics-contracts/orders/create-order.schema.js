@@ -21,7 +21,9 @@ exports.createOrderSchema = zod_1.z.object({
         .min(1, "Order must contain at least one item"),
     shippingAddressId: primitives_1.uuidSchema,
     paymentMethod: enums_1.PaymentMethodEnum,
-    couponCode: zod_1.z.string().trim().toUpperCase().min(3).max(32).optional(),
+    couponCode: (0, primitives_1.compactIdentifierSchema)(3, 32)
+        .transform((value) => value.toUpperCase())
+        .optional(),
     giftVariantIds: zod_1.z.array(primitives_1.uuidSchema).max(10).optional(),
     notes: zod_1.z.string().trim().max(500).optional(),
 }).strict();

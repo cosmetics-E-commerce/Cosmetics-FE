@@ -191,6 +191,10 @@ async function installScrollProbe(page: Page) {
 }
 
 async function toggleAndMeasure(page: Page, trigger: Locator, expanded: "true" | "false") {
+  // Product controls are intentionally disabled in the SSR shell until React
+  // has attached handlers. Wait for that contract before measuring scroll so
+  // hydration cannot reset the document between centering and activation.
+  await expect(trigger).toBeEnabled();
   await centerTrigger(trigger);
   await trigger.evaluate((element) => {
     const state = window as typeof window & ProductAccordionProbe;
@@ -211,6 +215,7 @@ async function toggleWithKeyboardAndMeasure(
   key: "Enter" | "Space",
   expanded: "true" | "false",
 ) {
+  await expect(trigger).toBeEnabled();
   await centerTrigger(trigger);
   await trigger.focus();
   await trigger.evaluate((element) => {

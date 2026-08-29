@@ -68,7 +68,7 @@ test.describe("homepage category showcase", () => {
       await page.setViewportSize(viewport);
       await page.goto("/", { waitUntil: "domcontentloaded" });
       const showcase = page.locator(".sf-category-showcase");
-      await expect(showcase).toHaveAttribute("data-enhanced", "true");
+      await expect(showcase).toHaveAttribute("data-enhanced", "true", { timeout: 30_000 });
       const activeCard = showcase.locator('.sf-category-showcase__card[data-active="true"]');
       await expect(activeCard).toBeVisible();
 
@@ -99,11 +99,15 @@ test.describe("homepage category showcase", () => {
   });
 
   test("keeps the active card centered across tablet and desktop viewports", async ({ page }) => {
+    // Four full responsive navigations initialize the SSR page and Embla each
+    // time. Keep the assertions strict while allowing the matrix to complete
+    // under touch-device emulation and CI CPU contention.
+    test.setTimeout(120_000);
     for (const viewport of largerViewports) {
       await page.setViewportSize(viewport);
       await page.goto("/", { waitUntil: "domcontentloaded" });
       const showcase = page.locator(".sf-category-showcase");
-      await expect(showcase).toHaveAttribute("data-enhanced", "true");
+      await expect(showcase).toHaveAttribute("data-enhanced", "true", { timeout: 30_000 });
       await expect
         .poll(() =>
           showcase.evaluate((element) => {

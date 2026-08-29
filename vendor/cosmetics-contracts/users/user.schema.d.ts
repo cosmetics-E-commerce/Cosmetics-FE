@@ -2,7 +2,7 @@ import { z } from "zod";
 export declare const updateMyProfileSchema: z.ZodObject<{
     firstName: z.ZodOptional<z.ZodString>;
     lastName: z.ZodOptional<z.ZodString>;
-    phone: z.ZodOptional<z.ZodString>;
+    phone: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
     phoneChangeOtp: z.ZodOptional<z.ZodString>;
     profileImage: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     gender: z.ZodOptional<z.ZodNullable<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>>;
@@ -109,7 +109,7 @@ export type AddressResponse = z.infer<typeof addressSchema>;
 export declare const createAddressSchema: z.ZodObject<{
     label: z.ZodDefault<z.ZodEnum<["HOME", "WORK", "OTHER"]>>;
     receiverName: z.ZodString;
-    phone: z.ZodString;
+    phone: z.ZodEffects<z.ZodString, string, string>;
     country: z.ZodDefault<z.ZodString>;
     governorate: z.ZodString;
     city: z.ZodString;
@@ -174,7 +174,7 @@ export type CreateAddressInput = z.infer<typeof createAddressSchema>;
 export declare const updateAddressSchema: z.ZodObject<{
     label: z.ZodOptional<z.ZodDefault<z.ZodEnum<["HOME", "WORK", "OTHER"]>>>;
     receiverName: z.ZodOptional<z.ZodString>;
-    phone: z.ZodOptional<z.ZodString>;
+    phone: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
     country: z.ZodOptional<z.ZodDefault<z.ZodString>>;
     governorate: z.ZodOptional<z.ZodString>;
     city: z.ZodOptional<z.ZodString>;
@@ -776,7 +776,7 @@ export type AdminCustomerOrdersQuery = z.infer<typeof adminCustomerOrdersQuerySc
 export declare const updateAdminUserSchema: z.ZodObject<{
     firstName: z.ZodOptional<z.ZodString>;
     lastName: z.ZodOptional<z.ZodString>;
-    phone: z.ZodOptional<z.ZodString>;
+    phone: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
     status: z.ZodOptional<z.ZodEnum<["ACTIVE", "INACTIVE"]>>;
     emailVerified: z.ZodOptional<z.ZodBoolean>;
     gender: z.ZodOptional<z.ZodNullable<z.ZodEnum<["MALE", "FEMALE", "OTHER"]>>>;

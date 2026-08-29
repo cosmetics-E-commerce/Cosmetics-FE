@@ -46,9 +46,9 @@ const snapshot: NavigationPublicSnapshot = {
       {
         kind: "CATEGORY",
         id: "b0000000-0000-4000-8000-000000000001",
-        labelEn: "Makeup",
-        labelAr: "المكياج",
-        href: "/categories/makeup",
+        labelEn: "Skin care",
+        labelAr: "العناية بالبشرة",
+        href: "/categories/skincare",
         secondaryLabel: "root",
         productCount: 12,
       },
@@ -197,9 +197,9 @@ describe("published mega menu renderer", () => {
         onNavigate={vi.fn()}
       />,
     );
-    expect(screen.getByRole("link", { name: /Makeup/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /Skin care/ })).toHaveAttribute(
       "href",
-      "/categories/makeup",
+      "/categories/skincare",
     );
     expect(screen.getByRole("link", { name: "Lipstick" })).toHaveAttribute(
       "href",
@@ -317,9 +317,9 @@ describe("published mega menu renderer", () => {
       />,
     );
     expect(screen.getByText("كل الفئات")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /المكياج/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /العناية بالبشرة/ })).toHaveAttribute(
       "href",
-      "/categories/makeup",
+      "/categories/skincare",
     );
   });
 
@@ -338,7 +338,7 @@ describe("published mega menu renderer", () => {
       />,
     );
     expect(container.querySelector(".published-mega")).toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: /Makeup/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /Skin care/ })).not.toBeInTheDocument();
   });
 
   it("renders Classic shell, separators, and Category Rail through generic blocks", () => {
@@ -390,14 +390,32 @@ describe("published mega menu renderer", () => {
     const classicSnapshot = {
       ...snapshot,
       config: { ...snapshot.config, items: [item] },
-      resolvedBlocks: { [rail.id]: snapshot.resolvedBlocks[blockId]! },
+      resolvedBlocks: {
+        [rail.id]: [...snapshot.resolvedBlocks[blockId]!, snapshot.resolvedBlocks[blockId]![1]!],
+      },
     };
-    const { container } = render(
+    const { container, rerender } = render(
       <PublishedMegaMenu item={item} snapshot={classicSnapshot} locale="en" onNavigate={vi.fn()} />,
     );
     expect(container.querySelector('[data-menu-style="classic"]')).toBeInTheDocument();
     expect(container.querySelector('[data-separators="true"]')).toBeInTheDocument();
     expect(container.querySelector(".published-mega__entity-list.is-rail")).toBeInTheDocument();
     expect(container.querySelectorAll(".published-mega__entity-chevron")).toHaveLength(3);
+    expect(screen.getByRole("link", { name: /Skin care/ })).toHaveClass("is-depth-0");
+    expect(screen.getByRole("link", { name: /^Lipstick/ })).toHaveClass("is-depth-1");
+    expect(screen.getByRole("link", { name: /Liquid Lipstick/ })).toHaveClass("is-depth-2");
+    expect(screen.getAllByRole("link", { name: /^Lipstick/ })).toHaveLength(1);
+
+    rerender(
+      <PublishedMobileMenuItem
+        item={item}
+        snapshot={classicSnapshot}
+        locale="ar"
+        onNavigate={vi.fn()}
+      />,
+    );
+    expect(container.querySelector(".published-mobile-menu")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /العناية بالبشرة/ })).toHaveClass("is-depth-0");
+    expect(screen.getByRole("link", { name: /^أحمر شفاه سائل/ })).toHaveClass("is-depth-2");
   });
 });

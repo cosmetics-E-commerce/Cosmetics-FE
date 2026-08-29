@@ -2,6 +2,7 @@ import { fireEvent, render } from "@testing-library/react";
 import type { AnchorHTMLAttributes, ReactNode } from "react";
 import { describe, expect, it, vi } from "vitest";
 
+import { brandMarqueeDuration } from "@/lib/brand-marquee";
 import { BrandMarquee } from "./BrandMarquee";
 
 vi.mock("@tanstack/react-router", () => ({
@@ -22,7 +23,8 @@ vi.mock("@tanstack/react-router", () => ({
 }));
 
 vi.mock("@/lib/catalog", () => ({
-  useAllBrands: (initialBrands: unknown) => ({ data: initialBrands }),
+  useBrandMarquee: (initialBrands: unknown) => ({ data: initialBrands }),
+  usePublicStoreSettings: () => ({ data: { brandMarqueeSpeed: "FAST" } }),
 }));
 
 vi.mock("@/lib/store", () => ({
@@ -30,6 +32,15 @@ vi.mock("@/lib/store", () => ({
 }));
 
 describe("BrandMarquee", () => {
+  it.each([
+    ["SLOW", 104],
+    ["NORMAL", 80],
+    ["FAST", 56],
+    ["VERY_FAST", 40],
+    ["BROKEN_LEGACY_VALUE", 56],
+  ])("maps %s to a safe, deterministic duration", (speed, expected) => {
+    expect(brandMarqueeDuration(20, speed)).toBe(expected);
+  });
   it("links every active brand, including a newly added empty brand, to its product page", () => {
     const { container } = render(
       <BrandMarquee
@@ -98,7 +109,7 @@ describe("BrandMarquee", () => {
     expect(container.querySelector(".sf-brand-marquee__group--clone")).not.toBeInTheDocument();
   });
 
-  it("keeps a calm per-brand velocity as the admin-managed catalog grows", () => {
+  it("uses the faster persisted default while keeping per-brand velocity stable", () => {
     const { container } = render(
       <BrandMarquee
         initialBrands={Array.from({ length: 20 }, (_, index) => ({
@@ -115,7 +126,7 @@ describe("BrandMarquee", () => {
       container
         .querySelector<HTMLElement>(".sf-brand-marquee")
         ?.style.getPropertyValue("--brand-marquee-duration"),
-    ).toBe("92s");
+    ).toBe("56s");
   });
 
   it("falls back to the brand name when an admin-managed logo cannot load", () => {

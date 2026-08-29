@@ -1,9 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateSupportRequestSchema = exports.supportRequestStatusSchema = exports.supportRequestSchema = exports.newsletterSubscriptionSchema = exports.updateShippingZoneSchema = exports.createShippingZoneSchema = exports.shippingZoneSchema = exports.updateStoreSettingsSchema = exports.adminStoreSettingsSchema = exports.publicStoreSettingsSchema = exports.storeStatusSchema = void 0;
+exports.updateSupportRequestSchema = exports.supportRequestStatusSchema = exports.supportRequestSchema = exports.newsletterSubscriptionSchema = exports.updateShippingZoneSchema = exports.createShippingZoneSchema = exports.shippingZoneSchema = exports.updateStoreSettingsSchema = exports.adminStoreSettingsSchema = exports.publicStoreSettingsSchema = exports.brandMarqueeSpeedSchema = exports.storeStatusSchema = void 0;
 const zod_1 = require("zod");
 const primitives_1 = require("../common/primitives");
 exports.storeStatusSchema = zod_1.z.enum(["OPEN", "CLOSED", "BUSY"]);
+exports.brandMarqueeSpeedSchema = zod_1.z.enum([
+    "SLOW",
+    "NORMAL",
+    "FAST",
+    "VERY_FAST",
+]);
 exports.publicStoreSettingsSchema = zod_1.z.object({
     status: exports.storeStatusSchema,
     statusMessageEn: zod_1.z.string().nullable(),
@@ -12,6 +18,7 @@ exports.publicStoreSettingsSchema = zod_1.z.object({
     codEnabled: zod_1.z.boolean(),
     codFee: primitives_1.piastresSchema,
     freeShippingThreshold: primitives_1.piastresSchema.nullable(),
+    brandMarqueeSpeed: exports.brandMarqueeSpeedSchema,
 });
 exports.adminStoreSettingsSchema = exports.publicStoreSettingsSchema.extend({
     vodafoneCashNumber: zod_1.z.string().nullable(),
@@ -29,6 +36,7 @@ exports.updateStoreSettingsSchema = zod_1.z
     codEnabled: zod_1.z.boolean().optional(),
     codFee: primitives_1.piastresSchema.optional(),
     freeShippingThreshold: primitives_1.piastresSchema.nullable().optional(),
+    brandMarqueeSpeed: exports.brandMarqueeSpeedSchema.optional(),
 })
     .refine((value) => Object.keys(value).length > 0, "At least one setting is required");
 exports.shippingZoneSchema = zod_1.z.object({

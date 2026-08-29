@@ -51,6 +51,7 @@ export function ProductImageViewer({
   onIndexChange,
   locale,
 }: ProductImageViewerProps) {
+  const [hydrated, setHydrated] = useState(false);
   const [open, setOpen] = useState(false);
   const [zoom, setZoom] = useState(MIN_ZOOM);
   const [fittedSize, setFittedSize] = useState<FittedImageSize | null>(null);
@@ -65,6 +66,8 @@ export function ProductImageViewer({
   const hasNavigation = images.length > 1;
   const copy = viewerCopy[locale];
   const activeFittedSize = fittedSize?.imageId === image?.id ? fittedSize : null;
+
+  useEffect(() => setHydrated(true), []);
 
   const applyPan = useCallback((x: number, y: number) => {
     panRef.current = { x, y };
@@ -230,6 +233,7 @@ export function ProductImageViewer({
       <DialogTrigger asChild>
         <button
           type="button"
+          disabled={!hydrated}
           className="product-gallery-active product-reference-main-image product-viewer-trigger"
           aria-label={copy.open(image.altText)}
         >

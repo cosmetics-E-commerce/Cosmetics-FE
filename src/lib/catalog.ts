@@ -2,12 +2,14 @@ import { queryOptions, useQuery } from "@tanstack/react-query";
 import type { PublicProductResponse } from "@/lib/api";
 import {
   getProduct,
+  getPublicStoreSettings,
   getProductFacets,
   getPromotionPrices,
   listAllBrands,
   listBrands,
   listCategories,
   listProductsPage,
+  listProductsByIds,
   listMerchandisingProducts,
   listProducts,
   type PaginationMeta,
@@ -24,7 +26,6 @@ const REFERENCE_GC_TIME = 30 * 60_000;
 
 const fallbackImages: Record<string, string> = {
   skincare: images.catSkincare,
-  makeup: images.catMakeup,
   haircare: images.catHaircare,
   fragrance: images.catFragrance,
 };
@@ -251,6 +252,24 @@ export function useBrands(initialData?: Awaited<ReturnType<typeof listBrands>>) 
   });
 }
 
+export function useBrandMarquee(initialData?: Awaited<ReturnType<typeof listBrands>>) {
+  return useQuery({
+    ...brandMarqueeQuery(),
+    ...(initialData !== undefined ? { initialData } : {}),
+  });
+}
+
+export function usePublicStoreSettings() {
+  return useQuery({
+    queryKey: ["store-settings", "public"] as const,
+    queryFn: ({ signal }) => getPublicStoreSettings(signal),
+    staleTime: 60_000,
+    retry: 1,
+    refetchInterval: 60_000,
+    refetchOnWindowFocus: "always",
+  });
+}
+
 export function useAllBrands(initialData?: Awaited<ReturnType<typeof listAllBrands>>) {
   return useQuery({
     ...allBrandsQuery(),
@@ -338,6 +357,16 @@ export function brandsQuery() {
   });
 }
 
+/** A bounded homepage surface. The complete, paginated directory uses allBrandsQuery. */
+export function brandMarqueeQuery() {
+  return queryOptions({
+    queryKey: ["brands", "marquee"] as const,
+    queryFn: () => listBrands(),
+    staleTime: REFERENCE_STALE_TIME,
+    gcTime: REFERENCE_GC_TIME,
+  });
+}
+
 export function allBrandsQuery() {
   return queryOptions({
     queryKey: ["brands", "all"] as const,
@@ -352,6 +381,12 @@ export async function loadCatalog(
   locale: Locale = "en",
 ) {
   const records = await listProducts(params);
+  const prices = await promotionalPrices(records);
+  return records.map((product) => applyPrices(mapProduct(product, locale), prices));
+}
+
+export async function loadProductsByIds(ids: string[], locale: Locale = "en") {
+  const records = await listProductsByIds(ids);
   const prices = await promotionalPrices(records);
   return records.map((product) => applyPrices(mapProduct(product, locale), prices));
 }

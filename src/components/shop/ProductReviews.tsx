@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, LockKeyhole, MessageSquareText, PackageCheck, Star } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { StatePanel } from "@/components/feedback/StatePanel";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -92,6 +93,18 @@ export function ProductReviews({
               <span />
               <span />
             </div>
+          ) : reviews.isError ? (
+            <StatePanel
+              kind="error"
+              title={ar ? "تعذر تحميل المراجعات" : "Reviews couldn’t be loaded"}
+              description={
+                ar
+                  ? "لم تستجب خدمة المراجعات. ما زال بإمكانك تصفح المنتج والشراء."
+                  : "The review service did not respond. You can still browse and buy this product."
+              }
+              action={() => void reviews.refetch()}
+              actionLabel={ar ? "إعادة المحاولة" : "Try again"}
+            />
           ) : reviews.data?.items.length ? (
             reviews.data.items.map((review) => (
               <article key={review.id} className="review-entry">

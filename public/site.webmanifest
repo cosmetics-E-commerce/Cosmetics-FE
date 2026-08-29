@@ -1,7 +1,7 @@
 {
   "name": "BIOREZA Cosmetics",
   "short_name": "BIOREZA",
-  "description": "Curated skincare, makeup, haircare and fragrance products in Egypt.",
+  "description": "Curated skincare, haircare, body care and fragrance products in Egypt.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f5f0e8",

@@ -43,10 +43,28 @@ export function CatalogListingControls({
   onChange,
 }: Props) {
   const copy = listingCopy[locale];
+  const [hydrated, setHydrated] = useState(false);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [minimum, setMinimum] = useState(search.minPrice?.toString() ?? "");
   const [maximum, setMaximum] = useState(search.maxPrice?.toString() ?? "");
+  const [brandSearch, setBrandSearch] = useState("");
   const selectedTags = selectedTagSlugs(search);
+  const selectedBrands = useMemo(
+    () => search.brand?.split(",").filter(Boolean) ?? [],
+    [search.brand],
+  );
+  const brandOptions = (
+    facets?.brands?.length
+      ? facets.brands.map((brand) => ({
+          id: brand.id,
+          slug: brand.slug,
+          label: brand.name,
+          count: brand.count,
+        }))
+      : brands
+  ).filter((brand) =>
+    brand.label.toLocaleLowerCase().includes(brandSearch.trim().toLocaleLowerCase()),
+  );
   const categoryOptions = flattenCategoryHierarchyWithDepth(
     categories.length
       ? categories
@@ -58,6 +76,10 @@ export function CatalogListingControls({
           count: category.count,
         })),
   );
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   useEffect(() => {
     setMinimum(search.minPrice?.toString() ?? "");
@@ -101,13 +123,20 @@ export function CatalogListingControls({
         remove: () => onChange(withResetPage(search, { category: undefined })),
       });
     }
-    if (!hideBrand && search.brand) {
-      const brand = brands.find((item) => item.slug === search.brand);
-      filters.push({
-        key: "brand",
-        label: brand?.label ?? search.brand,
-        remove: () => onChange(withResetPage(search, { brand: undefined })),
-      });
+    if (!hideBrand) {
+      for (const slug of selectedBrands) {
+        const brand = (facets?.brands ?? []).find((item) => item.slug === slug);
+        filters.push({
+          key: `brand-${slug}`,
+          label: brand?.name ?? brands.find((item) => item.slug === slug)?.label ?? slug,
+          remove: () =>
+            onChange(
+              withResetPage(search, {
+                brand: selectedBrands.filter((item) => item !== slug).join(",") || undefined,
+              }),
+            ),
+        });
+      }
     }
     if (search.minPrice !== undefined || search.maxPrice !== undefined) {
       filters.push({
@@ -119,6 +148,7 @@ export function CatalogListingControls({
     return filters;
   }, [
     brands,
+    facets?.brands,
     categoryOptions,
     copy.inStock,
     facets?.tags,
@@ -128,6 +158,7 @@ export function CatalogListingControls({
     onChange,
     search,
     selectedTags,
+    selectedBrands,
   ]);
 
   const clearAll = () =>
@@ -142,6 +173,13 @@ export function CatalogListingControls({
       ? selectedTags.filter((item) => item !== slug)
       : [...selectedTags, slug];
     onChange(withResetPage(search, { tags: next.join(",") || undefined }));
+  };
+
+  const toggleBrand = (slug: string) => {
+    const next = selectedBrands.includes(slug)
+      ? selectedBrands.filter((item) => item !== slug)
+      : [...selectedBrands, slug];
+    onChange(withResetPage(search, { brand: next.join(",") || undefined }));
   };
 
   const applyPrice = (event: FormEvent) => {
@@ -161,6 +199,7 @@ export function CatalogListingControls({
         <div className="catalog-listing-toolbar__actions">
           <button
             type="button"
+            disabled={!hydrated}
             className="sf-shop-filter-button"
             onClick={() => setFiltersOpen(true)}
           >
@@ -171,6 +210,7 @@ export function CatalogListingControls({
           <label className="catalog-listing-toolbar__sort">
             <span className="sr-only">{copy.sort}</span>
             <select
+              disabled={!hydrated}
               value={search.sort ?? "newest"}
               onChange={(event) =>
                 onChange(
@@ -188,6 +228,7 @@ export function CatalogListingControls({
           <div className="catalog-listing-toolbar__views" role="group" aria-label={copy.view}>
             <button
               type="button"
+              disabled={!hydrated}
               aria-label={copy.grid}
               aria-pressed={(search.view ?? "grid") === "grid"}
               onClick={() => onChange({ ...search, view: "grid" })}
@@ -196,6 +237,7 @@ export function CatalogListingControls({
             </button>
             <button
               type="button"
+              disabled={!hydrated}
               aria-label={copy.list}
               aria-pressed={search.view === "list"}
               onClick={() => onChange({ ...search, view: "list" })}
@@ -209,12 +251,12 @@ export function CatalogListingControls({
       {activeFilters.length ? (
         <div className="sf-shop-active-filters" aria-label={copy.activeFilters}>
           {activeFilters.map((filter) => (
-            <button key={filter.key} type="button" onClick={filter.remove}>
+            <button key={filter.key} type="button" disabled={!hydrated} onClick={filter.remove}>
               {filter.label}
               <X aria-hidden="true" />
             </button>
           ))}
-          <button type="button" onClick={clearAll}>
+          <button type="button" disabled={!hydrated} onClick={clearAll}>
             {copy.clearAll}
           </button>
         </div>
@@ -283,26 +325,36 @@ export function CatalogListingControls({
               </FilterGroup>
             ) : null}
 
-            {!hideBrand && brands.length ? (
-              <FilterGroup label={copy.brand}>
-                {brands.map((brand) => (
-                  <button
-                    key={brand.id}
-                    type="button"
-                    className="sf-shop-filter-panel__option"
-                    data-active={search.brand === brand.slug || undefined}
-                    onClick={() =>
-                      onChange(
-                        withResetPage(search, {
-                          brand: search.brand === brand.slug ? undefined : brand.slug,
-                        }),
-                      )
-                    }
-                  >
-                    <span>{brand.label}</span>
-                    <span className="sf-shop-filter-panel__meta">{brand.count}</span>
-                  </button>
-                ))}
+            {!hideBrand && (facets?.brands.length || brands.length) ? (
+              <FilterGroup label={copy.brands}>
+                <label className="sf-shop-filter-panel__search">
+                  <span className="sr-only">{copy.searchBrands}</span>
+                  <input
+                    type="search"
+                    value={brandSearch}
+                    placeholder={copy.searchBrands}
+                    onChange={(event) => setBrandSearch(event.target.value)}
+                  />
+                </label>
+                {brandOptions.map((brand) => {
+                  const active = selectedBrands.includes(brand.slug);
+                  return (
+                    <button
+                      key={brand.id}
+                      type="button"
+                      className="sf-shop-filter-panel__option"
+                      data-active={active || undefined}
+                      aria-pressed={active}
+                      onClick={() => toggleBrand(brand.slug)}
+                    >
+                      <span>{brand.label}</span>
+                      <span className="sf-shop-filter-panel__meta">
+                        {brand.count}
+                        {active ? <Check aria-hidden="true" /> : null}
+                      </span>
+                    </button>
+                  );
+                })}
               </FilterGroup>
             ) : null}
 
@@ -419,6 +471,8 @@ const listingCopy = {
     inStock: "In stock",
     category: "Category",
     brand: "Brand",
+    brands: "Brands",
+    searchBrands: "Search brands…",
     tags: "Tags",
     priceRange: "Price range (EGP)",
     minimum: "Minimum",
@@ -444,6 +498,8 @@ const listingCopy = {
     inStock: "متوفر في المخزون",
     category: "الفئة",
     brand: "العلامة التجارية",
+    brands: "العلامات التجارية",
+    searchBrands: "ابحثي عن علامة…",
     tags: "الوسوم",
     priceRange: "نطاق السعر (جنيه)",
     minimum: "الحد الأدنى",

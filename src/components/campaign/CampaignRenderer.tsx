@@ -341,7 +341,11 @@ function CampaignCardContent({
                   copyTimer.current = null;
                 }, 1_800);
               } else {
-                setError(locale === "ar" ? "تعذر نسخ الكود." : "Could not copy the code.");
+                setError(
+                  locale === "ar"
+                    ? "تعذر نسخ الكود. حدديه وانسخيه يدويًا."
+                    : "The code couldn’t be copied. Select and copy it manually.",
+                );
               }
             }}
           >

@@ -4,16 +4,34 @@ export declare const promotionTriggerEnum: z.ZodEnum<["AUTOMATIC", "CODE"]>;
 export declare const promotionStateEnum: z.ZodEnum<["DRAFT", "ACTIVE", "PAUSED", "ARCHIVED"]>;
 export declare const promotionResolvedStatusEnum: z.ZodEnum<["DRAFT", "SCHEDULED", "ACTIVE", "PAUSED", "EXPIRED", "EXHAUSTED", "ARCHIVED"]>;
 export declare const promotionStackingEnum: z.ZodEnum<["EXCLUSIVE", "COMBINABLE", "BEST_OFFER"]>;
-export declare const promotionSelectorSchema: z.ZodObject<{
-    productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+export declare const promotionSelectorSchema: z.ZodEffects<z.ZodObject<{
+    productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
 }, "strip", z.ZodTypeAny, {
+    categoryIds: string[];
+    productIds: string[];
+    variantIds: string[];
+    brandIds: string[];
+    excludedProductIds: string[];
+    excludedVariantIds: string[];
+    excludedCategoryIds: string[];
+    excludedBrandIds: string[];
+}, {
+    categoryIds?: string[] | undefined;
+    productIds?: string[] | undefined;
+    variantIds?: string[] | undefined;
+    brandIds?: string[] | undefined;
+    excludedProductIds?: string[] | undefined;
+    excludedVariantIds?: string[] | undefined;
+    excludedCategoryIds?: string[] | undefined;
+    excludedBrandIds?: string[] | undefined;
+}>, {
     categoryIds: string[];
     productIds: string[];
     variantIds: string[];
@@ -40,25 +58,43 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
 }, "strip", z.ZodTypeAny, {
     value: number;
     type: "SUBTOTAL";
-    operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+    operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
 }, {
     value: number;
     type: "SUBTOTAL";
-    operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+    operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
 }>, z.ZodObject<{
     type: z.ZodLiteral<"QUANTITY">;
     operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
     value: z.ZodNumber;
-    selector: z.ZodOptional<z.ZodObject<{
-        productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+        productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
+        productIds: string[];
+        variantIds: string[];
+        brandIds: string[];
+        excludedProductIds: string[];
+        excludedVariantIds: string[];
+        excludedCategoryIds: string[];
+        excludedBrandIds: string[];
+    }, {
+        categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
+        variantIds?: string[] | undefined;
+        brandIds?: string[] | undefined;
+        excludedProductIds?: string[] | undefined;
+        excludedVariantIds?: string[] | undefined;
+        excludedCategoryIds?: string[] | undefined;
+        excludedBrandIds?: string[] | undefined;
+    }>, {
         categoryIds: string[];
         productIds: string[];
         variantIds: string[];
@@ -80,7 +116,7 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
 }, "strip", z.ZodTypeAny, {
     value: number;
     type: "QUANTITY";
-    operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+    operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     selector?: {
         categoryIds: string[];
         productIds: string[];
@@ -94,7 +130,7 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
 }, {
     value: number;
     type: "QUANTITY";
-    operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+    operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     selector?: {
         categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
@@ -107,16 +143,34 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
     } | undefined;
 }>, z.ZodObject<{
     type: z.ZodLiteral<"HAS_ITEMS">;
-    selector: z.ZodObject<{
-        productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    selector: z.ZodEffects<z.ZodObject<{
+        productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
+        productIds: string[];
+        variantIds: string[];
+        brandIds: string[];
+        excludedProductIds: string[];
+        excludedVariantIds: string[];
+        excludedCategoryIds: string[];
+        excludedBrandIds: string[];
+    }, {
+        categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
+        variantIds?: string[] | undefined;
+        brandIds?: string[] | undefined;
+        excludedProductIds?: string[] | undefined;
+        excludedVariantIds?: string[] | undefined;
+        excludedCategoryIds?: string[] | undefined;
+        excludedBrandIds?: string[] | undefined;
+    }>, {
         categoryIds: string[];
         productIds: string[];
         variantIds: string[];
@@ -161,16 +215,34 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
     };
 }>, z.ZodObject<{
     type: z.ZodLiteral<"MISSING_ITEMS">;
-    selector: z.ZodObject<{
-        productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    selector: z.ZodEffects<z.ZodObject<{
+        productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
+        productIds: string[];
+        variantIds: string[];
+        brandIds: string[];
+        excludedProductIds: string[];
+        excludedVariantIds: string[];
+        excludedCategoryIds: string[];
+        excludedBrandIds: string[];
+    }, {
+        categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
+        variantIds?: string[] | undefined;
+        brandIds?: string[] | undefined;
+        excludedProductIds?: string[] | undefined;
+        excludedVariantIds?: string[] | undefined;
+        excludedCategoryIds?: string[] | undefined;
+        excludedBrandIds?: string[] | undefined;
+    }>, {
         categoryIds: string[];
         productIds: string[];
         variantIds: string[];
@@ -238,11 +310,11 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
 }, "strip", z.ZodTypeAny, {
     value: number;
     type: "PAST_ORDER_COUNT";
-    operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+    operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
 }, {
     value: number;
     type: "PAST_ORDER_COUNT";
-    operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+    operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
 }>, z.ZodObject<{
     type: z.ZodLiteral<"LIFETIME_SPEND">;
     operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
@@ -250,11 +322,11 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
 }, "strip", z.ZodTypeAny, {
     value: number;
     type: "LIFETIME_SPEND";
-    operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+    operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
 }, {
     value: number;
     type: "LIFETIME_SPEND";
-    operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+    operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
 }>, z.ZodObject<{
     type: z.ZodLiteral<"INACTIVE_DAYS">;
     operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
@@ -262,11 +334,11 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
 }, "strip", z.ZodTypeAny, {
     value: number;
     type: "INACTIVE_DAYS";
-    operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+    operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
 }, {
     value: number;
     type: "INACTIVE_DAYS";
-    operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+    operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
 }>, z.ZodObject<{
     type: z.ZodLiteral<"COUPON_ENTERED">;
     code: z.ZodOptional<z.ZodString>;
@@ -298,16 +370,34 @@ export declare const promotionConditionSchema: z.ZodDiscriminatedUnion<"type", [
 export type PromotionCondition = z.infer<typeof promotionConditionSchema>;
 export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
     maxDiscount: z.ZodOptional<z.ZodNumber>;
-    selector: z.ZodOptional<z.ZodObject<{
-        productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+        productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
+        productIds: string[];
+        variantIds: string[];
+        brandIds: string[];
+        excludedProductIds: string[];
+        excludedVariantIds: string[];
+        excludedCategoryIds: string[];
+        excludedBrandIds: string[];
+    }, {
+        categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
+        variantIds?: string[] | undefined;
+        brandIds?: string[] | undefined;
+        excludedProductIds?: string[] | undefined;
+        excludedVariantIds?: string[] | undefined;
+        excludedCategoryIds?: string[] | undefined;
+        excludedBrandIds?: string[] | undefined;
+    }>, {
         categoryIds: string[];
         productIds: string[];
         variantIds: string[];
@@ -358,16 +448,34 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     maxDiscount?: number | undefined;
 }>, z.ZodObject<{
     maxDiscount: z.ZodOptional<z.ZodNumber>;
-    selector: z.ZodOptional<z.ZodObject<{
-        productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+        productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
+        productIds: string[];
+        variantIds: string[];
+        brandIds: string[];
+        excludedProductIds: string[];
+        excludedVariantIds: string[];
+        excludedCategoryIds: string[];
+        excludedBrandIds: string[];
+    }, {
+        categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
+        variantIds?: string[] | undefined;
+        brandIds?: string[] | undefined;
+        excludedProductIds?: string[] | undefined;
+        excludedVariantIds?: string[] | undefined;
+        excludedCategoryIds?: string[] | undefined;
+        excludedBrandIds?: string[] | undefined;
+    }>, {
         categoryIds: string[];
         productIds: string[];
         variantIds: string[];
@@ -419,16 +527,34 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
 }>, z.ZodObject<{
     type: z.ZodLiteral<"PRICE_OVERRIDE">;
     price: z.ZodNumber;
-    selector: z.ZodOptional<z.ZodObject<{
-        productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+        productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
+        productIds: string[];
+        variantIds: string[];
+        brandIds: string[];
+        excludedProductIds: string[];
+        excludedVariantIds: string[];
+        excludedCategoryIds: string[];
+        excludedBrandIds: string[];
+    }, {
+        categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
+        variantIds?: string[] | undefined;
+        brandIds?: string[] | undefined;
+        excludedProductIds?: string[] | undefined;
+        excludedVariantIds?: string[] | undefined;
+        excludedCategoryIds?: string[] | undefined;
+        excludedBrandIds?: string[] | undefined;
+    }>, {
         categoryIds: string[];
         productIds: string[];
         variantIds: string[];
@@ -476,16 +602,34 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
 }>, z.ZodObject<{
     type: z.ZodLiteral<"CHEAPEST_FREE">;
     quantity: z.ZodDefault<z.ZodNumber>;
-    selector: z.ZodOptional<z.ZodObject<{
-        productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+        productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
+        productIds: string[];
+        variantIds: string[];
+        brandIds: string[];
+        excludedProductIds: string[];
+        excludedVariantIds: string[];
+        excludedCategoryIds: string[];
+        excludedBrandIds: string[];
+    }, {
+        categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
+        variantIds?: string[] | undefined;
+        brandIds?: string[] | undefined;
+        excludedProductIds?: string[] | undefined;
+        excludedVariantIds?: string[] | undefined;
+        excludedCategoryIds?: string[] | undefined;
+        excludedBrandIds?: string[] | undefined;
+    }>, {
         categoryIds: string[];
         productIds: string[];
         variantIds: string[];
@@ -532,16 +676,34 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     } | undefined;
 }>, z.ZodObject<{
     maxDiscount: z.ZodOptional<z.ZodNumber>;
-    selector: z.ZodOptional<z.ZodObject<{
-        productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+        productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
+        productIds: string[];
+        variantIds: string[];
+        brandIds: string[];
+        excludedProductIds: string[];
+        excludedVariantIds: string[];
+        excludedCategoryIds: string[];
+        excludedBrandIds: string[];
+    }, {
+        categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
+        variantIds?: string[] | undefined;
+        brandIds?: string[] | undefined;
+        excludedProductIds?: string[] | undefined;
+        excludedVariantIds?: string[] | undefined;
+        excludedCategoryIds?: string[] | undefined;
+        excludedBrandIds?: string[] | undefined;
+    }>, {
         categoryIds: string[];
         productIds: string[];
         variantIds: string[];
@@ -592,16 +754,34 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     maxDiscount?: number | undefined;
 }>, z.ZodObject<{
     maxDiscount: z.ZodOptional<z.ZodNumber>;
-    selector: z.ZodOptional<z.ZodObject<{
-        productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+        productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
+        productIds: string[];
+        variantIds: string[];
+        brandIds: string[];
+        excludedProductIds: string[];
+        excludedVariantIds: string[];
+        excludedCategoryIds: string[];
+        excludedBrandIds: string[];
+    }, {
+        categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
+        variantIds?: string[] | undefined;
+        brandIds?: string[] | undefined;
+        excludedProductIds?: string[] | undefined;
+        excludedVariantIds?: string[] | undefined;
+        excludedCategoryIds?: string[] | undefined;
+        excludedBrandIds?: string[] | undefined;
+    }>, {
         categoryIds: string[];
         productIds: string[];
         variantIds: string[];
@@ -661,15 +841,15 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     buyQuantity: z.ZodNumber;
     rewardQuantity: z.ZodDefault<z.ZodNumber>;
     rewardPercentOff: z.ZodDefault<z.ZodNumber>;
-    qualifier: z.ZodOptional<z.ZodObject<{
-        productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    qualifier: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+        productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
     }, "strip", z.ZodTypeAny, {
         categoryIds: string[];
         productIds: string[];
@@ -688,17 +868,53 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         excludedVariantIds?: string[] | undefined;
         excludedCategoryIds?: string[] | undefined;
         excludedBrandIds?: string[] | undefined;
+    }>, {
+        categoryIds: string[];
+        productIds: string[];
+        variantIds: string[];
+        brandIds: string[];
+        excludedProductIds: string[];
+        excludedVariantIds: string[];
+        excludedCategoryIds: string[];
+        excludedBrandIds: string[];
+    }, {
+        categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
+        variantIds?: string[] | undefined;
+        brandIds?: string[] | undefined;
+        excludedProductIds?: string[] | undefined;
+        excludedVariantIds?: string[] | undefined;
+        excludedCategoryIds?: string[] | undefined;
+        excludedBrandIds?: string[] | undefined;
     }>>;
-    reward: z.ZodOptional<z.ZodObject<{
-        productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    reward: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+        productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
+        productIds: string[];
+        variantIds: string[];
+        brandIds: string[];
+        excludedProductIds: string[];
+        excludedVariantIds: string[];
+        excludedCategoryIds: string[];
+        excludedBrandIds: string[];
+    }, {
+        categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
+        variantIds?: string[] | undefined;
+        brandIds?: string[] | undefined;
+        excludedProductIds?: string[] | undefined;
+        excludedVariantIds?: string[] | undefined;
+        excludedCategoryIds?: string[] | undefined;
+        excludedBrandIds?: string[] | undefined;
+    }>, {
         categoryIds: string[];
         productIds: string[];
         variantIds: string[];
@@ -815,16 +1031,34 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         value: number;
         threshold: number;
     }>, "many">;
-    selector: z.ZodOptional<z.ZodObject<{
-        productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+        productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
+        productIds: string[];
+        variantIds: string[];
+        brandIds: string[];
+        excludedProductIds: string[];
+        excludedVariantIds: string[];
+        excludedCategoryIds: string[];
+        excludedBrandIds: string[];
+    }, {
+        categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
+        variantIds?: string[] | undefined;
+        brandIds?: string[] | undefined;
+        excludedProductIds?: string[] | undefined;
+        excludedVariantIds?: string[] | undefined;
+        excludedCategoryIds?: string[] | undefined;
+        excludedBrandIds?: string[] | undefined;
+    }>, {
         categoryIds: string[];
         productIds: string[];
         variantIds: string[];
@@ -917,18 +1151,37 @@ export declare const promotionActionSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     customerChooses?: boolean | undefined;
 }>]>;
 export type PromotionAction = z.infer<typeof promotionActionSchema>;
-export declare const promotionTargetsSchema: z.ZodObject<{
-    productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-} & {
-    customerIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+export declare const promotionTargetsSchema: z.ZodEffects<z.ZodObject<{
+    customerIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+    excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
 }, "strip", z.ZodTypeAny, {
+    categoryIds: string[];
+    productIds: string[];
+    variantIds: string[];
+    brandIds: string[];
+    excludedProductIds: string[];
+    excludedVariantIds: string[];
+    excludedCategoryIds: string[];
+    excludedBrandIds: string[];
+    customerIds: string[];
+}, {
+    categoryIds?: string[] | undefined;
+    productIds?: string[] | undefined;
+    variantIds?: string[] | undefined;
+    brandIds?: string[] | undefined;
+    excludedProductIds?: string[] | undefined;
+    excludedVariantIds?: string[] | undefined;
+    excludedCategoryIds?: string[] | undefined;
+    excludedBrandIds?: string[] | undefined;
+    customerIds?: string[] | undefined;
+}>, {
     categoryIds: string[];
     productIds: string[];
     variantIds: string[];
@@ -984,11 +1237,19 @@ export declare const promotionDisplaySchema: z.ZodDefault<z.ZodObject<{
     showOnOffers?: boolean | undefined;
     bannerImageKey?: string | null | undefined;
 }>>;
-export declare const couponConfigurationSchema: z.ZodOptional<z.ZodObject<{
-    codes: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+export declare const couponConfigurationSchema: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+    codes: z.ZodDefault<z.ZodArray<z.ZodEffects<z.ZodPipeline<z.ZodEffects<z.ZodString, string, string>, z.ZodEffects<z.ZodString, string, string>>, string, string>, "many">>;
     generateCount: z.ZodDefault<z.ZodNumber>;
-    prefix: z.ZodDefault<z.ZodString>;
+    prefix: z.ZodDefault<z.ZodEffects<z.ZodPipeline<z.ZodEffects<z.ZodString, string, string>, z.ZodEffects<z.ZodString, string, string>>, string, string>>;
 }, "strip", z.ZodTypeAny, {
+    codes: string[];
+    generateCount: number;
+    prefix: string;
+}, {
+    codes?: string[] | undefined;
+    generateCount?: number | undefined;
+    prefix?: string | undefined;
+}>, {
     codes: string[];
     generateCount: number;
     prefix: string;
@@ -1018,25 +1279,43 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         value: number;
         type: "SUBTOTAL";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     }, {
         value: number;
         type: "SUBTOTAL";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"QUANTITY">;
         operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
         value: z.ZodNumber;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -1058,7 +1337,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         value: number;
         type: "QUANTITY";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         selector?: {
             categoryIds: string[];
             productIds: string[];
@@ -1072,7 +1351,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     }, {
         value: number;
         type: "QUANTITY";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         selector?: {
             categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
@@ -1085,16 +1364,34 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         } | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"HAS_ITEMS">;
-        selector: z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -1139,16 +1436,34 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         };
     }>, z.ZodObject<{
         type: z.ZodLiteral<"MISSING_ITEMS">;
-        selector: z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -1216,11 +1531,11 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         value: number;
         type: "PAST_ORDER_COUNT";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     }, {
         value: number;
         type: "PAST_ORDER_COUNT";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"LIFETIME_SPEND">;
         operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
@@ -1228,11 +1543,11 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         value: number;
         type: "LIFETIME_SPEND";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     }, {
         value: number;
         type: "LIFETIME_SPEND";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"INACTIVE_DAYS">;
         operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
@@ -1240,11 +1555,11 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         value: number;
         type: "INACTIVE_DAYS";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     }, {
         value: number;
         type: "INACTIVE_DAYS";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"COUPON_ENTERED">;
         code: z.ZodOptional<z.ZodString>;
@@ -1275,16 +1590,34 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     }>]>, "many">>;
     actions: z.ZodArray<z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
         maxDiscount: z.ZodOptional<z.ZodNumber>;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -1335,16 +1668,34 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         maxDiscount?: number | undefined;
     }>, z.ZodObject<{
         maxDiscount: z.ZodOptional<z.ZodNumber>;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -1396,16 +1747,34 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     }>, z.ZodObject<{
         type: z.ZodLiteral<"PRICE_OVERRIDE">;
         price: z.ZodNumber;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -1453,16 +1822,34 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     }>, z.ZodObject<{
         type: z.ZodLiteral<"CHEAPEST_FREE">;
         quantity: z.ZodDefault<z.ZodNumber>;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -1509,16 +1896,34 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         } | undefined;
     }>, z.ZodObject<{
         maxDiscount: z.ZodOptional<z.ZodNumber>;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -1569,16 +1974,34 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         maxDiscount?: number | undefined;
     }>, z.ZodObject<{
         maxDiscount: z.ZodOptional<z.ZodNumber>;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -1638,15 +2061,15 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         buyQuantity: z.ZodNumber;
         rewardQuantity: z.ZodDefault<z.ZodNumber>;
         rewardPercentOff: z.ZodDefault<z.ZodNumber>;
-        qualifier: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        qualifier: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
             categoryIds: string[];
             productIds: string[];
@@ -1665,17 +2088,53 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             excludedVariantIds?: string[] | undefined;
             excludedCategoryIds?: string[] | undefined;
             excludedBrandIds?: string[] | undefined;
+        }>, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
         }>>;
-        reward: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        reward: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -1792,16 +2251,34 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
             value: number;
             threshold: number;
         }>, "many">;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -1893,18 +2370,37 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         quantity?: number | undefined;
         customerChooses?: boolean | undefined;
     }>]>, "many">;
-    targets: z.ZodDefault<z.ZodObject<{
-        productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    } & {
-        customerIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    targets: z.ZodDefault<z.ZodEffects<z.ZodObject<{
+        customerIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
+        productIds: string[];
+        variantIds: string[];
+        brandIds: string[];
+        excludedProductIds: string[];
+        excludedVariantIds: string[];
+        excludedCategoryIds: string[];
+        excludedBrandIds: string[];
+        customerIds: string[];
+    }, {
+        categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
+        variantIds?: string[] | undefined;
+        brandIds?: string[] | undefined;
+        excludedProductIds?: string[] | undefined;
+        excludedVariantIds?: string[] | undefined;
+        excludedCategoryIds?: string[] | undefined;
+        excludedBrandIds?: string[] | undefined;
+        customerIds?: string[] | undefined;
+    }>, {
         categoryIds: string[];
         productIds: string[];
         variantIds: string[];
@@ -1960,10 +2456,10 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         showOnOffers?: boolean | undefined;
         bannerImageKey?: string | null | undefined;
     }>>;
-    coupon: z.ZodOptional<z.ZodObject<{
-        codes: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    coupon: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+        codes: z.ZodDefault<z.ZodArray<z.ZodEffects<z.ZodPipeline<z.ZodEffects<z.ZodString, string, string>, z.ZodEffects<z.ZodString, string, string>>, string, string>, "many">>;
         generateCount: z.ZodDefault<z.ZodNumber>;
-        prefix: z.ZodDefault<z.ZodString>;
+        prefix: z.ZodDefault<z.ZodEffects<z.ZodPipeline<z.ZodEffects<z.ZodString, string, string>, z.ZodEffects<z.ZodString, string, string>>, string, string>>;
     }, "strip", z.ZodTypeAny, {
         codes: string[];
         generateCount: number;
@@ -1972,8 +2468,16 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         codes?: string[] | undefined;
         generateCount?: number | undefined;
         prefix?: string | undefined;
+    }>, {
+        codes: string[];
+        generateCount: number;
+        prefix: string;
+    }, {
+        codes?: string[] | undefined;
+        generateCount?: number | undefined;
+        prefix?: string | undefined;
     }>>;
-}, "strip", z.ZodTypeAny, {
+}, "strict", z.ZodTypeAny, {
     type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
     name: string;
     customerTitle: string;
@@ -1988,7 +2492,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     conditions: ({
         value: number;
         type: "QUANTITY";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         selector?: {
             categoryIds: string[];
             productIds: string[];
@@ -2002,7 +2506,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | {
         value: number;
         type: "SUBTOTAL";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     } | {
         type: "HAS_ITEMS";
         selector: {
@@ -2036,15 +2540,15 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | {
         value: number;
         type: "PAST_ORDER_COUNT";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     } | {
         value: number;
         type: "LIFETIME_SPEND";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     } | {
         value: number;
         type: "INACTIVE_DAYS";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     } | {
         type: "COUPON_ENTERED";
         code?: string | undefined;
@@ -2395,7 +2899,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     conditions?: ({
         value: number;
         type: "QUANTITY";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         selector?: {
             categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
@@ -2409,7 +2913,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | {
         value: number;
         type: "SUBTOTAL";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     } | {
         type: "HAS_ITEMS";
         selector: {
@@ -2443,15 +2947,15 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | {
         value: number;
         type: "PAST_ORDER_COUNT";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     } | {
         value: number;
         type: "LIFETIME_SPEND";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     } | {
         value: number;
         type: "INACTIVE_DAYS";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     } | {
         type: "COUPON_ENTERED";
         code?: string | undefined;
@@ -2506,7 +3010,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     conditions: ({
         value: number;
         type: "QUANTITY";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         selector?: {
             categoryIds: string[];
             productIds: string[];
@@ -2520,7 +3024,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | {
         value: number;
         type: "SUBTOTAL";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     } | {
         type: "HAS_ITEMS";
         selector: {
@@ -2554,15 +3058,15 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | {
         value: number;
         type: "PAST_ORDER_COUNT";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     } | {
         value: number;
         type: "LIFETIME_SPEND";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     } | {
         value: number;
         type: "INACTIVE_DAYS";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     } | {
         type: "COUPON_ENTERED";
         code?: string | undefined;
@@ -2913,7 +3417,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     conditions?: ({
         value: number;
         type: "QUANTITY";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         selector?: {
             categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
@@ -2927,7 +3431,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | {
         value: number;
         type: "SUBTOTAL";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     } | {
         type: "HAS_ITEMS";
         selector: {
@@ -2961,15 +3465,15 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | {
         value: number;
         type: "PAST_ORDER_COUNT";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     } | {
         value: number;
         type: "LIFETIME_SPEND";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     } | {
         value: number;
         type: "INACTIVE_DAYS";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     } | {
         type: "COUPON_ENTERED";
         code?: string | undefined;
@@ -3032,25 +3536,43 @@ export declare const updatePromotionSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         value: number;
         type: "SUBTOTAL";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     }, {
         value: number;
         type: "SUBTOTAL";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"QUANTITY">;
         operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
         value: z.ZodNumber;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -3072,7 +3594,7 @@ export declare const updatePromotionSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         value: number;
         type: "QUANTITY";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         selector?: {
             categoryIds: string[];
             productIds: string[];
@@ -3086,7 +3608,7 @@ export declare const updatePromotionSchema: z.ZodObject<{
     }, {
         value: number;
         type: "QUANTITY";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         selector?: {
             categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
@@ -3099,16 +3621,34 @@ export declare const updatePromotionSchema: z.ZodObject<{
         } | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"HAS_ITEMS">;
-        selector: z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -3153,16 +3693,34 @@ export declare const updatePromotionSchema: z.ZodObject<{
         };
     }>, z.ZodObject<{
         type: z.ZodLiteral<"MISSING_ITEMS">;
-        selector: z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -3230,11 +3788,11 @@ export declare const updatePromotionSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         value: number;
         type: "PAST_ORDER_COUNT";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     }, {
         value: number;
         type: "PAST_ORDER_COUNT";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"LIFETIME_SPEND">;
         operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
@@ -3242,11 +3800,11 @@ export declare const updatePromotionSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         value: number;
         type: "LIFETIME_SPEND";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     }, {
         value: number;
         type: "LIFETIME_SPEND";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"INACTIVE_DAYS">;
         operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
@@ -3254,11 +3812,11 @@ export declare const updatePromotionSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         value: number;
         type: "INACTIVE_DAYS";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     }, {
         value: number;
         type: "INACTIVE_DAYS";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"COUPON_ENTERED">;
         code: z.ZodOptional<z.ZodString>;
@@ -3289,16 +3847,34 @@ export declare const updatePromotionSchema: z.ZodObject<{
     }>]>, "many">>>;
     actions: z.ZodOptional<z.ZodArray<z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
         maxDiscount: z.ZodOptional<z.ZodNumber>;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -3349,16 +3925,34 @@ export declare const updatePromotionSchema: z.ZodObject<{
         maxDiscount?: number | undefined;
     }>, z.ZodObject<{
         maxDiscount: z.ZodOptional<z.ZodNumber>;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -3410,16 +4004,34 @@ export declare const updatePromotionSchema: z.ZodObject<{
     }>, z.ZodObject<{
         type: z.ZodLiteral<"PRICE_OVERRIDE">;
         price: z.ZodNumber;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -3467,16 +4079,34 @@ export declare const updatePromotionSchema: z.ZodObject<{
     }>, z.ZodObject<{
         type: z.ZodLiteral<"CHEAPEST_FREE">;
         quantity: z.ZodDefault<z.ZodNumber>;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -3523,16 +4153,34 @@ export declare const updatePromotionSchema: z.ZodObject<{
         } | undefined;
     }>, z.ZodObject<{
         maxDiscount: z.ZodOptional<z.ZodNumber>;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -3583,16 +4231,34 @@ export declare const updatePromotionSchema: z.ZodObject<{
         maxDiscount?: number | undefined;
     }>, z.ZodObject<{
         maxDiscount: z.ZodOptional<z.ZodNumber>;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -3652,15 +4318,15 @@ export declare const updatePromotionSchema: z.ZodObject<{
         buyQuantity: z.ZodNumber;
         rewardQuantity: z.ZodDefault<z.ZodNumber>;
         rewardPercentOff: z.ZodDefault<z.ZodNumber>;
-        qualifier: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        qualifier: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
             categoryIds: string[];
             productIds: string[];
@@ -3679,17 +4345,53 @@ export declare const updatePromotionSchema: z.ZodObject<{
             excludedVariantIds?: string[] | undefined;
             excludedCategoryIds?: string[] | undefined;
             excludedBrandIds?: string[] | undefined;
+        }>, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
         }>>;
-        reward: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        reward: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -3806,16 +4508,34 @@ export declare const updatePromotionSchema: z.ZodObject<{
             value: number;
             threshold: number;
         }>, "many">;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -3907,18 +4627,37 @@ export declare const updatePromotionSchema: z.ZodObject<{
         quantity?: number | undefined;
         customerChooses?: boolean | undefined;
     }>]>, "many">>;
-    targets: z.ZodOptional<z.ZodDefault<z.ZodObject<{
-        productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    } & {
-        customerIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    targets: z.ZodOptional<z.ZodDefault<z.ZodEffects<z.ZodObject<{
+        customerIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
+        productIds: string[];
+        variantIds: string[];
+        brandIds: string[];
+        excludedProductIds: string[];
+        excludedVariantIds: string[];
+        excludedCategoryIds: string[];
+        excludedBrandIds: string[];
+        customerIds: string[];
+    }, {
+        categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
+        variantIds?: string[] | undefined;
+        brandIds?: string[] | undefined;
+        excludedProductIds?: string[] | undefined;
+        excludedVariantIds?: string[] | undefined;
+        excludedCategoryIds?: string[] | undefined;
+        excludedBrandIds?: string[] | undefined;
+        customerIds?: string[] | undefined;
+    }>, {
         categoryIds: string[];
         productIds: string[];
         variantIds: string[];
@@ -3974,10 +4713,10 @@ export declare const updatePromotionSchema: z.ZodObject<{
         showOnOffers?: boolean | undefined;
         bannerImageKey?: string | null | undefined;
     }>>>;
-    coupon: z.ZodOptional<z.ZodOptional<z.ZodObject<{
-        codes: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    coupon: z.ZodOptional<z.ZodOptional<z.ZodEffects<z.ZodObject<{
+        codes: z.ZodDefault<z.ZodArray<z.ZodEffects<z.ZodPipeline<z.ZodEffects<z.ZodString, string, string>, z.ZodEffects<z.ZodString, string, string>>, string, string>, "many">>;
         generateCount: z.ZodDefault<z.ZodNumber>;
-        prefix: z.ZodDefault<z.ZodString>;
+        prefix: z.ZodDefault<z.ZodEffects<z.ZodPipeline<z.ZodEffects<z.ZodString, string, string>, z.ZodEffects<z.ZodString, string, string>>, string, string>>;
     }, "strip", z.ZodTypeAny, {
         codes: string[];
         generateCount: number;
@@ -3986,8 +4725,16 @@ export declare const updatePromotionSchema: z.ZodObject<{
         codes?: string[] | undefined;
         generateCount?: number | undefined;
         prefix?: string | undefined;
+    }>, {
+        codes: string[];
+        generateCount: number;
+        prefix: string;
+    }, {
+        codes?: string[] | undefined;
+        generateCount?: number | undefined;
+        prefix?: string | undefined;
     }>>>;
-}, "strip", z.ZodTypeAny, {
+}, "strict", z.ZodTypeAny, {
     type?: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE" | undefined;
     name?: string | undefined;
     internalDescription?: string | null | undefined;
@@ -4004,7 +4751,7 @@ export declare const updatePromotionSchema: z.ZodObject<{
     conditions?: ({
         value: number;
         type: "QUANTITY";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         selector?: {
             categoryIds: string[];
             productIds: string[];
@@ -4018,7 +4765,7 @@ export declare const updatePromotionSchema: z.ZodObject<{
     } | {
         value: number;
         type: "SUBTOTAL";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     } | {
         type: "HAS_ITEMS";
         selector: {
@@ -4052,15 +4799,15 @@ export declare const updatePromotionSchema: z.ZodObject<{
     } | {
         value: number;
         type: "PAST_ORDER_COUNT";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     } | {
         value: number;
         type: "LIFETIME_SPEND";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     } | {
         value: number;
         type: "INACTIVE_DAYS";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     } | {
         type: "COUPON_ENTERED";
         code?: string | undefined;
@@ -4263,7 +5010,7 @@ export declare const updatePromotionSchema: z.ZodObject<{
     conditions?: ({
         value: number;
         type: "QUANTITY";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         selector?: {
             categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
@@ -4277,7 +5024,7 @@ export declare const updatePromotionSchema: z.ZodObject<{
     } | {
         value: number;
         type: "SUBTOTAL";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     } | {
         type: "HAS_ITEMS";
         selector: {
@@ -4311,15 +5058,15 @@ export declare const updatePromotionSchema: z.ZodObject<{
     } | {
         value: number;
         type: "PAST_ORDER_COUNT";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     } | {
         value: number;
         type: "LIFETIME_SPEND";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     } | {
         value: number;
         type: "INACTIVE_DAYS";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     } | {
         type: "COUPON_ENTERED";
         code?: string | undefined;
@@ -4587,25 +5334,43 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             value: number;
             type: "SUBTOTAL";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         }, {
             value: number;
             type: "SUBTOTAL";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         }>, z.ZodObject<{
             type: z.ZodLiteral<"QUANTITY">;
             operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
             value: z.ZodNumber;
-            selector: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -4627,7 +5392,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             value: number;
             type: "QUANTITY";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
             selector?: {
                 categoryIds: string[];
                 productIds: string[];
@@ -4641,7 +5406,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         }, {
             value: number;
             type: "QUANTITY";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
             selector?: {
                 categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
@@ -4654,16 +5419,34 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             } | undefined;
         }>, z.ZodObject<{
             type: z.ZodLiteral<"HAS_ITEMS">;
-            selector: z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -4708,16 +5491,34 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             };
         }>, z.ZodObject<{
             type: z.ZodLiteral<"MISSING_ITEMS">;
-            selector: z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -4785,11 +5586,11 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             value: number;
             type: "PAST_ORDER_COUNT";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         }, {
             value: number;
             type: "PAST_ORDER_COUNT";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         }>, z.ZodObject<{
             type: z.ZodLiteral<"LIFETIME_SPEND">;
             operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
@@ -4797,11 +5598,11 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             value: number;
             type: "LIFETIME_SPEND";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         }, {
             value: number;
             type: "LIFETIME_SPEND";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         }>, z.ZodObject<{
             type: z.ZodLiteral<"INACTIVE_DAYS">;
             operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
@@ -4809,11 +5610,11 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             value: number;
             type: "INACTIVE_DAYS";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         }, {
             value: number;
             type: "INACTIVE_DAYS";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         }>, z.ZodObject<{
             type: z.ZodLiteral<"COUPON_ENTERED">;
             code: z.ZodOptional<z.ZodString>;
@@ -4844,16 +5645,34 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         }>]>, "many">>;
         actions: z.ZodArray<z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
             maxDiscount: z.ZodOptional<z.ZodNumber>;
-            selector: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -4904,16 +5723,34 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             maxDiscount?: number | undefined;
         }>, z.ZodObject<{
             maxDiscount: z.ZodOptional<z.ZodNumber>;
-            selector: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -4965,16 +5802,34 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         }>, z.ZodObject<{
             type: z.ZodLiteral<"PRICE_OVERRIDE">;
             price: z.ZodNumber;
-            selector: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -5022,16 +5877,34 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         }>, z.ZodObject<{
             type: z.ZodLiteral<"CHEAPEST_FREE">;
             quantity: z.ZodDefault<z.ZodNumber>;
-            selector: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -5078,16 +5951,34 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             } | undefined;
         }>, z.ZodObject<{
             maxDiscount: z.ZodOptional<z.ZodNumber>;
-            selector: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -5138,16 +6029,34 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             maxDiscount?: number | undefined;
         }>, z.ZodObject<{
             maxDiscount: z.ZodOptional<z.ZodNumber>;
-            selector: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -5207,15 +6116,15 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             buyQuantity: z.ZodNumber;
             rewardQuantity: z.ZodDefault<z.ZodNumber>;
             rewardPercentOff: z.ZodDefault<z.ZodNumber>;
-            qualifier: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            qualifier: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
                 categoryIds: string[];
                 productIds: string[];
@@ -5234,17 +6143,53 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 excludedVariantIds?: string[] | undefined;
                 excludedCategoryIds?: string[] | undefined;
                 excludedBrandIds?: string[] | undefined;
+            }>, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
             }>>;
-            reward: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            reward: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -5361,16 +6306,34 @@ export declare const promotionPreviewSchema: z.ZodObject<{
                 value: number;
                 threshold: number;
             }>, "many">;
-            selector: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -5462,18 +6425,37 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             quantity?: number | undefined;
             customerChooses?: boolean | undefined;
         }>]>, "many">;
-        targets: z.ZodDefault<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        } & {
-            customerIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        targets: z.ZodDefault<z.ZodEffects<z.ZodObject<{
+            customerIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+            customerIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+            customerIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -5529,10 +6511,10 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             showOnOffers?: boolean | undefined;
             bannerImageKey?: string | null | undefined;
         }>>;
-        coupon: z.ZodOptional<z.ZodObject<{
-            codes: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        coupon: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            codes: z.ZodDefault<z.ZodArray<z.ZodEffects<z.ZodPipeline<z.ZodEffects<z.ZodString, string, string>, z.ZodEffects<z.ZodString, string, string>>, string, string>, "many">>;
             generateCount: z.ZodDefault<z.ZodNumber>;
-            prefix: z.ZodDefault<z.ZodString>;
+            prefix: z.ZodDefault<z.ZodEffects<z.ZodPipeline<z.ZodEffects<z.ZodString, string, string>, z.ZodEffects<z.ZodString, string, string>>, string, string>>;
         }, "strip", z.ZodTypeAny, {
             codes: string[];
             generateCount: number;
@@ -5541,8 +6523,16 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             codes?: string[] | undefined;
             generateCount?: number | undefined;
             prefix?: string | undefined;
+        }>, {
+            codes: string[];
+            generateCount: number;
+            prefix: string;
+        }, {
+            codes?: string[] | undefined;
+            generateCount?: number | undefined;
+            prefix?: string | undefined;
         }>>;
-    }, "strip", z.ZodTypeAny, {
+    }, "strict", z.ZodTypeAny, {
         type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
         name: string;
         customerTitle: string;
@@ -5557,7 +6547,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         conditions: ({
             value: number;
             type: "QUANTITY";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
             selector?: {
                 categoryIds: string[];
                 productIds: string[];
@@ -5571,7 +6561,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | {
             value: number;
             type: "SUBTOTAL";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         } | {
             type: "HAS_ITEMS";
             selector: {
@@ -5605,15 +6595,15 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | {
             value: number;
             type: "PAST_ORDER_COUNT";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         } | {
             value: number;
             type: "LIFETIME_SPEND";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         } | {
             value: number;
             type: "INACTIVE_DAYS";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         } | {
             type: "COUPON_ENTERED";
             code?: string | undefined;
@@ -5964,7 +6954,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         conditions?: ({
             value: number;
             type: "QUANTITY";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
             selector?: {
                 categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
@@ -5978,7 +6968,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | {
             value: number;
             type: "SUBTOTAL";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         } | {
             type: "HAS_ITEMS";
             selector: {
@@ -6012,15 +7002,15 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | {
             value: number;
             type: "PAST_ORDER_COUNT";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         } | {
             value: number;
             type: "LIFETIME_SPEND";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         } | {
             value: number;
             type: "INACTIVE_DAYS";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         } | {
             type: "COUPON_ENTERED";
             code?: string | undefined;
@@ -6127,7 +7117,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         conditions: ({
             value: number;
             type: "QUANTITY";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
             selector?: {
                 categoryIds: string[];
                 productIds: string[];
@@ -6141,7 +7131,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | {
             value: number;
             type: "SUBTOTAL";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         } | {
             type: "HAS_ITEMS";
             selector: {
@@ -6175,15 +7165,15 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | {
             value: number;
             type: "PAST_ORDER_COUNT";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         } | {
             value: number;
             type: "LIFETIME_SPEND";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         } | {
             value: number;
             type: "INACTIVE_DAYS";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         } | {
             type: "COUPON_ENTERED";
             code?: string | undefined;
@@ -6551,7 +7541,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         conditions?: ({
             value: number;
             type: "QUANTITY";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
             selector?: {
                 categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
@@ -6565,7 +7555,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | {
             value: number;
             type: "SUBTOTAL";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         } | {
             type: "HAS_ITEMS";
             selector: {
@@ -6599,15 +7589,15 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | {
             value: number;
             type: "PAST_ORDER_COUNT";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         } | {
             value: number;
             type: "LIFETIME_SPEND";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         } | {
             value: number;
             type: "INACTIVE_DAYS";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         } | {
             type: "COUPON_ENTERED";
             code?: string | undefined;
@@ -6873,25 +7863,43 @@ export declare const promotionResponseSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         value: number;
         type: "SUBTOTAL";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     }, {
         value: number;
         type: "SUBTOTAL";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"QUANTITY">;
         operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
         value: z.ZodNumber;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -6913,7 +7921,7 @@ export declare const promotionResponseSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         value: number;
         type: "QUANTITY";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         selector?: {
             categoryIds: string[];
             productIds: string[];
@@ -6927,7 +7935,7 @@ export declare const promotionResponseSchema: z.ZodObject<{
     }, {
         value: number;
         type: "QUANTITY";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         selector?: {
             categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
@@ -6940,16 +7948,34 @@ export declare const promotionResponseSchema: z.ZodObject<{
         } | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"HAS_ITEMS">;
-        selector: z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -6994,16 +8020,34 @@ export declare const promotionResponseSchema: z.ZodObject<{
         };
     }>, z.ZodObject<{
         type: z.ZodLiteral<"MISSING_ITEMS">;
-        selector: z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -7071,11 +8115,11 @@ export declare const promotionResponseSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         value: number;
         type: "PAST_ORDER_COUNT";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     }, {
         value: number;
         type: "PAST_ORDER_COUNT";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"LIFETIME_SPEND">;
         operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
@@ -7083,11 +8127,11 @@ export declare const promotionResponseSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         value: number;
         type: "LIFETIME_SPEND";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     }, {
         value: number;
         type: "LIFETIME_SPEND";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"INACTIVE_DAYS">;
         operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
@@ -7095,11 +8139,11 @@ export declare const promotionResponseSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         value: number;
         type: "INACTIVE_DAYS";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     }, {
         value: number;
         type: "INACTIVE_DAYS";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"COUPON_ENTERED">;
         code: z.ZodOptional<z.ZodString>;
@@ -7130,16 +8174,34 @@ export declare const promotionResponseSchema: z.ZodObject<{
     }>]>, "many">;
     actions: z.ZodArray<z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
         maxDiscount: z.ZodOptional<z.ZodNumber>;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -7190,16 +8252,34 @@ export declare const promotionResponseSchema: z.ZodObject<{
         maxDiscount?: number | undefined;
     }>, z.ZodObject<{
         maxDiscount: z.ZodOptional<z.ZodNumber>;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -7251,16 +8331,34 @@ export declare const promotionResponseSchema: z.ZodObject<{
     }>, z.ZodObject<{
         type: z.ZodLiteral<"PRICE_OVERRIDE">;
         price: z.ZodNumber;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -7308,16 +8406,34 @@ export declare const promotionResponseSchema: z.ZodObject<{
     }>, z.ZodObject<{
         type: z.ZodLiteral<"CHEAPEST_FREE">;
         quantity: z.ZodDefault<z.ZodNumber>;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -7364,16 +8480,34 @@ export declare const promotionResponseSchema: z.ZodObject<{
         } | undefined;
     }>, z.ZodObject<{
         maxDiscount: z.ZodOptional<z.ZodNumber>;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -7424,16 +8558,34 @@ export declare const promotionResponseSchema: z.ZodObject<{
         maxDiscount?: number | undefined;
     }>, z.ZodObject<{
         maxDiscount: z.ZodOptional<z.ZodNumber>;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -7493,15 +8645,15 @@ export declare const promotionResponseSchema: z.ZodObject<{
         buyQuantity: z.ZodNumber;
         rewardQuantity: z.ZodDefault<z.ZodNumber>;
         rewardPercentOff: z.ZodDefault<z.ZodNumber>;
-        qualifier: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        qualifier: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
             categoryIds: string[];
             productIds: string[];
@@ -7520,17 +8672,53 @@ export declare const promotionResponseSchema: z.ZodObject<{
             excludedVariantIds?: string[] | undefined;
             excludedCategoryIds?: string[] | undefined;
             excludedBrandIds?: string[] | undefined;
+        }>, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
         }>>;
-        reward: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        reward: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -7647,16 +8835,34 @@ export declare const promotionResponseSchema: z.ZodObject<{
             value: number;
             threshold: number;
         }>, "many">;
-        selector: z.ZodOptional<z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -7748,18 +8954,37 @@ export declare const promotionResponseSchema: z.ZodObject<{
         quantity?: number | undefined;
         customerChooses?: boolean | undefined;
     }>]>, "many">;
-    targets: z.ZodObject<{
-        productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-    } & {
-        customerIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    targets: z.ZodEffects<z.ZodObject<{
+        customerIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+        excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
     }, "strip", z.ZodTypeAny, {
+        categoryIds: string[];
+        productIds: string[];
+        variantIds: string[];
+        brandIds: string[];
+        excludedProductIds: string[];
+        excludedVariantIds: string[];
+        excludedCategoryIds: string[];
+        excludedBrandIds: string[];
+        customerIds: string[];
+    }, {
+        categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
+        variantIds?: string[] | undefined;
+        brandIds?: string[] | undefined;
+        excludedProductIds?: string[] | undefined;
+        excludedVariantIds?: string[] | undefined;
+        excludedCategoryIds?: string[] | undefined;
+        excludedBrandIds?: string[] | undefined;
+        customerIds?: string[] | undefined;
+    }>, {
         categoryIds: string[];
         productIds: string[];
         variantIds: string[];
@@ -7836,6 +9061,16 @@ export declare const promotionResponseSchema: z.ZodObject<{
     discountedUnits: z.ZodNumber;
     createdAt: z.ZodString;
     updatedAt: z.ZodString;
+    createdBy: z.ZodObject<{
+        id: z.ZodString;
+        name: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        name: string;
+    }, {
+        id: string;
+        name: string;
+    }>;
     summary: z.ZodString;
 }, "strip", z.ZodTypeAny, {
     type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
@@ -7845,6 +9080,10 @@ export declare const promotionResponseSchema: z.ZodObject<{
     updatedAt: string;
     summary: string;
     name: string;
+    createdBy: {
+        id: string;
+        name: string;
+    };
     discountedUnits: number;
     internalDescription: string | null;
     customerTitle: string;
@@ -7860,7 +9099,7 @@ export declare const promotionResponseSchema: z.ZodObject<{
     conditions: ({
         value: number;
         type: "QUANTITY";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         selector?: {
             categoryIds: string[];
             productIds: string[];
@@ -7874,7 +9113,7 @@ export declare const promotionResponseSchema: z.ZodObject<{
     } | {
         value: number;
         type: "SUBTOTAL";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     } | {
         type: "HAS_ITEMS";
         selector: {
@@ -7908,15 +9147,15 @@ export declare const promotionResponseSchema: z.ZodObject<{
     } | {
         value: number;
         type: "PAST_ORDER_COUNT";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     } | {
         value: number;
         type: "LIFETIME_SPEND";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     } | {
         value: number;
         type: "INACTIVE_DAYS";
-        operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+        operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
     } | {
         type: "COUPON_ENTERED";
         code?: string | undefined;
@@ -8113,6 +9352,10 @@ export declare const promotionResponseSchema: z.ZodObject<{
     updatedAt: string;
     summary: string;
     name: string;
+    createdBy: {
+        id: string;
+        name: string;
+    };
     discountedUnits: number;
     internalDescription: string | null;
     customerTitle: string;
@@ -8128,7 +9371,7 @@ export declare const promotionResponseSchema: z.ZodObject<{
     conditions: ({
         value: number;
         type: "QUANTITY";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         selector?: {
             categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
@@ -8142,7 +9385,7 @@ export declare const promotionResponseSchema: z.ZodObject<{
     } | {
         value: number;
         type: "SUBTOTAL";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     } | {
         type: "HAS_ITEMS";
         selector: {
@@ -8176,15 +9419,15 @@ export declare const promotionResponseSchema: z.ZodObject<{
     } | {
         value: number;
         type: "PAST_ORDER_COUNT";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     } | {
         value: number;
         type: "LIFETIME_SPEND";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     } | {
         value: number;
         type: "INACTIVE_DAYS";
-        operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+        operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
     } | {
         type: "COUPON_ENTERED";
         code?: string | undefined;
@@ -8399,25 +9642,43 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             value: number;
             type: "SUBTOTAL";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         }, {
             value: number;
             type: "SUBTOTAL";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         }>, z.ZodObject<{
             type: z.ZodLiteral<"QUANTITY">;
             operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
             value: z.ZodNumber;
-            selector: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -8439,7 +9700,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             value: number;
             type: "QUANTITY";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
             selector?: {
                 categoryIds: string[];
                 productIds: string[];
@@ -8453,7 +9714,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         }, {
             value: number;
             type: "QUANTITY";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
             selector?: {
                 categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
@@ -8466,16 +9727,34 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             } | undefined;
         }>, z.ZodObject<{
             type: z.ZodLiteral<"HAS_ITEMS">;
-            selector: z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -8520,16 +9799,34 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             };
         }>, z.ZodObject<{
             type: z.ZodLiteral<"MISSING_ITEMS">;
-            selector: z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -8597,11 +9894,11 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             value: number;
             type: "PAST_ORDER_COUNT";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         }, {
             value: number;
             type: "PAST_ORDER_COUNT";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         }>, z.ZodObject<{
             type: z.ZodLiteral<"LIFETIME_SPEND">;
             operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
@@ -8609,11 +9906,11 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             value: number;
             type: "LIFETIME_SPEND";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         }, {
             value: number;
             type: "LIFETIME_SPEND";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         }>, z.ZodObject<{
             type: z.ZodLiteral<"INACTIVE_DAYS">;
             operator: z.ZodDefault<z.ZodEnum<["GT", "GTE", "LT", "LTE", "EQ"]>>;
@@ -8621,11 +9918,11 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             value: number;
             type: "INACTIVE_DAYS";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         }, {
             value: number;
             type: "INACTIVE_DAYS";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         }>, z.ZodObject<{
             type: z.ZodLiteral<"COUPON_ENTERED">;
             code: z.ZodOptional<z.ZodString>;
@@ -8656,16 +9953,34 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         }>]>, "many">;
         actions: z.ZodArray<z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
             maxDiscount: z.ZodOptional<z.ZodNumber>;
-            selector: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -8716,16 +10031,34 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             maxDiscount?: number | undefined;
         }>, z.ZodObject<{
             maxDiscount: z.ZodOptional<z.ZodNumber>;
-            selector: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -8777,16 +10110,34 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         }>, z.ZodObject<{
             type: z.ZodLiteral<"PRICE_OVERRIDE">;
             price: z.ZodNumber;
-            selector: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -8834,16 +10185,34 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         }>, z.ZodObject<{
             type: z.ZodLiteral<"CHEAPEST_FREE">;
             quantity: z.ZodDefault<z.ZodNumber>;
-            selector: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -8890,16 +10259,34 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             } | undefined;
         }>, z.ZodObject<{
             maxDiscount: z.ZodOptional<z.ZodNumber>;
-            selector: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -8950,16 +10337,34 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             maxDiscount?: number | undefined;
         }>, z.ZodObject<{
             maxDiscount: z.ZodOptional<z.ZodNumber>;
-            selector: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -9019,15 +10424,15 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             buyQuantity: z.ZodNumber;
             rewardQuantity: z.ZodDefault<z.ZodNumber>;
             rewardPercentOff: z.ZodDefault<z.ZodNumber>;
-            qualifier: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            qualifier: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
                 categoryIds: string[];
                 productIds: string[];
@@ -9046,17 +10451,53 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 excludedVariantIds?: string[] | undefined;
                 excludedCategoryIds?: string[] | undefined;
                 excludedBrandIds?: string[] | undefined;
+            }>, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
             }>>;
-            reward: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            reward: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -9173,16 +10614,34 @@ export declare const promotionListResponseSchema: z.ZodObject<{
                 value: number;
                 threshold: number;
             }>, "many">;
-            selector: z.ZodOptional<z.ZodObject<{
-                productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-                excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            selector: z.ZodOptional<z.ZodEffects<z.ZodObject<{
+                productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+                excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
             }, "strip", z.ZodTypeAny, {
+                categoryIds: string[];
+                productIds: string[];
+                variantIds: string[];
+                brandIds: string[];
+                excludedProductIds: string[];
+                excludedVariantIds: string[];
+                excludedCategoryIds: string[];
+                excludedBrandIds: string[];
+            }, {
+                categoryIds?: string[] | undefined;
+                productIds?: string[] | undefined;
+                variantIds?: string[] | undefined;
+                brandIds?: string[] | undefined;
+                excludedProductIds?: string[] | undefined;
+                excludedVariantIds?: string[] | undefined;
+                excludedCategoryIds?: string[] | undefined;
+                excludedBrandIds?: string[] | undefined;
+            }>, {
                 categoryIds: string[];
                 productIds: string[];
                 variantIds: string[];
@@ -9274,18 +10733,37 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             quantity?: number | undefined;
             customerChooses?: boolean | undefined;
         }>]>, "many">;
-        targets: z.ZodObject<{
-            productIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            variantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            categoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            brandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedVariantIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedCategoryIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-            excludedBrandIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
-        } & {
-            customerIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        targets: z.ZodEffects<z.ZodObject<{
+            customerIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            productIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            variantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            categoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            brandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedProductIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedVariantIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedCategoryIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
+            excludedBrandIds: z.ZodDefault<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>;
         }, "strip", z.ZodTypeAny, {
+            categoryIds: string[];
+            productIds: string[];
+            variantIds: string[];
+            brandIds: string[];
+            excludedProductIds: string[];
+            excludedVariantIds: string[];
+            excludedCategoryIds: string[];
+            excludedBrandIds: string[];
+            customerIds: string[];
+        }, {
+            categoryIds?: string[] | undefined;
+            productIds?: string[] | undefined;
+            variantIds?: string[] | undefined;
+            brandIds?: string[] | undefined;
+            excludedProductIds?: string[] | undefined;
+            excludedVariantIds?: string[] | undefined;
+            excludedCategoryIds?: string[] | undefined;
+            excludedBrandIds?: string[] | undefined;
+            customerIds?: string[] | undefined;
+        }>, {
             categoryIds: string[];
             productIds: string[];
             variantIds: string[];
@@ -9362,6 +10840,16 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         discountedUnits: z.ZodNumber;
         createdAt: z.ZodString;
         updatedAt: z.ZodString;
+        createdBy: z.ZodObject<{
+            id: z.ZodString;
+            name: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            name: string;
+        }, {
+            id: string;
+            name: string;
+        }>;
         summary: z.ZodString;
     }, "strip", z.ZodTypeAny, {
         type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
@@ -9371,6 +10859,10 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         updatedAt: string;
         summary: string;
         name: string;
+        createdBy: {
+            id: string;
+            name: string;
+        };
         discountedUnits: number;
         internalDescription: string | null;
         customerTitle: string;
@@ -9386,7 +10878,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         conditions: ({
             value: number;
             type: "QUANTITY";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
             selector?: {
                 categoryIds: string[];
                 productIds: string[];
@@ -9400,7 +10892,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } | {
             value: number;
             type: "SUBTOTAL";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         } | {
             type: "HAS_ITEMS";
             selector: {
@@ -9434,15 +10926,15 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } | {
             value: number;
             type: "PAST_ORDER_COUNT";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         } | {
             value: number;
             type: "LIFETIME_SPEND";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         } | {
             value: number;
             type: "INACTIVE_DAYS";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         } | {
             type: "COUPON_ENTERED";
             code?: string | undefined;
@@ -9639,6 +11131,10 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         updatedAt: string;
         summary: string;
         name: string;
+        createdBy: {
+            id: string;
+            name: string;
+        };
         discountedUnits: number;
         internalDescription: string | null;
         customerTitle: string;
@@ -9654,7 +11150,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         conditions: ({
             value: number;
             type: "QUANTITY";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
             selector?: {
                 categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
@@ -9668,7 +11164,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } | {
             value: number;
             type: "SUBTOTAL";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         } | {
             type: "HAS_ITEMS";
             selector: {
@@ -9702,15 +11198,15 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } | {
             value: number;
             type: "PAST_ORDER_COUNT";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         } | {
             value: number;
             type: "LIFETIME_SPEND";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         } | {
             value: number;
             type: "INACTIVE_DAYS";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         } | {
             type: "COUPON_ENTERED";
             code?: string | undefined;
@@ -9931,6 +11427,10 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         updatedAt: string;
         summary: string;
         name: string;
+        createdBy: {
+            id: string;
+            name: string;
+        };
         discountedUnits: number;
         internalDescription: string | null;
         customerTitle: string;
@@ -9946,7 +11446,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         conditions: ({
             value: number;
             type: "QUANTITY";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
             selector?: {
                 categoryIds: string[];
                 productIds: string[];
@@ -9960,7 +11460,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } | {
             value: number;
             type: "SUBTOTAL";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         } | {
             type: "HAS_ITEMS";
             selector: {
@@ -9994,15 +11494,15 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } | {
             value: number;
             type: "PAST_ORDER_COUNT";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         } | {
             value: number;
             type: "LIFETIME_SPEND";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         } | {
             value: number;
             type: "INACTIVE_DAYS";
-            operator: "GT" | "GTE" | "LT" | "LTE" | "EQ";
+            operator: "GT" | "LT" | "GTE" | "LTE" | "EQ";
         } | {
             type: "COUPON_ENTERED";
             code?: string | undefined;
@@ -10209,6 +11709,10 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         updatedAt: string;
         summary: string;
         name: string;
+        createdBy: {
+            id: string;
+            name: string;
+        };
         discountedUnits: number;
         internalDescription: string | null;
         customerTitle: string;
@@ -10224,7 +11728,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         conditions: ({
             value: number;
             type: "QUANTITY";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
             selector?: {
                 categoryIds?: string[] | undefined;
                 productIds?: string[] | undefined;
@@ -10238,7 +11742,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } | {
             value: number;
             type: "SUBTOTAL";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         } | {
             type: "HAS_ITEMS";
             selector: {
@@ -10272,15 +11776,15 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         } | {
             value: number;
             type: "PAST_ORDER_COUNT";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         } | {
             value: number;
             type: "LIFETIME_SPEND";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         } | {
             value: number;
             type: "INACTIVE_DAYS";
-            operator?: "GT" | "GTE" | "LT" | "LTE" | "EQ" | undefined;
+            operator?: "GT" | "LT" | "GTE" | "LTE" | "EQ" | undefined;
         } | {
             type: "COUPON_ENTERED";
             code?: string | undefined;
@@ -10479,6 +11983,68 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         hasPrev: boolean;
     };
 }>;
+export declare const permanentDeletePromotionSchema: z.ZodObject<{
+    confirmation: z.ZodLiteral<"DELETE">;
+}, "strict", z.ZodTypeAny, {
+    confirmation: "DELETE";
+}, {
+    confirmation: "DELETE";
+}>;
+export type PermanentDeletePromotionInput = z.infer<typeof permanentDeletePromotionSchema>;
+export declare const permanentDeletePromotionResponseSchema: z.ZodObject<{
+    ok: z.ZodLiteral<true>;
+    preservedHistory: z.ZodObject<{
+        orderSnapshots: z.ZodNumber;
+        redemptionSnapshots: z.ZodNumber;
+        couponRedemptions: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        orderSnapshots: number;
+        redemptionSnapshots: number;
+        couponRedemptions: number;
+    }, {
+        orderSnapshots: number;
+        redemptionSnapshots: number;
+        couponRedemptions: number;
+    }>;
+    detachedConfiguration: z.ZodObject<{
+        coupons: z.ZodNumber;
+        banners: z.ZodNumber;
+        popupCampaigns: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        coupons: number;
+        banners: number;
+        popupCampaigns: number;
+    }, {
+        coupons: number;
+        banners: number;
+        popupCampaigns: number;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    ok: true;
+    preservedHistory: {
+        orderSnapshots: number;
+        redemptionSnapshots: number;
+        couponRedemptions: number;
+    };
+    detachedConfiguration: {
+        coupons: number;
+        banners: number;
+        popupCampaigns: number;
+    };
+}, {
+    ok: true;
+    preservedHistory: {
+        orderSnapshots: number;
+        redemptionSnapshots: number;
+        couponRedemptions: number;
+    };
+    detachedConfiguration: {
+        coupons: number;
+        banners: number;
+        popupCampaigns: number;
+    };
+}>;
+export type PermanentDeletePromotionResponse = z.infer<typeof permanentDeletePromotionResponseSchema>;
 export declare const promotionAnalyticsSchema: z.ZodObject<{
     promotionId: z.ZodString;
     redemptions: z.ZodNumber;
@@ -10534,6 +12100,37 @@ export declare const promotionAnalyticsSchema: z.ZodObject<{
         revenue: number;
         redemptions: number;
     }[];
+}>;
+export declare const promotionOverviewSchema: z.ZodObject<{
+    total: z.ZodNumber;
+    active: z.ZodNumber;
+    scheduled: z.ZodNumber;
+    draft: z.ZodNumber;
+    paused: z.ZodNumber;
+    expired: z.ZodNumber;
+    exhausted: z.ZodNumber;
+    redemptions: z.ZodNumber;
+    discountGranted: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    total: number;
+    active: number;
+    discountGranted: number;
+    redemptions: number;
+    scheduled: number;
+    draft: number;
+    paused: number;
+    expired: number;
+    exhausted: number;
+}, {
+    total: number;
+    active: number;
+    discountGranted: number;
+    redemptions: number;
+    scheduled: number;
+    draft: number;
+    paused: number;
+    expired: number;
+    exhausted: number;
 }>;
 export type PromotionType = z.infer<typeof promotionTypeEnum>;
 export type PromotionResolvedStatus = z.infer<typeof promotionResolvedStatusEnum>;

@@ -123,13 +123,19 @@ export function AnnouncementBanner({
       onPointerUp={swipe}
     >
       {mode === "TICKER" ? (
-        <Ticker banner={banner} messages={messages} track={track} />
+        <Ticker banner={banner} messages={messages} locale={locale} track={track} />
       ) : mode === "COUNTDOWN" ? (
         <Countdown banner={banner} message={messages[0]!} locale={locale} track={track} />
       ) : mode === "FREE_SHIPPING_PROGRESS" ? (
         <ShippingProgress banner={banner} locale={locale} />
       ) : (
-        <Message banner={banner} message={messages[active]!} track={track} transition />
+        <Message
+          banner={banner}
+          message={messages[active]!}
+          locale={locale}
+          track={track}
+          transition
+        />
       )}
       {mode === "CAROUSEL" && banner.behavior.arrows && messages.length > 1 && (
         <>
@@ -181,10 +187,12 @@ export function AnnouncementBanner({
 function Ticker({
   banner,
   messages,
+  locale,
   track,
 }: {
   banner: StoreBanner;
   messages: BannerMessage[];
+  locale: "en" | "ar";
   track: Track;
 }) {
   const width = Math.max(
@@ -213,7 +221,7 @@ function Ticker({
                 className="announcement-ticker-item"
                 key={`${duplicate}-${message.id || index}`}
               >
-                <Message banner={banner} message={message} track={track} />
+                <Message banner={banner} message={message} locale={locale} track={track} />
                 <i
                   style={{
                     color: banner.animation.separatorColor,
@@ -235,11 +243,13 @@ function Ticker({
 function Message({
   banner,
   message,
+  locale,
   track,
   transition = false,
 }: {
   banner: StoreBanner;
   message: BannerMessage;
+  locale: "en" | "ar";
   track: Track;
   transition?: boolean;
 }) {
@@ -264,10 +274,16 @@ function Message({
           onClick={async () => {
             try {
               await navigator.clipboard.writeText(message.couponCode!);
-              toast.success("Code copied", { description: message.couponCode });
+              toast.success(locale === "ar" ? "تم نسخ الرمز" : "Code copied", {
+                description: message.couponCode,
+              });
               track("COUPON_COPY", message.id);
             } catch {
-              toast.error("Could not copy the code");
+              toast.error(
+                locale === "ar"
+                  ? "تعذر نسخ الرمز. حدديه وانسخيه يدوياً."
+                  : "The code couldn’t be copied. Select it and copy it manually.",
+              );
             }
           }}
         >
@@ -362,7 +378,7 @@ function Countdown({
   ];
   return (
     <div className="announcement-countdown">
-      <Message banner={banner} message={message} track={track} />
+      <Message banner={banner} message={message} locale={locale} track={track} />
       <time dateTime={new Date(target).toISOString()}>
         {parts.map((part) => String(part).padStart(2, "0")).join(" : ")}
       </time>

@@ -1,5 +1,6 @@
 import { z } from "zod";
 export declare const storeStatusSchema: z.ZodEnum<["OPEN", "CLOSED", "BUSY"]>;
+export declare const brandMarqueeSpeedSchema: z.ZodEnum<["SLOW", "NORMAL", "FAST", "VERY_FAST"]>;
 export declare const publicStoreSettingsSchema: z.ZodObject<{
     status: z.ZodEnum<["OPEN", "CLOSED", "BUSY"]>;
     statusMessageEn: z.ZodNullable<z.ZodString>;
@@ -8,6 +9,7 @@ export declare const publicStoreSettingsSchema: z.ZodObject<{
     codEnabled: z.ZodBoolean;
     codFee: z.ZodNumber;
     freeShippingThreshold: z.ZodNullable<z.ZodNumber>;
+    brandMarqueeSpeed: z.ZodEnum<["SLOW", "NORMAL", "FAST", "VERY_FAST"]>;
 }, "strip", z.ZodTypeAny, {
     status: "OPEN" | "CLOSED" | "BUSY";
     freeShippingThreshold: number | null;
@@ -16,6 +18,7 @@ export declare const publicStoreSettingsSchema: z.ZodObject<{
     paymentWindowHours: number;
     codEnabled: boolean;
     codFee: number;
+    brandMarqueeSpeed: "NORMAL" | "SLOW" | "FAST" | "VERY_FAST";
 }, {
     status: "OPEN" | "CLOSED" | "BUSY";
     freeShippingThreshold: number | null;
@@ -24,6 +27,7 @@ export declare const publicStoreSettingsSchema: z.ZodObject<{
     paymentWindowHours: number;
     codEnabled: boolean;
     codFee: number;
+    brandMarqueeSpeed: "NORMAL" | "SLOW" | "FAST" | "VERY_FAST";
 }>;
 export type PublicStoreSettingsResponse = z.infer<typeof publicStoreSettingsSchema>;
 export declare const adminStoreSettingsSchema: z.ZodObject<{
@@ -34,6 +38,7 @@ export declare const adminStoreSettingsSchema: z.ZodObject<{
     codEnabled: z.ZodBoolean;
     codFee: z.ZodNumber;
     freeShippingThreshold: z.ZodNullable<z.ZodNumber>;
+    brandMarqueeSpeed: z.ZodEnum<["SLOW", "NORMAL", "FAST", "VERY_FAST"]>;
 } & {
     vodafoneCashNumber: z.ZodNullable<z.ZodString>;
     instapayAddress: z.ZodNullable<z.ZodString>;
@@ -49,6 +54,7 @@ export declare const adminStoreSettingsSchema: z.ZodObject<{
     paymentWindowHours: number;
     codEnabled: boolean;
     codFee: number;
+    brandMarqueeSpeed: "NORMAL" | "SLOW" | "FAST" | "VERY_FAST";
 }, {
     status: "OPEN" | "CLOSED" | "BUSY";
     updatedAt: string;
@@ -60,6 +66,7 @@ export declare const adminStoreSettingsSchema: z.ZodObject<{
     paymentWindowHours: number;
     codEnabled: boolean;
     codFee: number;
+    brandMarqueeSpeed: "NORMAL" | "SLOW" | "FAST" | "VERY_FAST";
 }>;
 export type AdminStoreSettingsResponse = z.infer<typeof adminStoreSettingsSchema>;
 export declare const updateStoreSettingsSchema: z.ZodEffects<z.ZodObject<{
@@ -72,6 +79,7 @@ export declare const updateStoreSettingsSchema: z.ZodEffects<z.ZodObject<{
     codEnabled: z.ZodOptional<z.ZodBoolean>;
     codFee: z.ZodOptional<z.ZodNumber>;
     freeShippingThreshold: z.ZodOptional<z.ZodNullable<z.ZodNumber>>;
+    brandMarqueeSpeed: z.ZodOptional<z.ZodEnum<["SLOW", "NORMAL", "FAST", "VERY_FAST"]>>;
 }, "strip", z.ZodTypeAny, {
     status?: "OPEN" | "CLOSED" | "BUSY" | undefined;
     vodafoneCashNumber?: string | null | undefined;
@@ -82,6 +90,7 @@ export declare const updateStoreSettingsSchema: z.ZodEffects<z.ZodObject<{
     paymentWindowHours?: number | undefined;
     codEnabled?: boolean | undefined;
     codFee?: number | undefined;
+    brandMarqueeSpeed?: "NORMAL" | "SLOW" | "FAST" | "VERY_FAST" | undefined;
 }, {
     status?: "OPEN" | "CLOSED" | "BUSY" | undefined;
     vodafoneCashNumber?: string | null | undefined;
@@ -92,6 +101,7 @@ export declare const updateStoreSettingsSchema: z.ZodEffects<z.ZodObject<{
     paymentWindowHours?: number | undefined;
     codEnabled?: boolean | undefined;
     codFee?: number | undefined;
+    brandMarqueeSpeed?: "NORMAL" | "SLOW" | "FAST" | "VERY_FAST" | undefined;
 }>, {
     status?: "OPEN" | "CLOSED" | "BUSY" | undefined;
     vodafoneCashNumber?: string | null | undefined;
@@ -102,6 +112,7 @@ export declare const updateStoreSettingsSchema: z.ZodEffects<z.ZodObject<{
     paymentWindowHours?: number | undefined;
     codEnabled?: boolean | undefined;
     codFee?: number | undefined;
+    brandMarqueeSpeed?: "NORMAL" | "SLOW" | "FAST" | "VERY_FAST" | undefined;
 }, {
     status?: "OPEN" | "CLOSED" | "BUSY" | undefined;
     vodafoneCashNumber?: string | null | undefined;
@@ -112,6 +123,7 @@ export declare const updateStoreSettingsSchema: z.ZodEffects<z.ZodObject<{
     paymentWindowHours?: number | undefined;
     codEnabled?: boolean | undefined;
     codFee?: number | undefined;
+    brandMarqueeSpeed?: "NORMAL" | "SLOW" | "FAST" | "VERY_FAST" | undefined;
 }>;
 export type UpdateStoreSettingsInput = z.infer<typeof updateStoreSettingsSchema>;
 export declare const shippingZoneSchema: z.ZodObject<{

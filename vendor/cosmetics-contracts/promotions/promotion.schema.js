@@ -1,9 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.promotionAnalyticsSchema = exports.promotionListResponseSchema = exports.promotionResponseSchema = exports.promotionEvaluationSchema = exports.appliedPromotionSchema = exports.couponInputSchema = exports.promotionPreviewSchema = exports.promotionLineSchema = exports.promotionQuerySchema = exports.updatePromotionSchema = exports.createPromotionSchema = exports.couponConfigurationSchema = exports.promotionDisplaySchema = exports.promotionLimitsSchema = exports.promotionTargetsSchema = exports.promotionActionSchema = exports.promotionConditionSchema = exports.promotionSelectorSchema = exports.promotionStackingEnum = exports.promotionResolvedStatusEnum = exports.promotionStateEnum = exports.promotionTriggerEnum = exports.promotionTypeEnum = void 0;
+exports.promotionOverviewSchema = exports.promotionAnalyticsSchema = exports.permanentDeletePromotionResponseSchema = exports.permanentDeletePromotionSchema = exports.promotionListResponseSchema = exports.promotionResponseSchema = exports.promotionEvaluationSchema = exports.appliedPromotionSchema = exports.couponInputSchema = exports.promotionPreviewSchema = exports.promotionLineSchema = exports.promotionQuerySchema = exports.updatePromotionSchema = exports.createPromotionSchema = exports.couponConfigurationSchema = exports.promotionDisplaySchema = exports.promotionLimitsSchema = exports.promotionTargetsSchema = exports.promotionActionSchema = exports.promotionConditionSchema = exports.promotionSelectorSchema = exports.promotionStackingEnum = exports.promotionResolvedStatusEnum = exports.promotionStateEnum = exports.promotionTriggerEnum = exports.promotionTypeEnum = void 0;
 const zod_1 = require("zod");
 const pagination_1 = require("../common/pagination");
 const primitives_1 = require("../common/primitives");
+const databaseIntSchema = zod_1.z.number().int().max(primitives_1.DATABASE_INT_MAX);
+const uniqueUuidArray = zod_1.z
+    .array(primitives_1.uuidSchema)
+    .max(10_000)
+    .refine((values) => new Set(values).size === values.length, {
+    message: "Duplicate target IDs are not allowed.",
+});
 exports.promotionTypeEnum = zod_1.z.enum([
     "PRODUCT_DISCOUNT",
     "CART_DISCOUNT",
@@ -36,16 +43,37 @@ exports.promotionStackingEnum = zod_1.z.enum([
     "COMBINABLE",
     "BEST_OFFER",
 ]);
-exports.promotionSelectorSchema = zod_1.z.object({
-    productIds: zod_1.z.array(primitives_1.uuidSchema).default([]),
-    variantIds: zod_1.z.array(primitives_1.uuidSchema).default([]),
-    categoryIds: zod_1.z.array(primitives_1.uuidSchema).default([]),
-    brandIds: zod_1.z.array(primitives_1.uuidSchema).default([]),
-    excludedProductIds: zod_1.z.array(primitives_1.uuidSchema).default([]),
-    excludedVariantIds: zod_1.z.array(primitives_1.uuidSchema).default([]),
-    excludedCategoryIds: zod_1.z.array(primitives_1.uuidSchema).default([]),
-    excludedBrandIds: zod_1.z.array(primitives_1.uuidSchema).default([]),
-});
+const promotionSelectorShape = {
+    productIds: uniqueUuidArray.default([]),
+    variantIds: uniqueUuidArray.default([]),
+    categoryIds: uniqueUuidArray.default([]),
+    brandIds: uniqueUuidArray.default([]),
+    excludedProductIds: uniqueUuidArray.default([]),
+    excludedVariantIds: uniqueUuidArray.default([]),
+    excludedCategoryIds: uniqueUuidArray.default([]),
+    excludedBrandIds: uniqueUuidArray.default([]),
+};
+function validateSelectorOverlap(value, context) {
+    const pairs = [
+        ["productIds", "excludedProductIds"],
+        ["variantIds", "excludedVariantIds"],
+        ["categoryIds", "excludedCategoryIds"],
+        ["brandIds", "excludedBrandIds"],
+    ];
+    for (const [includedKey, excludedKey] of pairs) {
+        const excluded = new Set(value[excludedKey]);
+        if (value[includedKey].some((id) => excluded.has(id))) {
+            context.addIssue({
+                code: zod_1.z.ZodIssueCode.custom,
+                path: [excludedKey],
+                message: "The same target cannot be both included and excluded.",
+            });
+        }
+    }
+}
+exports.promotionSelectorSchema = zod_1.z
+    .object(promotionSelectorShape)
+    .superRefine(validateSelectorOverlap);
 const numericOperatorEnum = zod_1.z.enum(["GT", "GTE", "LT", "LTE", "EQ"]);
 const quantityConditionSchema = zod_1.z.object({
     type: zod_1.z.literal("QUANTITY"),
@@ -113,8 +141,8 @@ const cappedAction = {
     selector: exports.promotionSelectorSchema.optional(),
 };
 const tierSchema = zod_1.z.object({
-    threshold: zod_1.z.number().int().positive(),
-    value: zod_1.z.number().int().positive(),
+    threshold: databaseIntSchema.positive(),
+    value: databaseIntSchema.positive(),
 });
 exports.promotionActionSchema = zod_1.z.discriminatedUnion("type", [
     zod_1.z.object({
@@ -188,14 +216,17 @@ exports.promotionActionSchema = zod_1.z.discriminatedUnion("type", [
         customerChooses: zod_1.z.boolean().default(false),
     }),
 ]);
-exports.promotionTargetsSchema = exports.promotionSelectorSchema.extend({
-    customerIds: zod_1.z.array(primitives_1.uuidSchema).default([]),
-});
+exports.promotionTargetsSchema = zod_1.z
+    .object({
+    ...promotionSelectorShape,
+    customerIds: uniqueUuidArray.default([]),
+})
+    .superRefine(validateSelectorOverlap);
 exports.promotionLimitsSchema = zod_1.z
     .object({
-    totalUses: zod_1.z.number().int().positive().nullable().default(null),
-    usesPerCustomer: zod_1.z.number().int().positive().nullable().default(null),
-    discountedUnits: zod_1.z.number().int().positive().nullable().default(null),
+    totalUses: databaseIntSchema.positive().nullable().default(null),
+    usesPerCustomer: databaseIntSchema.positive().nullable().default(null),
+    discountedUnits: databaseIntSchema.positive().nullable().default(null),
     maximumTotalDiscount: primitives_1.piastresSchema.positive().nullable().default(null),
 })
     .default({});
@@ -211,11 +242,22 @@ exports.promotionDisplaySchema = zod_1.z
 exports.couponConfigurationSchema = zod_1.z
     .object({
     codes: zod_1.z
-        .array(zod_1.z.string().trim().toUpperCase().min(3).max(64))
+        .array((0, primitives_1.compactIdentifierSchema)(3, 64).transform((value) => value.toUpperCase()))
         .max(500)
         .default([]),
     generateCount: zod_1.z.number().int().min(0).max(500).default(0),
-    prefix: zod_1.z.string().trim().toUpperCase().max(12).default(""),
+    prefix: (0, primitives_1.compactIdentifierSchema)(0, 12)
+        .transform((value) => value.toUpperCase())
+        .default(""),
+})
+    .superRefine((value, context) => {
+    if (new Set(value.codes).size !== value.codes.length) {
+        context.addIssue({
+            code: zod_1.z.ZodIssueCode.custom,
+            path: ["codes"],
+            message: "Equivalent coupon codes are not allowed.",
+        });
+    }
 })
     .optional();
 exports.createPromotionSchema = zod_1.z
@@ -240,6 +282,7 @@ exports.createPromotionSchema = zod_1.z
     display: exports.promotionDisplaySchema,
     coupon: exports.couponConfigurationSchema,
 })
+    .strict()
     .superRefine((value, context) => {
     if (value.startsAt &&
         value.endsAt &&
@@ -250,7 +293,9 @@ exports.createPromotionSchema = zod_1.z
             message: "End time must be after start time.",
         });
     }
-    if (value.trigger === "CODE" && !value.coupon) {
+    if (value.trigger === "CODE" &&
+        (!value.coupon ||
+            (value.coupon.codes.length === 0 && value.coupon.generateCount === 0))) {
         context.addIssue({
             code: zod_1.z.ZodIssueCode.custom,
             path: ["coupon"],
@@ -278,7 +323,7 @@ exports.promotionLineSchema = zod_1.z.object({
     brandId: primitives_1.uuidSchema.nullable(),
     name: zod_1.z.string(),
     unitPrice: primitives_1.piastresSchema,
-    quantity: zod_1.z.number().int().positive(),
+    quantity: zod_1.z.number().int().positive().max(10_000),
 });
 exports.promotionPreviewSchema = zod_1.z.object({
     promotion: exports.createPromotionSchema.innerType().optional(),
@@ -287,7 +332,7 @@ exports.promotionPreviewSchema = zod_1.z.object({
     shippingCost: primitives_1.piastresSchema.default(0),
     governorate: zod_1.z.string().trim().nullable().default(null),
     paymentMethod: zod_1.z.string().trim().nullable().default(null),
-    lines: zod_1.z.array(exports.promotionLineSchema).min(1),
+    lines: zod_1.z.array(exports.promotionLineSchema).min(1).max(100),
     diagnostic: zod_1.z.boolean().default(true),
 });
 exports.couponInputSchema = zod_1.z.object({
@@ -366,9 +411,29 @@ exports.promotionResponseSchema = zod_1.z.object({
     discountedUnits: zod_1.z.number().int(),
     createdAt: zod_1.z.string(),
     updatedAt: zod_1.z.string(),
+    createdBy: zod_1.z.object({
+        id: primitives_1.uuidSchema,
+        name: zod_1.z.string(),
+    }),
     summary: zod_1.z.string(),
 });
 exports.promotionListResponseSchema = (0, pagination_1.paginated)(exports.promotionResponseSchema);
+exports.permanentDeletePromotionSchema = zod_1.z
+    .object({ confirmation: zod_1.z.literal("DELETE") })
+    .strict();
+exports.permanentDeletePromotionResponseSchema = zod_1.z.object({
+    ok: zod_1.z.literal(true),
+    preservedHistory: zod_1.z.object({
+        orderSnapshots: zod_1.z.number().int().nonnegative(),
+        redemptionSnapshots: zod_1.z.number().int().nonnegative(),
+        couponRedemptions: zod_1.z.number().int().nonnegative(),
+    }),
+    detachedConfiguration: zod_1.z.object({
+        coupons: zod_1.z.number().int().nonnegative(),
+        banners: zod_1.z.number().int().nonnegative(),
+        popupCampaigns: zod_1.z.number().int().nonnegative(),
+    }),
+});
 exports.promotionAnalyticsSchema = zod_1.z.object({
     promotionId: primitives_1.uuidSchema,
     redemptions: zod_1.z.number().int(),
@@ -384,5 +449,16 @@ exports.promotionAnalyticsSchema = zod_1.z.object({
         revenue: primitives_1.piastresSchema,
         discount: primitives_1.piastresSchema,
     })),
+});
+exports.promotionOverviewSchema = zod_1.z.object({
+    total: zod_1.z.number().int().nonnegative(),
+    active: zod_1.z.number().int().nonnegative(),
+    scheduled: zod_1.z.number().int().nonnegative(),
+    draft: zod_1.z.number().int().nonnegative(),
+    paused: zod_1.z.number().int().nonnegative(),
+    expired: zod_1.z.number().int().nonnegative(),
+    exhausted: zod_1.z.number().int().nonnegative(),
+    redemptions: zod_1.z.number().int().nonnegative(),
+    discountGranted: primitives_1.piastresSchema,
 });
 //# sourceMappingURL=promotion.schema.js.map

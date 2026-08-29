@@ -10,6 +10,16 @@
   isolation: isolate;
 }
 
+/* In desktop list view the purchase column is a CSS-grid item. Grid's default
+   stretch made it as tall as long product copy, so an absolutely positioned
+   quick-add toolbar could anchor below the actual image. Size the purchase
+   column to its media content; mobile list composition overrides this with
+   `display: contents` in the responsive storefront stylesheet. */
+.product-card[data-layout="list"] > .product-card__purchase {
+  height: fit-content;
+  align-self: start;
+}
+
 .product-card-media__link,
 .product-card-media .product-card-layer {
   position: absolute;
@@ -71,7 +81,10 @@
   z-index: 6;
   min-height: 46px;
   overflow: hidden;
-  transform: translate3d(0, 10px, 0) scale(0.985);
+  /* Keep the action inside the media bounds throughout its reveal. A downward
+     starting offset briefly exposed the toolbar below the image when hover
+     began, and fast pointer movement made that transient state reproducible. */
+  transform: translate3d(0, 0, 0) scale(0.985);
   transform-origin: center bottom;
   border: 1px solid color-mix(in srgb, var(--color-text-primary) 12%, transparent);
   border-radius: 999px;

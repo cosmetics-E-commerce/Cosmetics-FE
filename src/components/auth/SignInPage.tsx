@@ -15,7 +15,7 @@ export function SignInPage({
   verified?: boolean | undefined;
 }) {
   const navigate = useNavigate();
-  const { setSession } = useStore();
+  const { locale, setSession } = useStore();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [verificationPending, setVerificationPending] = useState(false);
@@ -35,9 +35,13 @@ export function SignInPage({
       if (apiErrorCode(problem) === "EMAIL_NOT_VERIFIED" && identifier.includes("@")) {
         savePendingEmailAfterDeliveryFailure(identifier);
         setVerificationPending(true);
-        setError("Please verify your email before signing in.");
+        setError(
+          locale === "ar"
+            ? "تحققي من بريدك الإلكتروني قبل تسجيل الدخول."
+            : "Please verify your email before signing in.",
+        );
       } else {
-        setError(apiErrorMessage(problem));
+        setError(apiErrorMessage(problem, locale));
       }
     } finally {
       setPending(false);
@@ -48,7 +52,7 @@ export function SignInPage({
     <AuthShell
       label="Account"
       title="Welcome back."
-      intro="Sign in with your email or Egyptian mobile number to manage orders and delivery addresses."
+      intro="Sign in with your email or phone number to manage orders and delivery addresses."
       footer={
         <>
           New to BIOREZA?{" "}

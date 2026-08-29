@@ -65,6 +65,9 @@ async function mockAuthenticatedAccount(page: Page) {
 }
 
 test("sign-out dialog stays viewport-safe, modal, and keyboard accessible", async ({ page }) => {
+  // This is deliberately a ten-navigation responsive matrix. Keep its budget
+  // local instead of weakening assertions or inflating the global timeout.
+  test.setTimeout(120_000);
   const state = await mockAuthenticatedAccount(page);
   const viewports = [
     { width: 320, height: 568 },
@@ -239,9 +242,15 @@ test("email recovery supports paste, correction, resend, and a one-time reset gr
 
   await page.setViewportSize({ width: 390, height: 844 });
   await otpInput.evaluate((input) => {
-    const clipboard = new DataTransfer();
-    clipboard.setData("text/plain", "11 11-11");
-    input.dispatchEvent(new ClipboardEvent("paste", { bubbles: true, clipboardData: clipboard }));
+    // Firefox intentionally strips clipboardData from script-created
+    // ClipboardEvents. Attach the same read-only clipboard contract explicitly
+    // so every engine exercises the application's paste transformer instead of
+    // accidentally testing a browser security restriction.
+    const paste = new Event("paste", { bubbles: true, cancelable: true });
+    Object.defineProperty(paste, "clipboardData", {
+      value: { getData: (type: string) => (type === "text/plain" ? "11 11-11" : "") },
+    });
+    input.dispatchEvent(paste);
   });
   await expect(otpInput).toHaveValue("111111");
   await page.getByRole("button", { name: "Verify code" }).click();
