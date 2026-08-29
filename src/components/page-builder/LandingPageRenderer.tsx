@@ -68,6 +68,8 @@ function LandingSection({
       return (
         <HeroSection section={section} snapshot={snapshot} locale={locale} priority={priority} />
       );
+    if (section.type === "IMAGE")
+      return <ImageSection section={section} snapshot={snapshot} locale={locale} />;
     if (section.type === "PRODUCT_GRID" || section.type === "PRODUCT_CAROUSEL")
       return <ProductSection section={section} snapshot={snapshot} locale={locale} />;
     if (section.type === "CATEGORIES")
@@ -152,28 +154,40 @@ function HeroSection({
 }) {
   const desktop = media(snapshot, section.desktopMediaId);
   const mobile = media(snapshot, section.mobileMediaId) ?? desktop;
+  const behavior = heroMediaBehavior(section);
+  const customOverlay = heroOverlay(section, locale);
   return (
     <div
       className="landing-hero"
       data-layout={section.layout}
+      data-media-behavior={behavior}
+      data-media-side={section.sideImagePosition ?? "RIGHT"}
       data-align={section.alignment}
       data-position={section.contentPosition}
+      style={
+        {
+          "--landing-hero-fit": (behavior === "SIDE"
+            ? (section.sideImageObjectFit ?? "COVER")
+            : (section.backgroundObjectFit ?? "COVER")
+          ).toLowerCase(),
+          "--landing-hero-position": (section.backgroundObjectPosition ?? "CENTER").toLowerCase(),
+          "--landing-hero-side-width": `${section.sideImageWidth ?? 50}%`,
+        } as CSSProperties
+      }
     >
-      <picture className="landing-hero__media">
-        {mobile?.url ? <source media="(max-width: 680px)" srcSet={mobile.url} /> : null}
-        {desktop?.url ? (
-          <img
-            src={desktop.url}
-            alt={text(section.imageAlt, locale)}
-            width={desktop.width ?? undefined}
-            height={desktop.height ?? undefined}
-            loading={priority ? "eager" : "lazy"}
-            fetchPriority={priority ? "high" : "auto"}
-            decoding="async"
-          />
-        ) : null}
-      </picture>
-      <span className="landing-hero__overlay" data-strength={section.overlay} />
+      <ResponsiveLandingPicture
+        className="landing-hero__media"
+        desktop={desktop}
+        mobile={mobile}
+        alt={text(section.imageAlt, locale)}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
+      />
+      <span
+        className="landing-hero__overlay"
+        data-strength={section.overlay}
+        style={customOverlay ? { background: customOverlay } : undefined}
+      />
       <div className="landing-hero__copy">
         <Kicker value={section.eyebrow} locale={locale} />
         {section.headingLevel === "H1" ? (
@@ -191,6 +205,123 @@ function HeroSection({
         />
       </div>
     </div>
+  );
+}
+
+function ImageSection({
+  section,
+  snapshot,
+  locale,
+}: {
+  section: Extract<LandingPageSection, { type: "IMAGE" }>;
+  snapshot: LandingPagePublicSnapshot;
+  locale: Locale;
+}) {
+  const desktop = media(snapshot, section.desktopMediaId);
+  const mobile = media(snapshot, section.mobileMediaId) ?? desktop;
+  const alt = text(section.imageAlt, locale);
+  const picture = (
+    <ResponsiveLandingPicture
+      className="landing-image__media"
+      desktop={desktop}
+      mobile={mobile}
+      alt={alt}
+      loading="lazy"
+      fetchPriority="auto"
+    />
+  );
+  const href = snapshot.links[section.id];
+  return (
+    <figure
+      className="landing-image"
+      data-width={section.imageWidth}
+      data-align={section.alignment}
+      data-ratio={section.aspectRatio}
+      style={
+        {
+          "--landing-image-width": `${section.customWidthPercent}%`,
+          "--landing-image-ratio": storefrontAspectRatio(section, desktop),
+          "--landing-image-fit": section.objectFit.toLowerCase(),
+          "--landing-image-position": section.objectPosition.toLowerCase(),
+          "--landing-image-radius": `${section.borderRadius}px`,
+          "--landing-image-max-height": section.maxHeight ? `${section.maxHeight}px` : "none",
+          "--landing-image-background": section.backgroundColor ?? "transparent",
+        } as CSSProperties
+      }
+    >
+      {href ? (
+        <a
+          className="landing-image__link"
+          href={href}
+          target={section.openInNewTab ? "_blank" : undefined}
+          rel={section.openInNewTab ? "noopener noreferrer" : undefined}
+        >
+          {picture}
+        </a>
+      ) : (
+        picture
+      )}
+      {text(section.caption, locale) ? (
+        <figcaption>{text(section.caption, locale)}</figcaption>
+      ) : null}
+    </figure>
+  );
+}
+
+type SnapshotMedia = LandingPagePublicSnapshot["media"][string];
+
+function ResponsiveLandingPicture({
+  className,
+  desktop,
+  mobile,
+  alt,
+  loading,
+  fetchPriority,
+}: {
+  className: string;
+  desktop: SnapshotMedia | undefined;
+  mobile: SnapshotMedia | undefined;
+  alt: string;
+  loading: "eager" | "lazy";
+  fetchPriority: "high" | "auto";
+}) {
+  const [mobileFailed, setMobileFailed] = useState(false);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    setMobileFailed(false);
+    setFailed(false);
+  }, [desktop?.url, mobile?.url]);
+  if (!desktop?.url || failed)
+    return (
+      <span
+        className={`${className} landing-image-placeholder`}
+        role="img"
+        aria-label={alt ? `${alt} unavailable` : "Image unavailable"}
+      />
+    );
+  return (
+    <picture className={className}>
+      {mobile?.url && mobile.url !== desktop.url && !mobileFailed ? (
+        <source media="(max-width: 680px)" srcSet={mobile.url} />
+      ) : null}
+      <img
+        src={desktop.url}
+        alt={alt}
+        width={desktop.width || undefined}
+        height={desktop.height || undefined}
+        loading={loading}
+        fetchPriority={fetchPriority}
+        decoding="async"
+        onError={(event) => {
+          const currentUrl = event.currentTarget.currentSrc;
+          if (mobile?.url && !mobileFailed && currentUrl === mobile.url) {
+            setMobileFailed(true);
+            return;
+          }
+          setFailed(true);
+        }}
+      />
+    </picture>
   );
 }
 
@@ -644,6 +775,45 @@ function pathDepth(entity: LandingPageResolvedEntity, locale: Locale) {
 }
 function media(snapshot: LandingPagePublicSnapshot, id: string | null) {
   return id ? snapshot.media[id] : undefined;
+}
+function heroMediaBehavior(section: Extract<LandingPageSection, { type: "HERO" }>) {
+  return section.mediaBehavior ?? (section.layout === "SPLIT" ? "SIDE" : "BACKGROUND");
+}
+function heroOverlay(section: Extract<LandingPageSection, { type: "HERO" }>, locale: Locale) {
+  if (
+    section.overlayColor === undefined &&
+    section.overlayOpacity === undefined &&
+    section.gradientOverlay === undefined
+  )
+    return null;
+  const color = section.overlayColor ?? "#0f0c09";
+  const opacity = section.overlayOpacity ?? 0.42;
+  const solid = hexToRgba(color, opacity);
+  const transparent = hexToRgba(color, 0);
+  const gradient = section.gradientOverlay ?? "NONE";
+  if (gradient === "NONE") return solid;
+  if (gradient === "TO_BOTTOM") return `linear-gradient(180deg, ${solid}, ${transparent})`;
+  const towardsEnd = gradient === "TO_END";
+  const angle =
+    (towardsEnd && locale === "en") || (!towardsEnd && locale === "ar") ? "90deg" : "-90deg";
+  return `linear-gradient(${angle}, ${solid}, ${transparent})`;
+}
+function hexToRgba(hex: string, opacity: number) {
+  const value = hex.replace("#", "");
+  const red = Number.parseInt(value.slice(0, 2), 16);
+  const green = Number.parseInt(value.slice(2, 4), 16);
+  const blue = Number.parseInt(value.slice(4, 6), 16);
+  return `rgba(${red}, ${green}, ${blue}, ${opacity})`;
+}
+function storefrontAspectRatio(
+  section: Extract<LandingPageSection, { type: "IMAGE" }>,
+  desktop: SnapshotMedia | undefined,
+) {
+  if (section.aspectRatio === "ORIGINAL")
+    return desktop?.width && desktop.height ? `${desktop.width} / ${desktop.height}` : "auto";
+  if (section.aspectRatio === "CUSTOM")
+    return `${section.customAspectRatio.width} / ${section.customAspectRatio.height}`;
+  return section.aspectRatio.replace("_", " / ");
 }
 function countdownUnits(ms: number): Array<[number, keyof typeof countdownArabic]> {
   const total = Math.floor(ms / 1000);

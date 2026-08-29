@@ -67,6 +67,10 @@ const sectionBase = {
     width: exports.landingPageWidthSchema.default("WIDE"),
 };
 const mediaFieldSchema = zod_1.z.string().uuid().nullable().default(null);
+const hexColorSchema = zod_1.z
+    .string()
+    .trim()
+    .regex(/^#[0-9a-f]{6}$/i, "Use a six-digit hex colour.");
 const productSourceSchema = zod_1.z.discriminatedUnion("mode", [
     zod_1.z
         .object({
@@ -136,6 +140,53 @@ exports.landingPageSectionSchema = zod_1.z.discriminatedUnion("type", [
         contentPosition: zod_1.z.enum(["TOP", "CENTER", "BOTTOM"]).default("CENTER"),
         overlay: zod_1.z.enum(["NONE", "LIGHT", "MEDIUM", "STRONG"]).default("MEDIUM"),
         headingLevel: zod_1.z.enum(["H1", "H2"]).default("H1"),
+        // Optional additions keep schema-version-1 pages byte-for-byte compatible.
+        // The renderer derives legacy behavior from `layout` when these are absent.
+        mediaBehavior: zod_1.z.enum(["BACKGROUND", "SIDE"]).optional(),
+        backgroundObjectFit: zod_1.z.enum(["COVER", "CONTAIN"]).optional(),
+        backgroundObjectPosition: zod_1.z
+            .enum(["CENTER", "TOP", "BOTTOM", "LEFT", "RIGHT"])
+            .optional(),
+        overlayColor: hexColorSchema.nullable().optional(),
+        overlayOpacity: zod_1.z.number().min(0).max(1).optional(),
+        gradientOverlay: zod_1.z
+            .enum(["NONE", "TO_START", "TO_END", "TO_BOTTOM"])
+            .optional(),
+        sideImagePosition: zod_1.z.enum(["LEFT", "RIGHT"]).optional(),
+        sideImageWidth: zod_1.z.number().int().min(25).max(70).optional(),
+        sideImageObjectFit: zod_1.z.enum(["COVER", "CONTAIN"]).optional(),
+    })
+        .strict(),
+    zod_1.z
+        .object({
+        ...sectionBase,
+        type: zod_1.z.literal("IMAGE"),
+        desktopMediaId: mediaFieldSchema,
+        mobileMediaId: mediaFieldSchema,
+        imageAlt: exports.landingPageLocalizedTextSchema,
+        caption: exports.landingPageLocalizedTextSchema,
+        destination: exports.landingPageDestinationSchema.nullable().default(null),
+        openInNewTab: zod_1.z.boolean().default(false),
+        imageWidth: zod_1.z.enum(["FULL", "CONTAINER", "CUSTOM"]).default("CONTAINER"),
+        customWidthPercent: zod_1.z.number().int().min(10).max(100).default(80),
+        alignment: zod_1.z.enum(["START", "CENTER", "END"]).default("CENTER"),
+        aspectRatio: zod_1.z
+            .enum(["ORIGINAL", "1_1", "4_3", "3_2", "16_9", "21_9", "CUSTOM"])
+            .default("ORIGINAL"),
+        customAspectRatio: zod_1.z
+            .object({
+            width: zod_1.z.number().int().min(1).max(100).default(16),
+            height: zod_1.z.number().int().min(1).max(100).default(9),
+        })
+            .strict()
+            .default({ width: 16, height: 9 }),
+        objectFit: zod_1.z.enum(["COVER", "CONTAIN"]).default("COVER"),
+        objectPosition: zod_1.z
+            .enum(["CENTER", "TOP", "BOTTOM", "LEFT", "RIGHT"])
+            .default("CENTER"),
+        borderRadius: zod_1.z.number().int().min(0).max(64).default(0),
+        maxHeight: zod_1.z.number().int().min(100).max(2400).nullable().default(null),
+        backgroundColor: hexColorSchema.nullable().default(null),
     })
         .strict(),
     zod_1.z

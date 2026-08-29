@@ -25,37 +25,61 @@ export function PublishedMegaMenu({
   locale: Locale;
   onNavigate: () => void;
 }) {
-  const rows = item.megaMenu?.rows.filter(
-    (row) => row.enabled && navigationVisibilityAllows(row.visibility, locale, "DESKTOP"),
-  );
+  const rows = item.megaMenu?.rows
+    .filter((row) => row.enabled && navigationVisibilityAllows(row.visibility, locale, "DESKTOP"))
+    .map((row) => ({
+      row,
+      columns: row.columns
+        .map((column) => ({
+          ...column,
+          blocks: column.blocks.filter(
+            (block) =>
+              block.enabled && navigationVisibilityAllows(block.visibility, locale, "DESKTOP"),
+          ),
+        }))
+        .filter((column) => column.blocks.length > 0),
+    }))
+    .filter(({ columns }) => columns.length > 0);
   if (!rows?.length) return null;
+  const categoryColumnCount = Math.max(
+    0,
+    ...rows.map(({ columns }) => (isCategoryColumnRow(columns) ? columns.length : 0)),
+  );
   return (
     <div
       className="header-mega-panel published-mega"
       data-menu-width={item.megaMenu?.width.toLowerCase()}
       data-menu-style={item.megaMenu?.style.toLowerCase()}
+      data-category-columns={categoryColumnCount || undefined}
       dir={locale === "ar" ? "rtl" : "ltr"}
+      style={
+        categoryColumnCount
+          ? ({ "--published-category-column-count": categoryColumnCount } as React.CSSProperties)
+          : undefined
+      }
     >
-      {rows.map((row) => (
-        <div
-          className="published-mega__row"
-          key={row.id}
-          data-presentation={row.presentation.toLowerCase()}
-          data-separators={row.columnSeparators || undefined}
-        >
-          {row.columns.map((column) => (
-            <div
-              className="published-mega__column"
-              key={column.id}
-              style={{ "--published-column-span": column.span } as React.CSSProperties}
-            >
-              {column.blocks
-                .filter(
-                  (block) =>
-                    block.enabled &&
-                    navigationVisibilityAllows(block.visibility, locale, "DESKTOP"),
-                )
-                .map((block) => (
+      {rows.map(({ row, columns }) => {
+        const categoryColumns = isCategoryColumnRow(columns);
+        return (
+          <div
+            className="published-mega__row"
+            key={row.id}
+            data-presentation={row.presentation.toLowerCase()}
+            data-separators={row.columnSeparators || undefined}
+            data-layout={categoryColumns ? "category-columns" : undefined}
+            style={
+              categoryColumns
+                ? ({ "--published-row-column-count": columns.length } as React.CSSProperties)
+                : undefined
+            }
+          >
+            {columns.map((column) => (
+              <div
+                className="published-mega__column"
+                key={column.id}
+                style={{ "--published-column-span": column.span } as React.CSSProperties}
+              >
+                {column.blocks.map((block) => (
                   <SafePublishedBlock
                     key={block.id}
                     block={block}
@@ -64,11 +88,25 @@ export function PublishedMegaMenu({
                     onNavigate={onNavigate}
                   />
                 ))}
-            </div>
-          ))}
-        </div>
-      ))}
+              </div>
+            ))}
+          </div>
+        );
+      })}
     </div>
+  );
+}
+
+function isCategoryColumnRow(columns: Array<{ blocks: NavigationBlock[] }>) {
+  return (
+    columns.length > 0 &&
+    columns.every(
+      ({ blocks }) =>
+        blocks.length === 1 &&
+        blocks[0]?.type === "CATEGORY_LIST" &&
+        blocks[0].mode === "CHILDREN" &&
+        blocks[0].presentation === "PLAIN",
+    )
   );
 }
 
@@ -170,6 +208,7 @@ function PublishedBlock({
         snapshot={snapshot}
         locale={locale}
         onNavigate={onNavigate}
+        mobile={mobile}
       />
     );
   if (block.type === "PRODUCT_LIST")
@@ -522,45 +561,67 @@ function EntityList({
   snapshot,
   locale,
   onNavigate,
+  mobile,
 }: {
   block: Extract<NavigationBlock, { type: "CATEGORY_LIST" | "BRAND_LIST" | "TAG_LIST" }>;
   entities: NavigationResolvedEntity[];
   snapshot: NavigationPublicSnapshot;
   locale: Locale;
   onNavigate: () => void;
+  mobile: boolean;
 }) {
   const presentation = "presentation" in block ? block.presentation.toLowerCase() : "plain";
+  const tree =
+    block.type === "CATEGORY_LIST" ? (
+      <CategoryEntityTree
+        block={block}
+        entities={entities}
+        locale={locale}
+        onNavigate={onNavigate}
+      />
+    ) : (
+      <div>
+        {entities.map((entity) => (
+          <SafeLink href={entity.href} key={entity.id} onNavigate={onNavigate}>
+            {"presentation" in block && entity.imageUrl ? (
+              <img src={entity.imageUrl} alt="" />
+            ) : null}
+            <span>{entityLabel(entity, locale)}</span>
+          </SafeLink>
+        ))}
+      </div>
+    );
+  const viewAll =
+    block.showViewAll && snapshot.resolvedLinks[block.id] ? (
+      <SafeLink
+        href={snapshot.resolvedLinks[block.id]!}
+        onNavigate={onNavigate}
+        className="published-mega__view-all"
+      >
+        {localizedNavigationText(block.viewAllLabel, locale)}
+      </SafeLink>
+    ) : null;
+  if (mobile && block.type === "CATEGORY_LIST" && block.mode === "CHILDREN" && block.showHeading) {
+    return (
+      <section className={`published-mega__entity-list is-${presentation}`}>
+        <details className="published-mobile-category-group">
+          <summary>
+            <span>{localizedNavigationText(block.heading, locale)}</span>
+            <ChevronRight aria-hidden="true" />
+          </summary>
+          <div className="published-mobile-category-group__content">
+            {tree}
+            {viewAll}
+          </div>
+        </details>
+      </section>
+    );
+  }
   return (
     <section className={`published-mega__entity-list is-${presentation}`}>
       {block.showHeading ? <BlockHeading value={block.heading} locale={locale} /> : null}
-      {block.type === "CATEGORY_LIST" ? (
-        <CategoryEntityTree
-          block={block}
-          entities={entities}
-          locale={locale}
-          onNavigate={onNavigate}
-        />
-      ) : (
-        <div>
-          {entities.map((entity) => (
-            <SafeLink href={entity.href} key={entity.id} onNavigate={onNavigate}>
-              {"presentation" in block && entity.imageUrl ? (
-                <img src={entity.imageUrl} alt="" />
-              ) : null}
-              <span>{entityLabel(entity, locale)}</span>
-            </SafeLink>
-          ))}
-        </div>
-      )}
-      {block.showViewAll && snapshot.resolvedLinks[block.id] ? (
-        <SafeLink
-          href={snapshot.resolvedLinks[block.id]!}
-          onNavigate={onNavigate}
-          className="published-mega__view-all"
-        >
-          {localizedNavigationText(block.viewAllLabel, locale)}
-        </SafeLink>
-      ) : null}
+      {tree}
+      {viewAll}
     </section>
   );
 }

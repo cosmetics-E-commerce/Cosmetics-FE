@@ -456,6 +456,15 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
     contentPosition: z.ZodDefault<z.ZodEnum<["TOP", "CENTER", "BOTTOM"]>>;
     overlay: z.ZodDefault<z.ZodEnum<["NONE", "LIGHT", "MEDIUM", "STRONG"]>>;
     headingLevel: z.ZodDefault<z.ZodEnum<["H1", "H2"]>>;
+    mediaBehavior: z.ZodOptional<z.ZodEnum<["BACKGROUND", "SIDE"]>>;
+    backgroundObjectFit: z.ZodOptional<z.ZodEnum<["COVER", "CONTAIN"]>>;
+    backgroundObjectPosition: z.ZodOptional<z.ZodEnum<["CENTER", "TOP", "BOTTOM", "LEFT", "RIGHT"]>>;
+    overlayColor: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+    overlayOpacity: z.ZodOptional<z.ZodNumber>;
+    gradientOverlay: z.ZodOptional<z.ZodEnum<["NONE", "TO_START", "TO_END", "TO_BOTTOM"]>>;
+    sideImagePosition: z.ZodOptional<z.ZodEnum<["LEFT", "RIGHT"]>>;
+    sideImageWidth: z.ZodOptional<z.ZodNumber>;
+    sideImageObjectFit: z.ZodOptional<z.ZodEnum<["COVER", "CONTAIN"]>>;
     id: z.ZodString;
     analyticsKey: z.ZodString;
     label: z.ZodString;
@@ -605,6 +614,15 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
     analyticsKey: string;
     surface: "DEFAULT" | "SOFT" | "DARK" | "ACCENT";
     spacing: "NONE" | "SMALL" | "MEDIUM" | "LARGE";
+    mediaBehavior?: "BACKGROUND" | "SIDE" | undefined;
+    backgroundObjectFit?: "COVER" | "CONTAIN" | undefined;
+    backgroundObjectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+    overlayColor?: string | null | undefined;
+    overlayOpacity?: number | undefined;
+    gradientOverlay?: "NONE" | "TO_START" | "TO_END" | "TO_BOTTOM" | undefined;
+    sideImagePosition?: "LEFT" | "RIGHT" | undefined;
+    sideImageWidth?: number | undefined;
+    sideImageObjectFit?: "COVER" | "CONTAIN" | undefined;
 }, {
     type: "HERO";
     id: string;
@@ -719,8 +737,345 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
     contentPosition?: "CENTER" | "TOP" | "BOTTOM" | undefined;
     overlay?: "NONE" | "MEDIUM" | "LIGHT" | "STRONG" | undefined;
     headingLevel?: "H1" | "H2" | undefined;
+    mediaBehavior?: "BACKGROUND" | "SIDE" | undefined;
+    backgroundObjectFit?: "COVER" | "CONTAIN" | undefined;
+    backgroundObjectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+    overlayColor?: string | null | undefined;
+    overlayOpacity?: number | undefined;
+    gradientOverlay?: "NONE" | "TO_START" | "TO_END" | "TO_BOTTOM" | undefined;
+    sideImagePosition?: "LEFT" | "RIGHT" | undefined;
+    sideImageWidth?: number | undefined;
+    sideImageObjectFit?: "COVER" | "CONTAIN" | undefined;
     surface?: "DEFAULT" | "SOFT" | "DARK" | "ACCENT" | undefined;
     spacing?: "NONE" | "SMALL" | "MEDIUM" | "LARGE" | undefined;
+}>, z.ZodObject<{
+    type: z.ZodLiteral<"IMAGE">;
+    desktopMediaId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    mobileMediaId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    imageAlt: z.ZodObject<{
+        en: z.ZodDefault<z.ZodString>;
+        ar: z.ZodDefault<z.ZodString>;
+    }, "strict", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en?: string | undefined;
+        ar?: string | undefined;
+    }>;
+    caption: z.ZodObject<{
+        en: z.ZodDefault<z.ZodString>;
+        ar: z.ZodDefault<z.ZodString>;
+    }, "strict", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en?: string | undefined;
+        ar?: string | undefined;
+    }>;
+    destination: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
+        type: z.ZodLiteral<"HOME">;
+    }, "strip", z.ZodTypeAny, {
+        type: "HOME";
+    }, {
+        type: "HOME";
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"SHOP">;
+    }, "strip", z.ZodTypeAny, {
+        type: "SHOP";
+    }, {
+        type: "SHOP";
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"OFFERS">;
+    }, "strip", z.ZodTypeAny, {
+        type: "OFFERS";
+    }, {
+        type: "OFFERS";
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"NEW_ARRIVALS">;
+    }, "strip", z.ZodTypeAny, {
+        type: "NEW_ARRIVALS";
+    }, {
+        type: "NEW_ARRIVALS";
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"ABOUT">;
+    }, "strip", z.ZodTypeAny, {
+        type: "ABOUT";
+    }, {
+        type: "ABOUT";
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"CONTACT">;
+    }, "strip", z.ZodTypeAny, {
+        type: "CONTACT";
+    }, {
+        type: "CONTACT";
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"CATEGORY">;
+        id: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        type: "CATEGORY";
+        id: string;
+    }, {
+        type: "CATEGORY";
+        id: string;
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"BRAND">;
+        id: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        type: "BRAND";
+        id: string;
+    }, {
+        type: "BRAND";
+        id: string;
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"PRODUCT">;
+        id: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        type: "PRODUCT";
+        id: string;
+    }, {
+        type: "PRODUCT";
+        id: string;
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"TAG">;
+        id: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        type: "TAG";
+        id: string;
+    }, {
+        type: "TAG";
+        id: string;
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"CUSTOM_PATH">;
+        path: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        path: string;
+        type: "CUSTOM_PATH";
+    }, {
+        path: string;
+        type: "CUSTOM_PATH";
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"EXTERNAL">;
+        url: z.ZodEffects<z.ZodString, string, string>;
+        newTab: z.ZodDefault<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        type: "EXTERNAL";
+        url: string;
+        newTab: boolean;
+    }, {
+        type: "EXTERNAL";
+        url: string;
+        newTab?: boolean | undefined;
+    }>]>, z.ZodObject<{
+        type: z.ZodLiteral<"PAGE">;
+        id: z.ZodString;
+    }, "strict", z.ZodTypeAny, {
+        type: "PAGE";
+        id: string;
+    }, {
+        type: "PAGE";
+        id: string;
+    }>]>>>;
+    openInNewTab: z.ZodDefault<z.ZodBoolean>;
+    imageWidth: z.ZodDefault<z.ZodEnum<["FULL", "CONTAINER", "CUSTOM"]>>;
+    customWidthPercent: z.ZodDefault<z.ZodNumber>;
+    alignment: z.ZodDefault<z.ZodEnum<["START", "CENTER", "END"]>>;
+    aspectRatio: z.ZodDefault<z.ZodEnum<["ORIGINAL", "1_1", "4_3", "3_2", "16_9", "21_9", "CUSTOM"]>>;
+    customAspectRatio: z.ZodDefault<z.ZodObject<{
+        width: z.ZodDefault<z.ZodNumber>;
+        height: z.ZodDefault<z.ZodNumber>;
+    }, "strict", z.ZodTypeAny, {
+        width: number;
+        height: number;
+    }, {
+        width?: number | undefined;
+        height?: number | undefined;
+    }>>;
+    objectFit: z.ZodDefault<z.ZodEnum<["COVER", "CONTAIN"]>>;
+    objectPosition: z.ZodDefault<z.ZodEnum<["CENTER", "TOP", "BOTTOM", "LEFT", "RIGHT"]>>;
+    borderRadius: z.ZodDefault<z.ZodNumber>;
+    maxHeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    backgroundColor: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    id: z.ZodString;
+    analyticsKey: z.ZodString;
+    label: z.ZodString;
+    enabled: z.ZodDefault<z.ZodBoolean>;
+    visibility: z.ZodEffects<z.ZodObject<{
+        devices: z.ZodDefault<z.ZodArray<z.ZodEnum<["DESKTOP", "TABLET", "MOBILE"]>, "many">>;
+        locales: z.ZodDefault<z.ZodArray<z.ZodEnum<["en", "ar"]>, "many">>;
+        startsAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        endsAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        startsAt: string | null;
+        endsAt: string | null;
+        devices: ("DESKTOP" | "TABLET" | "MOBILE")[];
+        locales: ("en" | "ar")[];
+    }, {
+        startsAt?: string | null | undefined;
+        endsAt?: string | null | undefined;
+        devices?: ("DESKTOP" | "TABLET" | "MOBILE")[] | undefined;
+        locales?: ("en" | "ar")[] | undefined;
+    }>, {
+        startsAt: string | null;
+        endsAt: string | null;
+        devices: ("DESKTOP" | "TABLET" | "MOBILE")[];
+        locales: ("en" | "ar")[];
+    }, {
+        startsAt?: string | null | undefined;
+        endsAt?: string | null | undefined;
+        devices?: ("DESKTOP" | "TABLET" | "MOBILE")[] | undefined;
+        locales?: ("en" | "ar")[] | undefined;
+    }>;
+    surface: z.ZodDefault<z.ZodEnum<["DEFAULT", "SOFT", "DARK", "ACCENT"]>>;
+    spacing: z.ZodDefault<z.ZodEnum<["NONE", "SMALL", "MEDIUM", "LARGE"]>>;
+    width: z.ZodDefault<z.ZodEnum<["CONTENT", "WIDE", "FULL"]>>;
+}, "strict", z.ZodTypeAny, {
+    type: "IMAGE";
+    id: string;
+    label: string;
+    width: "CONTENT" | "WIDE" | "FULL";
+    enabled: boolean;
+    destination: {
+        type: "HOME";
+    } | {
+        type: "SHOP";
+    } | {
+        type: "OFFERS";
+    } | {
+        type: "NEW_ARRIVALS";
+    } | {
+        type: "ABOUT";
+    } | {
+        type: "CONTACT";
+    } | {
+        type: "CATEGORY";
+        id: string;
+    } | {
+        type: "BRAND";
+        id: string;
+    } | {
+        type: "PRODUCT";
+        id: string;
+    } | {
+        type: "TAG";
+        id: string;
+    } | {
+        path: string;
+        type: "CUSTOM_PATH";
+    } | {
+        type: "EXTERNAL";
+        url: string;
+        newTab: boolean;
+    } | {
+        type: "PAGE";
+        id: string;
+    } | null;
+    imageAlt: {
+        en: string;
+        ar: string;
+    };
+    visibility: {
+        startsAt: string | null;
+        endsAt: string | null;
+        devices: ("DESKTOP" | "TABLET" | "MOBILE")[];
+        locales: ("en" | "ar")[];
+    };
+    alignment: "START" | "CENTER" | "END";
+    desktopMediaId: string | null;
+    mobileMediaId: string | null;
+    analyticsKey: string;
+    surface: "DEFAULT" | "SOFT" | "DARK" | "ACCENT";
+    spacing: "NONE" | "SMALL" | "MEDIUM" | "LARGE";
+    caption: {
+        en: string;
+        ar: string;
+    };
+    openInNewTab: boolean;
+    imageWidth: "FULL" | "CUSTOM" | "CONTAINER";
+    customWidthPercent: number;
+    aspectRatio: "CUSTOM" | "ORIGINAL" | "1_1" | "4_3" | "3_2" | "16_9" | "21_9";
+    customAspectRatio: {
+        width: number;
+        height: number;
+    };
+    objectFit: "COVER" | "CONTAIN";
+    objectPosition: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT";
+    borderRadius: number;
+    maxHeight: number | null;
+    backgroundColor: string | null;
+}, {
+    type: "IMAGE";
+    id: string;
+    label: string;
+    imageAlt: {
+        en?: string | undefined;
+        ar?: string | undefined;
+    };
+    visibility: {
+        startsAt?: string | null | undefined;
+        endsAt?: string | null | undefined;
+        devices?: ("DESKTOP" | "TABLET" | "MOBILE")[] | undefined;
+        locales?: ("en" | "ar")[] | undefined;
+    };
+    analyticsKey: string;
+    caption: {
+        en?: string | undefined;
+        ar?: string | undefined;
+    };
+    width?: "CONTENT" | "WIDE" | "FULL" | undefined;
+    enabled?: boolean | undefined;
+    destination?: {
+        type: "HOME";
+    } | {
+        type: "SHOP";
+    } | {
+        type: "OFFERS";
+    } | {
+        type: "NEW_ARRIVALS";
+    } | {
+        type: "ABOUT";
+    } | {
+        type: "CONTACT";
+    } | {
+        type: "CATEGORY";
+        id: string;
+    } | {
+        type: "BRAND";
+        id: string;
+    } | {
+        type: "PRODUCT";
+        id: string;
+    } | {
+        type: "TAG";
+        id: string;
+    } | {
+        path: string;
+        type: "CUSTOM_PATH";
+    } | {
+        type: "EXTERNAL";
+        url: string;
+        newTab?: boolean | undefined;
+    } | {
+        type: "PAGE";
+        id: string;
+    } | null | undefined;
+    alignment?: "START" | "CENTER" | "END" | undefined;
+    desktopMediaId?: string | null | undefined;
+    mobileMediaId?: string | null | undefined;
+    surface?: "DEFAULT" | "SOFT" | "DARK" | "ACCENT" | undefined;
+    spacing?: "NONE" | "SMALL" | "MEDIUM" | "LARGE" | undefined;
+    openInNewTab?: boolean | undefined;
+    imageWidth?: "FULL" | "CUSTOM" | "CONTAINER" | undefined;
+    customWidthPercent?: number | undefined;
+    aspectRatio?: "CUSTOM" | "ORIGINAL" | "1_1" | "4_3" | "3_2" | "16_9" | "21_9" | undefined;
+    customAspectRatio?: {
+        width?: number | undefined;
+        height?: number | undefined;
+    } | undefined;
+    objectFit?: "COVER" | "CONTAIN" | undefined;
+    objectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+    borderRadius?: number | undefined;
+    maxHeight?: number | null | undefined;
+    backgroundColor?: string | null | undefined;
 }>, z.ZodObject<{
     type: z.ZodLiteral<"PRODUCT_GRID">;
     heading: z.ZodObject<{} & {
@@ -4075,6 +4430,15 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         contentPosition: z.ZodDefault<z.ZodEnum<["TOP", "CENTER", "BOTTOM"]>>;
         overlay: z.ZodDefault<z.ZodEnum<["NONE", "LIGHT", "MEDIUM", "STRONG"]>>;
         headingLevel: z.ZodDefault<z.ZodEnum<["H1", "H2"]>>;
+        mediaBehavior: z.ZodOptional<z.ZodEnum<["BACKGROUND", "SIDE"]>>;
+        backgroundObjectFit: z.ZodOptional<z.ZodEnum<["COVER", "CONTAIN"]>>;
+        backgroundObjectPosition: z.ZodOptional<z.ZodEnum<["CENTER", "TOP", "BOTTOM", "LEFT", "RIGHT"]>>;
+        overlayColor: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+        overlayOpacity: z.ZodOptional<z.ZodNumber>;
+        gradientOverlay: z.ZodOptional<z.ZodEnum<["NONE", "TO_START", "TO_END", "TO_BOTTOM"]>>;
+        sideImagePosition: z.ZodOptional<z.ZodEnum<["LEFT", "RIGHT"]>>;
+        sideImageWidth: z.ZodOptional<z.ZodNumber>;
+        sideImageObjectFit: z.ZodOptional<z.ZodEnum<["COVER", "CONTAIN"]>>;
         id: z.ZodString;
         analyticsKey: z.ZodString;
         label: z.ZodString;
@@ -4224,6 +4588,15 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         analyticsKey: string;
         surface: "DEFAULT" | "SOFT" | "DARK" | "ACCENT";
         spacing: "NONE" | "SMALL" | "MEDIUM" | "LARGE";
+        mediaBehavior?: "BACKGROUND" | "SIDE" | undefined;
+        backgroundObjectFit?: "COVER" | "CONTAIN" | undefined;
+        backgroundObjectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+        overlayColor?: string | null | undefined;
+        overlayOpacity?: number | undefined;
+        gradientOverlay?: "NONE" | "TO_START" | "TO_END" | "TO_BOTTOM" | undefined;
+        sideImagePosition?: "LEFT" | "RIGHT" | undefined;
+        sideImageWidth?: number | undefined;
+        sideImageObjectFit?: "COVER" | "CONTAIN" | undefined;
     }, {
         type: "HERO";
         id: string;
@@ -4338,8 +4711,345 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         contentPosition?: "CENTER" | "TOP" | "BOTTOM" | undefined;
         overlay?: "NONE" | "MEDIUM" | "LIGHT" | "STRONG" | undefined;
         headingLevel?: "H1" | "H2" | undefined;
+        mediaBehavior?: "BACKGROUND" | "SIDE" | undefined;
+        backgroundObjectFit?: "COVER" | "CONTAIN" | undefined;
+        backgroundObjectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+        overlayColor?: string | null | undefined;
+        overlayOpacity?: number | undefined;
+        gradientOverlay?: "NONE" | "TO_START" | "TO_END" | "TO_BOTTOM" | undefined;
+        sideImagePosition?: "LEFT" | "RIGHT" | undefined;
+        sideImageWidth?: number | undefined;
+        sideImageObjectFit?: "COVER" | "CONTAIN" | undefined;
         surface?: "DEFAULT" | "SOFT" | "DARK" | "ACCENT" | undefined;
         spacing?: "NONE" | "SMALL" | "MEDIUM" | "LARGE" | undefined;
+    }>, z.ZodObject<{
+        type: z.ZodLiteral<"IMAGE">;
+        desktopMediaId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        mobileMediaId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        imageAlt: z.ZodObject<{
+            en: z.ZodDefault<z.ZodString>;
+            ar: z.ZodDefault<z.ZodString>;
+        }, "strict", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en?: string | undefined;
+            ar?: string | undefined;
+        }>;
+        caption: z.ZodObject<{
+            en: z.ZodDefault<z.ZodString>;
+            ar: z.ZodDefault<z.ZodString>;
+        }, "strict", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en?: string | undefined;
+            ar?: string | undefined;
+        }>;
+        destination: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
+            type: z.ZodLiteral<"HOME">;
+        }, "strip", z.ZodTypeAny, {
+            type: "HOME";
+        }, {
+            type: "HOME";
+        }>, z.ZodObject<{
+            type: z.ZodLiteral<"SHOP">;
+        }, "strip", z.ZodTypeAny, {
+            type: "SHOP";
+        }, {
+            type: "SHOP";
+        }>, z.ZodObject<{
+            type: z.ZodLiteral<"OFFERS">;
+        }, "strip", z.ZodTypeAny, {
+            type: "OFFERS";
+        }, {
+            type: "OFFERS";
+        }>, z.ZodObject<{
+            type: z.ZodLiteral<"NEW_ARRIVALS">;
+        }, "strip", z.ZodTypeAny, {
+            type: "NEW_ARRIVALS";
+        }, {
+            type: "NEW_ARRIVALS";
+        }>, z.ZodObject<{
+            type: z.ZodLiteral<"ABOUT">;
+        }, "strip", z.ZodTypeAny, {
+            type: "ABOUT";
+        }, {
+            type: "ABOUT";
+        }>, z.ZodObject<{
+            type: z.ZodLiteral<"CONTACT">;
+        }, "strip", z.ZodTypeAny, {
+            type: "CONTACT";
+        }, {
+            type: "CONTACT";
+        }>, z.ZodObject<{
+            type: z.ZodLiteral<"CATEGORY">;
+            id: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            type: "CATEGORY";
+            id: string;
+        }, {
+            type: "CATEGORY";
+            id: string;
+        }>, z.ZodObject<{
+            type: z.ZodLiteral<"BRAND">;
+            id: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            type: "BRAND";
+            id: string;
+        }, {
+            type: "BRAND";
+            id: string;
+        }>, z.ZodObject<{
+            type: z.ZodLiteral<"PRODUCT">;
+            id: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            type: "PRODUCT";
+            id: string;
+        }, {
+            type: "PRODUCT";
+            id: string;
+        }>, z.ZodObject<{
+            type: z.ZodLiteral<"TAG">;
+            id: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            type: "TAG";
+            id: string;
+        }, {
+            type: "TAG";
+            id: string;
+        }>, z.ZodObject<{
+            type: z.ZodLiteral<"CUSTOM_PATH">;
+            path: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            path: string;
+            type: "CUSTOM_PATH";
+        }, {
+            path: string;
+            type: "CUSTOM_PATH";
+        }>, z.ZodObject<{
+            type: z.ZodLiteral<"EXTERNAL">;
+            url: z.ZodEffects<z.ZodString, string, string>;
+            newTab: z.ZodDefault<z.ZodBoolean>;
+        }, "strip", z.ZodTypeAny, {
+            type: "EXTERNAL";
+            url: string;
+            newTab: boolean;
+        }, {
+            type: "EXTERNAL";
+            url: string;
+            newTab?: boolean | undefined;
+        }>]>, z.ZodObject<{
+            type: z.ZodLiteral<"PAGE">;
+            id: z.ZodString;
+        }, "strict", z.ZodTypeAny, {
+            type: "PAGE";
+            id: string;
+        }, {
+            type: "PAGE";
+            id: string;
+        }>]>>>;
+        openInNewTab: z.ZodDefault<z.ZodBoolean>;
+        imageWidth: z.ZodDefault<z.ZodEnum<["FULL", "CONTAINER", "CUSTOM"]>>;
+        customWidthPercent: z.ZodDefault<z.ZodNumber>;
+        alignment: z.ZodDefault<z.ZodEnum<["START", "CENTER", "END"]>>;
+        aspectRatio: z.ZodDefault<z.ZodEnum<["ORIGINAL", "1_1", "4_3", "3_2", "16_9", "21_9", "CUSTOM"]>>;
+        customAspectRatio: z.ZodDefault<z.ZodObject<{
+            width: z.ZodDefault<z.ZodNumber>;
+            height: z.ZodDefault<z.ZodNumber>;
+        }, "strict", z.ZodTypeAny, {
+            width: number;
+            height: number;
+        }, {
+            width?: number | undefined;
+            height?: number | undefined;
+        }>>;
+        objectFit: z.ZodDefault<z.ZodEnum<["COVER", "CONTAIN"]>>;
+        objectPosition: z.ZodDefault<z.ZodEnum<["CENTER", "TOP", "BOTTOM", "LEFT", "RIGHT"]>>;
+        borderRadius: z.ZodDefault<z.ZodNumber>;
+        maxHeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+        backgroundColor: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        id: z.ZodString;
+        analyticsKey: z.ZodString;
+        label: z.ZodString;
+        enabled: z.ZodDefault<z.ZodBoolean>;
+        visibility: z.ZodEffects<z.ZodObject<{
+            devices: z.ZodDefault<z.ZodArray<z.ZodEnum<["DESKTOP", "TABLET", "MOBILE"]>, "many">>;
+            locales: z.ZodDefault<z.ZodArray<z.ZodEnum<["en", "ar"]>, "many">>;
+            startsAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            endsAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        }, "strip", z.ZodTypeAny, {
+            startsAt: string | null;
+            endsAt: string | null;
+            devices: ("DESKTOP" | "TABLET" | "MOBILE")[];
+            locales: ("en" | "ar")[];
+        }, {
+            startsAt?: string | null | undefined;
+            endsAt?: string | null | undefined;
+            devices?: ("DESKTOP" | "TABLET" | "MOBILE")[] | undefined;
+            locales?: ("en" | "ar")[] | undefined;
+        }>, {
+            startsAt: string | null;
+            endsAt: string | null;
+            devices: ("DESKTOP" | "TABLET" | "MOBILE")[];
+            locales: ("en" | "ar")[];
+        }, {
+            startsAt?: string | null | undefined;
+            endsAt?: string | null | undefined;
+            devices?: ("DESKTOP" | "TABLET" | "MOBILE")[] | undefined;
+            locales?: ("en" | "ar")[] | undefined;
+        }>;
+        surface: z.ZodDefault<z.ZodEnum<["DEFAULT", "SOFT", "DARK", "ACCENT"]>>;
+        spacing: z.ZodDefault<z.ZodEnum<["NONE", "SMALL", "MEDIUM", "LARGE"]>>;
+        width: z.ZodDefault<z.ZodEnum<["CONTENT", "WIDE", "FULL"]>>;
+    }, "strict", z.ZodTypeAny, {
+        type: "IMAGE";
+        id: string;
+        label: string;
+        width: "CONTENT" | "WIDE" | "FULL";
+        enabled: boolean;
+        destination: {
+            type: "HOME";
+        } | {
+            type: "SHOP";
+        } | {
+            type: "OFFERS";
+        } | {
+            type: "NEW_ARRIVALS";
+        } | {
+            type: "ABOUT";
+        } | {
+            type: "CONTACT";
+        } | {
+            type: "CATEGORY";
+            id: string;
+        } | {
+            type: "BRAND";
+            id: string;
+        } | {
+            type: "PRODUCT";
+            id: string;
+        } | {
+            type: "TAG";
+            id: string;
+        } | {
+            path: string;
+            type: "CUSTOM_PATH";
+        } | {
+            type: "EXTERNAL";
+            url: string;
+            newTab: boolean;
+        } | {
+            type: "PAGE";
+            id: string;
+        } | null;
+        imageAlt: {
+            en: string;
+            ar: string;
+        };
+        visibility: {
+            startsAt: string | null;
+            endsAt: string | null;
+            devices: ("DESKTOP" | "TABLET" | "MOBILE")[];
+            locales: ("en" | "ar")[];
+        };
+        alignment: "START" | "CENTER" | "END";
+        desktopMediaId: string | null;
+        mobileMediaId: string | null;
+        analyticsKey: string;
+        surface: "DEFAULT" | "SOFT" | "DARK" | "ACCENT";
+        spacing: "NONE" | "SMALL" | "MEDIUM" | "LARGE";
+        caption: {
+            en: string;
+            ar: string;
+        };
+        openInNewTab: boolean;
+        imageWidth: "FULL" | "CUSTOM" | "CONTAINER";
+        customWidthPercent: number;
+        aspectRatio: "CUSTOM" | "ORIGINAL" | "1_1" | "4_3" | "3_2" | "16_9" | "21_9";
+        customAspectRatio: {
+            width: number;
+            height: number;
+        };
+        objectFit: "COVER" | "CONTAIN";
+        objectPosition: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT";
+        borderRadius: number;
+        maxHeight: number | null;
+        backgroundColor: string | null;
+    }, {
+        type: "IMAGE";
+        id: string;
+        label: string;
+        imageAlt: {
+            en?: string | undefined;
+            ar?: string | undefined;
+        };
+        visibility: {
+            startsAt?: string | null | undefined;
+            endsAt?: string | null | undefined;
+            devices?: ("DESKTOP" | "TABLET" | "MOBILE")[] | undefined;
+            locales?: ("en" | "ar")[] | undefined;
+        };
+        analyticsKey: string;
+        caption: {
+            en?: string | undefined;
+            ar?: string | undefined;
+        };
+        width?: "CONTENT" | "WIDE" | "FULL" | undefined;
+        enabled?: boolean | undefined;
+        destination?: {
+            type: "HOME";
+        } | {
+            type: "SHOP";
+        } | {
+            type: "OFFERS";
+        } | {
+            type: "NEW_ARRIVALS";
+        } | {
+            type: "ABOUT";
+        } | {
+            type: "CONTACT";
+        } | {
+            type: "CATEGORY";
+            id: string;
+        } | {
+            type: "BRAND";
+            id: string;
+        } | {
+            type: "PRODUCT";
+            id: string;
+        } | {
+            type: "TAG";
+            id: string;
+        } | {
+            path: string;
+            type: "CUSTOM_PATH";
+        } | {
+            type: "EXTERNAL";
+            url: string;
+            newTab?: boolean | undefined;
+        } | {
+            type: "PAGE";
+            id: string;
+        } | null | undefined;
+        alignment?: "START" | "CENTER" | "END" | undefined;
+        desktopMediaId?: string | null | undefined;
+        mobileMediaId?: string | null | undefined;
+        surface?: "DEFAULT" | "SOFT" | "DARK" | "ACCENT" | undefined;
+        spacing?: "NONE" | "SMALL" | "MEDIUM" | "LARGE" | undefined;
+        openInNewTab?: boolean | undefined;
+        imageWidth?: "FULL" | "CUSTOM" | "CONTAINER" | undefined;
+        customWidthPercent?: number | undefined;
+        aspectRatio?: "CUSTOM" | "ORIGINAL" | "1_1" | "4_3" | "3_2" | "16_9" | "21_9" | undefined;
+        customAspectRatio?: {
+            width?: number | undefined;
+            height?: number | undefined;
+        } | undefined;
+        objectFit?: "COVER" | "CONTAIN" | undefined;
+        objectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+        borderRadius?: number | undefined;
+        maxHeight?: number | null | undefined;
+        backgroundColor?: string | null | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"PRODUCT_GRID">;
         heading: z.ZodObject<{} & {
@@ -7443,6 +8153,89 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         analyticsKey: string;
         surface: "DEFAULT" | "SOFT" | "DARK" | "ACCENT";
         spacing: "NONE" | "SMALL" | "MEDIUM" | "LARGE";
+        mediaBehavior?: "BACKGROUND" | "SIDE" | undefined;
+        backgroundObjectFit?: "COVER" | "CONTAIN" | undefined;
+        backgroundObjectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+        overlayColor?: string | null | undefined;
+        overlayOpacity?: number | undefined;
+        gradientOverlay?: "NONE" | "TO_START" | "TO_END" | "TO_BOTTOM" | undefined;
+        sideImagePosition?: "LEFT" | "RIGHT" | undefined;
+        sideImageWidth?: number | undefined;
+        sideImageObjectFit?: "COVER" | "CONTAIN" | undefined;
+    } | {
+        type: "IMAGE";
+        id: string;
+        label: string;
+        width: "CONTENT" | "WIDE" | "FULL";
+        enabled: boolean;
+        destination: {
+            type: "HOME";
+        } | {
+            type: "SHOP";
+        } | {
+            type: "OFFERS";
+        } | {
+            type: "NEW_ARRIVALS";
+        } | {
+            type: "ABOUT";
+        } | {
+            type: "CONTACT";
+        } | {
+            type: "CATEGORY";
+            id: string;
+        } | {
+            type: "BRAND";
+            id: string;
+        } | {
+            type: "PRODUCT";
+            id: string;
+        } | {
+            type: "TAG";
+            id: string;
+        } | {
+            path: string;
+            type: "CUSTOM_PATH";
+        } | {
+            type: "EXTERNAL";
+            url: string;
+            newTab: boolean;
+        } | {
+            type: "PAGE";
+            id: string;
+        } | null;
+        imageAlt: {
+            en: string;
+            ar: string;
+        };
+        visibility: {
+            startsAt: string | null;
+            endsAt: string | null;
+            devices: ("DESKTOP" | "TABLET" | "MOBILE")[];
+            locales: ("en" | "ar")[];
+        };
+        alignment: "START" | "CENTER" | "END";
+        desktopMediaId: string | null;
+        mobileMediaId: string | null;
+        analyticsKey: string;
+        surface: "DEFAULT" | "SOFT" | "DARK" | "ACCENT";
+        spacing: "NONE" | "SMALL" | "MEDIUM" | "LARGE";
+        caption: {
+            en: string;
+            ar: string;
+        };
+        openInNewTab: boolean;
+        imageWidth: "FULL" | "CUSTOM" | "CONTAINER";
+        customWidthPercent: number;
+        aspectRatio: "CUSTOM" | "ORIGINAL" | "1_1" | "4_3" | "3_2" | "16_9" | "21_9";
+        customAspectRatio: {
+            width: number;
+            height: number;
+        };
+        objectFit: "COVER" | "CONTAIN";
+        objectPosition: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT";
+        borderRadius: number;
+        maxHeight: number | null;
+        backgroundColor: string | null;
     } | {
         type: "PRODUCT_GRID";
         limit: number;
@@ -8226,8 +9019,91 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         contentPosition?: "CENTER" | "TOP" | "BOTTOM" | undefined;
         overlay?: "NONE" | "MEDIUM" | "LIGHT" | "STRONG" | undefined;
         headingLevel?: "H1" | "H2" | undefined;
+        mediaBehavior?: "BACKGROUND" | "SIDE" | undefined;
+        backgroundObjectFit?: "COVER" | "CONTAIN" | undefined;
+        backgroundObjectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+        overlayColor?: string | null | undefined;
+        overlayOpacity?: number | undefined;
+        gradientOverlay?: "NONE" | "TO_START" | "TO_END" | "TO_BOTTOM" | undefined;
+        sideImagePosition?: "LEFT" | "RIGHT" | undefined;
+        sideImageWidth?: number | undefined;
+        sideImageObjectFit?: "COVER" | "CONTAIN" | undefined;
         surface?: "DEFAULT" | "SOFT" | "DARK" | "ACCENT" | undefined;
         spacing?: "NONE" | "SMALL" | "MEDIUM" | "LARGE" | undefined;
+    } | {
+        type: "IMAGE";
+        id: string;
+        label: string;
+        imageAlt: {
+            en?: string | undefined;
+            ar?: string | undefined;
+        };
+        visibility: {
+            startsAt?: string | null | undefined;
+            endsAt?: string | null | undefined;
+            devices?: ("DESKTOP" | "TABLET" | "MOBILE")[] | undefined;
+            locales?: ("en" | "ar")[] | undefined;
+        };
+        analyticsKey: string;
+        caption: {
+            en?: string | undefined;
+            ar?: string | undefined;
+        };
+        width?: "CONTENT" | "WIDE" | "FULL" | undefined;
+        enabled?: boolean | undefined;
+        destination?: {
+            type: "HOME";
+        } | {
+            type: "SHOP";
+        } | {
+            type: "OFFERS";
+        } | {
+            type: "NEW_ARRIVALS";
+        } | {
+            type: "ABOUT";
+        } | {
+            type: "CONTACT";
+        } | {
+            type: "CATEGORY";
+            id: string;
+        } | {
+            type: "BRAND";
+            id: string;
+        } | {
+            type: "PRODUCT";
+            id: string;
+        } | {
+            type: "TAG";
+            id: string;
+        } | {
+            path: string;
+            type: "CUSTOM_PATH";
+        } | {
+            type: "EXTERNAL";
+            url: string;
+            newTab?: boolean | undefined;
+        } | {
+            type: "PAGE";
+            id: string;
+        } | null | undefined;
+        alignment?: "START" | "CENTER" | "END" | undefined;
+        desktopMediaId?: string | null | undefined;
+        mobileMediaId?: string | null | undefined;
+        surface?: "DEFAULT" | "SOFT" | "DARK" | "ACCENT" | undefined;
+        spacing?: "NONE" | "SMALL" | "MEDIUM" | "LARGE" | undefined;
+        openInNewTab?: boolean | undefined;
+        imageWidth?: "FULL" | "CUSTOM" | "CONTAINER" | undefined;
+        customWidthPercent?: number | undefined;
+        aspectRatio?: "CUSTOM" | "ORIGINAL" | "1_1" | "4_3" | "3_2" | "16_9" | "21_9" | undefined;
+        customAspectRatio?: {
+            width?: number | undefined;
+            height?: number | undefined;
+        } | undefined;
+        objectFit?: "COVER" | "CONTAIN" | undefined;
+        objectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+        borderRadius?: number | undefined;
+        maxHeight?: number | null | undefined;
+        backgroundColor?: string | null | undefined;
     } | {
         type: "PRODUCT_GRID";
         id: string;
@@ -9013,6 +9889,89 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         analyticsKey: string;
         surface: "DEFAULT" | "SOFT" | "DARK" | "ACCENT";
         spacing: "NONE" | "SMALL" | "MEDIUM" | "LARGE";
+        mediaBehavior?: "BACKGROUND" | "SIDE" | undefined;
+        backgroundObjectFit?: "COVER" | "CONTAIN" | undefined;
+        backgroundObjectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+        overlayColor?: string | null | undefined;
+        overlayOpacity?: number | undefined;
+        gradientOverlay?: "NONE" | "TO_START" | "TO_END" | "TO_BOTTOM" | undefined;
+        sideImagePosition?: "LEFT" | "RIGHT" | undefined;
+        sideImageWidth?: number | undefined;
+        sideImageObjectFit?: "COVER" | "CONTAIN" | undefined;
+    } | {
+        type: "IMAGE";
+        id: string;
+        label: string;
+        width: "CONTENT" | "WIDE" | "FULL";
+        enabled: boolean;
+        destination: {
+            type: "HOME";
+        } | {
+            type: "SHOP";
+        } | {
+            type: "OFFERS";
+        } | {
+            type: "NEW_ARRIVALS";
+        } | {
+            type: "ABOUT";
+        } | {
+            type: "CONTACT";
+        } | {
+            type: "CATEGORY";
+            id: string;
+        } | {
+            type: "BRAND";
+            id: string;
+        } | {
+            type: "PRODUCT";
+            id: string;
+        } | {
+            type: "TAG";
+            id: string;
+        } | {
+            path: string;
+            type: "CUSTOM_PATH";
+        } | {
+            type: "EXTERNAL";
+            url: string;
+            newTab: boolean;
+        } | {
+            type: "PAGE";
+            id: string;
+        } | null;
+        imageAlt: {
+            en: string;
+            ar: string;
+        };
+        visibility: {
+            startsAt: string | null;
+            endsAt: string | null;
+            devices: ("DESKTOP" | "TABLET" | "MOBILE")[];
+            locales: ("en" | "ar")[];
+        };
+        alignment: "START" | "CENTER" | "END";
+        desktopMediaId: string | null;
+        mobileMediaId: string | null;
+        analyticsKey: string;
+        surface: "DEFAULT" | "SOFT" | "DARK" | "ACCENT";
+        spacing: "NONE" | "SMALL" | "MEDIUM" | "LARGE";
+        caption: {
+            en: string;
+            ar: string;
+        };
+        openInNewTab: boolean;
+        imageWidth: "FULL" | "CUSTOM" | "CONTAINER";
+        customWidthPercent: number;
+        aspectRatio: "CUSTOM" | "ORIGINAL" | "1_1" | "4_3" | "3_2" | "16_9" | "21_9";
+        customAspectRatio: {
+            width: number;
+            height: number;
+        };
+        objectFit: "COVER" | "CONTAIN";
+        objectPosition: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT";
+        borderRadius: number;
+        maxHeight: number | null;
+        backgroundColor: string | null;
     } | {
         type: "PRODUCT_GRID";
         limit: number;
@@ -9796,8 +10755,91 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         contentPosition?: "CENTER" | "TOP" | "BOTTOM" | undefined;
         overlay?: "NONE" | "MEDIUM" | "LIGHT" | "STRONG" | undefined;
         headingLevel?: "H1" | "H2" | undefined;
+        mediaBehavior?: "BACKGROUND" | "SIDE" | undefined;
+        backgroundObjectFit?: "COVER" | "CONTAIN" | undefined;
+        backgroundObjectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+        overlayColor?: string | null | undefined;
+        overlayOpacity?: number | undefined;
+        gradientOverlay?: "NONE" | "TO_START" | "TO_END" | "TO_BOTTOM" | undefined;
+        sideImagePosition?: "LEFT" | "RIGHT" | undefined;
+        sideImageWidth?: number | undefined;
+        sideImageObjectFit?: "COVER" | "CONTAIN" | undefined;
         surface?: "DEFAULT" | "SOFT" | "DARK" | "ACCENT" | undefined;
         spacing?: "NONE" | "SMALL" | "MEDIUM" | "LARGE" | undefined;
+    } | {
+        type: "IMAGE";
+        id: string;
+        label: string;
+        imageAlt: {
+            en?: string | undefined;
+            ar?: string | undefined;
+        };
+        visibility: {
+            startsAt?: string | null | undefined;
+            endsAt?: string | null | undefined;
+            devices?: ("DESKTOP" | "TABLET" | "MOBILE")[] | undefined;
+            locales?: ("en" | "ar")[] | undefined;
+        };
+        analyticsKey: string;
+        caption: {
+            en?: string | undefined;
+            ar?: string | undefined;
+        };
+        width?: "CONTENT" | "WIDE" | "FULL" | undefined;
+        enabled?: boolean | undefined;
+        destination?: {
+            type: "HOME";
+        } | {
+            type: "SHOP";
+        } | {
+            type: "OFFERS";
+        } | {
+            type: "NEW_ARRIVALS";
+        } | {
+            type: "ABOUT";
+        } | {
+            type: "CONTACT";
+        } | {
+            type: "CATEGORY";
+            id: string;
+        } | {
+            type: "BRAND";
+            id: string;
+        } | {
+            type: "PRODUCT";
+            id: string;
+        } | {
+            type: "TAG";
+            id: string;
+        } | {
+            path: string;
+            type: "CUSTOM_PATH";
+        } | {
+            type: "EXTERNAL";
+            url: string;
+            newTab?: boolean | undefined;
+        } | {
+            type: "PAGE";
+            id: string;
+        } | null | undefined;
+        alignment?: "START" | "CENTER" | "END" | undefined;
+        desktopMediaId?: string | null | undefined;
+        mobileMediaId?: string | null | undefined;
+        surface?: "DEFAULT" | "SOFT" | "DARK" | "ACCENT" | undefined;
+        spacing?: "NONE" | "SMALL" | "MEDIUM" | "LARGE" | undefined;
+        openInNewTab?: boolean | undefined;
+        imageWidth?: "FULL" | "CUSTOM" | "CONTAINER" | undefined;
+        customWidthPercent?: number | undefined;
+        aspectRatio?: "CUSTOM" | "ORIGINAL" | "1_1" | "4_3" | "3_2" | "16_9" | "21_9" | undefined;
+        customAspectRatio?: {
+            width?: number | undefined;
+            height?: number | undefined;
+        } | undefined;
+        objectFit?: "COVER" | "CONTAIN" | undefined;
+        objectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+        borderRadius?: number | undefined;
+        maxHeight?: number | null | undefined;
+        backgroundColor?: string | null | undefined;
     } | {
         type: "PRODUCT_GRID";
         id: string;
@@ -10810,6 +11852,15 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             contentPosition: z.ZodDefault<z.ZodEnum<["TOP", "CENTER", "BOTTOM"]>>;
             overlay: z.ZodDefault<z.ZodEnum<["NONE", "LIGHT", "MEDIUM", "STRONG"]>>;
             headingLevel: z.ZodDefault<z.ZodEnum<["H1", "H2"]>>;
+            mediaBehavior: z.ZodOptional<z.ZodEnum<["BACKGROUND", "SIDE"]>>;
+            backgroundObjectFit: z.ZodOptional<z.ZodEnum<["COVER", "CONTAIN"]>>;
+            backgroundObjectPosition: z.ZodOptional<z.ZodEnum<["CENTER", "TOP", "BOTTOM", "LEFT", "RIGHT"]>>;
+            overlayColor: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            overlayOpacity: z.ZodOptional<z.ZodNumber>;
+            gradientOverlay: z.ZodOptional<z.ZodEnum<["NONE", "TO_START", "TO_END", "TO_BOTTOM"]>>;
+            sideImagePosition: z.ZodOptional<z.ZodEnum<["LEFT", "RIGHT"]>>;
+            sideImageWidth: z.ZodOptional<z.ZodNumber>;
+            sideImageObjectFit: z.ZodOptional<z.ZodEnum<["COVER", "CONTAIN"]>>;
             id: z.ZodString;
             analyticsKey: z.ZodString;
             label: z.ZodString;
@@ -10959,6 +12010,15 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             analyticsKey: string;
             surface: "DEFAULT" | "SOFT" | "DARK" | "ACCENT";
             spacing: "NONE" | "SMALL" | "MEDIUM" | "LARGE";
+            mediaBehavior?: "BACKGROUND" | "SIDE" | undefined;
+            backgroundObjectFit?: "COVER" | "CONTAIN" | undefined;
+            backgroundObjectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+            overlayColor?: string | null | undefined;
+            overlayOpacity?: number | undefined;
+            gradientOverlay?: "NONE" | "TO_START" | "TO_END" | "TO_BOTTOM" | undefined;
+            sideImagePosition?: "LEFT" | "RIGHT" | undefined;
+            sideImageWidth?: number | undefined;
+            sideImageObjectFit?: "COVER" | "CONTAIN" | undefined;
         }, {
             type: "HERO";
             id: string;
@@ -11073,8 +12133,345 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             contentPosition?: "CENTER" | "TOP" | "BOTTOM" | undefined;
             overlay?: "NONE" | "MEDIUM" | "LIGHT" | "STRONG" | undefined;
             headingLevel?: "H1" | "H2" | undefined;
+            mediaBehavior?: "BACKGROUND" | "SIDE" | undefined;
+            backgroundObjectFit?: "COVER" | "CONTAIN" | undefined;
+            backgroundObjectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+            overlayColor?: string | null | undefined;
+            overlayOpacity?: number | undefined;
+            gradientOverlay?: "NONE" | "TO_START" | "TO_END" | "TO_BOTTOM" | undefined;
+            sideImagePosition?: "LEFT" | "RIGHT" | undefined;
+            sideImageWidth?: number | undefined;
+            sideImageObjectFit?: "COVER" | "CONTAIN" | undefined;
             surface?: "DEFAULT" | "SOFT" | "DARK" | "ACCENT" | undefined;
             spacing?: "NONE" | "SMALL" | "MEDIUM" | "LARGE" | undefined;
+        }>, z.ZodObject<{
+            type: z.ZodLiteral<"IMAGE">;
+            desktopMediaId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            mobileMediaId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            imageAlt: z.ZodObject<{
+                en: z.ZodDefault<z.ZodString>;
+                ar: z.ZodDefault<z.ZodString>;
+            }, "strict", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en?: string | undefined;
+                ar?: string | undefined;
+            }>;
+            caption: z.ZodObject<{
+                en: z.ZodDefault<z.ZodString>;
+                ar: z.ZodDefault<z.ZodString>;
+            }, "strict", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en?: string | undefined;
+                ar?: string | undefined;
+            }>;
+            destination: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodDiscriminatedUnion<"type", [z.ZodObject<{
+                type: z.ZodLiteral<"HOME">;
+            }, "strip", z.ZodTypeAny, {
+                type: "HOME";
+            }, {
+                type: "HOME";
+            }>, z.ZodObject<{
+                type: z.ZodLiteral<"SHOP">;
+            }, "strip", z.ZodTypeAny, {
+                type: "SHOP";
+            }, {
+                type: "SHOP";
+            }>, z.ZodObject<{
+                type: z.ZodLiteral<"OFFERS">;
+            }, "strip", z.ZodTypeAny, {
+                type: "OFFERS";
+            }, {
+                type: "OFFERS";
+            }>, z.ZodObject<{
+                type: z.ZodLiteral<"NEW_ARRIVALS">;
+            }, "strip", z.ZodTypeAny, {
+                type: "NEW_ARRIVALS";
+            }, {
+                type: "NEW_ARRIVALS";
+            }>, z.ZodObject<{
+                type: z.ZodLiteral<"ABOUT">;
+            }, "strip", z.ZodTypeAny, {
+                type: "ABOUT";
+            }, {
+                type: "ABOUT";
+            }>, z.ZodObject<{
+                type: z.ZodLiteral<"CONTACT">;
+            }, "strip", z.ZodTypeAny, {
+                type: "CONTACT";
+            }, {
+                type: "CONTACT";
+            }>, z.ZodObject<{
+                type: z.ZodLiteral<"CATEGORY">;
+                id: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                type: "CATEGORY";
+                id: string;
+            }, {
+                type: "CATEGORY";
+                id: string;
+            }>, z.ZodObject<{
+                type: z.ZodLiteral<"BRAND">;
+                id: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                type: "BRAND";
+                id: string;
+            }, {
+                type: "BRAND";
+                id: string;
+            }>, z.ZodObject<{
+                type: z.ZodLiteral<"PRODUCT">;
+                id: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                type: "PRODUCT";
+                id: string;
+            }, {
+                type: "PRODUCT";
+                id: string;
+            }>, z.ZodObject<{
+                type: z.ZodLiteral<"TAG">;
+                id: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                type: "TAG";
+                id: string;
+            }, {
+                type: "TAG";
+                id: string;
+            }>, z.ZodObject<{
+                type: z.ZodLiteral<"CUSTOM_PATH">;
+                path: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                path: string;
+                type: "CUSTOM_PATH";
+            }, {
+                path: string;
+                type: "CUSTOM_PATH";
+            }>, z.ZodObject<{
+                type: z.ZodLiteral<"EXTERNAL">;
+                url: z.ZodEffects<z.ZodString, string, string>;
+                newTab: z.ZodDefault<z.ZodBoolean>;
+            }, "strip", z.ZodTypeAny, {
+                type: "EXTERNAL";
+                url: string;
+                newTab: boolean;
+            }, {
+                type: "EXTERNAL";
+                url: string;
+                newTab?: boolean | undefined;
+            }>]>, z.ZodObject<{
+                type: z.ZodLiteral<"PAGE">;
+                id: z.ZodString;
+            }, "strict", z.ZodTypeAny, {
+                type: "PAGE";
+                id: string;
+            }, {
+                type: "PAGE";
+                id: string;
+            }>]>>>;
+            openInNewTab: z.ZodDefault<z.ZodBoolean>;
+            imageWidth: z.ZodDefault<z.ZodEnum<["FULL", "CONTAINER", "CUSTOM"]>>;
+            customWidthPercent: z.ZodDefault<z.ZodNumber>;
+            alignment: z.ZodDefault<z.ZodEnum<["START", "CENTER", "END"]>>;
+            aspectRatio: z.ZodDefault<z.ZodEnum<["ORIGINAL", "1_1", "4_3", "3_2", "16_9", "21_9", "CUSTOM"]>>;
+            customAspectRatio: z.ZodDefault<z.ZodObject<{
+                width: z.ZodDefault<z.ZodNumber>;
+                height: z.ZodDefault<z.ZodNumber>;
+            }, "strict", z.ZodTypeAny, {
+                width: number;
+                height: number;
+            }, {
+                width?: number | undefined;
+                height?: number | undefined;
+            }>>;
+            objectFit: z.ZodDefault<z.ZodEnum<["COVER", "CONTAIN"]>>;
+            objectPosition: z.ZodDefault<z.ZodEnum<["CENTER", "TOP", "BOTTOM", "LEFT", "RIGHT"]>>;
+            borderRadius: z.ZodDefault<z.ZodNumber>;
+            maxHeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+            backgroundColor: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            id: z.ZodString;
+            analyticsKey: z.ZodString;
+            label: z.ZodString;
+            enabled: z.ZodDefault<z.ZodBoolean>;
+            visibility: z.ZodEffects<z.ZodObject<{
+                devices: z.ZodDefault<z.ZodArray<z.ZodEnum<["DESKTOP", "TABLET", "MOBILE"]>, "many">>;
+                locales: z.ZodDefault<z.ZodArray<z.ZodEnum<["en", "ar"]>, "many">>;
+                startsAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+                endsAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            }, "strip", z.ZodTypeAny, {
+                startsAt: string | null;
+                endsAt: string | null;
+                devices: ("DESKTOP" | "TABLET" | "MOBILE")[];
+                locales: ("en" | "ar")[];
+            }, {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+                devices?: ("DESKTOP" | "TABLET" | "MOBILE")[] | undefined;
+                locales?: ("en" | "ar")[] | undefined;
+            }>, {
+                startsAt: string | null;
+                endsAt: string | null;
+                devices: ("DESKTOP" | "TABLET" | "MOBILE")[];
+                locales: ("en" | "ar")[];
+            }, {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+                devices?: ("DESKTOP" | "TABLET" | "MOBILE")[] | undefined;
+                locales?: ("en" | "ar")[] | undefined;
+            }>;
+            surface: z.ZodDefault<z.ZodEnum<["DEFAULT", "SOFT", "DARK", "ACCENT"]>>;
+            spacing: z.ZodDefault<z.ZodEnum<["NONE", "SMALL", "MEDIUM", "LARGE"]>>;
+            width: z.ZodDefault<z.ZodEnum<["CONTENT", "WIDE", "FULL"]>>;
+        }, "strict", z.ZodTypeAny, {
+            type: "IMAGE";
+            id: string;
+            label: string;
+            width: "CONTENT" | "WIDE" | "FULL";
+            enabled: boolean;
+            destination: {
+                type: "HOME";
+            } | {
+                type: "SHOP";
+            } | {
+                type: "OFFERS";
+            } | {
+                type: "NEW_ARRIVALS";
+            } | {
+                type: "ABOUT";
+            } | {
+                type: "CONTACT";
+            } | {
+                type: "CATEGORY";
+                id: string;
+            } | {
+                type: "BRAND";
+                id: string;
+            } | {
+                type: "PRODUCT";
+                id: string;
+            } | {
+                type: "TAG";
+                id: string;
+            } | {
+                path: string;
+                type: "CUSTOM_PATH";
+            } | {
+                type: "EXTERNAL";
+                url: string;
+                newTab: boolean;
+            } | {
+                type: "PAGE";
+                id: string;
+            } | null;
+            imageAlt: {
+                en: string;
+                ar: string;
+            };
+            visibility: {
+                startsAt: string | null;
+                endsAt: string | null;
+                devices: ("DESKTOP" | "TABLET" | "MOBILE")[];
+                locales: ("en" | "ar")[];
+            };
+            alignment: "START" | "CENTER" | "END";
+            desktopMediaId: string | null;
+            mobileMediaId: string | null;
+            analyticsKey: string;
+            surface: "DEFAULT" | "SOFT" | "DARK" | "ACCENT";
+            spacing: "NONE" | "SMALL" | "MEDIUM" | "LARGE";
+            caption: {
+                en: string;
+                ar: string;
+            };
+            openInNewTab: boolean;
+            imageWidth: "FULL" | "CUSTOM" | "CONTAINER";
+            customWidthPercent: number;
+            aspectRatio: "CUSTOM" | "ORIGINAL" | "1_1" | "4_3" | "3_2" | "16_9" | "21_9";
+            customAspectRatio: {
+                width: number;
+                height: number;
+            };
+            objectFit: "COVER" | "CONTAIN";
+            objectPosition: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT";
+            borderRadius: number;
+            maxHeight: number | null;
+            backgroundColor: string | null;
+        }, {
+            type: "IMAGE";
+            id: string;
+            label: string;
+            imageAlt: {
+                en?: string | undefined;
+                ar?: string | undefined;
+            };
+            visibility: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+                devices?: ("DESKTOP" | "TABLET" | "MOBILE")[] | undefined;
+                locales?: ("en" | "ar")[] | undefined;
+            };
+            analyticsKey: string;
+            caption: {
+                en?: string | undefined;
+                ar?: string | undefined;
+            };
+            width?: "CONTENT" | "WIDE" | "FULL" | undefined;
+            enabled?: boolean | undefined;
+            destination?: {
+                type: "HOME";
+            } | {
+                type: "SHOP";
+            } | {
+                type: "OFFERS";
+            } | {
+                type: "NEW_ARRIVALS";
+            } | {
+                type: "ABOUT";
+            } | {
+                type: "CONTACT";
+            } | {
+                type: "CATEGORY";
+                id: string;
+            } | {
+                type: "BRAND";
+                id: string;
+            } | {
+                type: "PRODUCT";
+                id: string;
+            } | {
+                type: "TAG";
+                id: string;
+            } | {
+                path: string;
+                type: "CUSTOM_PATH";
+            } | {
+                type: "EXTERNAL";
+                url: string;
+                newTab?: boolean | undefined;
+            } | {
+                type: "PAGE";
+                id: string;
+            } | null | undefined;
+            alignment?: "START" | "CENTER" | "END" | undefined;
+            desktopMediaId?: string | null | undefined;
+            mobileMediaId?: string | null | undefined;
+            surface?: "DEFAULT" | "SOFT" | "DARK" | "ACCENT" | undefined;
+            spacing?: "NONE" | "SMALL" | "MEDIUM" | "LARGE" | undefined;
+            openInNewTab?: boolean | undefined;
+            imageWidth?: "FULL" | "CUSTOM" | "CONTAINER" | undefined;
+            customWidthPercent?: number | undefined;
+            aspectRatio?: "CUSTOM" | "ORIGINAL" | "1_1" | "4_3" | "3_2" | "16_9" | "21_9" | undefined;
+            customAspectRatio?: {
+                width?: number | undefined;
+                height?: number | undefined;
+            } | undefined;
+            objectFit?: "COVER" | "CONTAIN" | undefined;
+            objectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+            borderRadius?: number | undefined;
+            maxHeight?: number | null | undefined;
+            backgroundColor?: string | null | undefined;
         }>, z.ZodObject<{
             type: z.ZodLiteral<"PRODUCT_GRID">;
             heading: z.ZodObject<{} & {
@@ -14178,6 +15575,89 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             analyticsKey: string;
             surface: "DEFAULT" | "SOFT" | "DARK" | "ACCENT";
             spacing: "NONE" | "SMALL" | "MEDIUM" | "LARGE";
+            mediaBehavior?: "BACKGROUND" | "SIDE" | undefined;
+            backgroundObjectFit?: "COVER" | "CONTAIN" | undefined;
+            backgroundObjectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+            overlayColor?: string | null | undefined;
+            overlayOpacity?: number | undefined;
+            gradientOverlay?: "NONE" | "TO_START" | "TO_END" | "TO_BOTTOM" | undefined;
+            sideImagePosition?: "LEFT" | "RIGHT" | undefined;
+            sideImageWidth?: number | undefined;
+            sideImageObjectFit?: "COVER" | "CONTAIN" | undefined;
+        } | {
+            type: "IMAGE";
+            id: string;
+            label: string;
+            width: "CONTENT" | "WIDE" | "FULL";
+            enabled: boolean;
+            destination: {
+                type: "HOME";
+            } | {
+                type: "SHOP";
+            } | {
+                type: "OFFERS";
+            } | {
+                type: "NEW_ARRIVALS";
+            } | {
+                type: "ABOUT";
+            } | {
+                type: "CONTACT";
+            } | {
+                type: "CATEGORY";
+                id: string;
+            } | {
+                type: "BRAND";
+                id: string;
+            } | {
+                type: "PRODUCT";
+                id: string;
+            } | {
+                type: "TAG";
+                id: string;
+            } | {
+                path: string;
+                type: "CUSTOM_PATH";
+            } | {
+                type: "EXTERNAL";
+                url: string;
+                newTab: boolean;
+            } | {
+                type: "PAGE";
+                id: string;
+            } | null;
+            imageAlt: {
+                en: string;
+                ar: string;
+            };
+            visibility: {
+                startsAt: string | null;
+                endsAt: string | null;
+                devices: ("DESKTOP" | "TABLET" | "MOBILE")[];
+                locales: ("en" | "ar")[];
+            };
+            alignment: "START" | "CENTER" | "END";
+            desktopMediaId: string | null;
+            mobileMediaId: string | null;
+            analyticsKey: string;
+            surface: "DEFAULT" | "SOFT" | "DARK" | "ACCENT";
+            spacing: "NONE" | "SMALL" | "MEDIUM" | "LARGE";
+            caption: {
+                en: string;
+                ar: string;
+            };
+            openInNewTab: boolean;
+            imageWidth: "FULL" | "CUSTOM" | "CONTAINER";
+            customWidthPercent: number;
+            aspectRatio: "CUSTOM" | "ORIGINAL" | "1_1" | "4_3" | "3_2" | "16_9" | "21_9";
+            customAspectRatio: {
+                width: number;
+                height: number;
+            };
+            objectFit: "COVER" | "CONTAIN";
+            objectPosition: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT";
+            borderRadius: number;
+            maxHeight: number | null;
+            backgroundColor: string | null;
         } | {
             type: "PRODUCT_GRID";
             limit: number;
@@ -14961,8 +16441,91 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             contentPosition?: "CENTER" | "TOP" | "BOTTOM" | undefined;
             overlay?: "NONE" | "MEDIUM" | "LIGHT" | "STRONG" | undefined;
             headingLevel?: "H1" | "H2" | undefined;
+            mediaBehavior?: "BACKGROUND" | "SIDE" | undefined;
+            backgroundObjectFit?: "COVER" | "CONTAIN" | undefined;
+            backgroundObjectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+            overlayColor?: string | null | undefined;
+            overlayOpacity?: number | undefined;
+            gradientOverlay?: "NONE" | "TO_START" | "TO_END" | "TO_BOTTOM" | undefined;
+            sideImagePosition?: "LEFT" | "RIGHT" | undefined;
+            sideImageWidth?: number | undefined;
+            sideImageObjectFit?: "COVER" | "CONTAIN" | undefined;
             surface?: "DEFAULT" | "SOFT" | "DARK" | "ACCENT" | undefined;
             spacing?: "NONE" | "SMALL" | "MEDIUM" | "LARGE" | undefined;
+        } | {
+            type: "IMAGE";
+            id: string;
+            label: string;
+            imageAlt: {
+                en?: string | undefined;
+                ar?: string | undefined;
+            };
+            visibility: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+                devices?: ("DESKTOP" | "TABLET" | "MOBILE")[] | undefined;
+                locales?: ("en" | "ar")[] | undefined;
+            };
+            analyticsKey: string;
+            caption: {
+                en?: string | undefined;
+                ar?: string | undefined;
+            };
+            width?: "CONTENT" | "WIDE" | "FULL" | undefined;
+            enabled?: boolean | undefined;
+            destination?: {
+                type: "HOME";
+            } | {
+                type: "SHOP";
+            } | {
+                type: "OFFERS";
+            } | {
+                type: "NEW_ARRIVALS";
+            } | {
+                type: "ABOUT";
+            } | {
+                type: "CONTACT";
+            } | {
+                type: "CATEGORY";
+                id: string;
+            } | {
+                type: "BRAND";
+                id: string;
+            } | {
+                type: "PRODUCT";
+                id: string;
+            } | {
+                type: "TAG";
+                id: string;
+            } | {
+                path: string;
+                type: "CUSTOM_PATH";
+            } | {
+                type: "EXTERNAL";
+                url: string;
+                newTab?: boolean | undefined;
+            } | {
+                type: "PAGE";
+                id: string;
+            } | null | undefined;
+            alignment?: "START" | "CENTER" | "END" | undefined;
+            desktopMediaId?: string | null | undefined;
+            mobileMediaId?: string | null | undefined;
+            surface?: "DEFAULT" | "SOFT" | "DARK" | "ACCENT" | undefined;
+            spacing?: "NONE" | "SMALL" | "MEDIUM" | "LARGE" | undefined;
+            openInNewTab?: boolean | undefined;
+            imageWidth?: "FULL" | "CUSTOM" | "CONTAINER" | undefined;
+            customWidthPercent?: number | undefined;
+            aspectRatio?: "CUSTOM" | "ORIGINAL" | "1_1" | "4_3" | "3_2" | "16_9" | "21_9" | undefined;
+            customAspectRatio?: {
+                width?: number | undefined;
+                height?: number | undefined;
+            } | undefined;
+            objectFit?: "COVER" | "CONTAIN" | undefined;
+            objectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+            borderRadius?: number | undefined;
+            maxHeight?: number | null | undefined;
+            backgroundColor?: string | null | undefined;
         } | {
             type: "PRODUCT_GRID";
             id: string;
@@ -15748,6 +17311,89 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             analyticsKey: string;
             surface: "DEFAULT" | "SOFT" | "DARK" | "ACCENT";
             spacing: "NONE" | "SMALL" | "MEDIUM" | "LARGE";
+            mediaBehavior?: "BACKGROUND" | "SIDE" | undefined;
+            backgroundObjectFit?: "COVER" | "CONTAIN" | undefined;
+            backgroundObjectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+            overlayColor?: string | null | undefined;
+            overlayOpacity?: number | undefined;
+            gradientOverlay?: "NONE" | "TO_START" | "TO_END" | "TO_BOTTOM" | undefined;
+            sideImagePosition?: "LEFT" | "RIGHT" | undefined;
+            sideImageWidth?: number | undefined;
+            sideImageObjectFit?: "COVER" | "CONTAIN" | undefined;
+        } | {
+            type: "IMAGE";
+            id: string;
+            label: string;
+            width: "CONTENT" | "WIDE" | "FULL";
+            enabled: boolean;
+            destination: {
+                type: "HOME";
+            } | {
+                type: "SHOP";
+            } | {
+                type: "OFFERS";
+            } | {
+                type: "NEW_ARRIVALS";
+            } | {
+                type: "ABOUT";
+            } | {
+                type: "CONTACT";
+            } | {
+                type: "CATEGORY";
+                id: string;
+            } | {
+                type: "BRAND";
+                id: string;
+            } | {
+                type: "PRODUCT";
+                id: string;
+            } | {
+                type: "TAG";
+                id: string;
+            } | {
+                path: string;
+                type: "CUSTOM_PATH";
+            } | {
+                type: "EXTERNAL";
+                url: string;
+                newTab: boolean;
+            } | {
+                type: "PAGE";
+                id: string;
+            } | null;
+            imageAlt: {
+                en: string;
+                ar: string;
+            };
+            visibility: {
+                startsAt: string | null;
+                endsAt: string | null;
+                devices: ("DESKTOP" | "TABLET" | "MOBILE")[];
+                locales: ("en" | "ar")[];
+            };
+            alignment: "START" | "CENTER" | "END";
+            desktopMediaId: string | null;
+            mobileMediaId: string | null;
+            analyticsKey: string;
+            surface: "DEFAULT" | "SOFT" | "DARK" | "ACCENT";
+            spacing: "NONE" | "SMALL" | "MEDIUM" | "LARGE";
+            caption: {
+                en: string;
+                ar: string;
+            };
+            openInNewTab: boolean;
+            imageWidth: "FULL" | "CUSTOM" | "CONTAINER";
+            customWidthPercent: number;
+            aspectRatio: "CUSTOM" | "ORIGINAL" | "1_1" | "4_3" | "3_2" | "16_9" | "21_9";
+            customAspectRatio: {
+                width: number;
+                height: number;
+            };
+            objectFit: "COVER" | "CONTAIN";
+            objectPosition: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT";
+            borderRadius: number;
+            maxHeight: number | null;
+            backgroundColor: string | null;
         } | {
             type: "PRODUCT_GRID";
             limit: number;
@@ -16531,8 +18177,91 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             contentPosition?: "CENTER" | "TOP" | "BOTTOM" | undefined;
             overlay?: "NONE" | "MEDIUM" | "LIGHT" | "STRONG" | undefined;
             headingLevel?: "H1" | "H2" | undefined;
+            mediaBehavior?: "BACKGROUND" | "SIDE" | undefined;
+            backgroundObjectFit?: "COVER" | "CONTAIN" | undefined;
+            backgroundObjectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+            overlayColor?: string | null | undefined;
+            overlayOpacity?: number | undefined;
+            gradientOverlay?: "NONE" | "TO_START" | "TO_END" | "TO_BOTTOM" | undefined;
+            sideImagePosition?: "LEFT" | "RIGHT" | undefined;
+            sideImageWidth?: number | undefined;
+            sideImageObjectFit?: "COVER" | "CONTAIN" | undefined;
             surface?: "DEFAULT" | "SOFT" | "DARK" | "ACCENT" | undefined;
             spacing?: "NONE" | "SMALL" | "MEDIUM" | "LARGE" | undefined;
+        } | {
+            type: "IMAGE";
+            id: string;
+            label: string;
+            imageAlt: {
+                en?: string | undefined;
+                ar?: string | undefined;
+            };
+            visibility: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+                devices?: ("DESKTOP" | "TABLET" | "MOBILE")[] | undefined;
+                locales?: ("en" | "ar")[] | undefined;
+            };
+            analyticsKey: string;
+            caption: {
+                en?: string | undefined;
+                ar?: string | undefined;
+            };
+            width?: "CONTENT" | "WIDE" | "FULL" | undefined;
+            enabled?: boolean | undefined;
+            destination?: {
+                type: "HOME";
+            } | {
+                type: "SHOP";
+            } | {
+                type: "OFFERS";
+            } | {
+                type: "NEW_ARRIVALS";
+            } | {
+                type: "ABOUT";
+            } | {
+                type: "CONTACT";
+            } | {
+                type: "CATEGORY";
+                id: string;
+            } | {
+                type: "BRAND";
+                id: string;
+            } | {
+                type: "PRODUCT";
+                id: string;
+            } | {
+                type: "TAG";
+                id: string;
+            } | {
+                path: string;
+                type: "CUSTOM_PATH";
+            } | {
+                type: "EXTERNAL";
+                url: string;
+                newTab?: boolean | undefined;
+            } | {
+                type: "PAGE";
+                id: string;
+            } | null | undefined;
+            alignment?: "START" | "CENTER" | "END" | undefined;
+            desktopMediaId?: string | null | undefined;
+            mobileMediaId?: string | null | undefined;
+            surface?: "DEFAULT" | "SOFT" | "DARK" | "ACCENT" | undefined;
+            spacing?: "NONE" | "SMALL" | "MEDIUM" | "LARGE" | undefined;
+            openInNewTab?: boolean | undefined;
+            imageWidth?: "FULL" | "CUSTOM" | "CONTAINER" | undefined;
+            customWidthPercent?: number | undefined;
+            aspectRatio?: "CUSTOM" | "ORIGINAL" | "1_1" | "4_3" | "3_2" | "16_9" | "21_9" | undefined;
+            customAspectRatio?: {
+                width?: number | undefined;
+                height?: number | undefined;
+            } | undefined;
+            objectFit?: "COVER" | "CONTAIN" | undefined;
+            objectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+            borderRadius?: number | undefined;
+            maxHeight?: number | null | undefined;
+            backgroundColor?: string | null | undefined;
         } | {
             type: "PRODUCT_GRID";
             id: string;
@@ -17323,6 +19052,89 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             analyticsKey: string;
             surface: "DEFAULT" | "SOFT" | "DARK" | "ACCENT";
             spacing: "NONE" | "SMALL" | "MEDIUM" | "LARGE";
+            mediaBehavior?: "BACKGROUND" | "SIDE" | undefined;
+            backgroundObjectFit?: "COVER" | "CONTAIN" | undefined;
+            backgroundObjectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+            overlayColor?: string | null | undefined;
+            overlayOpacity?: number | undefined;
+            gradientOverlay?: "NONE" | "TO_START" | "TO_END" | "TO_BOTTOM" | undefined;
+            sideImagePosition?: "LEFT" | "RIGHT" | undefined;
+            sideImageWidth?: number | undefined;
+            sideImageObjectFit?: "COVER" | "CONTAIN" | undefined;
+        } | {
+            type: "IMAGE";
+            id: string;
+            label: string;
+            width: "CONTENT" | "WIDE" | "FULL";
+            enabled: boolean;
+            destination: {
+                type: "HOME";
+            } | {
+                type: "SHOP";
+            } | {
+                type: "OFFERS";
+            } | {
+                type: "NEW_ARRIVALS";
+            } | {
+                type: "ABOUT";
+            } | {
+                type: "CONTACT";
+            } | {
+                type: "CATEGORY";
+                id: string;
+            } | {
+                type: "BRAND";
+                id: string;
+            } | {
+                type: "PRODUCT";
+                id: string;
+            } | {
+                type: "TAG";
+                id: string;
+            } | {
+                path: string;
+                type: "CUSTOM_PATH";
+            } | {
+                type: "EXTERNAL";
+                url: string;
+                newTab: boolean;
+            } | {
+                type: "PAGE";
+                id: string;
+            } | null;
+            imageAlt: {
+                en: string;
+                ar: string;
+            };
+            visibility: {
+                startsAt: string | null;
+                endsAt: string | null;
+                devices: ("DESKTOP" | "TABLET" | "MOBILE")[];
+                locales: ("en" | "ar")[];
+            };
+            alignment: "START" | "CENTER" | "END";
+            desktopMediaId: string | null;
+            mobileMediaId: string | null;
+            analyticsKey: string;
+            surface: "DEFAULT" | "SOFT" | "DARK" | "ACCENT";
+            spacing: "NONE" | "SMALL" | "MEDIUM" | "LARGE";
+            caption: {
+                en: string;
+                ar: string;
+            };
+            openInNewTab: boolean;
+            imageWidth: "FULL" | "CUSTOM" | "CONTAINER";
+            customWidthPercent: number;
+            aspectRatio: "CUSTOM" | "ORIGINAL" | "1_1" | "4_3" | "3_2" | "16_9" | "21_9";
+            customAspectRatio: {
+                width: number;
+                height: number;
+            };
+            objectFit: "COVER" | "CONTAIN";
+            objectPosition: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT";
+            borderRadius: number;
+            maxHeight: number | null;
+            backgroundColor: string | null;
         } | {
             type: "PRODUCT_GRID";
             limit: number;
@@ -18111,8 +19923,91 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             contentPosition?: "CENTER" | "TOP" | "BOTTOM" | undefined;
             overlay?: "NONE" | "MEDIUM" | "LIGHT" | "STRONG" | undefined;
             headingLevel?: "H1" | "H2" | undefined;
+            mediaBehavior?: "BACKGROUND" | "SIDE" | undefined;
+            backgroundObjectFit?: "COVER" | "CONTAIN" | undefined;
+            backgroundObjectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+            overlayColor?: string | null | undefined;
+            overlayOpacity?: number | undefined;
+            gradientOverlay?: "NONE" | "TO_START" | "TO_END" | "TO_BOTTOM" | undefined;
+            sideImagePosition?: "LEFT" | "RIGHT" | undefined;
+            sideImageWidth?: number | undefined;
+            sideImageObjectFit?: "COVER" | "CONTAIN" | undefined;
             surface?: "DEFAULT" | "SOFT" | "DARK" | "ACCENT" | undefined;
             spacing?: "NONE" | "SMALL" | "MEDIUM" | "LARGE" | undefined;
+        } | {
+            type: "IMAGE";
+            id: string;
+            label: string;
+            imageAlt: {
+                en?: string | undefined;
+                ar?: string | undefined;
+            };
+            visibility: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+                devices?: ("DESKTOP" | "TABLET" | "MOBILE")[] | undefined;
+                locales?: ("en" | "ar")[] | undefined;
+            };
+            analyticsKey: string;
+            caption: {
+                en?: string | undefined;
+                ar?: string | undefined;
+            };
+            width?: "CONTENT" | "WIDE" | "FULL" | undefined;
+            enabled?: boolean | undefined;
+            destination?: {
+                type: "HOME";
+            } | {
+                type: "SHOP";
+            } | {
+                type: "OFFERS";
+            } | {
+                type: "NEW_ARRIVALS";
+            } | {
+                type: "ABOUT";
+            } | {
+                type: "CONTACT";
+            } | {
+                type: "CATEGORY";
+                id: string;
+            } | {
+                type: "BRAND";
+                id: string;
+            } | {
+                type: "PRODUCT";
+                id: string;
+            } | {
+                type: "TAG";
+                id: string;
+            } | {
+                path: string;
+                type: "CUSTOM_PATH";
+            } | {
+                type: "EXTERNAL";
+                url: string;
+                newTab?: boolean | undefined;
+            } | {
+                type: "PAGE";
+                id: string;
+            } | null | undefined;
+            alignment?: "START" | "CENTER" | "END" | undefined;
+            desktopMediaId?: string | null | undefined;
+            mobileMediaId?: string | null | undefined;
+            surface?: "DEFAULT" | "SOFT" | "DARK" | "ACCENT" | undefined;
+            spacing?: "NONE" | "SMALL" | "MEDIUM" | "LARGE" | undefined;
+            openInNewTab?: boolean | undefined;
+            imageWidth?: "FULL" | "CUSTOM" | "CONTAINER" | undefined;
+            customWidthPercent?: number | undefined;
+            aspectRatio?: "CUSTOM" | "ORIGINAL" | "1_1" | "4_3" | "3_2" | "16_9" | "21_9" | undefined;
+            customAspectRatio?: {
+                width?: number | undefined;
+                height?: number | undefined;
+            } | undefined;
+            objectFit?: "COVER" | "CONTAIN" | undefined;
+            objectPosition?: "CENTER" | "TOP" | "BOTTOM" | "LEFT" | "RIGHT" | undefined;
+            borderRadius?: number | undefined;
+            maxHeight?: number | null | undefined;
+            backgroundColor?: string | null | undefined;
         } | {
             type: "PRODUCT_GRID";
             id: string;

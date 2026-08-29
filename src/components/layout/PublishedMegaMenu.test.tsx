@@ -80,6 +80,104 @@ const snapshot: NavigationPublicSnapshot = {
   media: {},
 };
 
+function multiCategoryFixture() {
+  const departments = [
+    {
+      id: "f0000000-0000-4000-8000-000000000001",
+      en: "Body Care",
+      ar: "العناية بالجسم",
+      slug: "body-care",
+      children: 15,
+    },
+    {
+      id: "f0000000-0000-4000-8000-000000000002",
+      en: "Hair Care",
+      ar: "العناية بالشعر",
+      slug: "hair-care",
+      children: 1,
+    },
+    {
+      id: "f0000000-0000-4000-8000-000000000003",
+      en: "Korean",
+      ar: "الكوري",
+      slug: "korean",
+      children: 0,
+    },
+  ];
+  const item = structuredClone(categoriesItem);
+  item.id = "f1000000-0000-4000-8000-000000000001";
+  item.key = "departments";
+  item.label = { en: "Departments", ar: "الأقسام" };
+  const blocks = departments.map((department, index) =>
+    navigationBlockSchema.parse({
+      id: `f4000000-0000-4000-8000-00000000000${index + 1}`,
+      type: "CATEGORY_LIST",
+      enabled: true,
+      visibility: item.visibility,
+      mobileOrder: index,
+      heading: { en: department.en, ar: department.ar },
+      showHeading: true,
+      showViewAll: true,
+      viewAllLabel: { en: "View all", ar: "عرض الكل" },
+      viewAllDestination: { type: "CATEGORY", id: department.id },
+      mode: "CHILDREN",
+      categoryIds: [],
+      parentCategoryId: department.id,
+      maximumItems: 24,
+      order: "SORT_ORDER",
+      presentation: "PLAIN",
+      showIcon: false,
+      showProductCount: false,
+      showChevron: false,
+    }),
+  );
+  item.megaMenu = {
+    enabled: true,
+    width: "FULL",
+    style: "CLASSIC",
+    mobilePresentation: "ACCORDION",
+    rows: [
+      {
+        id: "f2000000-0000-4000-8000-000000000001",
+        preset: "THREE_EQUAL",
+        presentation: "DEFAULT",
+        columnSeparators: true,
+        enabled: true,
+        visibility: item.visibility,
+        columns: blocks.map((block, index) => ({
+          id: `f3000000-0000-4000-8000-00000000000${index + 1}`,
+          span: 4,
+          blocks: [block],
+        })),
+      },
+    ],
+  };
+  const resolvedBlocks = Object.fromEntries(
+    blocks.map((block, departmentIndex) => [
+      block.id,
+      Array.from({ length: departments[departmentIndex]!.children }, (_, childIndex) => ({
+        kind: "CATEGORY" as const,
+        id: `f5000000-0000-4${String(departmentIndex).padStart(3, "0")}-8000-${String(childIndex + 1).padStart(12, "0")}`,
+        labelEn: `${departments[departmentIndex]!.en} ${childIndex + 1}`,
+        labelAr: `${departments[departmentIndex]!.ar} ${childIndex + 1}`,
+        href: `/categories/${departments[departmentIndex]!.slug}-${childIndex + 1}`,
+        secondaryLabel: departments[departmentIndex]!.id,
+      })),
+    ]),
+  );
+  const resolvedLinks = Object.fromEntries([
+    [item.id, "/shop"],
+    ...blocks.map((block, index) => [block.id, `/categories/${departments[index]!.slug}`]),
+  ]);
+  const multiSnapshot: NavigationPublicSnapshot = {
+    ...snapshot,
+    config: { ...snapshot.config, items: [item] },
+    resolvedBlocks,
+    resolvedLinks,
+  };
+  return { blocks, departments, item, snapshot: multiSnapshot };
+}
+
 describe("published mega menu renderer", () => {
   it("renders the default Brands block as a sorted searchable alphabetical directory", () => {
     const brandSnapshot: NavigationPublicSnapshot = {
@@ -320,6 +418,51 @@ describe("published mega menu renderer", () => {
     expect(screen.getByRole("link", { name: /العناية بالبشرة/ })).toHaveAttribute(
       "href",
       "/categories/skincare",
+    );
+  });
+
+  it("recognizes configuration-driven parent columns and keeps uneven content independent", () => {
+    const fixture = multiCategoryFixture();
+    const { container } = render(
+      <PublishedMegaMenu
+        item={fixture.item}
+        snapshot={fixture.snapshot}
+        locale="en"
+        onNavigate={vi.fn()}
+      />,
+    );
+
+    const menu = container.querySelector(".published-mega");
+    expect(menu).toHaveAttribute("data-category-columns", "3");
+    expect(container.querySelector('[data-layout="category-columns"]')).toBeInTheDocument();
+    expect(container.querySelectorAll(".published-mega__column")).toHaveLength(3);
+    expect(screen.getAllByRole("link", { name: "View all" })).toHaveLength(3);
+    expect(screen.getAllByRole("link", { name: /^Body Care \d+$/ })).toHaveLength(15);
+    expect(screen.getAllByRole("link", { name: /^Hair Care \d+$/ })).toHaveLength(1);
+    expect(screen.queryByRole("link", { name: /^Korean \d+$/ })).not.toBeInTheDocument();
+  });
+
+  it("renders configured parent columns as localized mobile disclosures", () => {
+    const fixture = multiCategoryFixture();
+    const { container } = render(
+      <PublishedMobileMenuItem
+        item={fixture.item}
+        snapshot={fixture.snapshot}
+        locale="ar"
+        onNavigate={vi.fn()}
+      />,
+    );
+
+    const disclosures = container.querySelectorAll(".published-mobile-category-group");
+    expect(disclosures).toHaveLength(3);
+    expect(screen.getByText("العناية بالجسم")).toBeInTheDocument();
+    expect(screen.getByText("العناية بالشعر")).toBeInTheDocument();
+    expect(screen.getByText("الكوري")).toBeInTheDocument();
+    fireEvent.click(screen.getByText("العناية بالجسم").closest("summary")!);
+    expect(disclosures[0]).toHaveAttribute("open");
+    expect(screen.getByRole("link", { name: "العناية بالجسم 1" })).toHaveAttribute(
+      "href",
+      "/categories/body-care-1",
     );
   });
 

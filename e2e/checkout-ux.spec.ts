@@ -251,10 +251,34 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
 
   await page.getByRole("button", { name: "Continue to Payment" }).click();
   await expect(page.getByRole("heading", { name: "Payment", exact: true })).toBeVisible();
+  await page.getByPlaceholder("Optional delivery instructions").fill("Leave with reception");
   await page.getByRole("button", { name: "Back to Review" }).click();
   await expect(page.getByRole("heading", { name: "Review", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Continue to Payment" }).click();
-  const placeOrder = page.getByRole("button", { name: "Place order" }).last();
+  await expect(page.getByPlaceholder("Optional delivery instructions")).toHaveValue(
+    "Leave with reception",
+  );
+
+  const visiblePlaceOrders = page.locator(".sf-checkout-place-order:visible");
+  await expect(visiblePlaceOrders).toHaveCount(1);
+  if (testInfo.project.name.startsWith("mobile")) {
+    await expect(page.locator(".sf-checkout-place-order--inline")).toBeHidden();
+    await expect(page.locator(".sf-checkout-place-order--sticky")).toBeVisible();
+    await expect(page.getByText("Final total", { exact: true })).toBeVisible();
+    await page.locator(".site-footer__bottom").scrollIntoViewIfNeeded();
+    const footerClearance = await page.evaluate(() => {
+      const footer = document.querySelector<HTMLElement>(".site-footer__bottom");
+      const bar = document.querySelector<HTMLElement>(".sf-checkout-mobile-purchase");
+      if (!footer || !bar) return -1;
+      return bar.getBoundingClientRect().top - footer.getBoundingClientRect().bottom;
+    });
+    expect(footerClearance).toBeGreaterThanOrEqual(-1);
+  } else {
+    await expect(page.locator(".sf-checkout-place-order--inline")).toBeVisible();
+    await expect(page.locator(".sf-checkout-place-order--sticky")).toBeHidden();
+  }
+
+  const placeOrder = visiblePlaceOrders.first();
   await expect(placeOrder).toBeEnabled();
   await placeOrder.dblclick();
 

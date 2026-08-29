@@ -113,7 +113,8 @@
   height: 100%;
 }
 .landing-hero__media img {
-  object-fit: cover;
+  object-fit: var(--landing-hero-fit, cover);
+  object-position: var(--landing-hero-position, center);
 }
 .landing-hero__overlay {
   z-index: 1;
@@ -157,25 +158,98 @@
   margin: clamp(18px, 3vw, 42px);
   min-height: 680px;
 }
-.landing-hero[data-layout="SPLIT"] {
+.landing-hero[data-media-behavior="SIDE"] {
   min-height: 680px;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, calc(100% - var(--landing-hero-side-width, 50%))) var(
+      --landing-hero-side-width,
+      50%
+    );
   background: #ebe2d6;
 }
-.landing-hero[data-layout="SPLIT"] .landing-hero__media {
+.landing-hero[data-media-behavior="SIDE"] .landing-hero__media {
   position: relative;
   grid-column: 2;
 }
-[dir="rtl"] .landing-hero[data-layout="SPLIT"] .landing-hero__media {
+.landing-hero[data-media-behavior="SIDE"][data-media-side="LEFT"] .landing-hero__media {
   grid-column: 1;
 }
-.landing-hero[data-layout="SPLIT"] .landing-hero__copy {
+.landing-hero[data-media-behavior="SIDE"] .landing-hero__overlay {
+  display: none;
+}
+.landing-hero[data-media-behavior="SIDE"] .landing-hero__copy {
   grid-row: 1;
   grid-column: 1;
   color: #24201b;
 }
-[dir="rtl"] .landing-hero[data-layout="SPLIT"] .landing-hero__copy {
+.landing-hero[data-media-behavior="SIDE"][data-media-side="LEFT"] .landing-hero__copy {
   grid-column: 2;
+}
+.landing-image-placeholder {
+  display: block;
+  min-height: 180px;
+  background: #e9e3da;
+}
+.landing-hero > .landing-image-placeholder {
+  min-height: 100%;
+  background: linear-gradient(145deg, #d8cfc3, #aaa094);
+}
+
+.landing-image {
+  width: min(100%, 1200px);
+  max-width: 100%;
+  margin-block: 0;
+}
+.landing-image[data-width="FULL"] {
+  width: 100%;
+}
+.landing-image[data-width="CUSTOM"] {
+  width: min(100%, var(--landing-image-width, 80%));
+}
+.landing-image[data-align="START"] {
+  margin-inline-end: auto;
+}
+.landing-image[data-align="CENTER"] {
+  margin-inline: auto;
+}
+.landing-image[data-align="END"] {
+  margin-inline-start: auto;
+}
+.landing-image__link,
+.landing-image__media {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+.landing-image__media {
+  aspect-ratio: var(--landing-image-ratio, auto);
+  max-height: var(--landing-image-max-height, none);
+  overflow: hidden;
+  border-radius: var(--landing-image-radius, 0);
+  background: var(--landing-image-background, transparent);
+}
+.landing-image__media img {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: var(--landing-image-max-height, none);
+  display: block;
+  object-fit: var(--landing-image-fit, cover);
+  object-position: var(--landing-image-position, center);
+}
+.landing-image[data-ratio="ORIGINAL"] .landing-image__media,
+.landing-image[data-ratio="ORIGINAL"] .landing-image__media img {
+  height: auto;
+}
+.landing-image figcaption {
+  margin-top: 11px;
+  color: currentColor;
+  opacity: 0.68;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.landing-image__link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
 }
 .landing-kicker {
   margin: 0 0 18px;
@@ -549,19 +623,26 @@
   .landing-hero {
     min-height: 680px;
   }
-  .landing-hero[data-layout="SPLIT"] {
+  .landing-hero[data-media-behavior="SIDE"] {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: minmax(320px, 48vh) auto;
   }
-  .landing-hero[data-layout="SPLIT"] .landing-hero__media {
+  .landing-hero[data-media-behavior="SIDE"] .landing-hero__media {
     grid-column: 1;
     grid-row: 1;
   }
-  .landing-hero[data-layout="SPLIT"] .landing-hero__copy {
+  .landing-hero[data-media-behavior="SIDE"] .landing-hero__copy {
     grid-column: 1;
     grid-row: 2;
     padding-block: 46px;
+  }
+  .landing-hero[data-media-behavior="SIDE"][data-media-side="LEFT"] .landing-hero__media,
+  .landing-hero[data-media-behavior="SIDE"][data-media-side="LEFT"] .landing-hero__copy {
+    grid-column: 1;
+  }
+  .landing-image[data-width="CUSTOM"] {
+    width: min(100%, var(--landing-image-width, 80%));
   }
   .landing-hero__copy {
     padding-inline: 22px;
