@@ -659,8 +659,13 @@ html[data-motion-ready="true"]
   position: absolute;
   inset: 0;
   background: var(--color-stone);
+  opacity: 0;
   transition: opacity var(--motion-layout) var(--ease-premium);
   pointer-events: none;
+}
+
+html[data-hydrated="true"] .image-reveal-shell[data-loaded="false"]::after {
+  opacity: 1;
 }
 
 .image-reveal-shell[data-loaded="true"]::after {
@@ -669,11 +674,15 @@ html[data-motion-ready="true"]
 }
 
 .image-reveal-media {
-  opacity: 0;
+  opacity: 1;
   transform: scale(1.012);
   transition:
     opacity var(--motion-layout) var(--ease-premium),
     transform 420ms var(--ease-premium);
+}
+
+html[data-hydrated="true"] .image-reveal-shell[data-loaded="false"] .image-reveal-media {
+  opacity: 0;
 }
 
 .image-reveal-shell[data-loaded="true"] .image-reveal-media {

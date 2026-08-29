@@ -510,7 +510,7 @@ const viewerFitImages = [
   ["fit-square", "square", "High-resolution square fixture", 6000, 6000],
 ].map(([id, filename, altText, width, height], sortOrder) => ({
   id,
-  url: `/api/v1/viewer-fixtures/${filename}.svg`,
+  url: `http://${host}:${port}/api/v1/viewer-fixtures/${filename}.svg`,
   altText,
   width,
   height,
@@ -544,6 +544,22 @@ const emptyCart = {
 const server = createServer((request, response) => {
   const url = new URL(request.url || "/", `http://${host}:${port}`);
   const path = url.pathname.replace(/^\/api\/v1/, "");
+  const origin = request.headers.origin;
+  if (origin === "http://127.0.0.1:4173" || origin === "http://127.0.0.1:4180") {
+    response.setHeader("access-control-allow-origin", origin);
+    response.setHeader("access-control-allow-credentials", "true");
+    response.setHeader("vary", "Origin");
+  }
+  if (request.method === "OPTIONS") {
+    response.writeHead(204, {
+      "access-control-allow-methods": "GET,HEAD,POST,PUT,PATCH,DELETE,OPTIONS",
+      "access-control-allow-headers":
+        request.headers["access-control-request-headers"] || "content-type",
+      "access-control-max-age": "600",
+    });
+    response.end();
+    return;
+  }
 
   if (url.pathname === "/health") return json(response, 200, { ok: true });
   if (path === `/products/${product.slug}`) return success(response, product);
