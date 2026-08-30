@@ -202,8 +202,19 @@ function RoutineExperience({ snapshot }: { snapshot: RoutinePublicConfig }) {
       });
       if (fresh.recommendationsChanged) {
         setResult(fresh);
-        setSelectedVariants(Object.fromEntries([...fresh.morningSteps, ...fresh.eveningSteps].map((step) => [step.id, step.product.variantId])));
-        toast.warning(ar ? "تغيّر سعر أو توفر أحد المنتجات. راجعي الروتين المحدّث قبل الإضافة." : "A recommendation changed in price or availability. Review the updated routine before adding it.");
+        setSelectedVariants(
+          Object.fromEntries(
+            [...fresh.morningSteps, ...fresh.eveningSteps].map((step) => [
+              step.id,
+              step.product.variantId,
+            ]),
+          ),
+        );
+        toast.warning(
+          ar
+            ? "تغيّر سعر أو توفر أحد المنتجات. راجعي الروتين المحدّث قبل الإضافة."
+            : "A recommendation changed in price or availability. Review the updated routine before adding it.",
+        );
         return;
       }
       const unique = new Map(
@@ -249,19 +260,53 @@ function RoutineExperience({ snapshot }: { snapshot: RoutinePublicConfig }) {
     if (busy) return;
     setBusy(true);
     try {
-      const fresh = await evaluateRoutine({ ...(sessionId ? { sessionId } : {}), answers, locale, selectedVariants });
+      const fresh = await evaluateRoutine({
+        ...(sessionId ? { sessionId } : {}),
+        answers,
+        locale,
+        selectedVariants,
+      });
       if (fresh.recommendationsChanged) {
         setResult(fresh);
-        setSelectedVariants(Object.fromEntries([...fresh.morningSteps, ...fresh.eveningSteps].map((item) => [item.id, item.product.variantId])));
-        toast.warning(ar ? "تغيّر السعر أو التوفر. راجعي البديل المحدّث." : "Price or availability changed. Review the updated option.");
+        setSelectedVariants(
+          Object.fromEntries(
+            [...fresh.morningSteps, ...fresh.eveningSteps].map((item) => [
+              item.id,
+              item.product.variantId,
+            ]),
+          ),
+        );
+        toast.warning(
+          ar
+            ? "تغيّر السعر أو التوفر. راجعي البديل المحدّث."
+            : "Price or availability changed. Review the updated option.",
+        );
         return;
       }
-      const current = [...fresh.morningSteps, ...fresh.eveningSteps].find((item) => item.id === step.id);
-      if (!current) throw new Error(ar ? "لم يعد هذا المنتج متاحاً." : "This recommendation is no longer available.");
+      const current = [...fresh.morningSteps, ...fresh.eveningSteps].find(
+        (item) => item.id === step.id,
+      );
+      if (!current)
+        throw new Error(
+          ar ? "لم يعد هذا المنتج متاحاً." : "This recommendation is no longer available.",
+        );
       const product = current.product;
-      const ok = await add({ variantId: product.variantId, productId: product.productId, slug: product.slug, name: product.name, image: product.imageUrl ?? undefined, size: product.variantName, price: product.price / 100, qty: 1 });
+      const ok = await add({
+        variantId: product.variantId,
+        productId: product.productId,
+        slug: product.slug,
+        name: product.name,
+        image: product.imageUrl ?? undefined,
+        size: product.variantName,
+        price: product.price / 100,
+        qty: 1,
+      });
       if (ok) {
-        if (sessionId) void recordRoutineEvent(sessionId, { type: "ROUTINE_PRODUCT_ADD_TO_CART", productId: product.productId }).catch(() => undefined);
+        if (sessionId)
+          void recordRoutineEvent(sessionId, {
+            type: "ROUTINE_PRODUCT_ADD_TO_CART",
+            productId: product.productId,
+          }).catch(() => undefined);
         setCartOpen(true);
       }
     } catch (error) {
@@ -513,12 +558,24 @@ function RoutineResultView({
   const ar = locale === "ar";
   const text = (value: { en: string; ar: string }) => value[locale];
   const sharedStepPairs = result.morningSteps.flatMap((morning) => {
-    const evening = result.eveningSteps.find((step) => step.roleKey === morning.roleKey && step.product.variantId === morning.product.variantId);
+    const evening = result.eveningSteps.find(
+      (step) =>
+        step.roleKey === morning.roleKey && step.product.variantId === morning.product.variantId,
+    );
     return evening ? [[morning.id, evening.id] as const] : [];
   });
   const sharedStepIds = new Set(sharedStepPairs.flat());
-  const sharedMate = new Map(sharedStepPairs.flatMap(([morning, evening]) => [[morning, evening] as const, [evening, morning] as const]));
-  const toggleRoutineStep = (id: string) => { onToggle(id); const mate = sharedMate.get(id); if (mate) onToggle(mate); };
+  const sharedMate = new Map(
+    sharedStepPairs.flatMap(([morning, evening]) => [
+      [morning, evening] as const,
+      [evening, morning] as const,
+    ]),
+  );
+  const toggleRoutineStep = (id: string) => {
+    onToggle(id);
+    const mate = sharedMate.get(id);
+    if (mate) onToggle(mate);
+  };
   return (
     <section className="sf-routine-result">
       <header>
@@ -545,7 +602,13 @@ function RoutineResultView({
         </div>
       ) : (
         <>
-          {result.warnings.length ? <div className="sf-routine-warnings" role="status">{result.warnings.map((warning) => <p key={warning}>{warning}</p>)}</div> : null}
+          {result.warnings.length ? (
+            <div className="sf-routine-warnings" role="status">
+              {result.warnings.map((warning) => (
+                <p key={warning}>{warning}</p>
+              ))}
+            </div>
+          ) : null}
           <div className="sf-routine-result__columns">
             <RoutinePeriod
               title={ar ? "الصباح" : "Morning"}
@@ -574,7 +637,11 @@ function RoutineResultView({
           </div>
           <aside className="sf-routine-cart-bar">
             <div>
-              <span>{ar ? `${selectedProductCount(result, selected)} منتجات محددة` : `${selectedProductCount(result, selected)} products selected`}</span>
+              <span>
+                {ar
+                  ? `${selectedProductCount(result, selected)} منتجات محددة`
+                  : `${selectedProductCount(result, selected)} products selected`}
+              </span>
               <strong>{formatMoney(selectedTotal(result, selected), locale)}</strong>
               <small>
                 {ar
@@ -623,7 +690,20 @@ function RoutinePeriod({
         {title}
       </h2>
       <div>
-        {ownedSteps.map((step, index) => <article key={step.id} className="sf-routine-owned-step"><span>{String(index + 1).padStart(2, "0")}</span><div><p>{step.roleLabel}</p><strong>{locale === "ar" ? "استخدمي المنتج الموجود لديك" : "Use the product you already own"}</strong></div><Check aria-hidden="true" /></article>)}
+        {ownedSteps.map((step, index) => (
+          <article key={step.id} className="sf-routine-owned-step">
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <p>{step.roleLabel}</p>
+              <strong>
+                {locale === "ar"
+                  ? "استخدمي المنتج الموجود لديك"
+                  : "Use the product you already own"}
+              </strong>
+            </div>
+            <Check aria-hidden="true" />
+          </article>
+        ))}
         {steps.map((step, index) => (
           <article key={step.id} className="sf-routine-product">
             <label className="sf-routine-select">
@@ -634,10 +714,16 @@ function RoutinePeriod({
               />
               <span>{String(index + 1).padStart(2, "0")}</span>
             </label>
-            <div className="sf-routine-product__canonical-card"><ProductCard product={routineCardProduct(step)} compact /></div>
+            <div className="sf-routine-product__canonical-card">
+              <ProductCard product={routineCardProduct(step)} compact />
+            </div>
             <div className="sf-routine-product__copy">
               <p>{step.roleLabel}</p>
-              {sharedStepIds.has(step.id) ? <span className="sf-routine-shared-period">{locale === "ar" ? "صباحاً + مساءً" : "AM + PM"}</span> : null}
+              {sharedStepIds.has(step.id) ? (
+                <span className="sf-routine-shared-period">
+                  {locale === "ar" ? "صباحاً + مساءً" : "AM + PM"}
+                </span>
+              ) : null}
               <small>{step.product.explanation}</small>
               {step.warnings.map((warning) => (
                 <em key={warning}>{warning}</em>
@@ -660,7 +746,10 @@ function RoutinePeriod({
                   ))}
                 </details>
               ) : null}
-              <Button variant="outline" size="sm" onClick={() => void onAddOne(step)}><ShoppingBag />{locale === "ar" ? "أضيفي هذا المنتج" : "Add this product"}</Button>
+              <Button variant="outline" size="sm" onClick={() => void onAddOne(step)}>
+                <ShoppingBag />
+                {locale === "ar" ? "أضيفي هذا المنتج" : "Add this product"}
+              </Button>
             </div>
           </article>
         ))}
@@ -758,7 +847,14 @@ function routineCardProduct(step: RoutineRecommendationStep): Product {
     image: product.imageUrl ?? "/bioreza-logo.png",
     imageAlt: product.name,
     gallery: [product.imageUrl ?? "/bioreza-logo.png"],
-    sizes: [{ id: product.variantId, label: product.variantName, price: product.price / 100, stock: product.stock }],
+    sizes: [
+      {
+        id: product.variantId,
+        label: product.variantName,
+        price: product.price / 100,
+        stock: product.stock,
+      },
+    ],
     stock: product.stock,
     concerns: [],
     skinTypes: [],
@@ -771,13 +867,20 @@ function routineCardProduct(step: RoutineRecommendationStep): Product {
   };
 }
 function selectedTotal(result: RoutineResult, selected: Set<string>) {
-  return [...new Map([...result.morningSteps, ...result.eveningSteps]
-    .filter((step) => selected.has(step.id))
-    .map((step) => [step.product.variantId, step.product.price])).values()]
-    .reduce((sum, price) => sum + price, 0);
+  return [
+    ...new Map(
+      [...result.morningSteps, ...result.eveningSteps]
+        .filter((step) => selected.has(step.id))
+        .map((step) => [step.product.variantId, step.product.price]),
+    ).values(),
+  ].reduce((sum, price) => sum + price, 0);
 }
 function selectedProductCount(result: RoutineResult, selected: Set<string>) {
-  return new Set([...result.morningSteps, ...result.eveningSteps].filter((step) => selected.has(step.id)).map((step) => step.product.variantId)).size;
+  return new Set(
+    [...result.morningSteps, ...result.eveningSteps]
+      .filter((step) => selected.has(step.id))
+      .map((step) => step.product.variantId),
+  ).size;
 }
 function formatMoney(value: number, locale: "en" | "ar") {
   return new Intl.NumberFormat(locale === "ar" ? "ar-EG" : "en-EG", {
