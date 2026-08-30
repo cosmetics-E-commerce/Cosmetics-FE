@@ -16,6 +16,15 @@ describe("storefront human error registry", () => {
     expect(humanErrorMessage(error, "en")).toContain("EGP 780");
   });
 
+  it.each([
+    ["COUPON_TOTAL_LIMIT_REACHED", "redemption limit", "الحد الأقصى"],
+    ["COUPON_CUSTOMER_LIMIT_REACHED", "customer limit", "حد العملاء"],
+    ["COUPON_CUSTOMER_USAGE_LIMIT", "maximum number of times", "الحد الأقصى"],
+  ])("localizes the committed coupon limit reason %s", (code, english, arabic) => {
+    expect(humanErrorMessage(normalizeStoreApiError({ code }, 409, "en"), "en")).toContain(english);
+    expect(humanErrorMessage(normalizeStoreApiError({ code }, 409, "ar"), "ar")).toContain(arabic);
+  });
+
   it("uses fully Arabic copy for checkout address relationships", () => {
     const error = normalizeStoreApiError(
       {

@@ -1204,16 +1204,19 @@ export declare const promotionTargetsSchema: z.ZodEffects<z.ZodObject<{
 }>;
 export declare const promotionLimitsSchema: z.ZodDefault<z.ZodObject<{
     totalUses: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    uniqueCustomers: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
     usesPerCustomer: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
     discountedUnits: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
     maximumTotalDiscount: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
 }, "strip", z.ZodTypeAny, {
     totalUses: number | null;
+    uniqueCustomers: number | null;
     usesPerCustomer: number | null;
     discountedUnits: number | null;
     maximumTotalDiscount: number | null;
 }, {
     totalUses?: number | null | undefined;
+    uniqueCustomers?: number | null | undefined;
     usesPerCustomer?: number | null | undefined;
     discountedUnits?: number | null | undefined;
     maximumTotalDiscount?: number | null | undefined;
@@ -2423,16 +2426,19 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     }>>;
     limits: z.ZodDefault<z.ZodObject<{
         totalUses: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+        uniqueCustomers: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         usesPerCustomer: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         discountedUnits: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         maximumTotalDiscount: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
     }, "strip", z.ZodTypeAny, {
         totalUses: number | null;
+        uniqueCustomers: number | null;
         usesPerCustomer: number | null;
         discountedUnits: number | null;
         maximumTotalDiscount: number | null;
     }, {
         totalUses?: number | null | undefined;
+        uniqueCustomers?: number | null | undefined;
         usesPerCustomer?: number | null | undefined;
         discountedUnits?: number | null | undefined;
         maximumTotalDiscount?: number | null | undefined;
@@ -2718,6 +2724,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     };
     limits: {
         totalUses: number | null;
+        uniqueCustomers: number | null;
         usesPerCustomer: number | null;
         discountedUnits: number | null;
         maximumTotalDiscount: number | null;
@@ -2979,6 +2986,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | undefined;
     limits?: {
         totalUses?: number | null | undefined;
+        uniqueCustomers?: number | null | undefined;
         usesPerCustomer?: number | null | undefined;
         discountedUnits?: number | null | undefined;
         maximumTotalDiscount?: number | null | undefined;
@@ -3236,6 +3244,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     };
     limits: {
         totalUses: number | null;
+        uniqueCustomers: number | null;
         usesPerCustomer: number | null;
         discountedUnits: number | null;
         maximumTotalDiscount: number | null;
@@ -3497,6 +3506,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
     } | undefined;
     limits?: {
         totalUses?: number | null | undefined;
+        uniqueCustomers?: number | null | undefined;
         usesPerCustomer?: number | null | undefined;
         discountedUnits?: number | null | undefined;
         maximumTotalDiscount?: number | null | undefined;
@@ -4680,16 +4690,19 @@ export declare const updatePromotionSchema: z.ZodObject<{
     }>>>;
     limits: z.ZodOptional<z.ZodDefault<z.ZodObject<{
         totalUses: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+        uniqueCustomers: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         usesPerCustomer: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         discountedUnits: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         maximumTotalDiscount: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
     }, "strip", z.ZodTypeAny, {
         totalUses: number | null;
+        uniqueCustomers: number | null;
         usesPerCustomer: number | null;
         discountedUnits: number | null;
         maximumTotalDiscount: number | null;
     }, {
         totalUses?: number | null | undefined;
+        uniqueCustomers?: number | null | undefined;
         usesPerCustomer?: number | null | undefined;
         discountedUnits?: number | null | undefined;
         maximumTotalDiscount?: number | null | undefined;
@@ -4977,6 +4990,7 @@ export declare const updatePromotionSchema: z.ZodObject<{
     } | undefined;
     limits?: {
         totalUses: number | null;
+        uniqueCustomers: number | null;
         usesPerCustomer: number | null;
         discountedUnits: number | null;
         maximumTotalDiscount: number | null;
@@ -5236,6 +5250,7 @@ export declare const updatePromotionSchema: z.ZodObject<{
     } | undefined;
     limits?: {
         totalUses?: number | null | undefined;
+        uniqueCustomers?: number | null | undefined;
         usesPerCustomer?: number | null | undefined;
         discountedUnits?: number | null | undefined;
         maximumTotalDiscount?: number | null | undefined;
@@ -6478,16 +6493,19 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         }>>;
         limits: z.ZodDefault<z.ZodObject<{
             totalUses: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+            uniqueCustomers: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
             usesPerCustomer: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
             discountedUnits: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
             maximumTotalDiscount: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         }, "strip", z.ZodTypeAny, {
             totalUses: number | null;
+            uniqueCustomers: number | null;
             usesPerCustomer: number | null;
             discountedUnits: number | null;
             maximumTotalDiscount: number | null;
         }, {
             totalUses?: number | null | undefined;
+            uniqueCustomers?: number | null | undefined;
             usesPerCustomer?: number | null | undefined;
             discountedUnits?: number | null | undefined;
             maximumTotalDiscount?: number | null | undefined;
@@ -6773,6 +6791,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         };
         limits: {
             totalUses: number | null;
+            uniqueCustomers: number | null;
             usesPerCustomer: number | null;
             discountedUnits: number | null;
             maximumTotalDiscount: number | null;
@@ -7034,6 +7053,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | undefined;
         limits?: {
             totalUses?: number | null | undefined;
+            uniqueCustomers?: number | null | undefined;
             usesPerCustomer?: number | null | undefined;
             discountedUnits?: number | null | undefined;
             maximumTotalDiscount?: number | null | undefined;
@@ -7343,6 +7363,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         };
         limits: {
             totalUses: number | null;
+            uniqueCustomers: number | null;
             usesPerCustomer: number | null;
             discountedUnits: number | null;
             maximumTotalDiscount: number | null;
@@ -7621,6 +7642,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
         } | undefined;
         limits?: {
             totalUses?: number | null | undefined;
+            uniqueCustomers?: number | null | undefined;
             usesPerCustomer?: number | null | undefined;
             discountedUnits?: number | null | undefined;
             maximumTotalDiscount?: number | null | undefined;
@@ -9007,16 +9029,19 @@ export declare const promotionResponseSchema: z.ZodObject<{
     }>;
     limits: z.ZodDefault<z.ZodObject<{
         totalUses: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+        uniqueCustomers: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         usesPerCustomer: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         discountedUnits: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         maximumTotalDiscount: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
     }, "strip", z.ZodTypeAny, {
         totalUses: number | null;
+        uniqueCustomers: number | null;
         usesPerCustomer: number | null;
         discountedUnits: number | null;
         maximumTotalDiscount: number | null;
     }, {
         totalUses?: number | null | undefined;
+        uniqueCustomers?: number | null | undefined;
         usesPerCustomer?: number | null | undefined;
         discountedUnits?: number | null | undefined;
         maximumTotalDiscount?: number | null | undefined;
@@ -9044,19 +9069,26 @@ export declare const promotionResponseSchema: z.ZodObject<{
         id: z.ZodString;
         code: z.ZodString;
         usedCount: z.ZodNumber;
+        uniqueCustomerCount: z.ZodNumber;
         usageLimitTotal: z.ZodNullable<z.ZodNumber>;
+        usageLimitUniqueCustomers: z.ZodNullable<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
         code: string;
         id: string;
         usedCount: number;
+        uniqueCustomerCount: number;
         usageLimitTotal: number | null;
+        usageLimitUniqueCustomers: number | null;
     }, {
         code: string;
         id: string;
         usedCount: number;
+        uniqueCustomerCount: number;
         usageLimitTotal: number | null;
+        usageLimitUniqueCustomers: number | null;
     }>, "many">;
     usedCount: z.ZodNumber;
+    uniqueCustomerCount: z.ZodNumber;
     discountGranted: z.ZodNumber;
     discountedUnits: z.ZodNumber;
     createdAt: z.ZodString;
@@ -9325,6 +9357,7 @@ export declare const promotionResponseSchema: z.ZodObject<{
     };
     limits: {
         totalUses: number | null;
+        uniqueCustomers: number | null;
         usesPerCustomer: number | null;
         discountedUnits: number | null;
         maximumTotalDiscount: number | null;
@@ -9341,8 +9374,11 @@ export declare const promotionResponseSchema: z.ZodObject<{
         code: string;
         id: string;
         usedCount: number;
+        uniqueCustomerCount: number;
         usageLimitTotal: number | null;
+        usageLimitUniqueCustomers: number | null;
     }[];
+    uniqueCustomerCount: number;
     discountGranted: number;
 }, {
     type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
@@ -9600,11 +9636,15 @@ export declare const promotionResponseSchema: z.ZodObject<{
         code: string;
         id: string;
         usedCount: number;
+        uniqueCustomerCount: number;
         usageLimitTotal: number | null;
+        usageLimitUniqueCustomers: number | null;
     }[];
+    uniqueCustomerCount: number;
     discountGranted: number;
     limits?: {
         totalUses?: number | null | undefined;
+        uniqueCustomers?: number | null | undefined;
         usesPerCustomer?: number | null | undefined;
         discountedUnits?: number | null | undefined;
         maximumTotalDiscount?: number | null | undefined;
@@ -10786,16 +10826,19 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         }>;
         limits: z.ZodDefault<z.ZodObject<{
             totalUses: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+            uniqueCustomers: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
             usesPerCustomer: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
             discountedUnits: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
             maximumTotalDiscount: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         }, "strip", z.ZodTypeAny, {
             totalUses: number | null;
+            uniqueCustomers: number | null;
             usesPerCustomer: number | null;
             discountedUnits: number | null;
             maximumTotalDiscount: number | null;
         }, {
             totalUses?: number | null | undefined;
+            uniqueCustomers?: number | null | undefined;
             usesPerCustomer?: number | null | undefined;
             discountedUnits?: number | null | undefined;
             maximumTotalDiscount?: number | null | undefined;
@@ -10823,19 +10866,26 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             id: z.ZodString;
             code: z.ZodString;
             usedCount: z.ZodNumber;
+            uniqueCustomerCount: z.ZodNumber;
             usageLimitTotal: z.ZodNullable<z.ZodNumber>;
+            usageLimitUniqueCustomers: z.ZodNullable<z.ZodNumber>;
         }, "strip", z.ZodTypeAny, {
             code: string;
             id: string;
             usedCount: number;
+            uniqueCustomerCount: number;
             usageLimitTotal: number | null;
+            usageLimitUniqueCustomers: number | null;
         }, {
             code: string;
             id: string;
             usedCount: number;
+            uniqueCustomerCount: number;
             usageLimitTotal: number | null;
+            usageLimitUniqueCustomers: number | null;
         }>, "many">;
         usedCount: z.ZodNumber;
+        uniqueCustomerCount: z.ZodNumber;
         discountGranted: z.ZodNumber;
         discountedUnits: z.ZodNumber;
         createdAt: z.ZodString;
@@ -11104,6 +11154,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         };
         limits: {
             totalUses: number | null;
+            uniqueCustomers: number | null;
             usesPerCustomer: number | null;
             discountedUnits: number | null;
             maximumTotalDiscount: number | null;
@@ -11120,8 +11171,11 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             code: string;
             id: string;
             usedCount: number;
+            uniqueCustomerCount: number;
             usageLimitTotal: number | null;
+            usageLimitUniqueCustomers: number | null;
         }[];
+        uniqueCustomerCount: number;
         discountGranted: number;
     }, {
         type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
@@ -11379,11 +11433,15 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             code: string;
             id: string;
             usedCount: number;
+            uniqueCustomerCount: number;
             usageLimitTotal: number | null;
+            usageLimitUniqueCustomers: number | null;
         }[];
+        uniqueCustomerCount: number;
         discountGranted: number;
         limits?: {
             totalUses?: number | null | undefined;
+            uniqueCustomers?: number | null | undefined;
             usesPerCustomer?: number | null | undefined;
             discountedUnits?: number | null | undefined;
             maximumTotalDiscount?: number | null | undefined;
@@ -11672,6 +11730,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
         };
         limits: {
             totalUses: number | null;
+            uniqueCustomers: number | null;
             usesPerCustomer: number | null;
             discountedUnits: number | null;
             maximumTotalDiscount: number | null;
@@ -11688,8 +11747,11 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             code: string;
             id: string;
             usedCount: number;
+            uniqueCustomerCount: number;
             usageLimitTotal: number | null;
+            usageLimitUniqueCustomers: number | null;
         }[];
+        uniqueCustomerCount: number;
         discountGranted: number;
     }[];
     meta: {
@@ -11957,11 +12019,15 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             code: string;
             id: string;
             usedCount: number;
+            uniqueCustomerCount: number;
             usageLimitTotal: number | null;
+            usageLimitUniqueCustomers: number | null;
         }[];
+        uniqueCustomerCount: number;
         discountGranted: number;
         limits?: {
             totalUses?: number | null | undefined;
+            uniqueCustomers?: number | null | undefined;
             usesPerCustomer?: number | null | undefined;
             discountedUnits?: number | null | undefined;
             maximumTotalDiscount?: number | null | undefined;
@@ -12054,6 +12120,7 @@ export declare const promotionAnalyticsSchema: z.ZodObject<{
     discountGranted: z.ZodNumber;
     averageOrderValue: z.ZodNumber;
     remainingUses: z.ZodNullable<z.ZodNumber>;
+    remainingUniqueCustomers: z.ZodNullable<z.ZodNumber>;
     usageByDate: z.ZodArray<z.ZodObject<{
         date: z.ZodString;
         redemptions: z.ZodNumber;
@@ -12074,11 +12141,12 @@ export declare const promotionAnalyticsSchema: z.ZodObject<{
     averageOrderValue: number;
     promotionId: string;
     revenue: number;
+    uniqueCustomers: number;
     discountGranted: number;
     redemptions: number;
-    uniqueCustomers: number;
     generatedOrders: number;
     remainingUses: number | null;
+    remainingUniqueCustomers: number | null;
     usageByDate: {
         date: string;
         discount: number;
@@ -12089,17 +12157,265 @@ export declare const promotionAnalyticsSchema: z.ZodObject<{
     averageOrderValue: number;
     promotionId: string;
     revenue: number;
+    uniqueCustomers: number;
     discountGranted: number;
     redemptions: number;
-    uniqueCustomers: number;
     generatedOrders: number;
     remainingUses: number | null;
+    remainingUniqueCustomers: number | null;
     usageByDate: {
         date: string;
         discount: number;
         revenue: number;
         redemptions: number;
     }[];
+}>;
+export declare const promotionRedemptionQuerySchema: z.ZodObject<{
+    page: z.ZodDefault<z.ZodNumber>;
+    limit: z.ZodDefault<z.ZodNumber>;
+    sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
+} & {
+    search: z.ZodOptional<z.ZodString>;
+    sortBy: z.ZodDefault<z.ZodEnum<["createdAt", "discountAmount"]>>;
+}, "strip", z.ZodTypeAny, {
+    page: number;
+    limit: number;
+    sortBy: "createdAt" | "discountAmount";
+    sortOrder: "asc" | "desc";
+    search?: string | undefined;
+}, {
+    page?: number | undefined;
+    limit?: number | undefined;
+    sortBy?: "createdAt" | "discountAmount" | undefined;
+    sortOrder?: "asc" | "desc" | undefined;
+    search?: string | undefined;
+}>;
+export type PromotionRedemptionQuery = z.infer<typeof promotionRedemptionQuerySchema>;
+export declare const promotionRedemptionSchema: z.ZodObject<{
+    id: z.ZodString;
+    customer: z.ZodObject<{
+        id: z.ZodString;
+        name: z.ZodString;
+        email: z.ZodNullable<z.ZodString>;
+        phone: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        phone: string;
+        email: string | null;
+        name: string;
+    }, {
+        id: string;
+        phone: string;
+        email: string | null;
+        name: string;
+    }>;
+    order: z.ZodObject<{
+        id: z.ZodString;
+        orderNumber: z.ZodString;
+        status: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        status: string;
+        id: string;
+        orderNumber: string;
+    }, {
+        status: string;
+        id: string;
+        orderNumber: string;
+    }>;
+    couponCode: z.ZodNullable<z.ZodString>;
+    discountAmount: z.ZodNumber;
+    shippingDiscount: z.ZodNumber;
+    status: z.ZodLiteral<"REDEEMED">;
+    redeemedAt: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    status: "REDEEMED";
+    id: string;
+    couponCode: string | null;
+    customer: {
+        id: string;
+        phone: string;
+        email: string | null;
+        name: string;
+    };
+    shippingDiscount: number;
+    discountAmount: number;
+    order: {
+        status: string;
+        id: string;
+        orderNumber: string;
+    };
+    redeemedAt: string;
+}, {
+    status: "REDEEMED";
+    id: string;
+    couponCode: string | null;
+    customer: {
+        id: string;
+        phone: string;
+        email: string | null;
+        name: string;
+    };
+    shippingDiscount: number;
+    discountAmount: number;
+    order: {
+        status: string;
+        id: string;
+        orderNumber: string;
+    };
+    redeemedAt: string;
+}>;
+export declare const promotionRedemptionListSchema: z.ZodObject<{
+    data: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        customer: z.ZodObject<{
+            id: z.ZodString;
+            name: z.ZodString;
+            email: z.ZodNullable<z.ZodString>;
+            phone: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            phone: string;
+            email: string | null;
+            name: string;
+        }, {
+            id: string;
+            phone: string;
+            email: string | null;
+            name: string;
+        }>;
+        order: z.ZodObject<{
+            id: z.ZodString;
+            orderNumber: z.ZodString;
+            status: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            status: string;
+            id: string;
+            orderNumber: string;
+        }, {
+            status: string;
+            id: string;
+            orderNumber: string;
+        }>;
+        couponCode: z.ZodNullable<z.ZodString>;
+        discountAmount: z.ZodNumber;
+        shippingDiscount: z.ZodNumber;
+        status: z.ZodLiteral<"REDEEMED">;
+        redeemedAt: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        status: "REDEEMED";
+        id: string;
+        couponCode: string | null;
+        customer: {
+            id: string;
+            phone: string;
+            email: string | null;
+            name: string;
+        };
+        shippingDiscount: number;
+        discountAmount: number;
+        order: {
+            status: string;
+            id: string;
+            orderNumber: string;
+        };
+        redeemedAt: string;
+    }, {
+        status: "REDEEMED";
+        id: string;
+        couponCode: string | null;
+        customer: {
+            id: string;
+            phone: string;
+            email: string | null;
+            name: string;
+        };
+        shippingDiscount: number;
+        discountAmount: number;
+        order: {
+            status: string;
+            id: string;
+            orderNumber: string;
+        };
+        redeemedAt: string;
+    }>, "many">;
+    meta: z.ZodObject<{
+        page: z.ZodNumber;
+        limit: z.ZodNumber;
+        total: z.ZodNumber;
+        totalPages: z.ZodNumber;
+        hasNext: z.ZodBoolean;
+        hasPrev: z.ZodBoolean;
+    }, "strip", z.ZodTypeAny, {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    }, {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    }>;
+}, "strip", z.ZodTypeAny, {
+    data: {
+        status: "REDEEMED";
+        id: string;
+        couponCode: string | null;
+        customer: {
+            id: string;
+            phone: string;
+            email: string | null;
+            name: string;
+        };
+        shippingDiscount: number;
+        discountAmount: number;
+        order: {
+            status: string;
+            id: string;
+            orderNumber: string;
+        };
+        redeemedAt: string;
+    }[];
+    meta: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    };
+}, {
+    data: {
+        status: "REDEEMED";
+        id: string;
+        couponCode: string | null;
+        customer: {
+            id: string;
+            phone: string;
+            email: string | null;
+            name: string;
+        };
+        shippingDiscount: number;
+        discountAmount: number;
+        order: {
+            status: string;
+            id: string;
+            orderNumber: string;
+        };
+        redeemedAt: string;
+    }[];
+    meta: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+        hasNext: boolean;
+        hasPrev: boolean;
+    };
 }>;
 export declare const promotionOverviewSchema: z.ZodObject<{
     total: z.ZodNumber;

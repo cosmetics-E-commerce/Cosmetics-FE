@@ -973,19 +973,19 @@ html[data-hydrated="true"] .image-reveal-shell[data-loaded="false"] .image-revea
   text-align: center;
 }
 
-.sf-brand-landing-logo-shell {
+.sf-catalog-landing-intro .sf-brand-landing-logo-shell {
   width: min(100%, 26.25rem);
   height: clamp(10rem, 13.2vw, 11.25rem);
   margin-bottom: 0;
   background: transparent;
 }
 
-.sf-brand-landing-logo-shell .image-reveal-media {
+.sf-catalog-landing-intro .sf-brand-landing-logo-shell .image-reveal-media {
   transform: none;
 }
 
 @media (max-width: 640px) {
-  .sf-brand-landing-logo-shell {
+  .sf-catalog-landing-intro .sf-brand-landing-logo-shell {
     width: min(100%, 19rem);
     height: 9rem;
     margin-bottom: 0;

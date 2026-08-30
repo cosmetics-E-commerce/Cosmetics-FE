@@ -701,6 +701,7 @@ const pageBuilderImageSnapshot = {
       width: 1600,
       height: 900,
       altText: null,
+      contentType: "image/svg+xml",
     },
     [pageBuilderImageIds.mobile]: {
       id: pageBuilderImageIds.mobile,
@@ -708,9 +709,252 @@ const pageBuilderImageSnapshot = {
       width: 750,
       height: 1000,
       altText: null,
+      contentType: "image/svg+xml",
     },
   },
   links: { [pageBuilderImageIds.section]: "/shop" },
+};
+
+const brandLogoSectionId = "e2000000-0000-4000-8000-000000000003";
+const brandLogoFixtures = [
+  ["e2000000-0000-4000-8000-000000000011", "Wide Wordmark", "wide.svg", "STANDARD", "STANDARD"],
+  ["e2000000-0000-4000-8000-000000000012", "Tall Mark", "tall.svg", "STANDARD", "STANDARD"],
+  ["e2000000-0000-4000-8000-000000000013", "Square Mark", "square.svg", "STANDARD", "STANDARD"],
+  [
+    "e2000000-0000-4000-8000-000000000014",
+    "Transparent Mark",
+    "transparent.svg",
+    "STANDARD",
+    "STANDARD",
+  ],
+  ["e2000000-0000-4000-8000-000000000015", "Whitespace Mark", "whitespace.svg", "LARGE", "COMPACT"],
+  ["e2000000-0000-4000-8000-000000000016", "Tiny Source", "tiny.svg", "STANDARD", "STANDARD"],
+  ["e2000000-0000-4000-8000-000000000017", "Missing Logo", null, "STANDARD", "STANDARD"],
+  ["e2000000-0000-4000-8000-000000000018", "Deleted Logo", "deleted.svg", "STANDARD", "STANDARD"],
+];
+const pageBuilderBrandLogoSnapshot = {
+  ...pageBuilderImageSnapshot,
+  pageId: "e2000000-0000-4000-8000-000000000001",
+  revisionId: "e2000000-0000-4000-8000-000000000002",
+  slug: "page-builder-brand-logo-test",
+  config: {
+    ...pageBuilderImageSnapshot.config,
+    title: { en: "Brand logo normalization", ar: "توحيد شعارات العلامات" },
+    seo: {
+      ...pageBuilderImageSnapshot.config.seo,
+      canonicalPath: "/page-builder-brand-logo-test",
+    },
+    sections: [
+      {
+        id: brandLogoSectionId,
+        analyticsKey: "brand-logo-normalization",
+        label: "Brand logo normalization",
+        enabled: true,
+        visibility: {
+          devices: ["DESKTOP", "TABLET", "MOBILE"],
+          locales: ["en", "ar"],
+          startsAt: null,
+          endsAt: null,
+        },
+        surface: "DEFAULT",
+        spacing: "MEDIUM",
+        width: "CONTAINED",
+        type: "BRANDS",
+        heading: { en: "Brand identities", ar: "هويات العلامات" },
+        description: { en: "", ar: "" },
+        mode: "MANUAL",
+        brandIds: brandLogoFixtures.map(([id]) => id),
+        limit: 12,
+        layout: "LOGO_GRID",
+      },
+    ],
+  },
+  entities: {
+    [brandLogoSectionId]: brandLogoFixtures.map(([id, name, fixture, scale, padding]) => ({
+      kind: "BRAND",
+      id,
+      labelEn: name,
+      labelAr: name,
+      slug: name.toLowerCase().replaceAll(" ", "-"),
+      href: `/brands/${name.toLowerCase().replaceAll(" ", "-")}`,
+      imageUrl: fixture ? `http://${host}:${port}/api/v1/brand-logo-fixtures/${fixture}` : null,
+      logoDisplay: { scale, padding, alignX: "CENTER", alignY: "CENTER" },
+    })),
+  },
+  media: {},
+  links: {},
+};
+
+const heroSlideId = "91000000-0000-4000-8000-000000000004";
+const pageBuilderHeroSnapshot = {
+  ...pageBuilderImageSnapshot,
+  slug: "page-builder-hero-test",
+  config: {
+    ...pageBuilderImageSnapshot.config,
+    title: { en: "Hero test", ar: "اختبار الواجهة" },
+    sections: [
+      {
+        id: pageBuilderImageIds.section,
+        analyticsKey: "hero-builder-test",
+        label: "Hero Builder test",
+        enabled: true,
+        visibility: {
+          devices: ["DESKTOP", "TABLET", "MOBILE"],
+          locales: ["en", "ar"],
+          startsAt: null,
+          endsAt: null,
+        },
+        surface: "DEFAULT",
+        spacing: "NONE",
+        width: "FULL",
+        type: "HERO",
+        desktopMediaId: null,
+        mobileMediaId: null,
+        imageAlt: { en: "", ar: "" },
+        eyebrow: { en: "", ar: "" },
+        heading: { en: "", ar: "" },
+        description: { en: "", ar: "" },
+        primaryCtaLabel: { en: "", ar: "" },
+        primaryDestination: null,
+        secondaryCtaLabel: { en: "", ar: "" },
+        secondaryDestination: null,
+        layout: "FULL",
+        alignment: "START",
+        contentPosition: "CENTER",
+        overlay: "MEDIUM",
+        headingLevel: "H1",
+        slides: [
+          {
+            id: heroSlideId,
+            label: "Responsive launch",
+            enabled: true,
+            mediaType: "IMAGE",
+            desktopMediaId: pageBuilderImageIds.desktop,
+            mobileMediaId: pageBuilderImageIds.mobile,
+            posterMediaId: null,
+            imageAlt: { en: "Campaign collection", ar: "مجموعة الحملة" },
+            decorative: false,
+            eyebrow: { en: "Curated beauty", ar: "جمال مختار" },
+            heading: { en: "Skin\nFirst", ar: "البشرة\nأولاً" },
+            secondaryHeading: { en: "New collection", ar: "مجموعة جديدة" },
+            description: {
+              en: "A responsive Hero managed by Admin.",
+              ar: "واجهة متجاوبة يديرها المشرف.",
+            },
+            supportingText: { en: "", ar: "" },
+            primaryCta: {
+              label: { en: "Shop", ar: "تسوقي" },
+              destination: { type: "SHOP" },
+              variant: "PRIMARY",
+              newTab: false,
+            },
+            secondaryCta: {
+              label: { en: "", ar: "" },
+              destination: null,
+              variant: "TEXT",
+              newTab: false,
+            },
+            layout: {
+              mediaBehavior: "BACKGROUND",
+              objectFit: "COVER",
+              objectPosition: "FOCAL_POINT",
+              focalPoint: { x: 68, y: 35 },
+              zoom: 100,
+              sideImagePosition: "RIGHT",
+              sideImageWidth: 50,
+              horizontalAlignment: "START",
+              verticalAlignment: "CENTER",
+              textAlignment: "START",
+              contentWidth: "MEDIUM",
+              height: "STANDARD",
+              overlay: "MEDIUM",
+              overlayStyle: "TO_END",
+              overlayColor: "#0f0c09",
+              textTheme: "LIGHT",
+            },
+            mobile: {
+              enabled: true,
+              objectFit: "COVER",
+              objectPosition: "FOCAL_POINT",
+              focalPoint: { x: 38, y: 50 },
+              zoom: 105,
+              horizontalAlignment: "CENTER",
+              verticalAlignment: "BOTTOM",
+              textAlignment: "CENTER",
+              height: "FULL",
+              overlay: "STRONG",
+              overlayStyle: "TO_TOP",
+              textTheme: "LIGHT",
+              contentOrder: "MEDIA_FIRST",
+              ctaLayout: "STACK",
+              headlineScale: "SMALL",
+              showDescription: true,
+              showSecondaryCta: false,
+            },
+            video: {
+              autoplay: true,
+              muted: true,
+              loop: true,
+              controls: false,
+              playsInline: true,
+              preload: "METADATA",
+            },
+            schedule: { startsAt: null, endsAt: null },
+          },
+        ],
+        carousel: {
+          autoplay: false,
+          durationSeconds: 6,
+          pauseOnHover: true,
+          showArrows: true,
+          showIndicators: true,
+          animation: "FADE",
+        },
+      },
+    ],
+  },
+  links: { [`${pageBuilderImageIds.section}:slide:${heroSlideId}:primary`]: "/shop" },
+};
+
+const signatureModuleNames = [
+  "BRAND_MARQUEE",
+  "BENEFITS",
+  "CATEGORY_SHOWCASE",
+  "FEATURED",
+  "COLLECTION_FEATURE",
+  "CONCERNS",
+  "BEST_SELLERS",
+  "BRAND_STORY",
+  "BEAUTY_DIFFERENCE",
+];
+const pageBuilderSignatureHomeSnapshot = {
+  ...pageBuilderImageSnapshot,
+  slug: "page-builder-signature-home-test",
+  config: {
+    ...pageBuilderImageSnapshot.config,
+    title: { en: "BioReza Homepage", ar: "الصفحة الرئيسية لبيوريزا" },
+    sections: signatureModuleNames.map((module, index) => ({
+      id: `92000000-0000-4000-8000-${String(index + 1).padStart(12, "0")}`,
+      analyticsKey: `home-${module.toLowerCase().replaceAll("_", "-")}`,
+      label: module,
+      enabled: true,
+      visibility: {
+        devices: ["DESKTOP", "TABLET", "MOBILE"],
+        locales: ["en", "ar"],
+        startsAt: null,
+        endsAt: null,
+      },
+      surface: "DEFAULT",
+      spacing: "NONE",
+      width: "FULL",
+      type: "BIOREZA_HOME_MODULE",
+      module,
+    })),
+  },
+  entities: {},
+  products: {},
+  media: {},
+  links: {},
 };
 
 const server = createServer((request, response) => {
@@ -737,6 +981,15 @@ const server = createServer((request, response) => {
   if (path === "/pages/page-builder-image-test") {
     return success(response, pageBuilderImageSnapshot);
   }
+  if (path === "/pages/page-builder-brand-logo-test") {
+    return success(response, pageBuilderBrandLogoSnapshot);
+  }
+  if (path === "/pages/page-builder-hero-test") {
+    return success(response, pageBuilderHeroSnapshot);
+  }
+  if (path === "/pages/page-builder-signature-home-test") {
+    return success(response, pageBuilderSignatureHomeSnapshot);
+  }
   if (path.startsWith("/page-builder-fixtures/")) {
     const mobile = path.endsWith("/mobile.svg");
     const width = mobile ? 750 : 1600;
@@ -745,6 +998,31 @@ const server = createServer((request, response) => {
     response.writeHead(200, { "content-type": "image/svg+xml", "cache-control": "no-store" });
     response.end(
       `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect width="100%" height="100%" fill="${color}"/><text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-family="sans-serif" font-size="48">${mobile ? "mobile" : "desktop"}</text></svg>`,
+    );
+    return;
+  }
+  if (path.startsWith("/brand-logo-fixtures/")) {
+    const filename = path.split("/").at(-1);
+    if (filename === "deleted.svg") return json(response, 404, { error: "Fixture removed" });
+    const dimensions = {
+      "wide.svg": [900, 180],
+      "tall.svg": [220, 600],
+      "square.svg": [400, 400],
+      "transparent.svg": [520, 260],
+      "whitespace.svg": [1000, 500],
+      "tiny.svg": [40, 20],
+    }[filename];
+    if (!dimensions) return json(response, 404, { error: "Fixture not found" });
+    const [width, height] = dimensions;
+    const inset = filename === "whitespace.svg" ? 0.38 : 0.08;
+    const x = Math.round(width * inset);
+    const y = Math.round(height * inset);
+    response.writeHead(200, {
+      "content-type": "image/svg+xml",
+      "cache-control": "no-store",
+    });
+    response.end(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}"><rect x="${x}" y="${y}" width="${width - x * 2}" height="${height - y * 2}" rx="12" fill="#27231e"/><text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#f7f1e8" font-family="sans-serif" font-size="${Math.max(10, Math.round(height * 0.16))}">${filename.replace(".svg", "")}</text></svg>`,
     );
     return;
   }

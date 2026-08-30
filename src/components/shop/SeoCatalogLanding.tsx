@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
+import type { BrandLogoDisplay } from "@cosmetics/contracts";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { CatalogListingControls } from "@/components/shop/CatalogListingControls";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import {
   type CatalogListingSearch,
   withListingPage,
@@ -27,6 +29,7 @@ type Props = {
     productCount: number;
   }>;
   logo?: string | null;
+  logoDisplay?: BrandLogoDisplay;
   facets: CatalogFacetResponse;
   search: CatalogListingSearch;
   onSearchChange: (search: CatalogListingSearch) => void;
@@ -43,11 +46,12 @@ export function SeoCatalogLanding({
   ancestors = [],
   children = [],
   logo,
+  logoDisplay,
   facets,
   search,
   onSearchChange,
 }: Props) {
-  const hasBrandLogo = kind === "brand" && Boolean(logo);
+  const hasBrandLogo = kind === "brand";
   const brandGroups = kind === "brand" ? groupBrandProducts(products, facets, locale) : [];
   const filtered = Boolean(
     search.category ||
@@ -86,16 +90,14 @@ export function SeoCatalogLanding({
             : "mx-auto max-w-3xl px-5 pb-10 pt-14 text-center md:px-10 md:pb-14 md:pt-20"
         }
       >
-        {hasBrandLogo && logo ? (
-          <PolishedImage
-            src={logo}
-            alt={locale === "ar" ? `شعار ${name}` : `${name} logo`}
-            width={560}
-            height={240}
-            loading="eager"
-            wrapperClassName="sf-brand-landing-logo-shell mx-auto"
-            className="sf-brand-landing-logo h-full w-full object-contain"
-            fallback={<span className="sf-brand-landing-logo-fallback">{name}</span>}
+        {hasBrandLogo ? (
+          <BrandLogo
+            name={name}
+            logoUrl={logo}
+            display={logoDisplay}
+            priority
+            className="sf-brand-landing-logo-shell mx-auto"
+            sizes="(min-width: 640px) 420px, 304px"
           />
         ) : null}
         {kind === "category" ? (

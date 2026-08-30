@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { BrandLogoDisplay } from "../catalog/product.schema";
 export declare const navigationSchemaVersion: 1;
 export declare const localizedNavigationTextSchema: z.ZodObject<{
     en: z.ZodDefault<z.ZodString>;
@@ -1094,7 +1095,7 @@ export declare const navigationBlockSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     maximumItems: number;
     mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
     parentCategoryId: string | null;
-    presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+    presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
     showIcon: boolean;
     showProductCount: boolean;
     showChevron: boolean;
@@ -1156,7 +1157,7 @@ export declare const navigationBlockSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     maximumItems?: number | undefined;
     mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
     parentCategoryId?: string | null | undefined;
-    presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+    presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
     showIcon?: boolean | undefined;
     showProductCount?: boolean | undefined;
     showChevron?: boolean | undefined;
@@ -2529,7 +2530,7 @@ export declare const navigationBlockSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         locales: ("en" | "ar")[];
     };
     mobileOrder: number | null;
-    presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+    presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
     showHeading: boolean;
     links: {
         id: string;
@@ -2585,7 +2586,7 @@ export declare const navigationBlockSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     };
     enabled?: boolean | undefined;
     mobileOrder?: number | null | undefined;
-    presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+    presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
     showHeading?: boolean | undefined;
     links?: {
         id: string;
@@ -3349,7 +3350,7 @@ export declare const navigationBlockSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         locales: ("en" | "ar")[];
     };
     mobileOrder: number | null;
-    size: "SMALL" | "MEDIUM" | "LARGE";
+    size: "SMALL" | "LARGE" | "MEDIUM";
 }, {
     type: "SPACER";
     id: string;
@@ -3361,7 +3362,7 @@ export declare const navigationBlockSchema: z.ZodDiscriminatedUnion<"type", [z.Z
     };
     enabled?: boolean | undefined;
     mobileOrder?: number | null | undefined;
-    size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+    size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
 }>, z.ZodObject<{
     type: z.ZodLiteral<"SHOP_ALL">;
     label: z.ZodObject<{
@@ -4560,7 +4561,7 @@ export declare const navigationColumnSchema: z.ZodObject<{
         maximumItems: number;
         mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
         parentCategoryId: string | null;
-        presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+        presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
         showIcon: boolean;
         showProductCount: boolean;
         showChevron: boolean;
@@ -4622,7 +4623,7 @@ export declare const navigationColumnSchema: z.ZodObject<{
         maximumItems?: number | undefined;
         mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
         parentCategoryId?: string | null | undefined;
-        presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+        presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
         showIcon?: boolean | undefined;
         showProductCount?: boolean | undefined;
         showChevron?: boolean | undefined;
@@ -5995,7 +5996,7 @@ export declare const navigationColumnSchema: z.ZodObject<{
             locales: ("en" | "ar")[];
         };
         mobileOrder: number | null;
-        presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+        presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
         showHeading: boolean;
         links: {
             id: string;
@@ -6051,7 +6052,7 @@ export declare const navigationColumnSchema: z.ZodObject<{
         };
         enabled?: boolean | undefined;
         mobileOrder?: number | null | undefined;
-        presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+        presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
         showHeading?: boolean | undefined;
         links?: {
             id: string;
@@ -6815,7 +6816,7 @@ export declare const navigationColumnSchema: z.ZodObject<{
             locales: ("en" | "ar")[];
         };
         mobileOrder: number | null;
-        size: "SMALL" | "MEDIUM" | "LARGE";
+        size: "SMALL" | "LARGE" | "MEDIUM";
     }, {
         type: "SPACER";
         id: string;
@@ -6827,7 +6828,7 @@ export declare const navigationColumnSchema: z.ZodObject<{
         };
         enabled?: boolean | undefined;
         mobileOrder?: number | null | undefined;
-        size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+        size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"SHOP_ALL">;
         label: z.ZodObject<{
@@ -7257,7 +7258,7 @@ export declare const navigationColumnSchema: z.ZodObject<{
         maximumItems: number;
         mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
         parentCategoryId: string | null;
-        presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+        presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
         showIcon: boolean;
         showProductCount: boolean;
         showChevron: boolean;
@@ -7522,7 +7523,7 @@ export declare const navigationColumnSchema: z.ZodObject<{
             locales: ("en" | "ar")[];
         };
         mobileOrder: number | null;
-        presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+        presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
         showHeading: boolean;
         links: {
             id: string;
@@ -7718,7 +7719,7 @@ export declare const navigationColumnSchema: z.ZodObject<{
             locales: ("en" | "ar")[];
         };
         mobileOrder: number | null;
-        size: "SMALL" | "MEDIUM" | "LARGE";
+        size: "SMALL" | "LARGE" | "MEDIUM";
     } | {
         type: "SHOP_ALL";
         id: string;
@@ -7964,7 +7965,7 @@ export declare const navigationColumnSchema: z.ZodObject<{
         maximumItems?: number | undefined;
         mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
         parentCategoryId?: string | null | undefined;
-        presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+        presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
         showIcon?: boolean | undefined;
         showProductCount?: boolean | undefined;
         showChevron?: boolean | undefined;
@@ -8229,7 +8230,7 @@ export declare const navigationColumnSchema: z.ZodObject<{
         };
         enabled?: boolean | undefined;
         mobileOrder?: number | null | undefined;
-        presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+        presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
         showHeading?: boolean | undefined;
         links?: {
             id: string;
@@ -8425,7 +8426,7 @@ export declare const navigationColumnSchema: z.ZodObject<{
         };
         enabled?: boolean | undefined;
         mobileOrder?: number | null | undefined;
-        size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+        size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
     } | {
         type: "SHOP_ALL";
         id: string;
@@ -9471,7 +9472,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
             maximumItems: number;
             mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
             parentCategoryId: string | null;
-            presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+            presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
             showIcon: boolean;
             showProductCount: boolean;
             showChevron: boolean;
@@ -9533,7 +9534,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
             maximumItems?: number | undefined;
             mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
             parentCategoryId?: string | null | undefined;
-            presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+            presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
             showIcon?: boolean | undefined;
             showProductCount?: boolean | undefined;
             showChevron?: boolean | undefined;
@@ -10906,7 +10907,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 locales: ("en" | "ar")[];
             };
             mobileOrder: number | null;
-            presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+            presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
             showHeading: boolean;
             links: {
                 id: string;
@@ -10962,7 +10963,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
             };
             enabled?: boolean | undefined;
             mobileOrder?: number | null | undefined;
-            presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+            presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
             showHeading?: boolean | undefined;
             links?: {
                 id: string;
@@ -11726,7 +11727,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 locales: ("en" | "ar")[];
             };
             mobileOrder: number | null;
-            size: "SMALL" | "MEDIUM" | "LARGE";
+            size: "SMALL" | "LARGE" | "MEDIUM";
         }, {
             type: "SPACER";
             id: string;
@@ -11738,7 +11739,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
             };
             enabled?: boolean | undefined;
             mobileOrder?: number | null | undefined;
-            size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+            size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
         }>, z.ZodObject<{
             type: z.ZodLiteral<"SHOP_ALL">;
             label: z.ZodObject<{
@@ -12168,7 +12169,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
             maximumItems: number;
             mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
             parentCategoryId: string | null;
-            presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+            presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
             showIcon: boolean;
             showProductCount: boolean;
             showChevron: boolean;
@@ -12433,7 +12434,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 locales: ("en" | "ar")[];
             };
             mobileOrder: number | null;
-            presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+            presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
             showHeading: boolean;
             links: {
                 id: string;
@@ -12629,7 +12630,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 locales: ("en" | "ar")[];
             };
             mobileOrder: number | null;
-            size: "SMALL" | "MEDIUM" | "LARGE";
+            size: "SMALL" | "LARGE" | "MEDIUM";
         } | {
             type: "SHOP_ALL";
             id: string;
@@ -12875,7 +12876,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
             maximumItems?: number | undefined;
             mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
             parentCategoryId?: string | null | undefined;
-            presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+            presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
             showIcon?: boolean | undefined;
             showProductCount?: boolean | undefined;
             showChevron?: boolean | undefined;
@@ -13140,7 +13141,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
             };
             enabled?: boolean | undefined;
             mobileOrder?: number | null | undefined;
-            presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+            presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
             showHeading?: boolean | undefined;
             links?: {
                 id: string;
@@ -13336,7 +13337,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
             };
             enabled?: boolean | undefined;
             mobileOrder?: number | null | undefined;
-            size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+            size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
         } | {
             type: "SHOP_ALL";
             id: string;
@@ -13595,7 +13596,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
             maximumItems: number;
             mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
             parentCategoryId: string | null;
-            presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+            presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
             showIcon: boolean;
             showProductCount: boolean;
             showChevron: boolean;
@@ -13860,7 +13861,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 locales: ("en" | "ar")[];
             };
             mobileOrder: number | null;
-            presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+            presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
             showHeading: boolean;
             links: {
                 id: string;
@@ -14056,7 +14057,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 locales: ("en" | "ar")[];
             };
             mobileOrder: number | null;
-            size: "SMALL" | "MEDIUM" | "LARGE";
+            size: "SMALL" | "LARGE" | "MEDIUM";
         } | {
             type: "SHOP_ALL";
             id: string;
@@ -14312,7 +14313,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
             maximumItems?: number | undefined;
             mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
             parentCategoryId?: string | null | undefined;
-            presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+            presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
             showIcon?: boolean | undefined;
             showProductCount?: boolean | undefined;
             showChevron?: boolean | undefined;
@@ -14577,7 +14578,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
             };
             enabled?: boolean | undefined;
             mobileOrder?: number | null | undefined;
-            presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+            presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
             showHeading?: boolean | undefined;
             links?: {
                 id: string;
@@ -14773,7 +14774,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
             };
             enabled?: boolean | undefined;
             mobileOrder?: number | null | undefined;
-            size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+            size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
         } | {
             type: "SHOP_ALL";
             id: string;
@@ -15035,7 +15036,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
             maximumItems: number;
             mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
             parentCategoryId: string | null;
-            presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+            presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
             showIcon: boolean;
             showProductCount: boolean;
             showChevron: boolean;
@@ -15300,7 +15301,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 locales: ("en" | "ar")[];
             };
             mobileOrder: number | null;
-            presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+            presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
             showHeading: boolean;
             links: {
                 id: string;
@@ -15496,7 +15497,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 locales: ("en" | "ar")[];
             };
             mobileOrder: number | null;
-            size: "SMALL" | "MEDIUM" | "LARGE";
+            size: "SMALL" | "LARGE" | "MEDIUM";
         } | {
             type: "SHOP_ALL";
             id: string;
@@ -15752,7 +15753,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
             maximumItems?: number | undefined;
             mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
             parentCategoryId?: string | null | undefined;
-            presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+            presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
             showIcon?: boolean | undefined;
             showProductCount?: boolean | undefined;
             showChevron?: boolean | undefined;
@@ -16017,7 +16018,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
             };
             enabled?: boolean | undefined;
             mobileOrder?: number | null | undefined;
-            presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+            presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
             showHeading?: boolean | undefined;
             links?: {
                 id: string;
@@ -16213,7 +16214,7 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
             };
             enabled?: boolean | undefined;
             mobileOrder?: number | null | undefined;
-            size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+            size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
         } | {
             type: "SHOP_ALL";
             id: string;
@@ -17268,7 +17269,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 maximumItems: number;
                 mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                 parentCategoryId: string | null;
-                presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                 showIcon: boolean;
                 showProductCount: boolean;
                 showChevron: boolean;
@@ -17330,7 +17331,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 maximumItems?: number | undefined;
                 mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                 parentCategoryId?: string | null | undefined;
-                presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                 showIcon?: boolean | undefined;
                 showProductCount?: boolean | undefined;
                 showChevron?: boolean | undefined;
@@ -18703,7 +18704,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     locales: ("en" | "ar")[];
                 };
                 mobileOrder: number | null;
-                presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                 showHeading: boolean;
                 links: {
                     id: string;
@@ -18759,7 +18760,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 };
                 enabled?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
-                presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                 showHeading?: boolean | undefined;
                 links?: {
                     id: string;
@@ -19523,7 +19524,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     locales: ("en" | "ar")[];
                 };
                 mobileOrder: number | null;
-                size: "SMALL" | "MEDIUM" | "LARGE";
+                size: "SMALL" | "LARGE" | "MEDIUM";
             }, {
                 type: "SPACER";
                 id: string;
@@ -19535,7 +19536,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 };
                 enabled?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
-                size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
             }>, z.ZodObject<{
                 type: z.ZodLiteral<"SHOP_ALL">;
                 label: z.ZodObject<{
@@ -19965,7 +19966,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 maximumItems: number;
                 mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                 parentCategoryId: string | null;
-                presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                 showIcon: boolean;
                 showProductCount: boolean;
                 showChevron: boolean;
@@ -20230,7 +20231,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     locales: ("en" | "ar")[];
                 };
                 mobileOrder: number | null;
-                presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                 showHeading: boolean;
                 links: {
                     id: string;
@@ -20426,7 +20427,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     locales: ("en" | "ar")[];
                 };
                 mobileOrder: number | null;
-                size: "SMALL" | "MEDIUM" | "LARGE";
+                size: "SMALL" | "LARGE" | "MEDIUM";
             } | {
                 type: "SHOP_ALL";
                 id: string;
@@ -20672,7 +20673,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 maximumItems?: number | undefined;
                 mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                 parentCategoryId?: string | null | undefined;
-                presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                 showIcon?: boolean | undefined;
                 showProductCount?: boolean | undefined;
                 showChevron?: boolean | undefined;
@@ -20937,7 +20938,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 };
                 enabled?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
-                presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                 showHeading?: boolean | undefined;
                 links?: {
                     id: string;
@@ -21133,7 +21134,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 };
                 enabled?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
-                size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
             } | {
                 type: "SHOP_ALL";
                 id: string;
@@ -21392,7 +21393,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 maximumItems: number;
                 mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                 parentCategoryId: string | null;
-                presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                 showIcon: boolean;
                 showProductCount: boolean;
                 showChevron: boolean;
@@ -21657,7 +21658,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     locales: ("en" | "ar")[];
                 };
                 mobileOrder: number | null;
-                presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                 showHeading: boolean;
                 links: {
                     id: string;
@@ -21853,7 +21854,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     locales: ("en" | "ar")[];
                 };
                 mobileOrder: number | null;
-                size: "SMALL" | "MEDIUM" | "LARGE";
+                size: "SMALL" | "LARGE" | "MEDIUM";
             } | {
                 type: "SHOP_ALL";
                 id: string;
@@ -22109,7 +22110,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 maximumItems?: number | undefined;
                 mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                 parentCategoryId?: string | null | undefined;
-                presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                 showIcon?: boolean | undefined;
                 showProductCount?: boolean | undefined;
                 showChevron?: boolean | undefined;
@@ -22374,7 +22375,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 };
                 enabled?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
-                presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                 showHeading?: boolean | undefined;
                 links?: {
                     id: string;
@@ -22570,7 +22571,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 };
                 enabled?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
-                size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
             } | {
                 type: "SHOP_ALL";
                 id: string;
@@ -22832,7 +22833,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 maximumItems: number;
                 mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                 parentCategoryId: string | null;
-                presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                 showIcon: boolean;
                 showProductCount: boolean;
                 showChevron: boolean;
@@ -23097,7 +23098,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     locales: ("en" | "ar")[];
                 };
                 mobileOrder: number | null;
-                presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                 showHeading: boolean;
                 links: {
                     id: string;
@@ -23293,7 +23294,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     locales: ("en" | "ar")[];
                 };
                 mobileOrder: number | null;
-                size: "SMALL" | "MEDIUM" | "LARGE";
+                size: "SMALL" | "LARGE" | "MEDIUM";
             } | {
                 type: "SHOP_ALL";
                 id: string;
@@ -23549,7 +23550,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 maximumItems?: number | undefined;
                 mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                 parentCategoryId?: string | null | undefined;
-                presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                 showIcon?: boolean | undefined;
                 showProductCount?: boolean | undefined;
                 showChevron?: boolean | undefined;
@@ -23814,7 +23815,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 };
                 enabled?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
-                presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                 showHeading?: boolean | undefined;
                 links?: {
                     id: string;
@@ -24010,7 +24011,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 };
                 enabled?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
-                size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
             } | {
                 type: "SHOP_ALL";
                 id: string;
@@ -24278,7 +24279,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 maximumItems: number;
                 mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                 parentCategoryId: string | null;
-                presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                 showIcon: boolean;
                 showProductCount: boolean;
                 showChevron: boolean;
@@ -24543,7 +24544,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     locales: ("en" | "ar")[];
                 };
                 mobileOrder: number | null;
-                presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                 showHeading: boolean;
                 links: {
                     id: string;
@@ -24739,7 +24740,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     locales: ("en" | "ar")[];
                 };
                 mobileOrder: number | null;
-                size: "SMALL" | "MEDIUM" | "LARGE";
+                size: "SMALL" | "LARGE" | "MEDIUM";
             } | {
                 type: "SHOP_ALL";
                 id: string;
@@ -24997,7 +24998,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 maximumItems?: number | undefined;
                 mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                 parentCategoryId?: string | null | undefined;
-                presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                 showIcon?: boolean | undefined;
                 showProductCount?: boolean | undefined;
                 showChevron?: boolean | undefined;
@@ -25262,7 +25263,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 };
                 enabled?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
-                presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                 showHeading?: boolean | undefined;
                 links?: {
                     id: string;
@@ -25458,7 +25459,7 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                 };
                 enabled?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
-                size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
             } | {
                 type: "SHOP_ALL";
                 id: string;
@@ -26652,7 +26653,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     maximumItems: number;
                     mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                     parentCategoryId: string | null;
-                    presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                    presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                     showIcon: boolean;
                     showProductCount: boolean;
                     showChevron: boolean;
@@ -26714,7 +26715,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     maximumItems?: number | undefined;
                     mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                     parentCategoryId?: string | null | undefined;
-                    presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                    presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                     showIcon?: boolean | undefined;
                     showProductCount?: boolean | undefined;
                     showChevron?: boolean | undefined;
@@ -28087,7 +28088,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                         locales: ("en" | "ar")[];
                     };
                     mobileOrder: number | null;
-                    presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                    presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                     showHeading: boolean;
                     links: {
                         id: string;
@@ -28143,7 +28144,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     };
                     enabled?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
-                    presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                    presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                     showHeading?: boolean | undefined;
                     links?: {
                         id: string;
@@ -28907,7 +28908,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                         locales: ("en" | "ar")[];
                     };
                     mobileOrder: number | null;
-                    size: "SMALL" | "MEDIUM" | "LARGE";
+                    size: "SMALL" | "LARGE" | "MEDIUM";
                 }, {
                     type: "SPACER";
                     id: string;
@@ -28919,7 +28920,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     };
                     enabled?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
-                    size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                    size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                 }>, z.ZodObject<{
                     type: z.ZodLiteral<"SHOP_ALL">;
                     label: z.ZodObject<{
@@ -29349,7 +29350,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     maximumItems: number;
                     mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                     parentCategoryId: string | null;
-                    presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                    presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                     showIcon: boolean;
                     showProductCount: boolean;
                     showChevron: boolean;
@@ -29614,7 +29615,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                         locales: ("en" | "ar")[];
                     };
                     mobileOrder: number | null;
-                    presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                    presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                     showHeading: boolean;
                     links: {
                         id: string;
@@ -29810,7 +29811,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                         locales: ("en" | "ar")[];
                     };
                     mobileOrder: number | null;
-                    size: "SMALL" | "MEDIUM" | "LARGE";
+                    size: "SMALL" | "LARGE" | "MEDIUM";
                 } | {
                     type: "SHOP_ALL";
                     id: string;
@@ -30056,7 +30057,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     maximumItems?: number | undefined;
                     mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                     parentCategoryId?: string | null | undefined;
-                    presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                    presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                     showIcon?: boolean | undefined;
                     showProductCount?: boolean | undefined;
                     showChevron?: boolean | undefined;
@@ -30321,7 +30322,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     };
                     enabled?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
-                    presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                    presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                     showHeading?: boolean | undefined;
                     links?: {
                         id: string;
@@ -30517,7 +30518,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     };
                     enabled?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
-                    size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                    size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                 } | {
                     type: "SHOP_ALL";
                     id: string;
@@ -30776,7 +30777,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     maximumItems: number;
                     mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                     parentCategoryId: string | null;
-                    presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                    presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                     showIcon: boolean;
                     showProductCount: boolean;
                     showChevron: boolean;
@@ -31041,7 +31042,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                         locales: ("en" | "ar")[];
                     };
                     mobileOrder: number | null;
-                    presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                    presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                     showHeading: boolean;
                     links: {
                         id: string;
@@ -31237,7 +31238,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                         locales: ("en" | "ar")[];
                     };
                     mobileOrder: number | null;
-                    size: "SMALL" | "MEDIUM" | "LARGE";
+                    size: "SMALL" | "LARGE" | "MEDIUM";
                 } | {
                     type: "SHOP_ALL";
                     id: string;
@@ -31493,7 +31494,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     maximumItems?: number | undefined;
                     mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                     parentCategoryId?: string | null | undefined;
-                    presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                    presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                     showIcon?: boolean | undefined;
                     showProductCount?: boolean | undefined;
                     showChevron?: boolean | undefined;
@@ -31758,7 +31759,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     };
                     enabled?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
-                    presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                    presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                     showHeading?: boolean | undefined;
                     links?: {
                         id: string;
@@ -31954,7 +31955,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     };
                     enabled?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
-                    size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                    size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                 } | {
                     type: "SHOP_ALL";
                     id: string;
@@ -32216,7 +32217,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     maximumItems: number;
                     mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                     parentCategoryId: string | null;
-                    presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                    presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                     showIcon: boolean;
                     showProductCount: boolean;
                     showChevron: boolean;
@@ -32481,7 +32482,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                         locales: ("en" | "ar")[];
                     };
                     mobileOrder: number | null;
-                    presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                    presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                     showHeading: boolean;
                     links: {
                         id: string;
@@ -32677,7 +32678,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                         locales: ("en" | "ar")[];
                     };
                     mobileOrder: number | null;
-                    size: "SMALL" | "MEDIUM" | "LARGE";
+                    size: "SMALL" | "LARGE" | "MEDIUM";
                 } | {
                     type: "SHOP_ALL";
                     id: string;
@@ -32933,7 +32934,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     maximumItems?: number | undefined;
                     mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                     parentCategoryId?: string | null | undefined;
-                    presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                    presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                     showIcon?: boolean | undefined;
                     showProductCount?: boolean | undefined;
                     showChevron?: boolean | undefined;
@@ -33198,7 +33199,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     };
                     enabled?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
-                    presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                    presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                     showHeading?: boolean | undefined;
                     links?: {
                         id: string;
@@ -33394,7 +33395,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     };
                     enabled?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
-                    size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                    size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                 } | {
                     type: "SHOP_ALL";
                     id: string;
@@ -33662,7 +33663,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     maximumItems: number;
                     mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                     parentCategoryId: string | null;
-                    presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                    presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                     showIcon: boolean;
                     showProductCount: boolean;
                     showChevron: boolean;
@@ -33927,7 +33928,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                         locales: ("en" | "ar")[];
                     };
                     mobileOrder: number | null;
-                    presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                    presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                     showHeading: boolean;
                     links: {
                         id: string;
@@ -34123,7 +34124,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                         locales: ("en" | "ar")[];
                     };
                     mobileOrder: number | null;
-                    size: "SMALL" | "MEDIUM" | "LARGE";
+                    size: "SMALL" | "LARGE" | "MEDIUM";
                 } | {
                     type: "SHOP_ALL";
                     id: string;
@@ -34381,7 +34382,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     maximumItems?: number | undefined;
                     mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                     parentCategoryId?: string | null | undefined;
-                    presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                    presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                     showIcon?: boolean | undefined;
                     showProductCount?: boolean | undefined;
                     showChevron?: boolean | undefined;
@@ -34646,7 +34647,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     };
                     enabled?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
-                    presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                    presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                     showHeading?: boolean | undefined;
                     links?: {
                         id: string;
@@ -34842,7 +34843,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     };
                     enabled?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
-                    size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                    size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                 } | {
                     type: "SHOP_ALL";
                     id: string;
@@ -35162,7 +35163,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     maximumItems: number;
                     mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                     parentCategoryId: string | null;
-                    presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                    presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                     showIcon: boolean;
                     showProductCount: boolean;
                     showChevron: boolean;
@@ -35427,7 +35428,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                         locales: ("en" | "ar")[];
                     };
                     mobileOrder: number | null;
-                    presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                    presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                     showHeading: boolean;
                     links: {
                         id: string;
@@ -35623,7 +35624,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                         locales: ("en" | "ar")[];
                     };
                     mobileOrder: number | null;
-                    size: "SMALL" | "MEDIUM" | "LARGE";
+                    size: "SMALL" | "LARGE" | "MEDIUM";
                 } | {
                     type: "SHOP_ALL";
                     id: string;
@@ -35929,7 +35930,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     maximumItems?: number | undefined;
                     mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                     parentCategoryId?: string | null | undefined;
-                    presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                    presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                     showIcon?: boolean | undefined;
                     showProductCount?: boolean | undefined;
                     showChevron?: boolean | undefined;
@@ -36194,7 +36195,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     };
                     enabled?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
-                    presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                    presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                     showHeading?: boolean | undefined;
                     links?: {
                         id: string;
@@ -36390,7 +36391,7 @@ export declare const navigationItemSchema: z.ZodObject<{
                     };
                     enabled?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
-                    size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                    size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                 } | {
                     type: "SHOP_ALL";
                     id: string;
@@ -37588,7 +37589,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         maximumItems: number;
                         mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                         parentCategoryId: string | null;
-                        presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                        presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                         showIcon: boolean;
                         showProductCount: boolean;
                         showChevron: boolean;
@@ -37650,7 +37651,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         maximumItems?: number | undefined;
                         mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                         parentCategoryId?: string | null | undefined;
-                        presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                        presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                         showIcon?: boolean | undefined;
                         showProductCount?: boolean | undefined;
                         showChevron?: boolean | undefined;
@@ -39023,7 +39024,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                             locales: ("en" | "ar")[];
                         };
                         mobileOrder: number | null;
-                        presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                        presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                         showHeading: boolean;
                         links: {
                             id: string;
@@ -39079,7 +39080,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         };
                         enabled?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
-                        presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                        presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                         showHeading?: boolean | undefined;
                         links?: {
                             id: string;
@@ -39843,7 +39844,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                             locales: ("en" | "ar")[];
                         };
                         mobileOrder: number | null;
-                        size: "SMALL" | "MEDIUM" | "LARGE";
+                        size: "SMALL" | "LARGE" | "MEDIUM";
                     }, {
                         type: "SPACER";
                         id: string;
@@ -39855,7 +39856,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         };
                         enabled?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
-                        size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                        size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                     }>, z.ZodObject<{
                         type: z.ZodLiteral<"SHOP_ALL">;
                         label: z.ZodObject<{
@@ -40285,7 +40286,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         maximumItems: number;
                         mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                         parentCategoryId: string | null;
-                        presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                        presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                         showIcon: boolean;
                         showProductCount: boolean;
                         showChevron: boolean;
@@ -40550,7 +40551,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                             locales: ("en" | "ar")[];
                         };
                         mobileOrder: number | null;
-                        presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                        presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                         showHeading: boolean;
                         links: {
                             id: string;
@@ -40746,7 +40747,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                             locales: ("en" | "ar")[];
                         };
                         mobileOrder: number | null;
-                        size: "SMALL" | "MEDIUM" | "LARGE";
+                        size: "SMALL" | "LARGE" | "MEDIUM";
                     } | {
                         type: "SHOP_ALL";
                         id: string;
@@ -40992,7 +40993,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         maximumItems?: number | undefined;
                         mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                         parentCategoryId?: string | null | undefined;
-                        presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                        presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                         showIcon?: boolean | undefined;
                         showProductCount?: boolean | undefined;
                         showChevron?: boolean | undefined;
@@ -41257,7 +41258,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         };
                         enabled?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
-                        presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                        presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                         showHeading?: boolean | undefined;
                         links?: {
                             id: string;
@@ -41453,7 +41454,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         };
                         enabled?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
-                        size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                        size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                     } | {
                         type: "SHOP_ALL";
                         id: string;
@@ -41712,7 +41713,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         maximumItems: number;
                         mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                         parentCategoryId: string | null;
-                        presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                        presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                         showIcon: boolean;
                         showProductCount: boolean;
                         showChevron: boolean;
@@ -41977,7 +41978,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                             locales: ("en" | "ar")[];
                         };
                         mobileOrder: number | null;
-                        presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                        presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                         showHeading: boolean;
                         links: {
                             id: string;
@@ -42173,7 +42174,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                             locales: ("en" | "ar")[];
                         };
                         mobileOrder: number | null;
-                        size: "SMALL" | "MEDIUM" | "LARGE";
+                        size: "SMALL" | "LARGE" | "MEDIUM";
                     } | {
                         type: "SHOP_ALL";
                         id: string;
@@ -42429,7 +42430,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         maximumItems?: number | undefined;
                         mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                         parentCategoryId?: string | null | undefined;
-                        presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                        presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                         showIcon?: boolean | undefined;
                         showProductCount?: boolean | undefined;
                         showChevron?: boolean | undefined;
@@ -42694,7 +42695,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         };
                         enabled?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
-                        presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                        presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                         showHeading?: boolean | undefined;
                         links?: {
                             id: string;
@@ -42890,7 +42891,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         };
                         enabled?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
-                        size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                        size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                     } | {
                         type: "SHOP_ALL";
                         id: string;
@@ -43152,7 +43153,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         maximumItems: number;
                         mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                         parentCategoryId: string | null;
-                        presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                        presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                         showIcon: boolean;
                         showProductCount: boolean;
                         showChevron: boolean;
@@ -43417,7 +43418,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                             locales: ("en" | "ar")[];
                         };
                         mobileOrder: number | null;
-                        presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                        presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                         showHeading: boolean;
                         links: {
                             id: string;
@@ -43613,7 +43614,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                             locales: ("en" | "ar")[];
                         };
                         mobileOrder: number | null;
-                        size: "SMALL" | "MEDIUM" | "LARGE";
+                        size: "SMALL" | "LARGE" | "MEDIUM";
                     } | {
                         type: "SHOP_ALL";
                         id: string;
@@ -43869,7 +43870,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         maximumItems?: number | undefined;
                         mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                         parentCategoryId?: string | null | undefined;
-                        presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                        presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                         showIcon?: boolean | undefined;
                         showProductCount?: boolean | undefined;
                         showChevron?: boolean | undefined;
@@ -44134,7 +44135,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         };
                         enabled?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
-                        presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                        presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                         showHeading?: boolean | undefined;
                         links?: {
                             id: string;
@@ -44330,7 +44331,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         };
                         enabled?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
-                        size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                        size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                     } | {
                         type: "SHOP_ALL";
                         id: string;
@@ -44598,7 +44599,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         maximumItems: number;
                         mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                         parentCategoryId: string | null;
-                        presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                        presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                         showIcon: boolean;
                         showProductCount: boolean;
                         showChevron: boolean;
@@ -44863,7 +44864,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                             locales: ("en" | "ar")[];
                         };
                         mobileOrder: number | null;
-                        presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                        presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                         showHeading: boolean;
                         links: {
                             id: string;
@@ -45059,7 +45060,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                             locales: ("en" | "ar")[];
                         };
                         mobileOrder: number | null;
-                        size: "SMALL" | "MEDIUM" | "LARGE";
+                        size: "SMALL" | "LARGE" | "MEDIUM";
                     } | {
                         type: "SHOP_ALL";
                         id: string;
@@ -45317,7 +45318,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         maximumItems?: number | undefined;
                         mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                         parentCategoryId?: string | null | undefined;
-                        presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                        presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                         showIcon?: boolean | undefined;
                         showProductCount?: boolean | undefined;
                         showChevron?: boolean | undefined;
@@ -45582,7 +45583,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         };
                         enabled?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
-                        presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                        presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                         showHeading?: boolean | undefined;
                         links?: {
                             id: string;
@@ -45778,7 +45779,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         };
                         enabled?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
-                        size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                        size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                     } | {
                         type: "SHOP_ALL";
                         id: string;
@@ -46098,7 +46099,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         maximumItems: number;
                         mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                         parentCategoryId: string | null;
-                        presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                        presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                         showIcon: boolean;
                         showProductCount: boolean;
                         showChevron: boolean;
@@ -46363,7 +46364,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                             locales: ("en" | "ar")[];
                         };
                         mobileOrder: number | null;
-                        presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                        presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                         showHeading: boolean;
                         links: {
                             id: string;
@@ -46559,7 +46560,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                             locales: ("en" | "ar")[];
                         };
                         mobileOrder: number | null;
-                        size: "SMALL" | "MEDIUM" | "LARGE";
+                        size: "SMALL" | "LARGE" | "MEDIUM";
                     } | {
                         type: "SHOP_ALL";
                         id: string;
@@ -46865,7 +46866,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         maximumItems?: number | undefined;
                         mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                         parentCategoryId?: string | null | undefined;
-                        presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                        presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                         showIcon?: boolean | undefined;
                         showProductCount?: boolean | undefined;
                         showChevron?: boolean | undefined;
@@ -47130,7 +47131,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         };
                         enabled?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
-                        presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                        presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                         showHeading?: boolean | undefined;
                         links?: {
                             id: string;
@@ -47326,7 +47327,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         };
                         enabled?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
-                        size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                        size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                     } | {
                         type: "SHOP_ALL";
                         id: string;
@@ -47648,7 +47649,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         maximumItems: number;
                         mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                         parentCategoryId: string | null;
-                        presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                        presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                         showIcon: boolean;
                         showProductCount: boolean;
                         showChevron: boolean;
@@ -47913,7 +47914,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                             locales: ("en" | "ar")[];
                         };
                         mobileOrder: number | null;
-                        presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                        presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                         showHeading: boolean;
                         links: {
                             id: string;
@@ -48109,7 +48110,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                             locales: ("en" | "ar")[];
                         };
                         mobileOrder: number | null;
-                        size: "SMALL" | "MEDIUM" | "LARGE";
+                        size: "SMALL" | "LARGE" | "MEDIUM";
                     } | {
                         type: "SHOP_ALL";
                         id: string;
@@ -48418,7 +48419,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         maximumItems?: number | undefined;
                         mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                         parentCategoryId?: string | null | undefined;
-                        presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                        presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                         showIcon?: boolean | undefined;
                         showProductCount?: boolean | undefined;
                         showChevron?: boolean | undefined;
@@ -48683,7 +48684,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         };
                         enabled?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
-                        presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                        presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                         showHeading?: boolean | undefined;
                         links?: {
                             id: string;
@@ -48879,7 +48880,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         };
                         enabled?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
-                        size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                        size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                     } | {
                         type: "SHOP_ALL";
                         id: string;
@@ -49202,7 +49203,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         maximumItems: number;
                         mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                         parentCategoryId: string | null;
-                        presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                        presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                         showIcon: boolean;
                         showProductCount: boolean;
                         showChevron: boolean;
@@ -49467,7 +49468,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                             locales: ("en" | "ar")[];
                         };
                         mobileOrder: number | null;
-                        presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                        presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                         showHeading: boolean;
                         links: {
                             id: string;
@@ -49663,7 +49664,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                             locales: ("en" | "ar")[];
                         };
                         mobileOrder: number | null;
-                        size: "SMALL" | "MEDIUM" | "LARGE";
+                        size: "SMALL" | "LARGE" | "MEDIUM";
                     } | {
                         type: "SHOP_ALL";
                         id: string;
@@ -49972,7 +49973,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         maximumItems?: number | undefined;
                         mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                         parentCategoryId?: string | null | undefined;
-                        presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                        presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                         showIcon?: boolean | undefined;
                         showProductCount?: boolean | undefined;
                         showChevron?: boolean | undefined;
@@ -50237,7 +50238,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         };
                         enabled?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
-                        presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                        presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                         showHeading?: boolean | undefined;
                         links?: {
                             id: string;
@@ -50433,7 +50434,7 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodObject<{
                         };
                         enabled?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
-                        size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                        size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                     } | {
                         type: "SHOP_ALL";
                         id: string;
@@ -51635,7 +51636,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems: number;
                             mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                             parentCategoryId: string | null;
-                            presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                            presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                             showIcon: boolean;
                             showProductCount: boolean;
                             showChevron: boolean;
@@ -51697,7 +51698,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems?: number | undefined;
                             mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                             parentCategoryId?: string | null | undefined;
-                            presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                             showIcon?: boolean | undefined;
                             showProductCount?: boolean | undefined;
                             showChevron?: boolean | undefined;
@@ -53070,7 +53071,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                            presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                             showHeading: boolean;
                             links: {
                                 id: string;
@@ -53126,7 +53127,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                             showHeading?: boolean | undefined;
                             links?: {
                                 id: string;
@@ -53890,7 +53891,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            size: "SMALL" | "MEDIUM" | "LARGE";
+                            size: "SMALL" | "LARGE" | "MEDIUM";
                         }, {
                             type: "SPACER";
                             id: string;
@@ -53902,7 +53903,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                            size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                         }>, z.ZodObject<{
                             type: z.ZodLiteral<"SHOP_ALL">;
                             label: z.ZodObject<{
@@ -54332,7 +54333,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems: number;
                             mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                             parentCategoryId: string | null;
-                            presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                            presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                             showIcon: boolean;
                             showProductCount: boolean;
                             showChevron: boolean;
@@ -54597,7 +54598,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                            presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                             showHeading: boolean;
                             links: {
                                 id: string;
@@ -54793,7 +54794,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            size: "SMALL" | "MEDIUM" | "LARGE";
+                            size: "SMALL" | "LARGE" | "MEDIUM";
                         } | {
                             type: "SHOP_ALL";
                             id: string;
@@ -55039,7 +55040,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems?: number | undefined;
                             mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                             parentCategoryId?: string | null | undefined;
-                            presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                             showIcon?: boolean | undefined;
                             showProductCount?: boolean | undefined;
                             showChevron?: boolean | undefined;
@@ -55304,7 +55305,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                             showHeading?: boolean | undefined;
                             links?: {
                                 id: string;
@@ -55500,7 +55501,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                            size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                         } | {
                             type: "SHOP_ALL";
                             id: string;
@@ -55759,7 +55760,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems: number;
                             mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                             parentCategoryId: string | null;
-                            presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                            presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                             showIcon: boolean;
                             showProductCount: boolean;
                             showChevron: boolean;
@@ -56024,7 +56025,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                            presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                             showHeading: boolean;
                             links: {
                                 id: string;
@@ -56220,7 +56221,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            size: "SMALL" | "MEDIUM" | "LARGE";
+                            size: "SMALL" | "LARGE" | "MEDIUM";
                         } | {
                             type: "SHOP_ALL";
                             id: string;
@@ -56476,7 +56477,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems?: number | undefined;
                             mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                             parentCategoryId?: string | null | undefined;
-                            presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                             showIcon?: boolean | undefined;
                             showProductCount?: boolean | undefined;
                             showChevron?: boolean | undefined;
@@ -56741,7 +56742,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                             showHeading?: boolean | undefined;
                             links?: {
                                 id: string;
@@ -56937,7 +56938,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                            size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                         } | {
                             type: "SHOP_ALL";
                             id: string;
@@ -57199,7 +57200,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems: number;
                             mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                             parentCategoryId: string | null;
-                            presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                            presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                             showIcon: boolean;
                             showProductCount: boolean;
                             showChevron: boolean;
@@ -57464,7 +57465,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                            presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                             showHeading: boolean;
                             links: {
                                 id: string;
@@ -57660,7 +57661,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            size: "SMALL" | "MEDIUM" | "LARGE";
+                            size: "SMALL" | "LARGE" | "MEDIUM";
                         } | {
                             type: "SHOP_ALL";
                             id: string;
@@ -57916,7 +57917,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems?: number | undefined;
                             mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                             parentCategoryId?: string | null | undefined;
-                            presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                             showIcon?: boolean | undefined;
                             showProductCount?: boolean | undefined;
                             showChevron?: boolean | undefined;
@@ -58181,7 +58182,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                             showHeading?: boolean | undefined;
                             links?: {
                                 id: string;
@@ -58377,7 +58378,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                            size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                         } | {
                             type: "SHOP_ALL";
                             id: string;
@@ -58645,7 +58646,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems: number;
                             mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                             parentCategoryId: string | null;
-                            presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                            presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                             showIcon: boolean;
                             showProductCount: boolean;
                             showChevron: boolean;
@@ -58910,7 +58911,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                            presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                             showHeading: boolean;
                             links: {
                                 id: string;
@@ -59106,7 +59107,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            size: "SMALL" | "MEDIUM" | "LARGE";
+                            size: "SMALL" | "LARGE" | "MEDIUM";
                         } | {
                             type: "SHOP_ALL";
                             id: string;
@@ -59364,7 +59365,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems?: number | undefined;
                             mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                             parentCategoryId?: string | null | undefined;
-                            presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                             showIcon?: boolean | undefined;
                             showProductCount?: boolean | undefined;
                             showChevron?: boolean | undefined;
@@ -59629,7 +59630,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                             showHeading?: boolean | undefined;
                             links?: {
                                 id: string;
@@ -59825,7 +59826,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                            size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                         } | {
                             type: "SHOP_ALL";
                             id: string;
@@ -60145,7 +60146,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems: number;
                             mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                             parentCategoryId: string | null;
-                            presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                            presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                             showIcon: boolean;
                             showProductCount: boolean;
                             showChevron: boolean;
@@ -60410,7 +60411,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                            presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                             showHeading: boolean;
                             links: {
                                 id: string;
@@ -60606,7 +60607,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            size: "SMALL" | "MEDIUM" | "LARGE";
+                            size: "SMALL" | "LARGE" | "MEDIUM";
                         } | {
                             type: "SHOP_ALL";
                             id: string;
@@ -60912,7 +60913,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems?: number | undefined;
                             mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                             parentCategoryId?: string | null | undefined;
-                            presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                             showIcon?: boolean | undefined;
                             showProductCount?: boolean | undefined;
                             showChevron?: boolean | undefined;
@@ -61177,7 +61178,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                             showHeading?: boolean | undefined;
                             links?: {
                                 id: string;
@@ -61373,7 +61374,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                            size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                         } | {
                             type: "SHOP_ALL";
                             id: string;
@@ -61695,7 +61696,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems: number;
                             mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                             parentCategoryId: string | null;
-                            presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                            presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                             showIcon: boolean;
                             showProductCount: boolean;
                             showChevron: boolean;
@@ -61960,7 +61961,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                            presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                             showHeading: boolean;
                             links: {
                                 id: string;
@@ -62156,7 +62157,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            size: "SMALL" | "MEDIUM" | "LARGE";
+                            size: "SMALL" | "LARGE" | "MEDIUM";
                         } | {
                             type: "SHOP_ALL";
                             id: string;
@@ -62465,7 +62466,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems?: number | undefined;
                             mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                             parentCategoryId?: string | null | undefined;
-                            presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                             showIcon?: boolean | undefined;
                             showProductCount?: boolean | undefined;
                             showChevron?: boolean | undefined;
@@ -62730,7 +62731,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                             showHeading?: boolean | undefined;
                             links?: {
                                 id: string;
@@ -62926,7 +62927,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                            size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                         } | {
                             type: "SHOP_ALL";
                             id: string;
@@ -63249,7 +63250,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems: number;
                             mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                             parentCategoryId: string | null;
-                            presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                            presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                             showIcon: boolean;
                             showProductCount: boolean;
                             showChevron: boolean;
@@ -63514,7 +63515,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                            presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                             showHeading: boolean;
                             links: {
                                 id: string;
@@ -63710,7 +63711,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            size: "SMALL" | "MEDIUM" | "LARGE";
+                            size: "SMALL" | "LARGE" | "MEDIUM";
                         } | {
                             type: "SHOP_ALL";
                             id: string;
@@ -64019,7 +64020,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems?: number | undefined;
                             mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                             parentCategoryId?: string | null | undefined;
-                            presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                             showIcon?: boolean | undefined;
                             showProductCount?: boolean | undefined;
                             showChevron?: boolean | undefined;
@@ -64284,7 +64285,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                             showHeading?: boolean | undefined;
                             links?: {
                                 id: string;
@@ -64480,7 +64481,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                            size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                         } | {
                             type: "SHOP_ALL";
                             id: string;
@@ -64806,7 +64807,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems: number;
                             mode: "MANUAL" | "TOP_LEVEL" | "CHILDREN";
                             parentCategoryId: string | null;
-                            presentation: "PLAIN" | "ICONS" | "COMPACT" | "RAIL";
+                            presentation: "COMPACT" | "PLAIN" | "ICONS" | "RAIL";
                             showIcon: boolean;
                             showProductCount: boolean;
                             showChevron: boolean;
@@ -65071,7 +65072,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            presentation: "PLAIN" | "COMPACT" | "EMPHASIS";
+                            presentation: "COMPACT" | "PLAIN" | "EMPHASIS";
                             showHeading: boolean;
                             links: {
                                 id: string;
@@ -65267,7 +65268,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 locales: ("en" | "ar")[];
                             };
                             mobileOrder: number | null;
-                            size: "SMALL" | "MEDIUM" | "LARGE";
+                            size: "SMALL" | "LARGE" | "MEDIUM";
                         } | {
                             type: "SHOP_ALL";
                             id: string;
@@ -65579,7 +65580,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             maximumItems?: number | undefined;
                             mode?: "MANUAL" | "TOP_LEVEL" | "CHILDREN" | undefined;
                             parentCategoryId?: string | null | undefined;
-                            presentation?: "PLAIN" | "ICONS" | "COMPACT" | "RAIL" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "ICONS" | "RAIL" | undefined;
                             showIcon?: boolean | undefined;
                             showProductCount?: boolean | undefined;
                             showChevron?: boolean | undefined;
@@ -65844,7 +65845,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            presentation?: "PLAIN" | "COMPACT" | "EMPHASIS" | undefined;
+                            presentation?: "COMPACT" | "PLAIN" | "EMPHASIS" | undefined;
                             showHeading?: boolean | undefined;
                             links?: {
                                 id: string;
@@ -66040,7 +66041,7 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                             };
                             enabled?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
-                            size?: "SMALL" | "MEDIUM" | "LARGE" | undefined;
+                            size?: "SMALL" | "LARGE" | "MEDIUM" | undefined;
                         } | {
                             type: "SHOP_ALL";
                             id: string;
@@ -66137,6 +66138,7 @@ export type NavigationResolvedEntity = {
     pathEn?: string;
     pathAr?: string;
     imageUrl?: string | null;
+    logoDisplay?: BrandLogoDisplay;
     productCount?: number;
     price?: number;
 };

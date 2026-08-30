@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.merchandisingProductQuerySchema = exports.adminProductSchema = exports.adminProductImageSchema = exports.adminProductVariantSchema = exports.publicProductSchema = exports.publicProductVariantSchema = exports.publicProductOptionSchema = exports.publicProductOptionValueSchema = exports.publicProductImageSchema = exports.updateBrandSchema = exports.createBrandSchema = exports.publicBrandListItemSchema = exports.publicBrandSchema = exports.updateCategorySchema = exports.createCategorySchema = exports.publicCategorySchema = exports.adminProductQuerySchema = exports.publicBrandQuerySchema = exports.catalogFacetSchema = exports.catalogFacetQuerySchema = exports.publicProductIdsQuerySchema = exports.publicCatalogQuerySchema = exports.receiveBatchSchema = exports.reassignArchivedCategoryProductsSchema = exports.reassignArchivedProductSchema = exports.updateProductSchema = exports.productVariantUpdateSchema = exports.createProductSchema = exports.productDimensionsInputSchema = exports.productOptionInputSchema = exports.productOptionValueInputSchema = exports.productImageInputSchema = exports.productVariantInputSchema = exports.catalogEntityOptionSchema = exports.catalogEntityOptionQuerySchema = exports.updateTagSchema = exports.createTagSchema = exports.tagQuerySchema = exports.adminTagSchema = exports.tagSummarySchema = exports.variantOpeningStockSchema = exports.PRODUCT_VARIANT_LIMIT = exports.PRODUCT_OPTION_VALUE_LIMIT = exports.PRODUCT_OPTION_LIMIT = exports.PRODUCT_GALLERY_LIMIT = exports.skinTypeEnum = void 0;
+exports.merchandisingProductQuerySchema = exports.adminProductSchema = exports.adminProductImageSchema = exports.adminProductVariantSchema = exports.publicProductSchema = exports.publicProductVariantSchema = exports.publicProductOptionSchema = exports.publicProductOptionValueSchema = exports.publicProductImageSchema = exports.updateBrandSchema = exports.createBrandSchema = exports.publicBrandListItemSchema = exports.publicBrandSchema = exports.brandLogoDisplaySchema = exports.updateCategorySchema = exports.createCategorySchema = exports.publicCategorySchema = exports.adminProductQuerySchema = exports.publicBrandQuerySchema = exports.catalogFacetSchema = exports.catalogFacetQuerySchema = exports.publicProductIdsQuerySchema = exports.publicCatalogQuerySchema = exports.receiveBatchSchema = exports.reassignArchivedCategoryProductsSchema = exports.reassignArchivedProductSchema = exports.updateProductSchema = exports.productVariantUpdateSchema = exports.createProductSchema = exports.productDimensionsInputSchema = exports.productOptionInputSchema = exports.productOptionValueInputSchema = exports.productImageInputSchema = exports.productVariantInputSchema = exports.catalogEntityOptionSchema = exports.catalogEntityOptionQuerySchema = exports.updateTagSchema = exports.createTagSchema = exports.tagQuerySchema = exports.adminTagSchema = exports.tagSummarySchema = exports.variantOpeningStockSchema = exports.PRODUCT_VARIANT_LIMIT = exports.PRODUCT_OPTION_VALUE_LIMIT = exports.PRODUCT_OPTION_LIMIT = exports.PRODUCT_GALLERY_LIMIT = exports.skinTypeEnum = void 0;
 const zod_1 = require("zod");
 const image_reference_schema_1 = require("../media/image-reference.schema");
 const primitives_1 = require("../common/primitives");
@@ -452,11 +452,25 @@ exports.updateCategorySchema = zod_1.z
 })
     .strict()
     .refine((value) => Object.keys(value).length > 0, "At least one field is required");
+exports.brandLogoDisplaySchema = zod_1.z
+    .object({
+    scale: zod_1.z.enum(["SMALL", "STANDARD", "LARGE"]),
+    padding: zod_1.z.enum(["COMPACT", "STANDARD", "GENEROUS"]),
+    alignX: zod_1.z.enum(["START", "CENTER", "END"]),
+    alignY: zod_1.z.enum(["TOP", "CENTER", "BOTTOM"]),
+})
+    .strict();
 exports.publicBrandSchema = zod_1.z.object({
     id: primitives_1.uuidSchema,
     slug: primitives_1.slugSchema,
     name: zod_1.z.string(),
     logoUrl: zod_1.z.string().nullable(),
+    logoDisplay: exports.brandLogoDisplaySchema.default({
+        scale: "STANDARD",
+        padding: "STANDARD",
+        alignX: "CENTER",
+        alignY: "CENTER",
+    }),
 });
 exports.publicBrandListItemSchema = exports.publicBrandSchema.extend({
     productCount: zod_1.z.number().int(),
@@ -466,6 +480,10 @@ exports.createBrandSchema = zod_1.z
     slug: primitives_1.slugSchema.optional(),
     name: zod_1.z.string().trim().min(2).max(140),
     logoKey: image_reference_schema_1.imageReferenceValueSchema.optional(),
+    logoScale: exports.brandLogoDisplaySchema.shape.scale.default("STANDARD"),
+    logoPadding: exports.brandLogoDisplaySchema.shape.padding.default("STANDARD"),
+    logoAlignX: exports.brandLogoDisplaySchema.shape.alignX.default("CENTER"),
+    logoAlignY: exports.brandLogoDisplaySchema.shape.alignY.default("CENTER"),
     isActive: zod_1.z.boolean().default(true),
 })
     .strict();
@@ -474,6 +492,10 @@ exports.updateBrandSchema = zod_1.z
     slug: primitives_1.slugSchema.optional(),
     name: zod_1.z.string().trim().min(2).max(140).optional(),
     logoKey: image_reference_schema_1.imageReferenceValueSchema.nullable().optional(),
+    logoScale: exports.brandLogoDisplaySchema.shape.scale.optional(),
+    logoPadding: exports.brandLogoDisplaySchema.shape.padding.optional(),
+    logoAlignX: exports.brandLogoDisplaySchema.shape.alignX.optional(),
+    logoAlignY: exports.brandLogoDisplaySchema.shape.alignY.optional(),
     isActive: zod_1.z.boolean().optional(),
 })
     .strict()

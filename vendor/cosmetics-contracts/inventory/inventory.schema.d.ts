@@ -365,9 +365,6 @@ export declare const inventoryBatchSchema: z.ZodObject<{
     manufacturedAt: string | null;
     paoMonths: number | null;
     available: number;
-    receivedAt: string;
-    quantityOnHand: number;
-    quantityReserved: number;
     variant: {
         id: string;
         sku: string;
@@ -382,6 +379,9 @@ export declare const inventoryBatchSchema: z.ZodObject<{
             publishedAt: string | null;
         };
     };
+    receivedAt: string;
+    quantityOnHand: number;
+    quantityReserved: number;
 }, {
     id: string;
     variantId: string;
@@ -391,9 +391,6 @@ export declare const inventoryBatchSchema: z.ZodObject<{
     manufacturedAt: string | null;
     paoMonths: number | null;
     available: number;
-    receivedAt: string;
-    quantityOnHand: number;
-    quantityReserved: number;
     variant: {
         id: string;
         sku: string;
@@ -408,6 +405,9 @@ export declare const inventoryBatchSchema: z.ZodObject<{
             publishedAt: string | null;
         };
     };
+    receivedAt: string;
+    quantityOnHand: number;
+    quantityReserved: number;
 }>;
 export type InventoryBatchResponse = z.infer<typeof inventoryBatchSchema>;
 export declare const inventoryVariantOptionSchema: z.ZodObject<{
@@ -910,9 +910,6 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
         manufacturedAt: string | null;
         paoMonths: number | null;
         available: number;
-        receivedAt: string;
-        quantityOnHand: number;
-        quantityReserved: number;
         variant: {
             id: string;
             sku: string;
@@ -927,6 +924,9 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
                 publishedAt: string | null;
             };
         };
+        receivedAt: string;
+        quantityOnHand: number;
+        quantityReserved: number;
     }, {
         id: string;
         variantId: string;
@@ -936,9 +936,6 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
         manufacturedAt: string | null;
         paoMonths: number | null;
         available: number;
-        receivedAt: string;
-        quantityOnHand: number;
-        quantityReserved: number;
         variant: {
             id: string;
             sku: string;
@@ -953,6 +950,9 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
                 publishedAt: string | null;
             };
         };
+        receivedAt: string;
+        quantityOnHand: number;
+        quantityReserved: number;
     }>, "many">;
     meta: z.ZodObject<{
         page: z.ZodNumber;
@@ -986,9 +986,6 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
         manufacturedAt: string | null;
         paoMonths: number | null;
         available: number;
-        receivedAt: string;
-        quantityOnHand: number;
-        quantityReserved: number;
         variant: {
             id: string;
             sku: string;
@@ -1003,6 +1000,9 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
                 publishedAt: string | null;
             };
         };
+        receivedAt: string;
+        quantityOnHand: number;
+        quantityReserved: number;
     }[];
     meta: {
         page: number;
@@ -1022,9 +1022,6 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
         manufacturedAt: string | null;
         paoMonths: number | null;
         available: number;
-        receivedAt: string;
-        quantityOnHand: number;
-        quantityReserved: number;
         variant: {
             id: string;
             sku: string;
@@ -1039,6 +1036,9 @@ export declare const paginatedInventoryBatchesSchema: z.ZodObject<{
                 publishedAt: string | null;
             };
         };
+        receivedAt: string;
+        quantityOnHand: number;
+        quantityReserved: number;
     }[];
     meta: {
         page: number;

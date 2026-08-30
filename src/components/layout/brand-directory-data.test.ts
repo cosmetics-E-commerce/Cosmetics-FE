@@ -9,6 +9,12 @@ function brand(name: string, productCount: number, id = name): PublicBrandListIt
     productCount,
     slug: id.toLocaleLowerCase().replaceAll(" ", "-"),
     logoUrl: null,
+    logoDisplay: {
+      scale: "STANDARD",
+      padding: "STANDARD",
+      alignX: "CENTER",
+      alignY: "CENTER",
+    },
   };
 }
 
