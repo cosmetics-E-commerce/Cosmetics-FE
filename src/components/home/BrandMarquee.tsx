@@ -60,8 +60,13 @@ export function BrandMarquee({ initialBrands }: BrandMarqueeProps) {
               className="sf-brand-marquee__group sf-brand-marquee__group--clone"
               aria-hidden="true"
             >
-              {brands.map((brand) => (
-                <BrandLink key={brand.id} brand={brand} decorative />
+              {brands.map((brand, index) => (
+                <BrandLink
+                  key={brand.id}
+                  brand={brand}
+                  decorative
+                  priority={index < priorityLogoCount}
+                />
               ))}
             </div>
           )}

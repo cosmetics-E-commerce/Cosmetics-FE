@@ -108,7 +108,7 @@ describe("BrandMarquee", () => {
     clonedLinks.forEach((link) => expect(link).toHaveAttribute("tabindex", "-1"));
     expect(container.querySelector(".sf-brand-marquee__group--clone img")).toHaveAttribute(
       "loading",
-      "lazy",
+      "eager",
     );
   });
 
