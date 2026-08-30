@@ -1114,18 +1114,30 @@ export type RoutineRecommendationStep = {
   alternatives: RoutineRecommendationProduct[];
   warnings: string[];
 };
+export type RoutineOwnedStep = {
+  id: string;
+  roleKey: string;
+  roleLabel: string;
+  period: "AM" | "PM";
+  order: number;
+};
 export type RoutineResult = {
   sessionId: string;
   version: number;
   templateKey: string | null;
   answers: Record<string, string | number | boolean | string[]>;
   profileSummary: string[];
+  ownedSteps: RoutineOwnedStep[];
   morningSteps: RoutineRecommendationStep[];
   eveningSteps: RoutineRecommendationStep[];
   warnings: string[];
   noResult: boolean;
   noResultMessage: string | null;
   total: number;
+  budgetMax: number | null;
+  budgetExceeded: boolean;
+  recommendationsChanged: boolean;
+  changedStepIds: string[];
 };
 export const getRoutineBuilder = () =>
   rawRequest<RoutinePublicConfig>("/routine-builder", { auth: false });

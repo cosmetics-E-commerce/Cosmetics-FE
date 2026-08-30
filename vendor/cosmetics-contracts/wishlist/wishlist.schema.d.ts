@@ -132,16 +132,44 @@ export declare const wishlistItemSchema: z.ZodObject<{
             slug: z.ZodString;
             name: z.ZodString;
             logoUrl: z.ZodNullable<z.ZodString>;
+            logoDisplay: z.ZodDefault<z.ZodObject<{
+                scale: z.ZodEnum<["SMALL", "STANDARD", "LARGE"]>;
+                padding: z.ZodEnum<["COMPACT", "STANDARD", "GENEROUS"]>;
+                alignX: z.ZodEnum<["START", "CENTER", "END"]>;
+                alignY: z.ZodEnum<["TOP", "CENTER", "BOTTOM"]>;
+            }, "strict", z.ZodTypeAny, {
+                scale: "SMALL" | "STANDARD" | "LARGE";
+                padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                alignX: "START" | "CENTER" | "END";
+                alignY: "CENTER" | "TOP" | "BOTTOM";
+            }, {
+                scale: "SMALL" | "STANDARD" | "LARGE";
+                padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                alignX: "START" | "CENTER" | "END";
+                alignY: "CENTER" | "TOP" | "BOTTOM";
+            }>>;
         }, "strip", z.ZodTypeAny, {
             id: string;
             name: string;
             slug: string;
             logoUrl: string | null;
+            logoDisplay: {
+                scale: "SMALL" | "STANDARD" | "LARGE";
+                padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                alignX: "START" | "CENTER" | "END";
+                alignY: "CENTER" | "TOP" | "BOTTOM";
+            };
         }, {
             id: string;
             name: string;
             slug: string;
             logoUrl: string | null;
+            logoDisplay?: {
+                scale: "SMALL" | "STANDARD" | "LARGE";
+                padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                alignX: "START" | "CENTER" | "END";
+                alignY: "CENTER" | "TOP" | "BOTTOM";
+            } | undefined;
         }>>;
         options: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -469,6 +497,12 @@ export declare const wishlistItemSchema: z.ZodObject<{
             name: string;
             slug: string;
             logoUrl: string | null;
+            logoDisplay: {
+                scale: "SMALL" | "STANDARD" | "LARGE";
+                padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                alignX: "START" | "CENTER" | "END";
+                alignY: "CENTER" | "TOP" | "BOTTOM";
+            };
         } | null;
         ingredientDetails: {
             id: string;
@@ -585,6 +619,12 @@ export declare const wishlistItemSchema: z.ZodObject<{
             name: string;
             slug: string;
             logoUrl: string | null;
+            logoDisplay?: {
+                scale: "SMALL" | "STANDARD" | "LARGE";
+                padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                alignX: "START" | "CENTER" | "END";
+                alignY: "CENTER" | "TOP" | "BOTTOM";
+            } | undefined;
         } | null;
         ingredientDetails: {
             id: string;
@@ -707,6 +747,12 @@ export declare const wishlistItemSchema: z.ZodObject<{
             name: string;
             slug: string;
             logoUrl: string | null;
+            logoDisplay: {
+                scale: "SMALL" | "STANDARD" | "LARGE";
+                padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                alignX: "START" | "CENTER" | "END";
+                alignY: "CENTER" | "TOP" | "BOTTOM";
+            };
         } | null;
         ingredientDetails: {
             id: string;
@@ -829,6 +875,12 @@ export declare const wishlistItemSchema: z.ZodObject<{
             name: string;
             slug: string;
             logoUrl: string | null;
+            logoDisplay?: {
+                scale: "SMALL" | "STANDARD" | "LARGE";
+                padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                alignX: "START" | "CENTER" | "END";
+                alignY: "CENTER" | "TOP" | "BOTTOM";
+            } | undefined;
         } | null;
         ingredientDetails: {
             id: string;
@@ -961,16 +1013,44 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 slug: z.ZodString;
                 name: z.ZodString;
                 logoUrl: z.ZodNullable<z.ZodString>;
+                logoDisplay: z.ZodDefault<z.ZodObject<{
+                    scale: z.ZodEnum<["SMALL", "STANDARD", "LARGE"]>;
+                    padding: z.ZodEnum<["COMPACT", "STANDARD", "GENEROUS"]>;
+                    alignX: z.ZodEnum<["START", "CENTER", "END"]>;
+                    alignY: z.ZodEnum<["TOP", "CENTER", "BOTTOM"]>;
+                }, "strict", z.ZodTypeAny, {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                }, {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                }>>;
             }, "strip", z.ZodTypeAny, {
                 id: string;
                 name: string;
                 slug: string;
                 logoUrl: string | null;
+                logoDisplay: {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                };
             }, {
                 id: string;
                 name: string;
                 slug: string;
                 logoUrl: string | null;
+                logoDisplay?: {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                } | undefined;
             }>>;
             options: z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
@@ -1298,6 +1378,12 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 name: string;
                 slug: string;
                 logoUrl: string | null;
+                logoDisplay: {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                };
             } | null;
             ingredientDetails: {
                 id: string;
@@ -1414,6 +1500,12 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 name: string;
                 slug: string;
                 logoUrl: string | null;
+                logoDisplay?: {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                } | undefined;
             } | null;
             ingredientDetails: {
                 id: string;
@@ -1536,6 +1628,12 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 name: string;
                 slug: string;
                 logoUrl: string | null;
+                logoDisplay: {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                };
             } | null;
             ingredientDetails: {
                 id: string;
@@ -1658,6 +1756,12 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 name: string;
                 slug: string;
                 logoUrl: string | null;
+                logoDisplay?: {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                } | undefined;
             } | null;
             ingredientDetails: {
                 id: string;
@@ -1790,6 +1894,12 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 name: string;
                 slug: string;
                 logoUrl: string | null;
+                logoDisplay: {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                };
             } | null;
             ingredientDetails: {
                 id: string;
@@ -1922,6 +2032,12 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 name: string;
                 slug: string;
                 logoUrl: string | null;
+                logoDisplay?: {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                } | undefined;
             } | null;
             ingredientDetails: {
                 id: string;
@@ -2059,16 +2175,44 @@ export declare const wishlistSchema: z.ZodObject<{
                     slug: z.ZodString;
                     name: z.ZodString;
                     logoUrl: z.ZodNullable<z.ZodString>;
+                    logoDisplay: z.ZodDefault<z.ZodObject<{
+                        scale: z.ZodEnum<["SMALL", "STANDARD", "LARGE"]>;
+                        padding: z.ZodEnum<["COMPACT", "STANDARD", "GENEROUS"]>;
+                        alignX: z.ZodEnum<["START", "CENTER", "END"]>;
+                        alignY: z.ZodEnum<["TOP", "CENTER", "BOTTOM"]>;
+                    }, "strict", z.ZodTypeAny, {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    }, {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    }>>;
                 }, "strip", z.ZodTypeAny, {
                     id: string;
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    };
                 }, {
                     id: string;
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay?: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    } | undefined;
                 }>>;
                 options: z.ZodArray<z.ZodObject<{
                     id: z.ZodString;
@@ -2396,6 +2540,12 @@ export declare const wishlistSchema: z.ZodObject<{
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    };
                 } | null;
                 ingredientDetails: {
                     id: string;
@@ -2512,6 +2662,12 @@ export declare const wishlistSchema: z.ZodObject<{
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay?: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    } | undefined;
                 } | null;
                 ingredientDetails: {
                     id: string;
@@ -2634,6 +2790,12 @@ export declare const wishlistSchema: z.ZodObject<{
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    };
                 } | null;
                 ingredientDetails: {
                     id: string;
@@ -2756,6 +2918,12 @@ export declare const wishlistSchema: z.ZodObject<{
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay?: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    } | undefined;
                 } | null;
                 ingredientDetails: {
                     id: string;
@@ -2888,6 +3056,12 @@ export declare const wishlistSchema: z.ZodObject<{
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    };
                 } | null;
                 ingredientDetails: {
                     id: string;
@@ -3020,6 +3194,12 @@ export declare const wishlistSchema: z.ZodObject<{
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay?: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    } | undefined;
                 } | null;
                 ingredientDetails: {
                     id: string;
@@ -3149,16 +3329,44 @@ export declare const wishlistSchema: z.ZodObject<{
                 slug: z.ZodString;
                 name: z.ZodString;
                 logoUrl: z.ZodNullable<z.ZodString>;
+                logoDisplay: z.ZodDefault<z.ZodObject<{
+                    scale: z.ZodEnum<["SMALL", "STANDARD", "LARGE"]>;
+                    padding: z.ZodEnum<["COMPACT", "STANDARD", "GENEROUS"]>;
+                    alignX: z.ZodEnum<["START", "CENTER", "END"]>;
+                    alignY: z.ZodEnum<["TOP", "CENTER", "BOTTOM"]>;
+                }, "strict", z.ZodTypeAny, {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                }, {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                }>>;
             }, "strip", z.ZodTypeAny, {
                 id: string;
                 name: string;
                 slug: string;
                 logoUrl: string | null;
+                logoDisplay: {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                };
             }, {
                 id: string;
                 name: string;
                 slug: string;
                 logoUrl: string | null;
+                logoDisplay?: {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                } | undefined;
             }>>;
             options: z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
@@ -3486,6 +3694,12 @@ export declare const wishlistSchema: z.ZodObject<{
                 name: string;
                 slug: string;
                 logoUrl: string | null;
+                logoDisplay: {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                };
             } | null;
             ingredientDetails: {
                 id: string;
@@ -3602,6 +3816,12 @@ export declare const wishlistSchema: z.ZodObject<{
                 name: string;
                 slug: string;
                 logoUrl: string | null;
+                logoDisplay?: {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                } | undefined;
             } | null;
             ingredientDetails: {
                 id: string;
@@ -3724,6 +3944,12 @@ export declare const wishlistSchema: z.ZodObject<{
                 name: string;
                 slug: string;
                 logoUrl: string | null;
+                logoDisplay: {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                };
             } | null;
             ingredientDetails: {
                 id: string;
@@ -3846,6 +4072,12 @@ export declare const wishlistSchema: z.ZodObject<{
                 name: string;
                 slug: string;
                 logoUrl: string | null;
+                logoDisplay?: {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                } | undefined;
             } | null;
             ingredientDetails: {
                 id: string;
@@ -3973,6 +4205,12 @@ export declare const wishlistSchema: z.ZodObject<{
                 name: string;
                 slug: string;
                 logoUrl: string | null;
+                logoDisplay: {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                };
             } | null;
             ingredientDetails: {
                 id: string;
@@ -4103,6 +4341,12 @@ export declare const wishlistSchema: z.ZodObject<{
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    };
                 } | null;
                 ingredientDetails: {
                     id: string;
@@ -4232,6 +4476,12 @@ export declare const wishlistSchema: z.ZodObject<{
                 name: string;
                 slug: string;
                 logoUrl: string | null;
+                logoDisplay?: {
+                    scale: "SMALL" | "STANDARD" | "LARGE";
+                    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                    alignX: "START" | "CENTER" | "END";
+                    alignY: "CENTER" | "TOP" | "BOTTOM";
+                } | undefined;
             } | null;
             ingredientDetails: {
                 id: string;
@@ -4362,6 +4612,12 @@ export declare const wishlistSchema: z.ZodObject<{
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay?: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    } | undefined;
                 } | null;
                 ingredientDetails: {
                     id: string;
@@ -4505,16 +4761,44 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     slug: z.ZodString;
                     name: z.ZodString;
                     logoUrl: z.ZodNullable<z.ZodString>;
+                    logoDisplay: z.ZodDefault<z.ZodObject<{
+                        scale: z.ZodEnum<["SMALL", "STANDARD", "LARGE"]>;
+                        padding: z.ZodEnum<["COMPACT", "STANDARD", "GENEROUS"]>;
+                        alignX: z.ZodEnum<["START", "CENTER", "END"]>;
+                        alignY: z.ZodEnum<["TOP", "CENTER", "BOTTOM"]>;
+                    }, "strict", z.ZodTypeAny, {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    }, {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    }>>;
                 }, "strip", z.ZodTypeAny, {
                     id: string;
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    };
                 }, {
                     id: string;
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay?: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    } | undefined;
                 }>>;
                 options: z.ZodArray<z.ZodObject<{
                     id: z.ZodString;
@@ -4842,6 +5126,12 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    };
                 } | null;
                 ingredientDetails: {
                     id: string;
@@ -4958,6 +5248,12 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay?: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    } | undefined;
                 } | null;
                 ingredientDetails: {
                     id: string;
@@ -5080,6 +5376,12 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    };
                 } | null;
                 ingredientDetails: {
                     id: string;
@@ -5202,6 +5504,12 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay?: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    } | undefined;
                 } | null;
                 ingredientDetails: {
                     id: string;
@@ -5337,6 +5645,12 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    };
                 } | null;
                 ingredientDetails: {
                     id: string;
@@ -5469,6 +5783,12 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay?: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    } | undefined;
                 } | null;
                 ingredientDetails: {
                     id: string;
@@ -5606,6 +5926,12 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    };
                 } | null;
                 ingredientDetails: {
                     id: string;
@@ -5743,6 +6069,12 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     name: string;
                     slug: string;
                     logoUrl: string | null;
+                    logoDisplay?: {
+                        scale: "SMALL" | "STANDARD" | "LARGE";
+                        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+                        alignX: "START" | "CENTER" | "END";
+                        alignY: "CENTER" | "TOP" | "BOTTOM";
+                    } | undefined;
                 } | null;
                 ingredientDetails: {
                     id: string;

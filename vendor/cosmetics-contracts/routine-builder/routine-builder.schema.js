@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DEFAULT_ROUTINE_BUILDER_CONFIG = exports.routineEventInputSchema = exports.routineProductProfileInputSchema = exports.routineDraftSaveSchema = exports.routineEvaluationInputSchema = exports.routineAnswersSchema = exports.routineAnswerValueSchema = exports.routineBuilderConfigSchema = exports.routineTemplateSchema = exports.routineTemplateStepSchema = exports.routineCompatibilityRuleSchema = exports.routineRuleSchema = exports.routineRuleEffectSchema = exports.routineTargetSchema = exports.routineRoleSchema = exports.routineConcernSchema = exports.routineQuestionSchema = exports.routineAnswerSchema = exports.routineSignalSchema = exports.routineConditionGroupSchema = exports.routineConditionSchema = exports.routineOperatorSchema = exports.routineQuestionTypeSchema = exports.routineLocalizedTextSchema = exports.routineKeySchema = exports.routineBuilderSchemaVersion = void 0;
+exports.DEFAULT_ROUTINE_BUILDER_CONFIG = exports.routineEventInputSchema = exports.routineProductProfileInputSchema = exports.routineDraftSaveSchema = exports.routineEvaluationInputSchema = exports.routineAnswersSchema = exports.routineAnswerValueSchema = exports.routineBuilderConfigSchema = exports.routineTemplateSchema = exports.routineTemplateStepSchema = exports.routineCompatibilityRuleSchema = exports.routineRuleSchema = exports.routineRuleEffectSchema = exports.routineTargetSchema = exports.routineRoleSchema = exports.routineConcernSchema = exports.routineQuestionSchema = exports.routineAnswerSchema = exports.routineSignalDefinitionSchema = exports.routineSignalSchema = exports.routineConditionGroupSchema = exports.routineConditionSchema = exports.routineOperatorSchema = exports.routineQuestionTypeSchema = exports.routineLocalizedTextSchema = exports.routineKeySchema = exports.routineBuilderSchemaVersion = void 0;
 const zod_1 = require("zod");
 exports.routineBuilderSchemaVersion = 1;
 exports.routineKeySchema = zod_1.z
@@ -8,7 +8,7 @@ exports.routineKeySchema = zod_1.z
     .trim()
     .min(2)
     .max(80)
-    .regex(/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/, "Use a stable kebab-case key.");
+    .regex(/^[a-z][a-z0-9]*(?:(?:-|\.)[a-z0-9]+)*$/, "Use a stable lowercase key with hyphen or dot-separated segments.");
 exports.routineLocalizedTextSchema = zod_1.z.object({
     en: zod_1.z.string().trim().max(500),
     ar: zod_1.z.string().trim().max(500),
@@ -56,6 +56,23 @@ exports.routineSignalSchema = zod_1.z.object({
         zod_1.z.boolean(),
         zod_1.z.array(zod_1.z.string().max(160)).max(30),
     ]),
+    weight: zod_1.z.number().finite().min(-100).max(100).optional(),
+});
+/**
+ * Signals are configuration-owned vocabulary. The purpose field gives the
+ * engine a small set of safe, non-Turing-complete semantics while normal
+ * relevance signals remain completely Admin-defined.
+ */
+exports.routineSignalDefinitionSchema = zod_1.z.object({
+    id: zod_1.z.string().uuid(),
+    key: exports.routineKeySchema,
+    family: exports.routineKeySchema,
+    label: exports.routineLocalizedTextSchema,
+    description: exports.routineLocalizedTextSchema.default({ en: "", ar: "" }),
+    valueType: zod_1.z.enum(["NUMBER", "BOOLEAN", "KEYWORD", "KEYWORD_LIST"]).default("NUMBER"),
+    aggregation: zod_1.z.enum(["SUM", "MAX", "LAST"]).default("SUM"),
+    purpose: zod_1.z.enum(["PROFILE", "BUDGET_MAX", "OWNED_ROLE"]).default("PROFILE"),
+    enabled: zod_1.z.boolean().default(true),
 });
 exports.routineAnswerSchema = zod_1.z.object({
     id: zod_1.z.string().uuid(),
@@ -78,6 +95,8 @@ exports.routineQuestionSchema = zod_1.z
     enabled: zod_1.z.boolean().default(true),
     order: zod_1.z.number().int().min(0).max(1_000),
     visibility: exports.routineConditionGroupSchema.nullable().default(null),
+    /** Optional managed signal receiving SCALE/NUMERIC_RANGE values directly. */
+    directSignalKey: exports.routineKeySchema.nullable().optional(),
     answers: zod_1.z.array(exports.routineAnswerSchema).max(60).default([]),
     minSelections: zod_1.z.number().int().min(0).max(20).default(0),
     maxSelections: zod_1.z.number().int().min(1).max(20).default(1),
@@ -123,7 +142,12 @@ exports.routineTargetSchema = zod_1.z.object({
     keys: zod_1.z.array(exports.routineKeySchema).max(80).default([]),
 });
 exports.routineRuleEffectSchema = zod_1.z.discriminatedUnion("type", [
-    zod_1.z.object({ type: zod_1.z.literal("BOOST"), target: exports.routineTargetSchema, score: zod_1.z.number().int().min(-10_000).max(10_000) }),
+    zod_1.z.object({
+        type: zod_1.z.literal("BOOST"),
+        target: exports.routineTargetSchema,
+        score: zod_1.z.number().int().min(-10_000).max(10_000),
+        channel: zod_1.z.enum(["RECOMMENDATION", "MERCHANDISING"]).optional(),
+    }),
     zod_1.z.object({ type: zod_1.z.literal("EXCLUDE"), target: exports.routineTargetSchema, reason: exports.routineLocalizedTextSchema }),
     zod_1.z.object({ type: zod_1.z.literal("SELECT_TEMPLATE"), templateKey: exports.routineKeySchema }),
     zod_1.z.object({ type: zod_1.z.literal("NO_RESULT"), message: exports.routineLocalizedTextSchema }),
@@ -179,6 +203,7 @@ exports.routineBuilderConfigSchema = zod_1.z
     disclaimer: exports.routineLocalizedTextSchema,
     noResult: exports.routineLocalizedTextSchema,
     questions: zod_1.z.array(exports.routineQuestionSchema).max(80),
+    signals: zod_1.z.array(exports.routineSignalDefinitionSchema).max(300).optional(),
     concerns: zod_1.z.array(exports.routineConcernSchema).max(100),
     roles: zod_1.z.array(exports.routineRoleSchema).max(40),
     rules: zod_1.z.array(exports.routineRuleSchema).max(300),
@@ -188,11 +213,12 @@ exports.routineBuilderConfigSchema = zod_1.z
         maximumProductsPerBrand: zod_1.z.number().int().min(0).max(20).nullable().default(null),
         preferBrandDiversity: zod_1.z.boolean().default(false),
         allowDuplicateProducts: zod_1.z.boolean().default(false),
+        budgetExceeded: exports.routineLocalizedTextSchema.optional(),
     }),
 })
     .superRefine((config, context) => {
     const collections = [
-        ["questions", config.questions], ["concerns", config.concerns], ["roles", config.roles],
+        ["questions", config.questions], ["signals", config.signals ?? []], ["concerns", config.concerns], ["roles", config.roles],
         ["rules", config.rules], ["compatibilityRules", config.compatibilityRules], ["templates", config.templates],
     ];
     for (const [path, values] of collections) {
@@ -226,7 +252,14 @@ exports.routineProductProfileInputSchema = zod_1.z.object({
     textures: zod_1.z.array(exports.routineKeySchema).max(30).default([]),
     periods: zod_1.z.array(zod_1.z.enum(["AM", "PM"])).max(2).default(["AM", "PM"]),
     experienceLevels: zod_1.z.array(exports.routineKeySchema).max(20).default([]),
+    signalWeights: zod_1.z.record(exports.routineKeySchema, zod_1.z.number().int().min(-1_000).max(1_000)).default({}),
+    approvedReasons: zod_1.z.array(zod_1.z.object({
+        signalKey: exports.routineKeySchema,
+        text: exports.routineLocalizedTextSchema,
+    })).max(60).default([]),
+    redundancyGroups: zod_1.z.array(exports.routineKeySchema).max(30).default([]),
     recommendationWeight: zod_1.z.number().int().min(-10_000).max(10_000).default(0),
+    merchandisingBoost: zod_1.z.number().int().min(-1_000).max(1_000).default(0),
     neverRecommend: zod_1.z.boolean().default(false),
 });
 exports.routineEventInputSchema = zod_1.z.object({
@@ -244,7 +277,15 @@ exports.DEFAULT_ROUTINE_BUILDER_CONFIG = {
     resultTitle: { en: "Your BioReza Routine", ar: "روتين BioReza الخاص بك" },
     disclaimer: { en: "Personalized product guidance, not medical diagnosis. Consult a qualified professional for medical concerns.", ar: "إرشادات مخصصة للمنتجات وليست تشخيصاً طبياً. استشيري مختصاً مؤهلاً للمخاوف الطبية." },
     noResult: { en: "We cannot confidently complete this routine from the current configuration.", ar: "لا يمكننا إكمال هذا الروتين بثقة من الإعداد الحالي." },
-    questions: [], concerns: [], roles: [], rules: [], compatibilityRules: [], templates: [],
-    settings: { maximumProductsPerBrand: null, preferBrandDiversity: false, allowDuplicateProducts: false },
+    questions: [], signals: [], concerns: [], roles: [], rules: [], compatibilityRules: [], templates: [],
+    settings: {
+        maximumProductsPerBrand: null,
+        preferBrandDiversity: false,
+        allowDuplicateProducts: false,
+        budgetExceeded: {
+            en: "A complete routine is not currently available inside your selected budget. This is the closest complete option.",
+            ar: "لا يتوفر حالياً روتين كامل ضمن ميزانيتك المحددة. هذا هو أقرب خيار كامل.",
+        },
+    },
 };
 //# sourceMappingURL=routine-builder.schema.js.map

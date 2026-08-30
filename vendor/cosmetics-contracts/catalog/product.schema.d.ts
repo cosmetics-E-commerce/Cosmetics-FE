@@ -2389,21 +2389,66 @@ export declare const updateCategorySchema: z.ZodEffects<z.ZodObject<{
     nameAr?: string | undefined;
 }>;
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;
+export declare const brandLogoDisplaySchema: z.ZodObject<{
+    scale: z.ZodEnum<["SMALL", "STANDARD", "LARGE"]>;
+    padding: z.ZodEnum<["COMPACT", "STANDARD", "GENEROUS"]>;
+    alignX: z.ZodEnum<["START", "CENTER", "END"]>;
+    alignY: z.ZodEnum<["TOP", "CENTER", "BOTTOM"]>;
+}, "strict", z.ZodTypeAny, {
+    scale: "SMALL" | "STANDARD" | "LARGE";
+    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+    alignX: "START" | "CENTER" | "END";
+    alignY: "CENTER" | "TOP" | "BOTTOM";
+}, {
+    scale: "SMALL" | "STANDARD" | "LARGE";
+    padding: "STANDARD" | "COMPACT" | "GENEROUS";
+    alignX: "START" | "CENTER" | "END";
+    alignY: "CENTER" | "TOP" | "BOTTOM";
+}>;
+export type BrandLogoDisplay = z.infer<typeof brandLogoDisplaySchema>;
 export declare const publicBrandSchema: z.ZodObject<{
     id: z.ZodString;
     slug: z.ZodString;
     name: z.ZodString;
     logoUrl: z.ZodNullable<z.ZodString>;
+    logoDisplay: z.ZodDefault<z.ZodObject<{
+        scale: z.ZodEnum<["SMALL", "STANDARD", "LARGE"]>;
+        padding: z.ZodEnum<["COMPACT", "STANDARD", "GENEROUS"]>;
+        alignX: z.ZodEnum<["START", "CENTER", "END"]>;
+        alignY: z.ZodEnum<["TOP", "CENTER", "BOTTOM"]>;
+    }, "strict", z.ZodTypeAny, {
+        scale: "SMALL" | "STANDARD" | "LARGE";
+        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+        alignX: "START" | "CENTER" | "END";
+        alignY: "CENTER" | "TOP" | "BOTTOM";
+    }, {
+        scale: "SMALL" | "STANDARD" | "LARGE";
+        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+        alignX: "START" | "CENTER" | "END";
+        alignY: "CENTER" | "TOP" | "BOTTOM";
+    }>>;
 }, "strip", z.ZodTypeAny, {
     id: string;
     name: string;
     slug: string;
     logoUrl: string | null;
+    logoDisplay: {
+        scale: "SMALL" | "STANDARD" | "LARGE";
+        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+        alignX: "START" | "CENTER" | "END";
+        alignY: "CENTER" | "TOP" | "BOTTOM";
+    };
 }, {
     id: string;
     name: string;
     slug: string;
     logoUrl: string | null;
+    logoDisplay?: {
+        scale: "SMALL" | "STANDARD" | "LARGE";
+        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+        alignX: "START" | "CENTER" | "END";
+        alignY: "CENTER" | "TOP" | "BOTTOM";
+    } | undefined;
 }>;
 export type PublicBrandResponse = z.infer<typeof publicBrandSchema>;
 export declare const publicBrandListItemSchema: z.ZodObject<{
@@ -2411,6 +2456,22 @@ export declare const publicBrandListItemSchema: z.ZodObject<{
     slug: z.ZodString;
     name: z.ZodString;
     logoUrl: z.ZodNullable<z.ZodString>;
+    logoDisplay: z.ZodDefault<z.ZodObject<{
+        scale: z.ZodEnum<["SMALL", "STANDARD", "LARGE"]>;
+        padding: z.ZodEnum<["COMPACT", "STANDARD", "GENEROUS"]>;
+        alignX: z.ZodEnum<["START", "CENTER", "END"]>;
+        alignY: z.ZodEnum<["TOP", "CENTER", "BOTTOM"]>;
+    }, "strict", z.ZodTypeAny, {
+        scale: "SMALL" | "STANDARD" | "LARGE";
+        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+        alignX: "START" | "CENTER" | "END";
+        alignY: "CENTER" | "TOP" | "BOTTOM";
+    }, {
+        scale: "SMALL" | "STANDARD" | "LARGE";
+        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+        alignX: "START" | "CENTER" | "END";
+        alignY: "CENTER" | "TOP" | "BOTTOM";
+    }>>;
 } & {
     productCount: z.ZodNumber;
 }, "strip", z.ZodTypeAny, {
@@ -2419,22 +2480,42 @@ export declare const publicBrandListItemSchema: z.ZodObject<{
     slug: string;
     productCount: number;
     logoUrl: string | null;
+    logoDisplay: {
+        scale: "SMALL" | "STANDARD" | "LARGE";
+        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+        alignX: "START" | "CENTER" | "END";
+        alignY: "CENTER" | "TOP" | "BOTTOM";
+    };
 }, {
     id: string;
     name: string;
     slug: string;
     productCount: number;
     logoUrl: string | null;
+    logoDisplay?: {
+        scale: "SMALL" | "STANDARD" | "LARGE";
+        padding: "STANDARD" | "COMPACT" | "GENEROUS";
+        alignX: "START" | "CENTER" | "END";
+        alignY: "CENTER" | "TOP" | "BOTTOM";
+    } | undefined;
 }>;
 export type PublicBrandListItemResponse = z.infer<typeof publicBrandListItemSchema>;
 export declare const createBrandSchema: z.ZodObject<{
     slug: z.ZodOptional<z.ZodString>;
     name: z.ZodString;
     logoKey: z.ZodOptional<z.ZodEffects<z.ZodString, string, string>>;
+    logoScale: z.ZodDefault<z.ZodEnum<["SMALL", "STANDARD", "LARGE"]>>;
+    logoPadding: z.ZodDefault<z.ZodEnum<["COMPACT", "STANDARD", "GENEROUS"]>>;
+    logoAlignX: z.ZodDefault<z.ZodEnum<["START", "CENTER", "END"]>>;
+    logoAlignY: z.ZodDefault<z.ZodEnum<["TOP", "CENTER", "BOTTOM"]>>;
     isActive: z.ZodDefault<z.ZodBoolean>;
 }, "strict", z.ZodTypeAny, {
     name: string;
     isActive: boolean;
+    logoScale: "SMALL" | "STANDARD" | "LARGE";
+    logoPadding: "STANDARD" | "COMPACT" | "GENEROUS";
+    logoAlignX: "START" | "CENTER" | "END";
+    logoAlignY: "CENTER" | "TOP" | "BOTTOM";
     slug?: string | undefined;
     logoKey?: string | undefined;
 }, {
@@ -2442,33 +2523,57 @@ export declare const createBrandSchema: z.ZodObject<{
     isActive?: boolean | undefined;
     slug?: string | undefined;
     logoKey?: string | undefined;
+    logoScale?: "SMALL" | "STANDARD" | "LARGE" | undefined;
+    logoPadding?: "STANDARD" | "COMPACT" | "GENEROUS" | undefined;
+    logoAlignX?: "START" | "CENTER" | "END" | undefined;
+    logoAlignY?: "CENTER" | "TOP" | "BOTTOM" | undefined;
 }>;
 export type CreateBrandInput = z.infer<typeof createBrandSchema>;
 export declare const updateBrandSchema: z.ZodEffects<z.ZodObject<{
     slug: z.ZodOptional<z.ZodString>;
     name: z.ZodOptional<z.ZodString>;
     logoKey: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodString, string, string>>>;
+    logoScale: z.ZodOptional<z.ZodEnum<["SMALL", "STANDARD", "LARGE"]>>;
+    logoPadding: z.ZodOptional<z.ZodEnum<["COMPACT", "STANDARD", "GENEROUS"]>>;
+    logoAlignX: z.ZodOptional<z.ZodEnum<["START", "CENTER", "END"]>>;
+    logoAlignY: z.ZodOptional<z.ZodEnum<["TOP", "CENTER", "BOTTOM"]>>;
     isActive: z.ZodOptional<z.ZodBoolean>;
 }, "strict", z.ZodTypeAny, {
     name?: string | undefined;
     isActive?: boolean | undefined;
     slug?: string | undefined;
     logoKey?: string | null | undefined;
+    logoScale?: "SMALL" | "STANDARD" | "LARGE" | undefined;
+    logoPadding?: "STANDARD" | "COMPACT" | "GENEROUS" | undefined;
+    logoAlignX?: "START" | "CENTER" | "END" | undefined;
+    logoAlignY?: "CENTER" | "TOP" | "BOTTOM" | undefined;
 }, {
     name?: string | undefined;
     isActive?: boolean | undefined;
     slug?: string | undefined;
     logoKey?: string | null | undefined;
+    logoScale?: "SMALL" | "STANDARD" | "LARGE" | undefined;
+    logoPadding?: "STANDARD" | "COMPACT" | "GENEROUS" | undefined;
+    logoAlignX?: "START" | "CENTER" | "END" | undefined;
+    logoAlignY?: "CENTER" | "TOP" | "BOTTOM" | undefined;
 }>, {
     name?: string | undefined;
     isActive?: boolean | undefined;
     slug?: string | undefined;
     logoKey?: string | null | undefined;
+    logoScale?: "SMALL" | "STANDARD" | "LARGE" | undefined;
+    logoPadding?: "STANDARD" | "COMPACT" | "GENEROUS" | undefined;
+    logoAlignX?: "START" | "CENTER" | "END" | undefined;
+    logoAlignY?: "CENTER" | "TOP" | "BOTTOM" | undefined;
 }, {
     name?: string | undefined;
     isActive?: boolean | undefined;
     slug?: string | undefined;
     logoKey?: string | null | undefined;
+    logoScale?: "SMALL" | "STANDARD" | "LARGE" | undefined;
+    logoPadding?: "STANDARD" | "COMPACT" | "GENEROUS" | undefined;
+    logoAlignX?: "START" | "CENTER" | "END" | undefined;
+    logoAlignY?: "CENTER" | "TOP" | "BOTTOM" | undefined;
 }>;
 export type UpdateBrandInput = z.infer<typeof updateBrandSchema>;
 export declare const publicProductImageSchema: z.ZodObject<{
@@ -2760,16 +2865,44 @@ export declare const publicProductSchema: z.ZodObject<{
         slug: z.ZodString;
         name: z.ZodString;
         logoUrl: z.ZodNullable<z.ZodString>;
+        logoDisplay: z.ZodDefault<z.ZodObject<{
+            scale: z.ZodEnum<["SMALL", "STANDARD", "LARGE"]>;
+            padding: z.ZodEnum<["COMPACT", "STANDARD", "GENEROUS"]>;
+            alignX: z.ZodEnum<["START", "CENTER", "END"]>;
+            alignY: z.ZodEnum<["TOP", "CENTER", "BOTTOM"]>;
+        }, "strict", z.ZodTypeAny, {
+            scale: "SMALL" | "STANDARD" | "LARGE";
+            padding: "STANDARD" | "COMPACT" | "GENEROUS";
+            alignX: "START" | "CENTER" | "END";
+            alignY: "CENTER" | "TOP" | "BOTTOM";
+        }, {
+            scale: "SMALL" | "STANDARD" | "LARGE";
+            padding: "STANDARD" | "COMPACT" | "GENEROUS";
+            alignX: "START" | "CENTER" | "END";
+            alignY: "CENTER" | "TOP" | "BOTTOM";
+        }>>;
     }, "strip", z.ZodTypeAny, {
         id: string;
         name: string;
         slug: string;
         logoUrl: string | null;
+        logoDisplay: {
+            scale: "SMALL" | "STANDARD" | "LARGE";
+            padding: "STANDARD" | "COMPACT" | "GENEROUS";
+            alignX: "START" | "CENTER" | "END";
+            alignY: "CENTER" | "TOP" | "BOTTOM";
+        };
     }, {
         id: string;
         name: string;
         slug: string;
         logoUrl: string | null;
+        logoDisplay?: {
+            scale: "SMALL" | "STANDARD" | "LARGE";
+            padding: "STANDARD" | "COMPACT" | "GENEROUS";
+            alignX: "START" | "CENTER" | "END";
+            alignY: "CENTER" | "TOP" | "BOTTOM";
+        } | undefined;
     }>>;
     options: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -3097,6 +3230,12 @@ export declare const publicProductSchema: z.ZodObject<{
         name: string;
         slug: string;
         logoUrl: string | null;
+        logoDisplay: {
+            scale: "SMALL" | "STANDARD" | "LARGE";
+            padding: "STANDARD" | "COMPACT" | "GENEROUS";
+            alignX: "START" | "CENTER" | "END";
+            alignY: "CENTER" | "TOP" | "BOTTOM";
+        };
     } | null;
     ingredientDetails: {
         id: string;
@@ -3213,6 +3352,12 @@ export declare const publicProductSchema: z.ZodObject<{
         name: string;
         slug: string;
         logoUrl: string | null;
+        logoDisplay?: {
+            scale: "SMALL" | "STANDARD" | "LARGE";
+            padding: "STANDARD" | "COMPACT" | "GENEROUS";
+            alignX: "START" | "CENTER" | "END";
+            alignY: "CENTER" | "TOP" | "BOTTOM";
+        } | undefined;
     } | null;
     ingredientDetails: {
         id: string;
@@ -3475,16 +3620,44 @@ export declare const adminProductSchema: z.ZodObject<{
         slug: z.ZodString;
         name: z.ZodString;
         logoUrl: z.ZodNullable<z.ZodString>;
+        logoDisplay: z.ZodDefault<z.ZodObject<{
+            scale: z.ZodEnum<["SMALL", "STANDARD", "LARGE"]>;
+            padding: z.ZodEnum<["COMPACT", "STANDARD", "GENEROUS"]>;
+            alignX: z.ZodEnum<["START", "CENTER", "END"]>;
+            alignY: z.ZodEnum<["TOP", "CENTER", "BOTTOM"]>;
+        }, "strict", z.ZodTypeAny, {
+            scale: "SMALL" | "STANDARD" | "LARGE";
+            padding: "STANDARD" | "COMPACT" | "GENEROUS";
+            alignX: "START" | "CENTER" | "END";
+            alignY: "CENTER" | "TOP" | "BOTTOM";
+        }, {
+            scale: "SMALL" | "STANDARD" | "LARGE";
+            padding: "STANDARD" | "COMPACT" | "GENEROUS";
+            alignX: "START" | "CENTER" | "END";
+            alignY: "CENTER" | "TOP" | "BOTTOM";
+        }>>;
     }, "strip", z.ZodTypeAny, {
         id: string;
         name: string;
         slug: string;
         logoUrl: string | null;
+        logoDisplay: {
+            scale: "SMALL" | "STANDARD" | "LARGE";
+            padding: "STANDARD" | "COMPACT" | "GENEROUS";
+            alignX: "START" | "CENTER" | "END";
+            alignY: "CENTER" | "TOP" | "BOTTOM";
+        };
     }, {
         id: string;
         name: string;
         slug: string;
         logoUrl: string | null;
+        logoDisplay?: {
+            scale: "SMALL" | "STANDARD" | "LARGE";
+            padding: "STANDARD" | "COMPACT" | "GENEROUS";
+            alignX: "START" | "CENTER" | "END";
+            alignY: "CENTER" | "TOP" | "BOTTOM";
+        } | undefined;
     }>>;
     options: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -3852,6 +4025,12 @@ export declare const adminProductSchema: z.ZodObject<{
         name: string;
         slug: string;
         logoUrl: string | null;
+        logoDisplay: {
+            scale: "SMALL" | "STANDARD" | "LARGE";
+            padding: "STANDARD" | "COMPACT" | "GENEROUS";
+            alignX: "START" | "CENTER" | "END";
+            alignY: "CENTER" | "TOP" | "BOTTOM";
+        };
     } | null;
     ingredientDetails: {
         id: string;
@@ -3982,6 +4161,12 @@ export declare const adminProductSchema: z.ZodObject<{
         name: string;
         slug: string;
         logoUrl: string | null;
+        logoDisplay?: {
+            scale: "SMALL" | "STANDARD" | "LARGE";
+            padding: "STANDARD" | "COMPACT" | "GENEROUS";
+            alignX: "START" | "CENTER" | "END";
+            alignY: "CENTER" | "TOP" | "BOTTOM";
+        } | undefined;
     } | null;
     ingredientDetails: {
         id: string;

@@ -86,6 +86,10 @@ test("Arabic informational routes render localized body copy and navigation", as
     page.getByRole("heading", { name: "الإرجاع والاستبدال", exact: true }),
   ).toBeVisible();
   await expect(page.getByText("قدمي الطلب خلال 14 يوماً")).toBeVisible();
+  await expect(page.getByRole("link", { name: /0103 7376443/ })).toHaveAttribute(
+    "href",
+    "tel:+201037376443",
+  );
 
   await page.goto("/privacy-policy?lang=ar", { waitUntil: "networkidle" });
   await expect(page.getByRole("heading", { name: "سياسة الخصوصية", exact: true })).toBeVisible();

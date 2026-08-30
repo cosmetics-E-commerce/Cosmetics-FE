@@ -62,6 +62,38 @@ test("keeps the guided journey readable and RTL-native on mobile Arabic", async 
   await expect(page.getByRole("heading", { name: "روتين BioReza الخاص بك" })).toBeVisible();
 });
 
+test("has no horizontal overflow across supported phone widths", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "mobile", "Mobile viewport matrix");
+  for (const width of [320, 360, 375, 390, 414, 430]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto("/routine");
+    await expect(page.getByRole("heading", { name: "Build Your Routine" })).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      ),
+    ).toBe(true);
+  }
+});
+
+test("stays contained across supported desktop widths", async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== "chromium", "Desktop viewport matrix");
+  for (const viewport of [
+    { width: 1366, height: 768 },
+    { width: 1440, height: 900 },
+    { width: 1920, height: 1080 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/routine");
+    await expect(page.getByRole("heading", { name: "Build Your Routine" })).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+      ),
+    ).toBe(true);
+  }
+});
+
 async function mockRoutineApi(page: Page) {
   await page.route("**/api/v1/routine-builder**", async (route) => {
     const request = route.request();

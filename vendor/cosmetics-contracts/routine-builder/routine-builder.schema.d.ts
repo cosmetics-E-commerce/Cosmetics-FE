@@ -67,12 +67,81 @@ export declare const routineConditionGroupSchema: z.ZodObject<{
 export declare const routineSignalSchema: z.ZodObject<{
     key: z.ZodString;
     value: z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>;
+    weight: z.ZodOptional<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
     value: string | number | boolean | string[];
     key: string;
+    weight?: number | undefined;
 }, {
     value: string | number | boolean | string[];
     key: string;
+    weight?: number | undefined;
+}>;
+/**
+ * Signals are configuration-owned vocabulary. The purpose field gives the
+ * engine a small set of safe, non-Turing-complete semantics while normal
+ * relevance signals remain completely Admin-defined.
+ */
+export declare const routineSignalDefinitionSchema: z.ZodObject<{
+    id: z.ZodString;
+    key: z.ZodString;
+    family: z.ZodString;
+    label: z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>;
+    description: z.ZodDefault<z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>>;
+    valueType: z.ZodDefault<z.ZodEnum<["NUMBER", "BOOLEAN", "KEYWORD", "KEYWORD_LIST"]>>;
+    aggregation: z.ZodDefault<z.ZodEnum<["SUM", "MAX", "LAST"]>>;
+    purpose: z.ZodDefault<z.ZodEnum<["PROFILE", "BUDGET_MAX", "OWNED_ROLE"]>>;
+    enabled: z.ZodDefault<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    key: string;
+    description: {
+        en: string;
+        ar: string;
+    };
+    purpose: "PROFILE" | "BUDGET_MAX" | "OWNED_ROLE";
+    label: {
+        en: string;
+        ar: string;
+    };
+    enabled: boolean;
+    family: string;
+    valueType: "NUMBER" | "BOOLEAN" | "KEYWORD" | "KEYWORD_LIST";
+    aggregation: "SUM" | "MAX" | "LAST";
+}, {
+    id: string;
+    key: string;
+    label: {
+        en: string;
+        ar: string;
+    };
+    family: string;
+    description?: {
+        en: string;
+        ar: string;
+    } | undefined;
+    purpose?: "PROFILE" | "BUDGET_MAX" | "OWNED_ROLE" | undefined;
+    enabled?: boolean | undefined;
+    valueType?: "NUMBER" | "BOOLEAN" | "KEYWORD" | "KEYWORD_LIST" | undefined;
+    aggregation?: "SUM" | "MAX" | "LAST" | undefined;
 }>;
 export declare const routineAnswerSchema: z.ZodObject<{
     id: z.ZodString;
@@ -100,12 +169,15 @@ export declare const routineAnswerSchema: z.ZodObject<{
     signals: z.ZodDefault<z.ZodArray<z.ZodObject<{
         key: z.ZodString;
         value: z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>;
+        weight: z.ZodOptional<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
         value: string | number | boolean | string[];
         key: string;
+        weight?: number | undefined;
     }, {
         value: string | number | boolean | string[];
         key: string;
+        weight?: number | undefined;
     }>, "many">>;
     order: z.ZodNumber;
     enabled: z.ZodDefault<z.ZodBoolean>;
@@ -125,6 +197,7 @@ export declare const routineAnswerSchema: z.ZodObject<{
     signals: {
         value: string | number | boolean | string[];
         key: string;
+        weight?: number | undefined;
     }[];
 }, {
     id: string;
@@ -142,6 +215,7 @@ export declare const routineAnswerSchema: z.ZodObject<{
     signals?: {
         value: string | number | boolean | string[];
         key: string;
+        weight?: number | undefined;
     }[] | undefined;
 }>;
 export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
@@ -216,6 +290,8 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         }[];
         mode: "ALL" | "ANY";
     }>>>;
+    /** Optional managed signal receiving SCALE/NUMERIC_RANGE values directly. */
+    directSignalKey: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     answers: z.ZodDefault<z.ZodArray<z.ZodObject<{
         id: z.ZodString;
         key: z.ZodString;
@@ -242,12 +318,15 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         signals: z.ZodDefault<z.ZodArray<z.ZodObject<{
             key: z.ZodString;
             value: z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>;
+            weight: z.ZodOptional<z.ZodNumber>;
         }, "strip", z.ZodTypeAny, {
             value: string | number | boolean | string[];
             key: string;
+            weight?: number | undefined;
         }, {
             value: string | number | boolean | string[];
             key: string;
+            weight?: number | undefined;
         }>, "many">>;
         order: z.ZodNumber;
         enabled: z.ZodDefault<z.ZodBoolean>;
@@ -267,6 +346,7 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         signals: {
             value: string | number | boolean | string[];
             key: string;
+            weight?: number | undefined;
         }[];
     }, {
         id: string;
@@ -284,6 +364,7 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         signals?: {
             value: string | number | boolean | string[];
             key: string;
+            weight?: number | undefined;
         }[] | undefined;
     }>, "many">>;
     minSelections: z.ZodDefault<z.ZodNumber>;
@@ -315,6 +396,11 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
     };
     order: number;
     enabled: boolean;
+    scale: {
+        min: number;
+        max: number;
+        step: number;
+    } | null;
     visibility: {
         conditions: {
             value: string | number | boolean | string[];
@@ -345,15 +431,12 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         signals: {
             value: string | number | boolean | string[];
             key: string;
+            weight?: number | undefined;
         }[];
     }[];
     minSelections: number;
     maxSelections: number;
-    scale: {
-        min: number;
-        max: number;
-        step: number;
-    } | null;
+    directSignalKey?: string | null | undefined;
 }, {
     type: "SINGLE_CHOICE" | "MULTIPLE_CHOICE" | "RANKED_CHOICE" | "YES_NO" | "SCALE" | "OPTIONAL_TEXT" | "NUMERIC_RANGE" | "PRODUCT_SELECTION" | "INGREDIENT_PREFERENCE";
     id: string;
@@ -368,6 +451,11 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         ar: string;
     } | undefined;
     enabled?: boolean | undefined;
+    scale?: {
+        min: number;
+        max: number;
+        step: number;
+    } | null | undefined;
     visibility?: {
         conditions: {
             value: string | number | boolean | string[];
@@ -382,6 +470,7 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         ar: string;
     } | undefined;
     required?: boolean | undefined;
+    directSignalKey?: string | null | undefined;
     answers?: {
         id: string;
         key: string;
@@ -398,15 +487,11 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         signals?: {
             value: string | number | boolean | string[];
             key: string;
+            weight?: number | undefined;
         }[] | undefined;
     }[] | undefined;
     minSelections?: number | undefined;
     maxSelections?: number | undefined;
-    scale?: {
-        min: number;
-        max: number;
-        step: number;
-    } | null | undefined;
 }>, {
     type: "SINGLE_CHOICE" | "MULTIPLE_CHOICE" | "RANKED_CHOICE" | "YES_NO" | "SCALE" | "OPTIONAL_TEXT" | "NUMERIC_RANGE" | "PRODUCT_SELECTION" | "INGREDIENT_PREFERENCE";
     id: string;
@@ -421,6 +506,11 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
     };
     order: number;
     enabled: boolean;
+    scale: {
+        min: number;
+        max: number;
+        step: number;
+    } | null;
     visibility: {
         conditions: {
             value: string | number | boolean | string[];
@@ -451,15 +541,12 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         signals: {
             value: string | number | boolean | string[];
             key: string;
+            weight?: number | undefined;
         }[];
     }[];
     minSelections: number;
     maxSelections: number;
-    scale: {
-        min: number;
-        max: number;
-        step: number;
-    } | null;
+    directSignalKey?: string | null | undefined;
 }, {
     type: "SINGLE_CHOICE" | "MULTIPLE_CHOICE" | "RANKED_CHOICE" | "YES_NO" | "SCALE" | "OPTIONAL_TEXT" | "NUMERIC_RANGE" | "PRODUCT_SELECTION" | "INGREDIENT_PREFERENCE";
     id: string;
@@ -474,6 +561,11 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         ar: string;
     } | undefined;
     enabled?: boolean | undefined;
+    scale?: {
+        min: number;
+        max: number;
+        step: number;
+    } | null | undefined;
     visibility?: {
         conditions: {
             value: string | number | boolean | string[];
@@ -488,6 +580,7 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         ar: string;
     } | undefined;
     required?: boolean | undefined;
+    directSignalKey?: string | null | undefined;
     answers?: {
         id: string;
         key: string;
@@ -504,15 +597,11 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         signals?: {
             value: string | number | boolean | string[];
             key: string;
+            weight?: number | undefined;
         }[] | undefined;
     }[] | undefined;
     minSelections?: number | undefined;
     maxSelections?: number | undefined;
-    scale?: {
-        min: number;
-        max: number;
-        step: number;
-    } | null | undefined;
 }>;
 export declare const routineConcernSchema: z.ZodObject<{
     id: z.ZodString;
@@ -650,6 +739,7 @@ export declare const routineRuleEffectSchema: z.ZodDiscriminatedUnion<"type", [z
         ids?: string[] | undefined;
     }>;
     score: z.ZodNumber;
+    channel: z.ZodOptional<z.ZodEnum<["RECOMMENDATION", "MERCHANDISING"]>>;
 }, "strip", z.ZodTypeAny, {
     type: "BOOST";
     target: {
@@ -658,6 +748,7 @@ export declare const routineRuleEffectSchema: z.ZodDiscriminatedUnion<"type", [z
         kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
     };
     score: number;
+    channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
 }, {
     type: "BOOST";
     target: {
@@ -666,6 +757,7 @@ export declare const routineRuleEffectSchema: z.ZodDiscriminatedUnion<"type", [z
         ids?: string[] | undefined;
     };
     score: number;
+    channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
 }>, z.ZodObject<{
     type: z.ZodLiteral<"EXCLUDE">;
     target: z.ZodObject<{
@@ -813,6 +905,7 @@ export declare const routineRuleSchema: z.ZodObject<{
             ids?: string[] | undefined;
         }>;
         score: z.ZodNumber;
+        channel: z.ZodOptional<z.ZodEnum<["RECOMMENDATION", "MERCHANDISING"]>>;
     }, "strip", z.ZodTypeAny, {
         type: "BOOST";
         target: {
@@ -821,6 +914,7 @@ export declare const routineRuleSchema: z.ZodObject<{
             kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
         };
         score: number;
+        channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
     }, {
         type: "BOOST";
         target: {
@@ -829,6 +923,7 @@ export declare const routineRuleSchema: z.ZodObject<{
             ids?: string[] | undefined;
         };
         score: number;
+        channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"EXCLUDE">;
         target: z.ZodObject<{
@@ -936,6 +1031,7 @@ export declare const routineRuleSchema: z.ZodObject<{
             kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
         };
         score: number;
+        channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
     } | {
         type: "EXCLUDE";
         reason: {
@@ -981,6 +1077,7 @@ export declare const routineRuleSchema: z.ZodObject<{
             ids?: string[] | undefined;
         };
         score: number;
+        channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
     } | {
         type: "EXCLUDE";
         reason: {
@@ -1470,6 +1567,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         }>>>;
+        /** Optional managed signal receiving SCALE/NUMERIC_RANGE values directly. */
+        directSignalKey: z.ZodOptional<z.ZodNullable<z.ZodString>>;
         answers: z.ZodDefault<z.ZodArray<z.ZodObject<{
             id: z.ZodString;
             key: z.ZodString;
@@ -1496,12 +1595,15 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             signals: z.ZodDefault<z.ZodArray<z.ZodObject<{
                 key: z.ZodString;
                 value: z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>;
+                weight: z.ZodOptional<z.ZodNumber>;
             }, "strip", z.ZodTypeAny, {
                 value: string | number | boolean | string[];
                 key: string;
+                weight?: number | undefined;
             }, {
                 value: string | number | boolean | string[];
                 key: string;
+                weight?: number | undefined;
             }>, "many">>;
             order: z.ZodNumber;
             enabled: z.ZodDefault<z.ZodBoolean>;
@@ -1521,6 +1623,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             signals: {
                 value: string | number | boolean | string[];
                 key: string;
+                weight?: number | undefined;
             }[];
         }, {
             id: string;
@@ -1538,6 +1641,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             signals?: {
                 value: string | number | boolean | string[];
                 key: string;
+                weight?: number | undefined;
             }[] | undefined;
         }>, "many">>;
         minSelections: z.ZodDefault<z.ZodNumber>;
@@ -1569,6 +1673,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         };
         order: number;
         enabled: boolean;
+        scale: {
+            min: number;
+            max: number;
+            step: number;
+        } | null;
         visibility: {
             conditions: {
                 value: string | number | boolean | string[];
@@ -1599,15 +1708,12 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             signals: {
                 value: string | number | boolean | string[];
                 key: string;
+                weight?: number | undefined;
             }[];
         }[];
         minSelections: number;
         maxSelections: number;
-        scale: {
-            min: number;
-            max: number;
-            step: number;
-        } | null;
+        directSignalKey?: string | null | undefined;
     }, {
         type: "SINGLE_CHOICE" | "MULTIPLE_CHOICE" | "RANKED_CHOICE" | "YES_NO" | "SCALE" | "OPTIONAL_TEXT" | "NUMERIC_RANGE" | "PRODUCT_SELECTION" | "INGREDIENT_PREFERENCE";
         id: string;
@@ -1622,6 +1728,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         } | undefined;
         enabled?: boolean | undefined;
+        scale?: {
+            min: number;
+            max: number;
+            step: number;
+        } | null | undefined;
         visibility?: {
             conditions: {
                 value: string | number | boolean | string[];
@@ -1636,6 +1747,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         } | undefined;
         required?: boolean | undefined;
+        directSignalKey?: string | null | undefined;
         answers?: {
             id: string;
             key: string;
@@ -1652,15 +1764,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             signals?: {
                 value: string | number | boolean | string[];
                 key: string;
+                weight?: number | undefined;
             }[] | undefined;
         }[] | undefined;
         minSelections?: number | undefined;
         maxSelections?: number | undefined;
-        scale?: {
-            min: number;
-            max: number;
-            step: number;
-        } | null | undefined;
     }>, {
         type: "SINGLE_CHOICE" | "MULTIPLE_CHOICE" | "RANKED_CHOICE" | "YES_NO" | "SCALE" | "OPTIONAL_TEXT" | "NUMERIC_RANGE" | "PRODUCT_SELECTION" | "INGREDIENT_PREFERENCE";
         id: string;
@@ -1675,6 +1783,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         };
         order: number;
         enabled: boolean;
+        scale: {
+            min: number;
+            max: number;
+            step: number;
+        } | null;
         visibility: {
             conditions: {
                 value: string | number | boolean | string[];
@@ -1705,15 +1818,12 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             signals: {
                 value: string | number | boolean | string[];
                 key: string;
+                weight?: number | undefined;
             }[];
         }[];
         minSelections: number;
         maxSelections: number;
-        scale: {
-            min: number;
-            max: number;
-            step: number;
-        } | null;
+        directSignalKey?: string | null | undefined;
     }, {
         type: "SINGLE_CHOICE" | "MULTIPLE_CHOICE" | "RANKED_CHOICE" | "YES_NO" | "SCALE" | "OPTIONAL_TEXT" | "NUMERIC_RANGE" | "PRODUCT_SELECTION" | "INGREDIENT_PREFERENCE";
         id: string;
@@ -1728,6 +1838,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         } | undefined;
         enabled?: boolean | undefined;
+        scale?: {
+            min: number;
+            max: number;
+            step: number;
+        } | null | undefined;
         visibility?: {
             conditions: {
                 value: string | number | boolean | string[];
@@ -1742,6 +1857,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         } | undefined;
         required?: boolean | undefined;
+        directSignalKey?: string | null | undefined;
         answers?: {
             id: string;
             key: string;
@@ -1758,16 +1874,73 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             signals?: {
                 value: string | number | boolean | string[];
                 key: string;
+                weight?: number | undefined;
             }[] | undefined;
         }[] | undefined;
         minSelections?: number | undefined;
         maxSelections?: number | undefined;
-        scale?: {
-            min: number;
-            max: number;
-            step: number;
-        } | null | undefined;
     }>, "many">;
+    signals: z.ZodOptional<z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        key: z.ZodString;
+        family: z.ZodString;
+        label: z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>;
+        description: z.ZodDefault<z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>>;
+        valueType: z.ZodDefault<z.ZodEnum<["NUMBER", "BOOLEAN", "KEYWORD", "KEYWORD_LIST"]>>;
+        aggregation: z.ZodDefault<z.ZodEnum<["SUM", "MAX", "LAST"]>>;
+        purpose: z.ZodDefault<z.ZodEnum<["PROFILE", "BUDGET_MAX", "OWNED_ROLE"]>>;
+        enabled: z.ZodDefault<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        key: string;
+        description: {
+            en: string;
+            ar: string;
+        };
+        purpose: "PROFILE" | "BUDGET_MAX" | "OWNED_ROLE";
+        label: {
+            en: string;
+            ar: string;
+        };
+        enabled: boolean;
+        family: string;
+        valueType: "NUMBER" | "BOOLEAN" | "KEYWORD" | "KEYWORD_LIST";
+        aggregation: "SUM" | "MAX" | "LAST";
+    }, {
+        id: string;
+        key: string;
+        label: {
+            en: string;
+            ar: string;
+        };
+        family: string;
+        description?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        purpose?: "PROFILE" | "BUDGET_MAX" | "OWNED_ROLE" | undefined;
+        enabled?: boolean | undefined;
+        valueType?: "NUMBER" | "BOOLEAN" | "KEYWORD" | "KEYWORD_LIST" | undefined;
+        aggregation?: "SUM" | "MAX" | "LAST" | undefined;
+    }>, "many">>;
     concerns: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
         key: z.ZodString;
@@ -1941,6 +2114,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 ids?: string[] | undefined;
             }>;
             score: z.ZodNumber;
+            channel: z.ZodOptional<z.ZodEnum<["RECOMMENDATION", "MERCHANDISING"]>>;
         }, "strip", z.ZodTypeAny, {
             type: "BOOST";
             target: {
@@ -1949,6 +2123,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
             };
             score: number;
+            channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
         }, {
             type: "BOOST";
             target: {
@@ -1957,6 +2132,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 ids?: string[] | undefined;
             };
             score: number;
+            channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
         }>, z.ZodObject<{
             type: z.ZodLiteral<"EXCLUDE">;
             target: z.ZodObject<{
@@ -2064,6 +2240,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
             };
             score: number;
+            channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
         } | {
             type: "EXCLUDE";
             reason: {
@@ -2109,6 +2286,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 ids?: string[] | undefined;
             };
             score: number;
+            channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
         } | {
             type: "EXCLUDE";
             reason: {
@@ -2419,14 +2597,32 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         maximumProductsPerBrand: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         preferBrandDiversity: z.ZodDefault<z.ZodBoolean>;
         allowDuplicateProducts: z.ZodDefault<z.ZodBoolean>;
+        budgetExceeded: z.ZodOptional<z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>>;
     }, "strip", z.ZodTypeAny, {
         maximumProductsPerBrand: number | null;
         preferBrandDiversity: boolean;
         allowDuplicateProducts: boolean;
+        budgetExceeded?: {
+            en: string;
+            ar: string;
+        } | undefined;
     }, {
         maximumProductsPerBrand?: number | null | undefined;
         preferBrandDiversity?: boolean | undefined;
         allowDuplicateProducts?: boolean | undefined;
+        budgetExceeded?: {
+            en: string;
+            ar: string;
+        } | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
     concerns: {
@@ -2483,6 +2679,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         };
         order: number;
         enabled: boolean;
+        scale: {
+            min: number;
+            max: number;
+            step: number;
+        } | null;
         visibility: {
             conditions: {
                 value: string | number | boolean | string[];
@@ -2513,15 +2714,12 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             signals: {
                 value: string | number | boolean | string[];
                 key: string;
+                weight?: number | undefined;
             }[];
         }[];
         minSelections: number;
         maxSelections: number;
-        scale: {
-            min: number;
-            max: number;
-            step: number;
-        } | null;
+        directSignalKey?: string | null | undefined;
     }[];
     roles: {
         id: string;
@@ -2564,6 +2762,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
             };
             score: number;
+            channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
         } | {
             type: "EXCLUDE";
             reason: {
@@ -2652,7 +2851,28 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         maximumProductsPerBrand: number | null;
         preferBrandDiversity: boolean;
         allowDuplicateProducts: boolean;
+        budgetExceeded?: {
+            en: string;
+            ar: string;
+        } | undefined;
     };
+    signals?: {
+        id: string;
+        key: string;
+        description: {
+            en: string;
+            ar: string;
+        };
+        purpose: "PROFILE" | "BUDGET_MAX" | "OWNED_ROLE";
+        label: {
+            en: string;
+            ar: string;
+        };
+        enabled: boolean;
+        family: string;
+        valueType: "NUMBER" | "BOOLEAN" | "KEYWORD" | "KEYWORD_LIST";
+        aggregation: "SUM" | "MAX" | "LAST";
+    }[] | undefined;
 }, {
     concerns: {
         id: string;
@@ -2707,6 +2927,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         } | undefined;
         enabled?: boolean | undefined;
+        scale?: {
+            min: number;
+            max: number;
+            step: number;
+        } | null | undefined;
         visibility?: {
             conditions: {
                 value: string | number | boolean | string[];
@@ -2721,6 +2946,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         } | undefined;
         required?: boolean | undefined;
+        directSignalKey?: string | null | undefined;
         answers?: {
             id: string;
             key: string;
@@ -2737,15 +2963,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             signals?: {
                 value: string | number | boolean | string[];
                 key: string;
+                weight?: number | undefined;
             }[] | undefined;
         }[] | undefined;
         minSelections?: number | undefined;
         maxSelections?: number | undefined;
-        scale?: {
-            min: number;
-            max: number;
-            step: number;
-        } | null | undefined;
     }[];
     roles: {
         id: string;
@@ -2786,6 +3008,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 ids?: string[] | undefined;
             };
             score: number;
+            channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
         } | {
             type: "EXCLUDE";
             reason: {
@@ -2876,7 +3099,28 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         maximumProductsPerBrand?: number | null | undefined;
         preferBrandDiversity?: boolean | undefined;
         allowDuplicateProducts?: boolean | undefined;
+        budgetExceeded?: {
+            en: string;
+            ar: string;
+        } | undefined;
     };
+    signals?: {
+        id: string;
+        key: string;
+        label: {
+            en: string;
+            ar: string;
+        };
+        family: string;
+        description?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        purpose?: "PROFILE" | "BUDGET_MAX" | "OWNED_ROLE" | undefined;
+        enabled?: boolean | undefined;
+        valueType?: "NUMBER" | "BOOLEAN" | "KEYWORD" | "KEYWORD_LIST" | undefined;
+        aggregation?: "SUM" | "MAX" | "LAST" | undefined;
+    }[] | undefined;
     estimatedMinutes?: number | undefined;
 }>, {
     concerns: {
@@ -2933,6 +3177,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         };
         order: number;
         enabled: boolean;
+        scale: {
+            min: number;
+            max: number;
+            step: number;
+        } | null;
         visibility: {
             conditions: {
                 value: string | number | boolean | string[];
@@ -2963,15 +3212,12 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             signals: {
                 value: string | number | boolean | string[];
                 key: string;
+                weight?: number | undefined;
             }[];
         }[];
         minSelections: number;
         maxSelections: number;
-        scale: {
-            min: number;
-            max: number;
-            step: number;
-        } | null;
+        directSignalKey?: string | null | undefined;
     }[];
     roles: {
         id: string;
@@ -3014,6 +3260,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
             };
             score: number;
+            channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
         } | {
             type: "EXCLUDE";
             reason: {
@@ -3102,7 +3349,28 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         maximumProductsPerBrand: number | null;
         preferBrandDiversity: boolean;
         allowDuplicateProducts: boolean;
+        budgetExceeded?: {
+            en: string;
+            ar: string;
+        } | undefined;
     };
+    signals?: {
+        id: string;
+        key: string;
+        description: {
+            en: string;
+            ar: string;
+        };
+        purpose: "PROFILE" | "BUDGET_MAX" | "OWNED_ROLE";
+        label: {
+            en: string;
+            ar: string;
+        };
+        enabled: boolean;
+        family: string;
+        valueType: "NUMBER" | "BOOLEAN" | "KEYWORD" | "KEYWORD_LIST";
+        aggregation: "SUM" | "MAX" | "LAST";
+    }[] | undefined;
 }, {
     concerns: {
         id: string;
@@ -3157,6 +3425,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         } | undefined;
         enabled?: boolean | undefined;
+        scale?: {
+            min: number;
+            max: number;
+            step: number;
+        } | null | undefined;
         visibility?: {
             conditions: {
                 value: string | number | boolean | string[];
@@ -3171,6 +3444,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         } | undefined;
         required?: boolean | undefined;
+        directSignalKey?: string | null | undefined;
         answers?: {
             id: string;
             key: string;
@@ -3187,15 +3461,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             signals?: {
                 value: string | number | boolean | string[];
                 key: string;
+                weight?: number | undefined;
             }[] | undefined;
         }[] | undefined;
         minSelections?: number | undefined;
         maxSelections?: number | undefined;
-        scale?: {
-            min: number;
-            max: number;
-            step: number;
-        } | null | undefined;
     }[];
     roles: {
         id: string;
@@ -3236,6 +3506,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 ids?: string[] | undefined;
             };
             score: number;
+            channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
         } | {
             type: "EXCLUDE";
             reason: {
@@ -3326,7 +3597,28 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         maximumProductsPerBrand?: number | null | undefined;
         preferBrandDiversity?: boolean | undefined;
         allowDuplicateProducts?: boolean | undefined;
+        budgetExceeded?: {
+            en: string;
+            ar: string;
+        } | undefined;
     };
+    signals?: {
+        id: string;
+        key: string;
+        label: {
+            en: string;
+            ar: string;
+        };
+        family: string;
+        description?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        purpose?: "PROFILE" | "BUDGET_MAX" | "OWNED_ROLE" | undefined;
+        enabled?: boolean | undefined;
+        valueType?: "NUMBER" | "BOOLEAN" | "KEYWORD" | "KEYWORD_LIST" | undefined;
+        aggregation?: "SUM" | "MAX" | "LAST" | undefined;
+    }[] | undefined;
     estimatedMinutes?: number | undefined;
 }>;
 export declare const routineAnswerValueSchema: z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>;
@@ -3487,6 +3779,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             }>>>;
+            /** Optional managed signal receiving SCALE/NUMERIC_RANGE values directly. */
+            directSignalKey: z.ZodOptional<z.ZodNullable<z.ZodString>>;
             answers: z.ZodDefault<z.ZodArray<z.ZodObject<{
                 id: z.ZodString;
                 key: z.ZodString;
@@ -3513,12 +3807,15 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 signals: z.ZodDefault<z.ZodArray<z.ZodObject<{
                     key: z.ZodString;
                     value: z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>;
+                    weight: z.ZodOptional<z.ZodNumber>;
                 }, "strip", z.ZodTypeAny, {
                     value: string | number | boolean | string[];
                     key: string;
+                    weight?: number | undefined;
                 }, {
                     value: string | number | boolean | string[];
                     key: string;
+                    weight?: number | undefined;
                 }>, "many">>;
                 order: z.ZodNumber;
                 enabled: z.ZodDefault<z.ZodBoolean>;
@@ -3538,6 +3835,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 signals: {
                     value: string | number | boolean | string[];
                     key: string;
+                    weight?: number | undefined;
                 }[];
             }, {
                 id: string;
@@ -3555,6 +3853,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 signals?: {
                     value: string | number | boolean | string[];
                     key: string;
+                    weight?: number | undefined;
                 }[] | undefined;
             }>, "many">>;
             minSelections: z.ZodDefault<z.ZodNumber>;
@@ -3586,6 +3885,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             };
             order: number;
             enabled: boolean;
+            scale: {
+                min: number;
+                max: number;
+                step: number;
+            } | null;
             visibility: {
                 conditions: {
                     value: string | number | boolean | string[];
@@ -3616,15 +3920,12 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 signals: {
                     value: string | number | boolean | string[];
                     key: string;
+                    weight?: number | undefined;
                 }[];
             }[];
             minSelections: number;
             maxSelections: number;
-            scale: {
-                min: number;
-                max: number;
-                step: number;
-            } | null;
+            directSignalKey?: string | null | undefined;
         }, {
             type: "SINGLE_CHOICE" | "MULTIPLE_CHOICE" | "RANKED_CHOICE" | "YES_NO" | "SCALE" | "OPTIONAL_TEXT" | "NUMERIC_RANGE" | "PRODUCT_SELECTION" | "INGREDIENT_PREFERENCE";
             id: string;
@@ -3639,6 +3940,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             enabled?: boolean | undefined;
+            scale?: {
+                min: number;
+                max: number;
+                step: number;
+            } | null | undefined;
             visibility?: {
                 conditions: {
                     value: string | number | boolean | string[];
@@ -3653,6 +3959,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             required?: boolean | undefined;
+            directSignalKey?: string | null | undefined;
             answers?: {
                 id: string;
                 key: string;
@@ -3669,15 +3976,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 signals?: {
                     value: string | number | boolean | string[];
                     key: string;
+                    weight?: number | undefined;
                 }[] | undefined;
             }[] | undefined;
             minSelections?: number | undefined;
             maxSelections?: number | undefined;
-            scale?: {
-                min: number;
-                max: number;
-                step: number;
-            } | null | undefined;
         }>, {
             type: "SINGLE_CHOICE" | "MULTIPLE_CHOICE" | "RANKED_CHOICE" | "YES_NO" | "SCALE" | "OPTIONAL_TEXT" | "NUMERIC_RANGE" | "PRODUCT_SELECTION" | "INGREDIENT_PREFERENCE";
             id: string;
@@ -3692,6 +3995,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             };
             order: number;
             enabled: boolean;
+            scale: {
+                min: number;
+                max: number;
+                step: number;
+            } | null;
             visibility: {
                 conditions: {
                     value: string | number | boolean | string[];
@@ -3722,15 +4030,12 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 signals: {
                     value: string | number | boolean | string[];
                     key: string;
+                    weight?: number | undefined;
                 }[];
             }[];
             minSelections: number;
             maxSelections: number;
-            scale: {
-                min: number;
-                max: number;
-                step: number;
-            } | null;
+            directSignalKey?: string | null | undefined;
         }, {
             type: "SINGLE_CHOICE" | "MULTIPLE_CHOICE" | "RANKED_CHOICE" | "YES_NO" | "SCALE" | "OPTIONAL_TEXT" | "NUMERIC_RANGE" | "PRODUCT_SELECTION" | "INGREDIENT_PREFERENCE";
             id: string;
@@ -3745,6 +4050,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             enabled?: boolean | undefined;
+            scale?: {
+                min: number;
+                max: number;
+                step: number;
+            } | null | undefined;
             visibility?: {
                 conditions: {
                     value: string | number | boolean | string[];
@@ -3759,6 +4069,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             required?: boolean | undefined;
+            directSignalKey?: string | null | undefined;
             answers?: {
                 id: string;
                 key: string;
@@ -3775,16 +4086,73 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 signals?: {
                     value: string | number | boolean | string[];
                     key: string;
+                    weight?: number | undefined;
                 }[] | undefined;
             }[] | undefined;
             minSelections?: number | undefined;
             maxSelections?: number | undefined;
-            scale?: {
-                min: number;
-                max: number;
-                step: number;
-            } | null | undefined;
         }>, "many">;
+        signals: z.ZodOptional<z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            key: z.ZodString;
+            family: z.ZodString;
+            label: z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>;
+            description: z.ZodDefault<z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>>;
+            valueType: z.ZodDefault<z.ZodEnum<["NUMBER", "BOOLEAN", "KEYWORD", "KEYWORD_LIST"]>>;
+            aggregation: z.ZodDefault<z.ZodEnum<["SUM", "MAX", "LAST"]>>;
+            purpose: z.ZodDefault<z.ZodEnum<["PROFILE", "BUDGET_MAX", "OWNED_ROLE"]>>;
+            enabled: z.ZodDefault<z.ZodBoolean>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            key: string;
+            description: {
+                en: string;
+                ar: string;
+            };
+            purpose: "PROFILE" | "BUDGET_MAX" | "OWNED_ROLE";
+            label: {
+                en: string;
+                ar: string;
+            };
+            enabled: boolean;
+            family: string;
+            valueType: "NUMBER" | "BOOLEAN" | "KEYWORD" | "KEYWORD_LIST";
+            aggregation: "SUM" | "MAX" | "LAST";
+        }, {
+            id: string;
+            key: string;
+            label: {
+                en: string;
+                ar: string;
+            };
+            family: string;
+            description?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            purpose?: "PROFILE" | "BUDGET_MAX" | "OWNED_ROLE" | undefined;
+            enabled?: boolean | undefined;
+            valueType?: "NUMBER" | "BOOLEAN" | "KEYWORD" | "KEYWORD_LIST" | undefined;
+            aggregation?: "SUM" | "MAX" | "LAST" | undefined;
+        }>, "many">>;
         concerns: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
             key: z.ZodString;
@@ -3958,6 +4326,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     ids?: string[] | undefined;
                 }>;
                 score: z.ZodNumber;
+                channel: z.ZodOptional<z.ZodEnum<["RECOMMENDATION", "MERCHANDISING"]>>;
             }, "strip", z.ZodTypeAny, {
                 type: "BOOST";
                 target: {
@@ -3966,6 +4335,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
                 };
                 score: number;
+                channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
             }, {
                 type: "BOOST";
                 target: {
@@ -3974,6 +4344,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     ids?: string[] | undefined;
                 };
                 score: number;
+                channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
             }>, z.ZodObject<{
                 type: z.ZodLiteral<"EXCLUDE">;
                 target: z.ZodObject<{
@@ -4081,6 +4452,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
                 };
                 score: number;
+                channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
             } | {
                 type: "EXCLUDE";
                 reason: {
@@ -4126,6 +4498,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     ids?: string[] | undefined;
                 };
                 score: number;
+                channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
             } | {
                 type: "EXCLUDE";
                 reason: {
@@ -4436,14 +4809,32 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             maximumProductsPerBrand: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
             preferBrandDiversity: z.ZodDefault<z.ZodBoolean>;
             allowDuplicateProducts: z.ZodDefault<z.ZodBoolean>;
+            budgetExceeded: z.ZodOptional<z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>>;
         }, "strip", z.ZodTypeAny, {
             maximumProductsPerBrand: number | null;
             preferBrandDiversity: boolean;
             allowDuplicateProducts: boolean;
+            budgetExceeded?: {
+                en: string;
+                ar: string;
+            } | undefined;
         }, {
             maximumProductsPerBrand?: number | null | undefined;
             preferBrandDiversity?: boolean | undefined;
             allowDuplicateProducts?: boolean | undefined;
+            budgetExceeded?: {
+                en: string;
+                ar: string;
+            } | undefined;
         }>;
     }, "strip", z.ZodTypeAny, {
         concerns: {
@@ -4500,6 +4891,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             };
             order: number;
             enabled: boolean;
+            scale: {
+                min: number;
+                max: number;
+                step: number;
+            } | null;
             visibility: {
                 conditions: {
                     value: string | number | boolean | string[];
@@ -4530,15 +4926,12 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 signals: {
                     value: string | number | boolean | string[];
                     key: string;
+                    weight?: number | undefined;
                 }[];
             }[];
             minSelections: number;
             maxSelections: number;
-            scale: {
-                min: number;
-                max: number;
-                step: number;
-            } | null;
+            directSignalKey?: string | null | undefined;
         }[];
         roles: {
             id: string;
@@ -4581,6 +4974,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
                 };
                 score: number;
+                channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
             } | {
                 type: "EXCLUDE";
                 reason: {
@@ -4669,7 +5063,28 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             maximumProductsPerBrand: number | null;
             preferBrandDiversity: boolean;
             allowDuplicateProducts: boolean;
+            budgetExceeded?: {
+                en: string;
+                ar: string;
+            } | undefined;
         };
+        signals?: {
+            id: string;
+            key: string;
+            description: {
+                en: string;
+                ar: string;
+            };
+            purpose: "PROFILE" | "BUDGET_MAX" | "OWNED_ROLE";
+            label: {
+                en: string;
+                ar: string;
+            };
+            enabled: boolean;
+            family: string;
+            valueType: "NUMBER" | "BOOLEAN" | "KEYWORD" | "KEYWORD_LIST";
+            aggregation: "SUM" | "MAX" | "LAST";
+        }[] | undefined;
     }, {
         concerns: {
             id: string;
@@ -4724,6 +5139,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             enabled?: boolean | undefined;
+            scale?: {
+                min: number;
+                max: number;
+                step: number;
+            } | null | undefined;
             visibility?: {
                 conditions: {
                     value: string | number | boolean | string[];
@@ -4738,6 +5158,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             required?: boolean | undefined;
+            directSignalKey?: string | null | undefined;
             answers?: {
                 id: string;
                 key: string;
@@ -4754,15 +5175,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 signals?: {
                     value: string | number | boolean | string[];
                     key: string;
+                    weight?: number | undefined;
                 }[] | undefined;
             }[] | undefined;
             minSelections?: number | undefined;
             maxSelections?: number | undefined;
-            scale?: {
-                min: number;
-                max: number;
-                step: number;
-            } | null | undefined;
         }[];
         roles: {
             id: string;
@@ -4803,6 +5220,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     ids?: string[] | undefined;
                 };
                 score: number;
+                channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
             } | {
                 type: "EXCLUDE";
                 reason: {
@@ -4893,7 +5311,28 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             maximumProductsPerBrand?: number | null | undefined;
             preferBrandDiversity?: boolean | undefined;
             allowDuplicateProducts?: boolean | undefined;
+            budgetExceeded?: {
+                en: string;
+                ar: string;
+            } | undefined;
         };
+        signals?: {
+            id: string;
+            key: string;
+            label: {
+                en: string;
+                ar: string;
+            };
+            family: string;
+            description?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            purpose?: "PROFILE" | "BUDGET_MAX" | "OWNED_ROLE" | undefined;
+            enabled?: boolean | undefined;
+            valueType?: "NUMBER" | "BOOLEAN" | "KEYWORD" | "KEYWORD_LIST" | undefined;
+            aggregation?: "SUM" | "MAX" | "LAST" | undefined;
+        }[] | undefined;
         estimatedMinutes?: number | undefined;
     }>, {
         concerns: {
@@ -4950,6 +5389,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             };
             order: number;
             enabled: boolean;
+            scale: {
+                min: number;
+                max: number;
+                step: number;
+            } | null;
             visibility: {
                 conditions: {
                     value: string | number | boolean | string[];
@@ -4980,15 +5424,12 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 signals: {
                     value: string | number | boolean | string[];
                     key: string;
+                    weight?: number | undefined;
                 }[];
             }[];
             minSelections: number;
             maxSelections: number;
-            scale: {
-                min: number;
-                max: number;
-                step: number;
-            } | null;
+            directSignalKey?: string | null | undefined;
         }[];
         roles: {
             id: string;
@@ -5031,6 +5472,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
                 };
                 score: number;
+                channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
             } | {
                 type: "EXCLUDE";
                 reason: {
@@ -5119,7 +5561,28 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             maximumProductsPerBrand: number | null;
             preferBrandDiversity: boolean;
             allowDuplicateProducts: boolean;
+            budgetExceeded?: {
+                en: string;
+                ar: string;
+            } | undefined;
         };
+        signals?: {
+            id: string;
+            key: string;
+            description: {
+                en: string;
+                ar: string;
+            };
+            purpose: "PROFILE" | "BUDGET_MAX" | "OWNED_ROLE";
+            label: {
+                en: string;
+                ar: string;
+            };
+            enabled: boolean;
+            family: string;
+            valueType: "NUMBER" | "BOOLEAN" | "KEYWORD" | "KEYWORD_LIST";
+            aggregation: "SUM" | "MAX" | "LAST";
+        }[] | undefined;
     }, {
         concerns: {
             id: string;
@@ -5174,6 +5637,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             enabled?: boolean | undefined;
+            scale?: {
+                min: number;
+                max: number;
+                step: number;
+            } | null | undefined;
             visibility?: {
                 conditions: {
                     value: string | number | boolean | string[];
@@ -5188,6 +5656,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             required?: boolean | undefined;
+            directSignalKey?: string | null | undefined;
             answers?: {
                 id: string;
                 key: string;
@@ -5204,15 +5673,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 signals?: {
                     value: string | number | boolean | string[];
                     key: string;
+                    weight?: number | undefined;
                 }[] | undefined;
             }[] | undefined;
             minSelections?: number | undefined;
             maxSelections?: number | undefined;
-            scale?: {
-                min: number;
-                max: number;
-                step: number;
-            } | null | undefined;
         }[];
         roles: {
             id: string;
@@ -5253,6 +5718,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     ids?: string[] | undefined;
                 };
                 score: number;
+                channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
             } | {
                 type: "EXCLUDE";
                 reason: {
@@ -5343,7 +5809,28 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             maximumProductsPerBrand?: number | null | undefined;
             preferBrandDiversity?: boolean | undefined;
             allowDuplicateProducts?: boolean | undefined;
+            budgetExceeded?: {
+                en: string;
+                ar: string;
+            } | undefined;
         };
+        signals?: {
+            id: string;
+            key: string;
+            label: {
+                en: string;
+                ar: string;
+            };
+            family: string;
+            description?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            purpose?: "PROFILE" | "BUDGET_MAX" | "OWNED_ROLE" | undefined;
+            enabled?: boolean | undefined;
+            valueType?: "NUMBER" | "BOOLEAN" | "KEYWORD" | "KEYWORD_LIST" | undefined;
+            aggregation?: "SUM" | "MAX" | "LAST" | undefined;
+        }[] | undefined;
         estimatedMinutes?: number | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
@@ -5403,6 +5890,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             };
             order: number;
             enabled: boolean;
+            scale: {
+                min: number;
+                max: number;
+                step: number;
+            } | null;
             visibility: {
                 conditions: {
                     value: string | number | boolean | string[];
@@ -5433,15 +5925,12 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 signals: {
                     value: string | number | boolean | string[];
                     key: string;
+                    weight?: number | undefined;
                 }[];
             }[];
             minSelections: number;
             maxSelections: number;
-            scale: {
-                min: number;
-                max: number;
-                step: number;
-            } | null;
+            directSignalKey?: string | null | undefined;
         }[];
         roles: {
             id: string;
@@ -5484,6 +5973,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
                 };
                 score: number;
+                channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
             } | {
                 type: "EXCLUDE";
                 reason: {
@@ -5572,7 +6062,28 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             maximumProductsPerBrand: number | null;
             preferBrandDiversity: boolean;
             allowDuplicateProducts: boolean;
+            budgetExceeded?: {
+                en: string;
+                ar: string;
+            } | undefined;
         };
+        signals?: {
+            id: string;
+            key: string;
+            description: {
+                en: string;
+                ar: string;
+            };
+            purpose: "PROFILE" | "BUDGET_MAX" | "OWNED_ROLE";
+            label: {
+                en: string;
+                ar: string;
+            };
+            enabled: boolean;
+            family: string;
+            valueType: "NUMBER" | "BOOLEAN" | "KEYWORD" | "KEYWORD_LIST";
+            aggregation: "SUM" | "MAX" | "LAST";
+        }[] | undefined;
     };
 }, {
     expectedRevision: number;
@@ -5630,6 +6141,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             enabled?: boolean | undefined;
+            scale?: {
+                min: number;
+                max: number;
+                step: number;
+            } | null | undefined;
             visibility?: {
                 conditions: {
                     value: string | number | boolean | string[];
@@ -5644,6 +6160,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             required?: boolean | undefined;
+            directSignalKey?: string | null | undefined;
             answers?: {
                 id: string;
                 key: string;
@@ -5660,15 +6177,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 signals?: {
                     value: string | number | boolean | string[];
                     key: string;
+                    weight?: number | undefined;
                 }[] | undefined;
             }[] | undefined;
             minSelections?: number | undefined;
             maxSelections?: number | undefined;
-            scale?: {
-                min: number;
-                max: number;
-                step: number;
-            } | null | undefined;
         }[];
         roles: {
             id: string;
@@ -5709,6 +6222,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     ids?: string[] | undefined;
                 };
                 score: number;
+                channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
             } | {
                 type: "EXCLUDE";
                 reason: {
@@ -5799,7 +6313,28 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             maximumProductsPerBrand?: number | null | undefined;
             preferBrandDiversity?: boolean | undefined;
             allowDuplicateProducts?: boolean | undefined;
+            budgetExceeded?: {
+                en: string;
+                ar: string;
+            } | undefined;
         };
+        signals?: {
+            id: string;
+            key: string;
+            label: {
+                en: string;
+                ar: string;
+            };
+            family: string;
+            description?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            purpose?: "PROFILE" | "BUDGET_MAX" | "OWNED_ROLE" | undefined;
+            enabled?: boolean | undefined;
+            valueType?: "NUMBER" | "BOOLEAN" | "KEYWORD" | "KEYWORD_LIST" | undefined;
+            aggregation?: "SUM" | "MAX" | "LAST" | undefined;
+        }[] | undefined;
         estimatedMinutes?: number | undefined;
     };
 }>;
@@ -5810,7 +6345,35 @@ export declare const routineProductProfileInputSchema: z.ZodObject<{
     textures: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     periods: z.ZodDefault<z.ZodArray<z.ZodEnum<["AM", "PM"]>, "many">>;
     experienceLevels: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    signalWeights: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodNumber>>;
+    approvedReasons: z.ZodDefault<z.ZodArray<z.ZodObject<{
+        signalKey: z.ZodString;
+        text: z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>;
+    }, "strip", z.ZodTypeAny, {
+        text: {
+            en: string;
+            ar: string;
+        };
+        signalKey: string;
+    }, {
+        text: {
+            en: string;
+            ar: string;
+        };
+        signalKey: string;
+    }>, "many">>;
+    redundancyGroups: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     recommendationWeight: z.ZodDefault<z.ZodNumber>;
+    merchandisingBoost: z.ZodDefault<z.ZodNumber>;
     neverRecommend: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
     skinTypes: string[];
@@ -5819,7 +6382,17 @@ export declare const routineProductProfileInputSchema: z.ZodObject<{
     textures: string[];
     periods: ("AM" | "PM")[];
     experienceLevels: string[];
+    signalWeights: Record<string, number>;
+    approvedReasons: {
+        text: {
+            en: string;
+            ar: string;
+        };
+        signalKey: string;
+    }[];
+    redundancyGroups: string[];
     recommendationWeight: number;
+    merchandisingBoost: number;
     neverRecommend: boolean;
 }, {
     roles: string[];
@@ -5828,7 +6401,17 @@ export declare const routineProductProfileInputSchema: z.ZodObject<{
     textures?: string[] | undefined;
     periods?: ("AM" | "PM")[] | undefined;
     experienceLevels?: string[] | undefined;
+    signalWeights?: Record<string, number> | undefined;
+    approvedReasons?: {
+        text: {
+            en: string;
+            ar: string;
+        };
+        signalKey: string;
+    }[] | undefined;
+    redundancyGroups?: string[] | undefined;
     recommendationWeight?: number | undefined;
+    merchandisingBoost?: number | undefined;
     neverRecommend?: boolean | undefined;
 }>;
 export declare const routineEventInputSchema: z.ZodObject<{

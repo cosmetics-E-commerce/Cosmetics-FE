@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.promotionOverviewSchema = exports.promotionAnalyticsSchema = exports.permanentDeletePromotionResponseSchema = exports.permanentDeletePromotionSchema = exports.promotionListResponseSchema = exports.promotionResponseSchema = exports.promotionEvaluationSchema = exports.appliedPromotionSchema = exports.couponInputSchema = exports.promotionPreviewSchema = exports.promotionLineSchema = exports.promotionQuerySchema = exports.updatePromotionSchema = exports.createPromotionSchema = exports.couponConfigurationSchema = exports.promotionDisplaySchema = exports.promotionLimitsSchema = exports.promotionTargetsSchema = exports.promotionActionSchema = exports.promotionConditionSchema = exports.promotionSelectorSchema = exports.promotionStackingEnum = exports.promotionResolvedStatusEnum = exports.promotionStateEnum = exports.promotionTriggerEnum = exports.promotionTypeEnum = void 0;
+exports.promotionOverviewSchema = exports.promotionRedemptionListSchema = exports.promotionRedemptionSchema = exports.promotionRedemptionQuerySchema = exports.promotionAnalyticsSchema = exports.permanentDeletePromotionResponseSchema = exports.permanentDeletePromotionSchema = exports.promotionListResponseSchema = exports.promotionResponseSchema = exports.promotionEvaluationSchema = exports.appliedPromotionSchema = exports.couponInputSchema = exports.promotionPreviewSchema = exports.promotionLineSchema = exports.promotionQuerySchema = exports.updatePromotionSchema = exports.createPromotionSchema = exports.couponConfigurationSchema = exports.promotionDisplaySchema = exports.promotionLimitsSchema = exports.promotionTargetsSchema = exports.promotionActionSchema = exports.promotionConditionSchema = exports.promotionSelectorSchema = exports.promotionStackingEnum = exports.promotionResolvedStatusEnum = exports.promotionStateEnum = exports.promotionTriggerEnum = exports.promotionTypeEnum = void 0;
 const zod_1 = require("zod");
 const pagination_1 = require("../common/pagination");
 const primitives_1 = require("../common/primitives");
@@ -225,6 +225,7 @@ exports.promotionTargetsSchema = zod_1.z
 exports.promotionLimitsSchema = zod_1.z
     .object({
     totalUses: databaseIntSchema.positive().nullable().default(null),
+    uniqueCustomers: databaseIntSchema.positive().nullable().default(null),
     usesPerCustomer: databaseIntSchema.positive().nullable().default(null),
     discountedUnits: databaseIntSchema.positive().nullable().default(null),
     maximumTotalDiscount: primitives_1.piastresSchema.positive().nullable().default(null),
@@ -404,9 +405,12 @@ exports.promotionResponseSchema = zod_1.z.object({
         id: primitives_1.uuidSchema,
         code: zod_1.z.string(),
         usedCount: zod_1.z.number().int(),
+        uniqueCustomerCount: zod_1.z.number().int().nonnegative(),
         usageLimitTotal: zod_1.z.number().int().nullable(),
+        usageLimitUniqueCustomers: zod_1.z.number().int().nullable(),
     })),
     usedCount: zod_1.z.number().int(),
+    uniqueCustomerCount: zod_1.z.number().int().nonnegative(),
     discountGranted: primitives_1.piastresSchema,
     discountedUnits: zod_1.z.number().int(),
     createdAt: zod_1.z.string(),
@@ -443,6 +447,7 @@ exports.promotionAnalyticsSchema = zod_1.z.object({
     discountGranted: primitives_1.piastresSchema,
     averageOrderValue: primitives_1.piastresSchema,
     remainingUses: zod_1.z.number().int().nullable(),
+    remainingUniqueCustomers: zod_1.z.number().int().nullable(),
     usageByDate: zod_1.z.array(zod_1.z.object({
         date: zod_1.z.string(),
         redemptions: zod_1.z.number().int(),
@@ -450,6 +455,30 @@ exports.promotionAnalyticsSchema = zod_1.z.object({
         discount: primitives_1.piastresSchema,
     })),
 });
+exports.promotionRedemptionQuerySchema = pagination_1.paginationQuerySchema.extend({
+    search: zod_1.z.string().trim().max(120).optional(),
+    sortBy: zod_1.z.enum(["createdAt", "discountAmount"]).default("createdAt"),
+});
+exports.promotionRedemptionSchema = zod_1.z.object({
+    id: primitives_1.uuidSchema,
+    customer: zod_1.z.object({
+        id: primitives_1.uuidSchema,
+        name: zod_1.z.string(),
+        email: zod_1.z.string().nullable(),
+        phone: zod_1.z.string(),
+    }),
+    order: zod_1.z.object({
+        id: primitives_1.uuidSchema,
+        orderNumber: zod_1.z.string(),
+        status: zod_1.z.string(),
+    }),
+    couponCode: zod_1.z.string().nullable(),
+    discountAmount: primitives_1.piastresSchema,
+    shippingDiscount: primitives_1.piastresSchema,
+    status: zod_1.z.literal("REDEEMED"),
+    redeemedAt: zod_1.z.string(),
+});
+exports.promotionRedemptionListSchema = (0, pagination_1.paginated)(exports.promotionRedemptionSchema);
 exports.promotionOverviewSchema = zod_1.z.object({
     total: zod_1.z.number().int().nonnegative(),
     active: zod_1.z.number().int().nonnegative(),

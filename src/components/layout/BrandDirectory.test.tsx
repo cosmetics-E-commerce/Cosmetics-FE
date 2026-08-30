@@ -6,6 +6,13 @@ import type { PublicBrandListItemResponse } from "@/lib/api";
 
 import { BrandDirectory, type BrandDirectoryCopy } from "./BrandDirectory";
 
+const logoDisplay = {
+  scale: "STANDARD",
+  padding: "STANDARD",
+  alignX: "CENTER",
+  alignY: "CENTER",
+} as const;
+
 vi.mock("@tanstack/react-router", () => ({
   Link: ({
     to,
@@ -40,6 +47,7 @@ function brands(count: number): PublicBrandListItemResponse[] {
     name: index === count - 1 ? "Avène Long Editorial Beauty House" : `Brand ${index + 1}`,
     slug: `brand-${index + 1}`,
     logoUrl: null,
+    logoDisplay,
     productCount: count - index,
   })).reverse();
 }

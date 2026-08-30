@@ -137,6 +137,7 @@ function BrandPage() {
       meta={data.catalog.meta}
       locale={data.locale}
       logo={data.brand.logoUrl}
+      logoDisplay={data.brand.logoDisplay}
       facets={data.facets}
       search={search}
       onSearchChange={(next) => navigate({ search: next })}

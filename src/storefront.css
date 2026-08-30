@@ -2290,6 +2290,20 @@ body:has(.sf-product-page) .header-actions__divider {
   height: 26px;
   object-fit: contain;
 }
+.published-mega__entity-list .published-mega__brand-logo {
+  width: 42px;
+  height: 32px;
+  flex: 0 0 42px;
+  padding: 4px;
+}
+.published-mega__entity-list .published-mega__brand-logo .brand-logo-frame__image {
+  width: auto;
+  height: auto;
+}
+.published-mega__entity-list .published-mega__brand-logo .brand-logo-frame__fallback {
+  font-size: 0.48rem;
+  letter-spacing: 0.04em;
+}
 .published-mega__entity-list small {
   margin-inline-start: auto;
   color: var(--sf-taupe);
@@ -4513,28 +4527,16 @@ body:has(.account-page) .header-nav-indicator {
 }
 
 .sf-brand-marquee__logo {
-  display: grid;
   width: 100%;
   height: var(--brand-logo-height);
-  place-items: center;
 }
 
-.sf-brand-marquee__logo img {
-  display: block;
-  width: auto;
-  max-width: 100%;
-  height: auto;
-  max-height: var(--brand-logo-height);
-  background-color: transparent;
-  object-fit: contain;
-  object-position: center;
-  mix-blend-mode: multiply;
+.sf-brand-marquee__logo .brand-logo-frame__image {
   filter: grayscale(1) saturate(0);
-  image-rendering: auto;
   transition: filter 400ms var(--ease-premium);
 }
 
-.sf-brand-marquee__name {
+.sf-brand-marquee__logo .brand-logo-frame__fallback {
   display: -webkit-box;
   max-width: 100%;
   max-height: 2.2em;
@@ -4552,7 +4554,7 @@ body:has(.account-page) .header-nav-indicator {
   -webkit-line-clamp: 2;
 }
 
-[dir="rtl"] .sf-brand-marquee__name {
+[dir="rtl"] .sf-brand-marquee__logo .brand-logo-frame__fallback {
   font-family: var(--font-arabic);
   letter-spacing: 0;
 }
@@ -4568,14 +4570,8 @@ body:has(.account-page) .header-nav-indicator {
   outline-offset: 0.45rem;
 }
 
-.sf-brand-marquee__item:is(:hover, :focus-visible) .sf-brand-marquee__logo img {
+.sf-brand-marquee__item:is(:hover, :focus-visible) .sf-brand-marquee__logo .brand-logo-frame__image {
   filter: grayscale(0) saturate(0.9) contrast(1.02);
-}
-
-.sf-brand-landing-logo {
-  background-color: transparent;
-  mix-blend-mode: multiply;
-  filter: brightness(1.1) contrast(1.15);
 }
 
 @media (prefers-reduced-motion: no-preference) {

@@ -10,6 +10,7 @@ import { ChevronRight, Grid2X2, Image as ImageIcon, Search } from "lucide-react"
 
 import legacyPromoImage from "@/assets/product-serum.jpg";
 import { filterBrands, groupBrandItems } from "@/components/layout/brand-directory-data";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { localizedNavigationText, navigationVisibilityAllows } from "@/lib/navigation";
 
 type Locale = "en" | "ar";
@@ -583,7 +584,17 @@ function EntityList({
       <div>
         {entities.map((entity) => (
           <SafeLink href={entity.href} key={entity.id} onNavigate={onNavigate}>
-            {"presentation" in block && entity.imageUrl ? (
+            {block.type === "BRAND_LIST" ? (
+              <BrandLogo
+                name={entityLabel(entity, locale)}
+                logoUrl={entity.imageUrl}
+                display={entity.logoDisplay}
+                className="published-mega__brand-logo"
+                decorative
+                surface="transparent"
+                sizes="42px"
+              />
+            ) : "presentation" in block && entity.imageUrl ? (
               <img src={entity.imageUrl} alt="" />
             ) : null}
             <span>{entityLabel(entity, locale)}</span>

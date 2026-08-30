@@ -20,6 +20,8 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
+import { ProductCard } from "@/components/shop/ProductCard";
+import type { Product } from "@/lib/products";
 import {
   apiErrorMessage,
   evaluateRoutine,
@@ -28,6 +30,7 @@ import {
   startRoutineSession,
   type RoutinePublicConfig,
   type RoutinePublicQuestion,
+  type RoutineOwnedStep,
   type RoutineRecommendationStep,
   type RoutineResult,
 } from "@/lib/api";
@@ -197,6 +200,23 @@ function RoutineExperience({ snapshot }: { snapshot: RoutinePublicConfig }) {
         locale,
         selectedVariants,
       });
+      if (fresh.recommendationsChanged) {
+        setResult(fresh);
+        setSelectedVariants(
+          Object.fromEntries(
+            [...fresh.morningSteps, ...fresh.eveningSteps].map((step) => [
+              step.id,
+              step.product.variantId,
+            ]),
+          ),
+        );
+        toast.warning(
+          ar
+            ? "تغيّر سعر أو توفر أحد المنتجات. راجعي الروتين المحدّث قبل الإضافة."
+            : "A recommendation changed in price or availability. Review the updated routine before adding it.",
+        );
+        return;
+      }
       const unique = new Map(
         [...fresh.morningSteps, ...fresh.eveningSteps]
           .filter((step) => selectedSteps.has(step.id))
@@ -227,6 +247,66 @@ function RoutineExperience({ snapshot }: { snapshot: RoutinePublicConfig }) {
         toast.success(
           ar ? `تمت إضافة ${added} منتجات إلى الحقيبة.` : `${added} products added to your bag.`,
         );
+        setCartOpen(true);
+      }
+    } catch (error) {
+      toast.error(apiErrorMessage(error));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const addOne = async (step: RoutineRecommendationStep) => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const fresh = await evaluateRoutine({
+        ...(sessionId ? { sessionId } : {}),
+        answers,
+        locale,
+        selectedVariants,
+      });
+      if (fresh.recommendationsChanged) {
+        setResult(fresh);
+        setSelectedVariants(
+          Object.fromEntries(
+            [...fresh.morningSteps, ...fresh.eveningSteps].map((item) => [
+              item.id,
+              item.product.variantId,
+            ]),
+          ),
+        );
+        toast.warning(
+          ar
+            ? "تغيّر السعر أو التوفر. راجعي البديل المحدّث."
+            : "Price or availability changed. Review the updated option.",
+        );
+        return;
+      }
+      const current = [...fresh.morningSteps, ...fresh.eveningSteps].find(
+        (item) => item.id === step.id,
+      );
+      if (!current)
+        throw new Error(
+          ar ? "لم يعد هذا المنتج متاحاً." : "This recommendation is no longer available.",
+        );
+      const product = current.product;
+      const ok = await add({
+        variantId: product.variantId,
+        productId: product.productId,
+        slug: product.slug,
+        name: product.name,
+        image: product.imageUrl ?? undefined,
+        size: product.variantName,
+        price: product.price / 100,
+        qty: 1,
+      });
+      if (ok) {
+        if (sessionId)
+          void recordRoutineEvent(sessionId, {
+            type: "ROUTINE_PRODUCT_ADD_TO_CART",
+            productId: product.productId,
+          }).catch(() => undefined);
         setCartOpen(true);
       }
     } catch (error) {
@@ -339,6 +419,7 @@ function RoutineExperience({ snapshot }: { snapshot: RoutinePublicConfig }) {
           }
           onSwap={swap}
           onAdd={addSelected}
+          onAddOne={addOne}
           onRestart={() => {
             setAnswers({});
             setResult(null);
@@ -460,6 +541,7 @@ function RoutineResultView({
   onToggle,
   onSwap,
   onAdd,
+  onAddOne,
   onRestart,
 }: {
   result: RoutineResult;
@@ -470,10 +552,30 @@ function RoutineResultView({
   onToggle: (id: string) => void;
   onSwap: (step: RoutineRecommendationStep, variantId: string) => Promise<void>;
   onAdd: () => Promise<void>;
+  onAddOne: (step: RoutineRecommendationStep) => Promise<void>;
   onRestart: () => void;
 }) {
   const ar = locale === "ar";
   const text = (value: { en: string; ar: string }) => value[locale];
+  const sharedStepPairs = result.morningSteps.flatMap((morning) => {
+    const evening = result.eveningSteps.find(
+      (step) =>
+        step.roleKey === morning.roleKey && step.product.variantId === morning.product.variantId,
+    );
+    return evening ? [[morning.id, evening.id] as const] : [];
+  });
+  const sharedStepIds = new Set(sharedStepPairs.flat());
+  const sharedMate = new Map(
+    sharedStepPairs.flatMap(([morning, evening]) => [
+      [morning, evening] as const,
+      [evening, morning] as const,
+    ]),
+  );
+  const toggleRoutineStep = (id: string) => {
+    onToggle(id);
+    const mate = sharedMate.get(id);
+    if (mate) onToggle(mate);
+  };
   return (
     <section className="sf-routine-result">
       <header>
@@ -500,29 +602,46 @@ function RoutineResultView({
         </div>
       ) : (
         <>
+          {result.warnings.length ? (
+            <div className="sf-routine-warnings" role="status">
+              {result.warnings.map((warning) => (
+                <p key={warning}>{warning}</p>
+              ))}
+            </div>
+          ) : null}
           <div className="sf-routine-result__columns">
             <RoutinePeriod
               title={ar ? "الصباح" : "Morning"}
               icon={Sun}
               steps={result.morningSteps}
+              ownedSteps={(result.ownedSteps ?? []).filter((step) => step.period === "AM")}
               locale={locale}
               selected={selected}
-              onToggle={onToggle}
+              onToggle={toggleRoutineStep}
               onSwap={onSwap}
+              onAddOne={onAddOne}
+              sharedStepIds={sharedStepIds}
             />
             <RoutinePeriod
               title={ar ? "المساء" : "Evening"}
               icon={Moon}
-              steps={result.eveningSteps}
+              steps={result.eveningSteps.filter((step) => !sharedStepIds.has(step.id))}
+              ownedSteps={(result.ownedSteps ?? []).filter((step) => step.period === "PM")}
               locale={locale}
               selected={selected}
-              onToggle={onToggle}
+              onToggle={toggleRoutineStep}
               onSwap={onSwap}
+              onAddOne={onAddOne}
+              sharedStepIds={sharedStepIds}
             />
           </div>
           <aside className="sf-routine-cart-bar">
             <div>
-              <span>{ar ? `${selected.size} خطوات محددة` : `${selected.size} steps selected`}</span>
+              <span>
+                {ar
+                  ? `${selectedProductCount(result, selected)} منتجات محددة`
+                  : `${selectedProductCount(result, selected)} products selected`}
+              </span>
               <strong>{formatMoney(selectedTotal(result, selected), locale)}</strong>
               <small>
                 {ar
@@ -545,18 +664,24 @@ function RoutinePeriod({
   title,
   icon: Icon,
   steps,
+  ownedSteps,
   locale,
   selected,
   onToggle,
   onSwap,
+  onAddOne,
+  sharedStepIds,
 }: {
   title: string;
   icon: typeof Sun;
   steps: RoutineRecommendationStep[];
+  ownedSteps: RoutineOwnedStep[];
   locale: "en" | "ar";
   selected: Set<string>;
   onToggle: (id: string) => void;
   onSwap: (step: RoutineRecommendationStep, variantId: string) => Promise<void>;
+  onAddOne: (step: RoutineRecommendationStep) => Promise<void>;
+  sharedStepIds: Set<string>;
 }) {
   return (
     <section className="sf-routine-period">
@@ -565,6 +690,20 @@ function RoutinePeriod({
         {title}
       </h2>
       <div>
+        {ownedSteps.map((step, index) => (
+          <article key={step.id} className="sf-routine-owned-step">
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <p>{step.roleLabel}</p>
+              <strong>
+                {locale === "ar"
+                  ? "استخدمي المنتج الموجود لديك"
+                  : "Use the product you already own"}
+              </strong>
+            </div>
+            <Check aria-hidden="true" />
+          </article>
+        ))}
         {steps.map((step, index) => (
           <article key={step.id} className="sf-routine-product">
             <label className="sf-routine-select">
@@ -575,19 +714,16 @@ function RoutinePeriod({
               />
               <span>{String(index + 1).padStart(2, "0")}</span>
             </label>
-            <Link
-              to="/product/$slug"
-              params={{ slug: step.product.slug }}
-              className="sf-routine-product__image"
-            >
-              {step.product.imageUrl ? <img src={step.product.imageUrl} alt="" /> : <Sparkles />}
-            </Link>
+            <div className="sf-routine-product__canonical-card">
+              <ProductCard product={routineCardProduct(step)} compact />
+            </div>
             <div className="sf-routine-product__copy">
               <p>{step.roleLabel}</p>
-              <Link to="/product/$slug" params={{ slug: step.product.slug }}>
-                <h3>{step.product.name}</h3>
-              </Link>
-              <span>{step.product.variantName}</span>
+              {sharedStepIds.has(step.id) ? (
+                <span className="sf-routine-shared-period">
+                  {locale === "ar" ? "صباحاً + مساءً" : "AM + PM"}
+                </span>
+              ) : null}
               <small>{step.product.explanation}</small>
               {step.warnings.map((warning) => (
                 <em key={warning}>{warning}</em>
@@ -610,8 +746,11 @@ function RoutinePeriod({
                   ))}
                 </details>
               ) : null}
+              <Button variant="outline" size="sm" onClick={() => void onAddOne(step)}>
+                <ShoppingBag />
+                {locale === "ar" ? "أضيفي هذا المنتج" : "Add this product"}
+              </Button>
             </div>
-            <strong>{formatMoney(step.product.price, locale)}</strong>
           </article>
         ))}
       </div>
@@ -690,10 +829,58 @@ function moveRank(items: string[], index: number, delta: -1 | 1) {
   next[target] = current;
   return next;
 }
+function routineCardProduct(step: RoutineRecommendationStep): Product {
+  const product = step.product;
+  return {
+    id: product.productId,
+    slug: product.slug,
+    name: product.name,
+    category: step.roleLabel,
+    type: step.roleLabel,
+    benefit: product.explanation,
+    shortDescription: product.explanation,
+    description: product.explanation,
+    price: product.price / 100,
+    ...(product.compareAtPrice != null ? { originalPrice: product.compareAtPrice / 100 } : {}),
+    rating: 0,
+    reviews: 0,
+    image: product.imageUrl ?? "/bioreza-logo.png",
+    imageAlt: product.name,
+    gallery: [product.imageUrl ?? "/bioreza-logo.png"],
+    sizes: [
+      {
+        id: product.variantId,
+        label: product.variantName,
+        price: product.price / 100,
+        stock: product.stock,
+      },
+    ],
+    stock: product.stock,
+    concerns: [],
+    skinTypes: [],
+    inStock: product.stock > 0,
+    ingredients: "",
+    ingredientDetails: [],
+    howToUse: "",
+    details: "",
+    benefits: [],
+  };
+}
 function selectedTotal(result: RoutineResult, selected: Set<string>) {
-  return [...result.morningSteps, ...result.eveningSteps]
-    .filter((step) => selected.has(step.id))
-    .reduce((sum, step) => sum + step.product.price, 0);
+  return [
+    ...new Map(
+      [...result.morningSteps, ...result.eveningSteps]
+        .filter((step) => selected.has(step.id))
+        .map((step) => [step.product.variantId, step.product.price]),
+    ).values(),
+  ].reduce((sum, price) => sum + price, 0);
+}
+function selectedProductCount(result: RoutineResult, selected: Set<string>) {
+  return new Set(
+    [...result.morningSteps, ...result.eveningSteps]
+      .filter((step) => selected.has(step.id))
+      .map((step) => step.product.variantId),
+  ).size;
 }
 function formatMoney(value: number, locale: "en" | "ar") {
   return new Intl.NumberFormat(locale === "ar" ? "ar-EG" : "en-EG", {

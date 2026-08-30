@@ -5,6 +5,13 @@ import { describe, expect, it, vi } from "vitest";
 import { brandMarqueeDuration } from "@/lib/brand-marquee";
 import { BrandMarquee } from "./BrandMarquee";
 
+const logoDisplay = {
+  scale: "STANDARD",
+  padding: "STANDARD",
+  alignX: "CENTER",
+  alignY: "CENTER",
+} as const;
+
 vi.mock("@tanstack/react-router", () => ({
   Link: ({
     to,
@@ -50,6 +57,7 @@ describe("BrandMarquee", () => {
             name: "Empty Brand",
             slug: "empty-brand",
             logoUrl: "https://cdn.example.com/empty-brand.png",
+            logoDisplay,
             productCount: 0,
           },
           {
@@ -57,9 +65,17 @@ describe("BrandMarquee", () => {
             name: "Brand One",
             slug: "brand-one",
             logoUrl: "https://cdn.example.com/brand-one.png",
+            logoDisplay,
             productCount: 4,
           },
-          { id: "two", name: "Brand Two", slug: "brand-two", logoUrl: null, productCount: 7 },
+          {
+            id: "two",
+            name: "Brand Two",
+            slug: "brand-two",
+            logoUrl: null,
+            logoDisplay,
+            productCount: 7,
+          },
         ]}
       />,
     );
@@ -92,7 +108,7 @@ describe("BrandMarquee", () => {
     clonedLinks.forEach((link) => expect(link).toHaveAttribute("tabindex", "-1"));
     expect(container.querySelector(".sf-brand-marquee__group--clone img")).toHaveAttribute(
       "loading",
-      "lazy",
+      "eager",
     );
   });
 
@@ -100,7 +116,14 @@ describe("BrandMarquee", () => {
     const { container } = render(
       <BrandMarquee
         initialBrands={[
-          { id: "one", name: "Brand One", slug: "brand-one", logoUrl: null, productCount: 0 },
+          {
+            id: "one",
+            name: "Brand One",
+            slug: "brand-one",
+            logoUrl: null,
+            logoDisplay,
+            productCount: 0,
+          },
         ]}
       />,
     );
@@ -117,6 +140,7 @@ describe("BrandMarquee", () => {
           name: `Brand ${index}`,
           slug: `brand-${index}`,
           logoUrl: null,
+          logoDisplay,
           productCount: index,
         }))}
       />,
@@ -138,6 +162,7 @@ describe("BrandMarquee", () => {
             name: "Resilient Beauty",
             slug: "resilient-beauty",
             logoUrl: "https://cdn.example.com/missing.png",
+            logoDisplay,
             productCount: 0,
           },
         ]}
@@ -146,6 +171,6 @@ describe("BrandMarquee", () => {
 
     fireEvent.error(container.querySelector("img")!);
 
-    expect(getByText("Resilient Beauty")).toHaveClass("sf-brand-marquee__name");
+    expect(getByText("Resilient Beauty")).toHaveClass("brand-logo-frame__fallback");
   });
 });

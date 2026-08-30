@@ -185,6 +185,39 @@ const registry: Record<string, Copy> = {
       "تابعي دون الرمز أو اختاري عرضاً آخر.",
     ],
   },
+  COUPON_TOTAL_LIMIT_REACHED: {
+    title: ["This promo code is fully redeemed", "تم استخدام رمز الخصم بالكامل"],
+    message: [
+      "This promo code has reached its redemption limit.",
+      "وصل رمز الخصم هذا إلى الحد الأقصى لمرات الاستخدام.",
+    ],
+    action: [
+      "Continue without the code or choose another offer.",
+      "تابعي دون الرمز أو اختاري عرضاً آخر.",
+    ],
+  },
+  COUPON_CUSTOMER_LIMIT_REACHED: {
+    title: ["This promo code has reached its customer limit", "وصل رمز الخصم إلى حد العملاء"],
+    message: [
+      "The maximum number of customers have already redeemed this promo code.",
+      "استخدم الحد الأقصى من العملاء رمز الخصم هذا بالفعل.",
+    ],
+    action: [
+      "Continue without the code or choose another offer.",
+      "تابعي دون الرمز أو اختاري عرضاً آخر.",
+    ],
+  },
+  COUPON_CUSTOMER_USAGE_LIMIT: {
+    title: ["You’ve reached this promo code’s usage limit", "وصلتِ إلى حد استخدام رمز الخصم"],
+    message: [
+      "You’ve already used this promo code the maximum number of times.",
+      "لقد استخدمتِ رمز الخصم هذا الحد الأقصى المسموح به من المرات.",
+    ],
+    action: [
+      "Continue without the code or choose another offer.",
+      "تابعي دون الرمز أو اختاري عرضاً آخر.",
+    ],
+  },
   PROMOTION_USAGE_CHANGED: {
     title: ["This offer changed during checkout", "تغيّر العرض أثناء إتمام الطلب"],
     message: [

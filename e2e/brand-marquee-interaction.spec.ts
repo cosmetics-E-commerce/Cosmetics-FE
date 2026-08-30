@@ -176,13 +176,13 @@ test.describe("brand presentation", () => {
       return {
         width: rect.width,
         height: rect.height,
-        transform: getComputedStyle(image).transform,
+        transformScale: new DOMMatrixReadOnly(getComputedStyle(image).transform).a,
         objectFit: getComputedStyle(image).objectFit,
       };
     });
     expect(dimensions.width).toBeGreaterThanOrEqual(230);
     expect(dimensions.height).toBeGreaterThanOrEqual(120);
-    expect(dimensions.transform).toBe("none");
+    expect(dimensions.transformScale).toBeCloseTo(1, 3);
     expect(dimensions.objectFit).toBe("contain");
 
     await page.setViewportSize({ width: 1440, height: 900 });

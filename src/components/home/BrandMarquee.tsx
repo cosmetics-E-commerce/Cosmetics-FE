@@ -1,11 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { useMemo, useState, type CSSProperties } from "react";
+import { useMemo, type CSSProperties } from "react";
 
 import type { PublicBrandListItemResponse } from "@/lib/api";
 import { useBrandMarquee, usePublicStoreSettings } from "@/lib/catalog";
 import { useStore } from "@/lib/store";
 import { sortBrands } from "@/components/layout/brand-directory-data";
 import { brandMarqueeDuration } from "@/lib/brand-marquee";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { useDraggableMarquee } from "./useDraggableMarquee";
 
 type BrandMarqueeProps = {
@@ -59,8 +60,13 @@ export function BrandMarquee({ initialBrands }: BrandMarqueeProps) {
               className="sf-brand-marquee__group sf-brand-marquee__group--clone"
               aria-hidden="true"
             >
-              {brands.map((brand) => (
-                <BrandLink key={brand.id} brand={brand} decorative />
+              {brands.map((brand, index) => (
+                <BrandLink
+                  key={brand.id}
+                  brand={brand}
+                  decorative
+                  priority={index < priorityLogoCount}
+                />
               ))}
             </div>
           )}
@@ -102,26 +108,16 @@ function BrandMark({
   decorative?: boolean;
   priority?: boolean;
 }) {
-  const logoUrl = brand.logoUrl?.trim();
-  const [imageFailed, setImageFailed] = useState(false);
-
   return (
-    <span className="sf-brand-marquee__logo">
-      {logoUrl && !imageFailed ? (
-        <img
-          src={logoUrl}
-          alt={decorative ? "" : brand.name}
-          width={190}
-          height={66}
-          loading={priority ? "eager" : "lazy"}
-          fetchPriority={priority ? "high" : "low"}
-          decoding="async"
-          draggable={false}
-          onError={() => setImageFailed(true)}
-        />
-      ) : (
-        <span className="sf-brand-marquee__name">{brand.name}</span>
-      )}
-    </span>
+    <BrandLogo
+      name={brand.name}
+      logoUrl={brand.logoUrl}
+      display={brand.logoDisplay}
+      className="sf-brand-marquee__logo"
+      decorative={decorative}
+      priority={priority}
+      surface="transparent"
+      sizes="190px"
+    />
   );
 }
