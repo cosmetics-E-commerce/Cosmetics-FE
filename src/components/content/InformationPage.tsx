@@ -23,7 +23,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { customerCareTelHref, siteConfig } from "@/lib/site-config";
+import { siteConfig } from "@/lib/site-config";
 import { useStore } from "@/lib/store";
 import "./information-pages.css";
 
@@ -385,15 +385,23 @@ export function PolicyList({
   return <ul className={`bio-policy-list bio-policy-list--${tone}`}>{children}</ul>;
 }
 
-export function CustomerCarePhone({ label = "Call customer care" }: { label?: string }) {
+export function CustomerCarePhone({
+  label = "Call customer care",
+  phoneDisplay = siteConfig.customerCare.phoneDisplay,
+  phoneE164 = siteConfig.customerCare.phoneE164,
+}: {
+  label?: string;
+  phoneDisplay?: string;
+  phoneE164?: string;
+}) {
   return (
     <a
       className="bio-customer-care-phone"
-      href={customerCareTelHref()}
-      aria-label={`${label}: ${siteConfig.customerCare.phoneDisplay}`}
+      href={`tel:${phoneE164}`}
+      aria-label={`${label}: ${phoneDisplay}`}
     >
       <span>{label}</span>
-      <strong>{siteConfig.customerCare.phoneDisplay}</strong>
+      <strong>{phoneDisplay}</strong>
     </a>
   );
 }

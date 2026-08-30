@@ -25,6 +25,11 @@ const sectionsAr = [
   { id: "fees", label: "رسوم شحن الإرجاع" },
 ];
 
+const returnsPhone = {
+  display: "0103 7376443",
+  e164: "+201037376443",
+} as const;
+
 export const Route = createFileRoute("/returns")({
   head: ({ match }) => {
     const ar = match.search.lang === "ar";
@@ -196,7 +201,11 @@ function ReturnsAndExchanges() {
                   ? "لطلب الإرجاع أو الاستبدال، تواصلي مع فريق خدمة العملاء."
                   : "To request a return or exchange, contact our Customer Care Team."}
               </p>
-              <CustomerCarePhone label={ar ? "بدء طلب الإرجاع" : "Start a return"} />
+              <CustomerCarePhone
+                label={ar ? "بدء طلب الإرجاع" : "Start a return"}
+                phoneDisplay={returnsPhone.display}
+                phoneE164={returnsPhone.e164}
+              />
               <p>{ar ? "يجب أن يتضمن الطلب:" : "The request should include:"}</p>
               <PolicyList>
                 <li>{ar ? "رقم الطلب" : "Order Number"}</li>
