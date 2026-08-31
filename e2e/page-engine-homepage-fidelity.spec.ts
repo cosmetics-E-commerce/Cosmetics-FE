@@ -19,6 +19,7 @@ const selectors = [
 ];
 
 async function stabilize(page: Page) {
+  await page.locator('html[data-hydrated="true"]').waitFor();
   await page.addStyleTag({
     content:
       "*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}.sf-brand-marquee__track,.motion-reveal,.motion-reveal>*,.motion-text-line,.motion-image-reveal,.motion-image-reveal__inner{opacity:1!important;transform:none!important;clip-path:none!important}",

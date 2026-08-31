@@ -16,7 +16,9 @@ export type CommerceEventName =
   | "purchase_completed"
   | "coupon_applied"
   | "offer_viewed"
-  | "product_shared";
+  | "product_shared"
+  | "complete_routine_cta_viewed"
+  | "complete_routine_cta_clicked";
 
 export const CAMPAIGN_COMMERCE_EVENT = "bioreza:commerce";
 export const CAMPAIGN_CONTEXT_EVENT = "bioreza:campaign-context";

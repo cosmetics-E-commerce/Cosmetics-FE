@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, notFound, useNavigate, useRouter } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import {
   Check,
   CircleHelp,
@@ -29,7 +30,7 @@ import { IngredientExplorer } from "@/components/shop/IngredientExplorer";
 import { WishlistPicker } from "@/components/shop/WishlistPicker";
 import { formatPrice, type Product } from "@/lib/products";
 import { merchandisingQuery, productQuery, useProduct } from "@/lib/catalog";
-import { listProductReviews } from "@/lib/api";
+import { getRoutineAnchorEligibility, listProductReviews } from "@/lib/api";
 import { useStore } from "@/lib/store";
 import { trackCommerceEvent } from "@/lib/analytics";
 import {
@@ -112,6 +113,9 @@ const productCopy = {
     support: "Customer support",
     supportCopy: "Send your questions during customer-care hours and our team will help.",
     related: "Product Related",
+    completeRoutine: "Complete your routine",
+    completeRoutineCopy: "Build a compatible AM and PM routine around this product.",
+    buildRoutine: "Build my routine",
   },
   ar: {
     home: "الرئيسية",
@@ -175,6 +179,9 @@ const productCopy = {
     support: "خدمة العملاء",
     supportCopy: "أرسلي أسئلتك خلال ساعات خدمة العملاء وسيساعدك فريقنا.",
     related: "منتجات مشابهة",
+    completeRoutine: "أكملي روتينك",
+    completeRoutineCopy: "كوّني روتيناً صباحياً ومسائياً متوافقاً حول هذا المنتج.",
+    buildRoutine: "كوّني روتيني",
   },
 } as const;
 
@@ -322,11 +329,26 @@ function ProductPage() {
       ? resolveVariant(product.options, product.sizes, variantSelection)
       : (product.sizes[variantIndex] ?? product.sizes[0])
     : undefined;
+  const routineEligibility = useQuery({
+    queryKey: ["routine-anchor-eligibility", product?.id, selectedVariant?.id, locale],
+    queryFn: () => getRoutineAnchorEligibility(product!.id!, selectedVariant?.id, locale),
+    enabled: Boolean(product?.id && selectedVariant?.id),
+    retry: false,
+    staleTime: 60_000,
+  });
 
   useEffect(() => {
     setImageIndex(0);
     setQuantity(1);
   }, [selectedVariant?.id]);
+
+  useEffect(() => {
+    if (!routineEligibility.data?.eligible || !product?.id) return;
+    trackCommerceEvent("complete_routine_cta_viewed", {
+      productId: product.id,
+      variantId: selectedVariant?.id,
+    });
+  }, [product?.id, routineEligibility.data?.eligible, selectedVariant?.id]);
 
   useEffect(() => {
     if (!added) return;
@@ -757,6 +779,38 @@ function ProductPage() {
             >
               {labels.buyNow}
             </Button>
+
+            {routineEligibility.data?.eligible && variant?.id ? (
+              <aside className="product-routine-entry" aria-labelledby="product-routine-title">
+                <div>
+                  <p id="product-routine-title">{labels.completeRoutine}</p>
+                  <span>{labels.completeRoutineCopy}</span>
+                  {routineEligibility.data.anchor?.roles.length ? (
+                    <small>
+                      {routineEligibility.data.anchor.roles.join(" · ")} ·{" "}
+                      {routineEligibility.data.anchor.periods.join(" + ")}
+                    </small>
+                  ) : null}
+                </div>
+                <Button asChild variant="outline" size="pill">
+                  <Link
+                    to="/routine"
+                    search={{
+                      anchorProductId: product.id!,
+                      anchorVariantId: variant.id!,
+                    }}
+                    onClick={() =>
+                      trackCommerceEvent("complete_routine_cta_clicked", {
+                        productId: product.id,
+                        variantId: variant.id,
+                      })
+                    }
+                  >
+                    {labels.buildRoutine}
+                  </Link>
+                </Button>
+              </aside>
+            ) : null}
 
             <div className="product-reference-links">
               <button type="button" onClick={() => void shareProduct()}>

@@ -23,13 +23,23 @@ const alternative = {
   name: "Gentle Cleanser",
   price: 14500,
 };
+const moisturizerStepId = "20000000-0000-4000-8000-000000000002";
+const moisturizer = {
+  ...primary,
+  productId: "30000000-0000-4000-8000-000000000003",
+  variantId: "40000000-0000-4000-8000-000000000003",
+  slug: "moisturizer-a",
+  name: "Barrier Moisturizer",
+  price: 18500,
+  explanation: "Selected from approved profile signals for your routine.",
+};
 
 test.beforeEach(async ({ page }) => mockRoutineApi(page));
 
 test("completes, swaps and revalidates a routine before cart insertion", async ({
   page,
 }, testInfo) => {
-  test.skip(testInfo.project.name !== "chromium", "Desktop workflow");
+  test.skip(!["chromium", "webkit"].includes(testInfo.project.name), "Desktop workflow");
   await page.goto("/routine");
   await expect(page.getByRole("heading", { name: "Build Your Routine" })).toBeVisible();
   await page.getByRole("button", { name: /Build my routine/ }).click();
@@ -51,7 +61,7 @@ test("completes, swaps and revalidates a routine before cart insertion", async (
 test("keeps the guided journey readable and RTL-native on mobile Arabic", async ({
   page,
 }, testInfo) => {
-  test.skip(testInfo.project.name !== "mobile", "Mobile RTL workflow");
+  test.skip(!["mobile", "mobile-webkit"].includes(testInfo.project.name), "Mobile RTL workflow");
   await page.goto("/routine?lang=ar");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
   await expect(page.getByRole("heading", { name: "ابني روتينك" })).toBeVisible();
@@ -63,7 +73,7 @@ test("keeps the guided journey readable and RTL-native on mobile Arabic", async 
 });
 
 test("has no horizontal overflow across supported phone widths", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "mobile", "Mobile viewport matrix");
+  test.skip(!["mobile", "mobile-webkit"].includes(testInfo.project.name), "Mobile viewport matrix");
   for (const width of [320, 360, 375, 390, 414, 430]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/routine");
@@ -76,8 +86,32 @@ test("has no horizontal overflow across supported phone widths", async ({ page }
   }
 });
 
+test("builds a locked anchor routine in Arabic without mobile overflow", async ({
+  page,
+}, testInfo) => {
+  test.skip(
+    !["mobile", "mobile-webkit"].includes(testInfo.project.name),
+    "Contextual mobile RTL workflow",
+  );
+  await page.goto(
+    `/routine?lang=ar&anchorProductId=${primary.productId}&anchorVariantId=${primary.variantId}`,
+  );
+  await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(page.getByRole("heading", { name: "أكملي روتينك" })).toBeVisible();
+  await page.getByRole("button", { name: /ابدئي بناء روتينك/ }).click();
+  await page.getByRole("button", { name: /بسيط/ }).click();
+  await page.getByRole("button", { name: /كوّني روتيني/ }).click();
+  await expect(page.getByText("منتجك المختار").first()).toBeVisible();
+  await expect(page.getByRole("heading", { name: /روتينك مع منظف متوازن/ })).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    ),
+  ).toBe(true);
+});
+
 test("stays contained across supported desktop widths", async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== "chromium", "Desktop viewport matrix");
+  test.skip(!["chromium", "webkit"].includes(testInfo.project.name), "Desktop viewport matrix");
   for (const viewport of [
     { width: 1366, height: 768 },
     { width: 1440, height: 900 },
@@ -99,15 +133,48 @@ async function mockRoutineApi(page: Page) {
     const request = route.request();
     const path = new URL(request.url()).pathname;
     if (path.endsWith("/events")) return route.fulfill({ status: 201, json: { ok: true } });
-    if (path.endsWith("/sessions"))
-      return route.fulfill({ status: 201, json: envelope({ sessionId, ...snapshot() }) });
+    if (path.endsWith("/sessions")) {
+      const payload = request.postDataJSON() as { mode?: "FULL" | "CONTEXTUAL" };
+      return route.fulfill({
+        status: 201,
+        json: envelope({
+          sessionId,
+          ...snapshot(),
+          ...(payload.mode === "CONTEXTUAL" ? { anchor: contextualAnchor("en") } : {}),
+        }),
+      });
+    }
+    if (path.endsWith("/cart")) {
+      const payload = request.postDataJSON() as { selections: Array<{ variantId: string }> };
+      const selected = payload.selections.some((item) => item.variantId === alternative.variantId)
+        ? alternative
+        : primary;
+      await page.evaluate(() =>
+        sessionStorage.setItem(
+          "routine-cart-adds",
+          String(Number(sessionStorage.getItem("routine-cart-adds") ?? "0") + 1),
+        ),
+      );
+      return route.fulfill({
+        status: 201,
+        json: envelope({
+          cart: cartResponse(selected),
+          routine: result("en", selected.variantId === alternative.variantId, "FULL"),
+          addedVariantIds: [selected.variantId],
+        }),
+      });
+    }
     if (path.endsWith("/evaluate")) {
       const payload = request.postDataJSON() as {
         locale: "en" | "ar";
+        mode?: "FULL" | "CONTEXTUAL";
         selectedVariants?: Record<string, string>;
       };
       const swapped = payload.selectedVariants?.[stepId] === alternative.variantId;
-      return route.fulfill({ status: 201, json: envelope(result(payload.locale, swapped)) });
+      return route.fulfill({
+        status: 201,
+        json: envelope(result(payload.locale, swapped, payload.mode ?? "FULL")),
+      });
     }
     return route.fulfill({ status: 200, json: envelope(snapshot()) });
   });
@@ -183,6 +250,15 @@ function snapshot() {
       resultTitle: { en: "Your BioReza Routine", ar: "روتين BioReza الخاص بك" },
       disclaimer: { en: "Guidance only", ar: "إرشاد فقط" },
       noResult: { en: "No result", ar: "لا نتيجة" },
+      contextualCompletion: {
+        enabled: true,
+        title: { en: "Complete Your Routine", ar: "أكملي روتينك" },
+        introduction: {
+          en: "Build a routine around your selected product.",
+          ar: "كوّني روتيناً حول منتجك المختار.",
+        },
+        unavailableMessage: { en: "Unavailable", ar: "غير متاح" },
+      },
       questions: [
         {
           id: "70000000-0000-4000-8000-000000000001",
@@ -221,7 +297,7 @@ function snapshot() {
     },
   };
 }
-function result(locale: "en" | "ar", swapped: boolean) {
+function result(locale: "en" | "ar", swapped: boolean, mode: "FULL" | "CONTEXTUAL" = "FULL") {
   const product = swapped ? alternative : primary;
   const localized =
     locale === "ar"
@@ -235,6 +311,9 @@ function result(locale: "en" | "ar", swapped: boolean) {
   return {
     sessionId,
     version: 3,
+    mode,
+    anchor: mode === "CONTEXTUAL" ? contextualAnchor(locale) : null,
+    anchorAlternatives: [],
     templateKey: "simple",
     answers: { complexity: "simple" },
     profileSummary: [locale === "ar" ? "التعقيد: بسيط" : "complexity: simple"],
@@ -246,16 +325,79 @@ function result(locale: "en" | "ar", swapped: boolean) {
         period: "AM",
         order: 0,
         required: true,
+        isAnchor: mode === "CONTEXTUAL",
+        alreadyOwned: false,
         product: localized,
         alternatives: [swapped ? primary : alternative],
         warnings: [],
       },
     ],
+    ...(mode === "CONTEXTUAL"
+      ? {
+          morningSteps: [
+            {
+              id: stepId,
+              roleKey: "cleanse",
+              roleLabel: locale === "ar" ? "تنظيف" : "Cleanse",
+              period: "AM",
+              order: 0,
+              required: true,
+              isAnchor: true,
+              alreadyOwned: false,
+              product: localized,
+              alternatives: [],
+              warnings: [],
+            },
+            {
+              id: moisturizerStepId,
+              roleKey: "moisturize",
+              roleLabel: locale === "ar" ? "ترطيب" : "Moisturize",
+              period: "AM",
+              order: 1,
+              required: true,
+              isAnchor: false,
+              alreadyOwned: false,
+              product:
+                locale === "ar"
+                  ? { ...moisturizer, name: "مرطب الحاجز", variantName: "٥٠ مل" }
+                  : moisturizer,
+              alternatives: [],
+              warnings: [],
+            },
+          ],
+        }
+      : {}),
     eveningSteps: [],
     warnings: [],
     noResult: false,
     noResultMessage: null,
     total: localized.price,
+  };
+}
+function contextualAnchor(locale: "en" | "ar") {
+  return {
+    ...(locale === "ar" ? { ...primary, name: "منظف متوازن", variantName: "٥٠ مل" } : primary),
+    roleKey: "cleanse",
+    periods: ["AM", "PM"],
+    alreadyOwned: false,
+    available: true,
+  };
+}
+function cartResponse(product: typeof primary) {
+  return {
+    id: "50000000-0000-4000-8000-000000000001",
+    items: [],
+    subtotal: product.price,
+    discountTotal: 0,
+    estimatedTotal: product.price,
+    totalSavings: 0,
+    couponCode: null,
+    appliedPromotions: [],
+    promotionMessages: [],
+    giftOptions: [],
+    totalQuantity: 1,
+    hasIssues: false,
+    updatedAt: new Date().toISOString(),
   };
 }
 function envelope<T>(data: T) {

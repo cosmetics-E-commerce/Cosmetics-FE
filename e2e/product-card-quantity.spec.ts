@@ -4,7 +4,7 @@ const mobileWidths = [320, 360, 375, 390, 393, 414, 430];
 const subpixelTolerance = 0.01;
 
 test("mobile grid cards keep the quantity stepper symmetric and isolated", async ({ page }) => {
-  await page.goto("/shop", { waitUntil: "networkidle" });
+  await navigateReady(page, "/shop");
 
   for (const width of mobileWidths) {
     await page.setViewportSize({ width, height: 900 });
@@ -29,7 +29,7 @@ test("commerce controls respond to their card width instead of the viewport alon
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 900 });
-  await page.goto("/shop", { waitUntil: "networkidle" });
+  await navigateReady(page, "/shop");
   const products = page.locator(".sf-shop-products");
   const toolbar = page.locator(".sf-shop-page .quick-add").first();
   await expect(toolbar.getByRole("button", { name: /Increase quantity/ })).toBeEnabled();
@@ -57,7 +57,7 @@ test("commerce controls respond to their card width instead of the viewport alon
 
 test("quantity digits and stock states do not move the stepper zones", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 900 });
-  await page.goto("/shop", { waitUntil: "networkidle" });
+  await navigateReady(page, "/shop");
   const toolbar = page.locator(".sf-shop-page .quick-add").first();
   const decrement = toolbar.getByRole("button", { name: /Decrease quantity/ });
   const increment = toolbar.getByRole("button", { name: /Increase quantity/ });
@@ -82,7 +82,7 @@ test("quantity digits and stock states do not move the stepper zones", async ({ 
     expect(await buttonGeometry(toolbar)).toEqual(stableButtons);
   }
 
-  await page.goto("/shop?search=out-of-stock", { waitUntil: "networkidle" });
+  await navigateReady(page, "/shop?search=out-of-stock");
   const unavailableToolbar = page.locator(".sf-shop-page .quick-add").first();
   await expect(unavailableToolbar.getByRole("button", { name: /^Out of stock:/ })).toBeDisabled();
   await expect(unavailableToolbar.locator(".quick-add__quantity")).toHaveCount(0);
@@ -96,7 +96,7 @@ test("list view and Arabic RTL preserve the same logical separation", async ({ p
     { url: "/shop?view=list&lang=ar", width: 390, direction: "rtl" },
   ]) {
     await page.setViewportSize({ width: scenario.width, height: 900 });
-    await page.goto(scenario.url, { waitUntil: "networkidle" });
+    await navigateReady(page, scenario.url);
     const toolbar = page.locator(".sf-shop-page .quick-add").first();
     await expect(toolbar).toBeVisible();
     const geometry = await measureToolbar(toolbar);
@@ -117,7 +117,7 @@ test("desktop grid and list cards keep the toolbar inside the product media", as
   await page.setViewportSize({ width: 1440, height: 1000 });
 
   for (const url of ["/shop", "/shop?view=list"]) {
-    await page.goto(url, { waitUntil: "networkidle" });
+    await navigateReady(page, url);
     const card = page.locator(".sf-product-card").first();
     await card.hover();
     const toolbar = card.locator(".quick-add");
@@ -135,6 +135,11 @@ test("desktop grid and list cards keep the toolbar inside the product media", as
     expect(geometry.root.bottom).toBeLessThanOrEqual(media.bottom);
   }
 });
+
+async function navigateReady(page: Page, url: string) {
+  await page.goto(url, { waitUntil: "networkidle" });
+  await page.locator('html[data-hydrated="true"]').waitFor();
+}
 
 type Rect = {
   left: number;

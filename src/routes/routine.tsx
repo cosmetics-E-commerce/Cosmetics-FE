@@ -24,6 +24,7 @@ import { ProductCard } from "@/components/shop/ProductCard";
 import type { Product } from "@/lib/products";
 import {
   apiErrorMessage,
+  addRoutineSelectionToCart,
   evaluateRoutine,
   getRoutineBuilder,
   recordRoutineEvent,
@@ -41,6 +42,16 @@ import "@/styles/routine-builder.css";
 type Answers = Record<string, string | number | boolean | string[]>;
 
 export const Route = createFileRoute("/routine")({
+  validateSearch: (raw: Record<string, unknown>) => ({
+    ...(raw["lang"] === "ar" ? { lang: "ar" as const } : {}),
+    ...(typeof raw["anchorProductId"] === "string" && raw["anchorProductId"]
+      ? { anchorProductId: raw["anchorProductId"] }
+      : {}),
+    ...(typeof raw["anchorVariantId"] === "string" && raw["anchorVariantId"]
+      ? { anchorVariantId: raw["anchorVariantId"] }
+      : {}),
+    ...(raw["owned"] === "1" ? { owned: "1" as const } : {}),
+  }),
   head: ({ match }) => {
     const ar = match.search.lang === "ar";
     return createSeoHead({
@@ -59,9 +70,11 @@ export const Route = createFileRoute("/routine")({
 
 function RoutinePage() {
   const { locale } = useStore();
+  const search = Route.useSearch();
+  const mode = search.anchorProductId ? "CONTEXTUAL" : "FULL";
   const query = useQuery({
-    queryKey: ["routine-builder", "published"],
-    queryFn: getRoutineBuilder,
+    queryKey: ["routine-builder", "published", mode],
+    queryFn: () => getRoutineBuilder(mode),
     retry: false,
   });
   if (query.isLoading)
@@ -72,26 +85,56 @@ function RoutinePage() {
       </main>
     );
   if (query.isError || !query.data) return <RoutineUnavailable error={query.error} />;
-  return <RoutineExperience snapshot={query.data} />;
+  return (
+    <RoutineExperience
+      snapshot={query.data}
+      anchorIdentity={
+        search.anchorProductId
+          ? {
+              productId: search.anchorProductId,
+              ...(search.anchorVariantId ? { variantId: search.anchorVariantId } : {}),
+              alreadyOwned: search.owned === "1",
+            }
+          : null
+      }
+    />
+  );
 }
 
-function RoutineExperience({ snapshot }: { snapshot: RoutinePublicConfig }) {
-  const { locale, add, setCartOpen } = useStore();
+function RoutineExperience({
+  snapshot,
+  anchorIdentity,
+}: {
+  snapshot: RoutinePublicConfig;
+  anchorIdentity: { productId: string; variantId?: string; alreadyOwned: boolean } | null;
+}) {
+  const { locale, acceptCart, setCartOpen } = useStore();
   const ar = locale === "ar";
-  const [phase, setPhase] = useState<"intro" | "questions" | "result">("intro");
+  const mode = anchorIdentity ? "CONTEXTUAL" : "FULL";
+  const [phase, setPhase] = useState<"intro" | "profile" | "questions" | "result">("intro");
   const [sessionId, setSessionId] = useState<string | undefined>();
+  const [sessionSnapshot, setSessionSnapshot] = useState<RoutinePublicConfig | null>(null);
+  const [anchorOwned, setAnchorOwned] = useState(anchorIdentity?.alreadyOwned ?? false);
   const [answers, setAnswers] = useState<Answers>({});
+  const [profileQuestionKeys, setProfileQuestionKeys] = useState<Set<string> | null>(null);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [result, setResult] = useState<RoutineResult | null>(null);
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const [selectedSteps, setSelectedSteps] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
-  const config = snapshot.config;
+  const activeSnapshot = sessionSnapshot ?? snapshot;
+  const config = activeSnapshot.config;
   const visible = useMemo(
     () => visibleRoutineQuestions(config.questions, answers),
     [answers, config.questions],
   );
-  const question = visible[Math.min(questionIndex, Math.max(0, visible.length - 1))];
+  const journeyQuestions = useMemo(
+    () =>
+      profileQuestionKeys ? visible.filter((item) => profileQuestionKeys.has(item.key)) : visible,
+    [profileQuestionKeys, visible],
+  );
+  const question =
+    journeyQuestions[Math.min(questionIndex, Math.max(0, journeyQuestions.length - 1))];
   const text = (value: { en: string; ar: string }) => value[locale];
 
   useEffect(() => {
@@ -102,8 +145,8 @@ function RoutineExperience({ snapshot }: { snapshot: RoutinePublicConfig }) {
       );
       return Object.keys(cleaned).length === Object.keys(current).length ? current : cleaned;
     });
-    setQuestionIndex((current) => Math.min(current, Math.max(0, visible.length - 1)));
-  }, [visible]);
+    setQuestionIndex((current) => Math.min(current, Math.max(0, journeyQuestions.length - 1)));
+  }, [journeyQuestions.length, visible]);
 
   useEffect(() => {
     if (!sessionId || phase !== "questions" || result) return;
@@ -120,11 +163,26 @@ function RoutineExperience({ snapshot }: { snapshot: RoutinePublicConfig }) {
   const start = async () => {
     setBusy(true);
     try {
-      const session = await startRoutineSession(locale);
+      const session = await startRoutineSession(
+        locale,
+        mode,
+        anchorIdentity ? { ...anchorIdentity, alreadyOwned: anchorOwned } : null,
+      );
       setSessionId(session.sessionId);
-      setPhase("questions");
+      setSessionSnapshot(session);
+      if (mode === "CONTEXTUAL" && session.sessionId) {
+        void recordRoutineEvent(session.sessionId, {
+          type: "COMPLETE_ROUTINE_CTA_CLICKED",
+          ...(session.anchor?.productId ? { productId: session.anchor.productId } : {}),
+        }).catch(() => undefined);
+      }
+      if (session.profileAvailable && session.suggestedAnswers) setPhase("profile");
+      else if (session.config.questions.length) {
+        setProfileQuestionKeys(null);
+        setPhase("questions");
+      } else await generate({}, session.sessionId, {});
     } catch (error) {
-      toast.error(apiErrorMessage(error));
+      toast.error(apiErrorMessage(error, locale));
     } finally {
       setBusy(false);
     }
@@ -141,20 +199,26 @@ function RoutineExperience({ snapshot }: { snapshot: RoutinePublicConfig }) {
         type: "QUESTION_ANSWERED",
         questionKey: question.key,
       }).catch(() => undefined);
-    if (questionIndex < visible.length - 1) {
+    if (questionIndex < journeyQuestions.length - 1) {
       setQuestionIndex((value) => value + 1);
       return;
     }
     await generate();
   };
 
-  const generate = async (variants = selectedVariants) => {
+  const generate = async (
+    variants = selectedVariants,
+    activeSessionId = sessionId,
+    activeAnswers = answers,
+  ) => {
     setBusy(true);
     try {
       const next = await evaluateRoutine({
-        ...(sessionId ? { sessionId } : {}),
-        answers,
+        ...(activeSessionId ? { sessionId: activeSessionId } : {}),
+        answers: activeAnswers,
         locale,
+        mode,
+        anchor: anchorIdentity ? { ...anchorIdentity, alreadyOwned: anchorOwned } : null,
         selectedVariants: variants,
       });
       setSessionId(next.sessionId);
@@ -168,14 +232,31 @@ function RoutineExperience({ snapshot }: { snapshot: RoutinePublicConfig }) {
         ),
       );
       setSelectedSteps(
-        new Set([...next.morningSteps, ...next.eveningSteps].map((step) => step.id)),
+        new Set(
+          [...next.morningSteps, ...next.eveningSteps]
+            .filter((step) => !step.alreadyOwned && step.product.stock > 0)
+            .map((step) => step.id),
+        ),
       );
       setPhase("result");
     } catch (error) {
-      toast.error(apiErrorMessage(error));
+      toast.error(apiErrorMessage(error, locale));
     } finally {
       setBusy(false);
     }
+  };
+
+  const applySavedProfile = async () => {
+    const suggested = sessionSnapshot?.suggestedAnswers ?? {};
+    setAnswers(suggested);
+    const missing = visibleRoutineQuestions(config.questions, suggested).filter(
+      (item) => item.required && !answerComplete(item, suggested[item.key]),
+    );
+    if (missing.length) {
+      setProfileQuestionKeys(new Set(missing.map((item) => item.key)));
+      setQuestionIndex(0);
+      setPhase("questions");
+    } else await generate({}, sessionId, suggested);
   };
 
   const swap = async (step: RoutineRecommendationStep, variantId: string) => {
@@ -183,134 +264,47 @@ function RoutineExperience({ snapshot }: { snapshot: RoutinePublicConfig }) {
     setSelectedVariants(next);
     if (sessionId)
       void recordRoutineEvent(sessionId, {
-        type: "PRODUCT_SWAPPED",
+        type: "ROUTINE_ALTERNATIVE_SELECTED",
         productId: step.product.productId,
       }).catch(() => undefined);
     await generate(next);
   };
 
   const addSelected = async () => {
-    if (!result || busy) return;
+    if (!result || !sessionId || busy) return;
     setBusy(true);
     try {
-      // Re-run the authoritative engine immediately before cart mutations.
-      const fresh = await evaluateRoutine({
-        ...(sessionId ? { sessionId } : {}),
-        answers,
-        locale,
-        selectedVariants,
-      });
-      if (fresh.recommendationsChanged) {
-        setResult(fresh);
-        setSelectedVariants(
-          Object.fromEntries(
-            [...fresh.morningSteps, ...fresh.eveningSteps].map((step) => [
-              step.id,
-              step.product.variantId,
-            ]),
-          ),
-        );
-        toast.warning(
-          ar
-            ? "تغيّر سعر أو توفر أحد المنتجات. راجعي الروتين المحدّث قبل الإضافة."
-            : "A recommendation changed in price or availability. Review the updated routine before adding it.",
-        );
-        return;
-      }
-      const unique = new Map(
-        [...fresh.morningSteps, ...fresh.eveningSteps]
-          .filter((step) => selectedSteps.has(step.id))
-          .map((step) => [step.product.variantId, step.product]),
+      const selections = [...result.morningSteps, ...result.eveningSteps]
+        .filter((step) => selectedSteps.has(step.id) && !step.alreadyOwned)
+        .map((step) => ({ stepId: step.id, variantId: step.product.variantId }));
+      const response = await addRoutineSelectionToCart(sessionId, selections);
+      acceptCart(response.cart);
+      setResult(response.routine);
+      toast.success(
+        ar
+          ? `تمت إضافة ${response.addedVariantIds.length} منتجات إلى الحقيبة.`
+          : `${response.addedVariantIds.length} products added to your bag.`,
       );
-      let added = 0;
-      for (const product of unique.values()) {
-        const ok = await add({
-          variantId: product.variantId,
-          productId: product.productId,
-          slug: product.slug,
-          name: product.name,
-          image: product.imageUrl ?? undefined,
-          size: product.variantName,
-          price: product.price / 100,
-          qty: 1,
-        });
-        if (ok) added += 1;
-      }
-      if (sessionId)
-        void recordRoutineEvent(sessionId, {
-          type:
-            selectedSteps.size === unique.size
-              ? "ROUTINE_ADD_TO_CART"
-              : "ROUTINE_PRODUCT_ADD_TO_CART",
-        }).catch(() => undefined);
-      if (added) {
-        toast.success(
-          ar ? `تمت إضافة ${added} منتجات إلى الحقيبة.` : `${added} products added to your bag.`,
-        );
-        setCartOpen(true);
-      }
+      setCartOpen(true);
     } catch (error) {
-      toast.error(apiErrorMessage(error));
+      toast.error(apiErrorMessage(error, locale));
     } finally {
       setBusy(false);
     }
   };
 
   const addOne = async (step: RoutineRecommendationStep) => {
-    if (busy) return;
+    if (busy || !sessionId || step.alreadyOwned) return;
     setBusy(true);
     try {
-      const fresh = await evaluateRoutine({
-        ...(sessionId ? { sessionId } : {}),
-        answers,
-        locale,
-        selectedVariants,
-      });
-      if (fresh.recommendationsChanged) {
-        setResult(fresh);
-        setSelectedVariants(
-          Object.fromEntries(
-            [...fresh.morningSteps, ...fresh.eveningSteps].map((item) => [
-              item.id,
-              item.product.variantId,
-            ]),
-          ),
-        );
-        toast.warning(
-          ar
-            ? "تغيّر السعر أو التوفر. راجعي البديل المحدّث."
-            : "Price or availability changed. Review the updated option.",
-        );
-        return;
-      }
-      const current = [...fresh.morningSteps, ...fresh.eveningSteps].find(
-        (item) => item.id === step.id,
-      );
-      if (!current)
-        throw new Error(
-          ar ? "لم يعد هذا المنتج متاحاً." : "This recommendation is no longer available.",
-        );
-      const product = current.product;
-      const ok = await add({
-        variantId: product.variantId,
-        productId: product.productId,
-        slug: product.slug,
-        name: product.name,
-        image: product.imageUrl ?? undefined,
-        size: product.variantName,
-        price: product.price / 100,
-        qty: 1,
-      });
-      if (ok) {
-        if (sessionId)
-          void recordRoutineEvent(sessionId, {
-            type: "ROUTINE_PRODUCT_ADD_TO_CART",
-            productId: product.productId,
-          }).catch(() => undefined);
-        setCartOpen(true);
-      }
+      const response = await addRoutineSelectionToCart(sessionId, [
+        { stepId: step.id, variantId: step.product.variantId },
+      ]);
+      acceptCart(response.cart);
+      setResult(response.routine);
+      setCartOpen(true);
     } catch (error) {
-      toast.error(apiErrorMessage(error));
+      toast.error(apiErrorMessage(error, locale));
     } finally {
       setBusy(false);
     }
@@ -326,10 +320,41 @@ function RoutineExperience({ snapshot }: { snapshot: RoutinePublicConfig }) {
           </div>
           <div className="sf-routine-intro__copy">
             <p className="sf-routine-eyebrow">
-              {ar ? "إرشادات BioReza المخصصة" : "BioReza personal guidance"}
+              {mode === "CONTEXTUAL"
+                ? ar
+                  ? "أكملي روتينك"
+                  : "Complete your routine"
+                : ar
+                  ? "إرشادات BioReza المخصصة"
+                  : "BioReza personal guidance"}
             </p>
-            <h1>{text(config.title)}</h1>
-            <p>{text(config.introduction)}</p>
+            <h1>
+              {mode === "CONTEXTUAL" && config.contextualCompletion
+                ? text(config.contextualCompletion.title)
+                : text(config.title)}
+            </h1>
+            <p>
+              {mode === "CONTEXTUAL" && config.contextualCompletion
+                ? text(config.contextualCompletion.introduction)
+                : text(config.introduction)}
+            </p>
+            {mode === "CONTEXTUAL" ? (
+              <label className="sf-routine-anchor-owned">
+                <input
+                  type="checkbox"
+                  checked={anchorOwned}
+                  onChange={(event) => setAnchorOwned(event.target.checked)}
+                />
+                <span>
+                  <strong>{ar ? "لدي هذا المنتج بالفعل" : "I already own this product"}</strong>
+                  <small>
+                    {ar
+                      ? "لن يُحتسب سعره ضمن ميزانية التسوق ولن يُضف للحقيبة."
+                      : "Its price will not count toward the shopping budget or bag."}
+                  </small>
+                </span>
+              </label>
+            ) : null}
             <div className="sf-routine-intro__meta">
               <span>
                 <Clock3 aria-hidden="true" />
@@ -350,6 +375,48 @@ function RoutineExperience({ snapshot }: { snapshot: RoutinePublicConfig }) {
         </section>
       ) : null}
 
+      {phase === "profile" && sessionSnapshot ? (
+        <section className="sf-routine-profile-reuse">
+          <p className="sf-routine-eyebrow">{ar ? "ملفك المحفوظ" : "Your saved profile"}</p>
+          <h1>{ar ? "هل نستخدم ملف العناية المحفوظ؟" : "Use your saved beauty profile?"}</h1>
+          {sessionSnapshot.anchor ? (
+            <div className="sf-routine-anchor-summary">
+              {sessionSnapshot.anchor.imageUrl ? (
+                <img src={sessionSnapshot.anchor.imageUrl} alt="" />
+              ) : null}
+              <span>
+                <small>{ar ? "نقطة بداية الروتين" : "Routine starting point"}</small>
+                <strong>{sessionSnapshot.anchor.name}</strong>
+              </span>
+            </div>
+          ) : null}
+          <p className="sf-routine-profile-signals">
+            {profileAnswerSummary(
+              config.questions,
+              sessionSnapshot.suggestedAnswers ?? {},
+              locale,
+            ).join(" · ")}
+          </p>
+          <div>
+            <Button size="lg" onClick={() => void applySavedProfile()} loading={busy}>
+              {ar ? "استخدمي الملف" : "Use profile"}
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => {
+                setAnswers(sessionSnapshot.suggestedAnswers ?? {});
+                setProfileQuestionKeys(null);
+                setQuestionIndex(0);
+                setPhase("questions");
+              }}
+            >
+              {ar ? "تعديل الإجابات" : "Adjust"}
+            </Button>
+          </div>
+        </section>
+      ) : null}
+
       {phase === "questions" && question ? (
         <section className="sf-routine-question-shell">
           <header>
@@ -363,15 +430,19 @@ function RoutineExperience({ snapshot }: { snapshot: RoutinePublicConfig }) {
               {ar ? <ArrowRight /> : <ArrowLeft />}
             </button>
             <div className="sf-routine-progress">
-              <div>
+              <div aria-live="polite">
                 <span>{ar ? "الملف" : "Profile"}</span>
                 <b>
-                  {questionIndex + 1} / {visible.length}
+                  {questionIndex + 1} / {journeyQuestions.length}
                 </b>
               </div>
-              <progress value={questionIndex + 1} max={visible.length} />
+              <progress
+                aria-label={ar ? "تقدم أسئلة الروتين" : "Routine question progress"}
+                value={questionIndex + 1}
+                max={journeyQuestions.length}
+              />
             </div>
-            <span className="sf-routine-version">v{snapshot.version}</span>
+            <span className="sf-routine-version">v{activeSnapshot.version}</span>
           </header>
           <div className="sf-routine-question">
             <p className="sf-routine-eyebrow">
@@ -388,7 +459,7 @@ function RoutineExperience({ snapshot }: { snapshot: RoutinePublicConfig }) {
             <footer>
               <span>{text(question.helpText)}</span>
               <Button size="lg" onClick={advance} loading={busy}>
-                {questionIndex === visible.length - 1
+                {questionIndex === journeyQuestions.length - 1
                   ? ar
                     ? "كوّني روتيني"
                     : "Build my routine"
@@ -418,11 +489,21 @@ function RoutineExperience({ snapshot }: { snapshot: RoutinePublicConfig }) {
             })
           }
           onSwap={swap}
+          onAlternativeOpen={(step) => {
+            if (!sessionId) return;
+            void recordRoutineEvent(sessionId, {
+              type: "ROUTINE_ALTERNATIVE_OPENED",
+              productId: step.product.productId,
+            }).catch(() => undefined);
+          }}
           onAdd={addSelected}
           onAddOne={addOne}
           onRestart={() => {
             setAnswers({});
             setResult(null);
+            setSessionId(undefined);
+            setSessionSnapshot(null);
+            setProfileQuestionKeys(null);
             setQuestionIndex(0);
             setPhase("intro");
           }}
@@ -509,7 +590,7 @@ function QuestionControl({
                 <span className="sf-routine-rank-actions">
                   <button
                     type="button"
-                    aria-label="Move up"
+                    aria-label={locale === "ar" ? "تحريك لأعلى" : "Move up"}
                     disabled={rank === 0}
                     onClick={() => onChange(moveRank(selected, rank, -1))}
                   >
@@ -517,7 +598,7 @@ function QuestionControl({
                   </button>
                   <button
                     type="button"
-                    aria-label="Move down"
+                    aria-label={locale === "ar" ? "تحريك لأسفل" : "Move down"}
                     disabled={rank === selected.length - 1}
                     onClick={() => onChange(moveRank(selected, rank, 1))}
                   >
@@ -540,6 +621,7 @@ function RoutineResultView({
   busy,
   onToggle,
   onSwap,
+  onAlternativeOpen,
   onAdd,
   onAddOne,
   onRestart,
@@ -551,6 +633,7 @@ function RoutineResultView({
   busy: boolean;
   onToggle: (id: string) => void;
   onSwap: (step: RoutineRecommendationStep, variantId: string) => Promise<void>;
+  onAlternativeOpen: (step: RoutineRecommendationStep) => void;
   onAdd: () => Promise<void>;
   onAddOne: (step: RoutineRecommendationStep) => Promise<void>;
   onRestart: () => void;
@@ -581,10 +664,30 @@ function RoutineResultView({
       <header>
         <div>
           <p className="sf-routine-eyebrow">
-            {ar ? "مختار وفقاً لإجاباتك" : "Selected from your answers"}
+            {result.anchor
+              ? ar
+                ? "روتينك المبني حول اختيارك"
+                : "Built around your selected product"
+              : ar
+                ? "مختار وفقاً لإجاباتك"
+                : "Selected from your answers"}
           </p>
-          <h1>{text(config.config.resultTitle)}</h1>
+          <h1>
+            {result.anchor
+              ? ar
+                ? `روتينك مع ${result.anchor.name}`
+                : `Your routine with ${result.anchor.name}`
+              : text(config.config.resultTitle)}
+          </h1>
           <p>{result.profileSummary.join(" · ")}</p>
+          {result.templateIdentity?.name ? (
+            <p className="sf-routine-template-name">
+              {result.templateIdentity.name} · v{result.templateIdentity.version}
+            </p>
+          ) : null}
+          {result.templateIdentity?.presentation.intro[locale] ? (
+            <p>{result.templateIdentity.presentation.intro[locale]}</p>
+          ) : null}
         </div>
         <button type="button" onClick={onRestart}>
           <RotateCcw />
@@ -619,8 +722,10 @@ function RoutineResultView({
               selected={selected}
               onToggle={toggleRoutineStep}
               onSwap={onSwap}
+              onAlternativeOpen={onAlternativeOpen}
               onAddOne={onAddOne}
               sharedStepIds={sharedStepIds}
+              anchorAlternatives={result.anchorAlternatives ?? []}
             />
             <RoutinePeriod
               title={ar ? "المساء" : "Evening"}
@@ -631,8 +736,10 @@ function RoutineResultView({
               selected={selected}
               onToggle={toggleRoutineStep}
               onSwap={onSwap}
+              onAlternativeOpen={onAlternativeOpen}
               onAddOne={onAddOne}
               sharedStepIds={sharedStepIds}
+              anchorAlternatives={result.anchorAlternatives ?? []}
             />
           </div>
           <aside className="sf-routine-cart-bar">
@@ -669,8 +776,10 @@ function RoutinePeriod({
   selected,
   onToggle,
   onSwap,
+  onAlternativeOpen,
   onAddOne,
   sharedStepIds,
+  anchorAlternatives,
 }: {
   title: string;
   icon: typeof Sun;
@@ -680,8 +789,10 @@ function RoutinePeriod({
   selected: Set<string>;
   onToggle: (id: string) => void;
   onSwap: (step: RoutineRecommendationStep, variantId: string) => Promise<void>;
+  onAlternativeOpen: (step: RoutineRecommendationStep) => void;
   onAddOne: (step: RoutineRecommendationStep) => Promise<void>;
   sharedStepIds: Set<string>;
+  anchorAlternatives: RoutineResult["anchorAlternatives"];
 }) {
   return (
     <section className="sf-routine-period">
@@ -710,6 +821,12 @@ function RoutinePeriod({
               <input
                 type="checkbox"
                 checked={selected.has(step.id)}
+                disabled={step.alreadyOwned || step.product.stock < 1}
+                aria-label={
+                  locale === "ar"
+                    ? `تحديد ${step.product.name} للإضافة إلى الحقيبة`
+                    : `Select ${step.product.name} to add to bag`
+                }
                 onChange={() => onToggle(step.id)}
               />
               <span>{String(index + 1).padStart(2, "0")}</span>
@@ -719,6 +836,21 @@ function RoutinePeriod({
             </div>
             <div className="sf-routine-product__copy">
               <p>{step.roleLabel}</p>
+              {step.isAnchor ? (
+                <span className="sf-routine-anchor-badge">
+                  {locale === "ar" ? "منتجك المختار" : "Your selected product"}
+                </span>
+              ) : null}
+              {step.alreadyOwned ? (
+                <span className="sf-routine-owned-badge">
+                  {locale === "ar" ? "لديك بالفعل" : "Already owned"}
+                </span>
+              ) : null}
+              {step.product.stock < 1 ? (
+                <span className="sf-routine-unavailable-badge">
+                  {locale === "ar" ? "غير متاح حالياً" : "Currently unavailable"}
+                </span>
+              ) : null}
               {sharedStepIds.has(step.id) ? (
                 <span className="sf-routine-shared-period">
                   {locale === "ar" ? "صباحاً + مساءً" : "AM + PM"}
@@ -729,7 +861,7 @@ function RoutinePeriod({
                 <em key={warning}>{warning}</em>
               ))}
               {step.alternatives.length ? (
-                <details>
+                <details onToggle={(event) => event.currentTarget.open && onAlternativeOpen(step)}>
                   <summary>
                     <ArrowLeftRight />
                     {locale === "ar" ? "استبدلي المنتج" : "Swap product"}
@@ -746,10 +878,30 @@ function RoutinePeriod({
                   ))}
                 </details>
               ) : null}
-              <Button variant="outline" size="sm" onClick={() => void onAddOne(step)}>
-                <ShoppingBag />
-                {locale === "ar" ? "أضيفي هذا المنتج" : "Add this product"}
-              </Button>
+              {step.isAnchor && anchorAlternatives.length ? (
+                <details onToggle={(event) => event.currentTarget.open && onAlternativeOpen(step)}>
+                  <summary>
+                    <ArrowLeftRight />
+                    {locale === "ar" ? "بدائل للمنتج المختار" : "Alternatives to this product"}
+                  </summary>
+                  {anchorAlternatives.map((product) => (
+                    <Link
+                      key={product.variantId}
+                      to="/product/$slug"
+                      params={{ slug: product.slug }}
+                    >
+                      <span>{product.name}</span>
+                      <b>{formatMoney(product.price, locale)}</b>
+                    </Link>
+                  ))}
+                </details>
+              ) : null}
+              {!step.alreadyOwned ? (
+                <Button variant="outline" size="sm" onClick={() => void onAddOne(step)}>
+                  <ShoppingBag />
+                  {locale === "ar" ? "أضيفي هذا المنتج" : "Add this product"}
+                </Button>
+              ) : null}
             </div>
           </article>
         ))}
@@ -819,6 +971,22 @@ function answerComplete(question: RoutinePublicQuestion, value: Answers[string] 
   if (Array.isArray(value)) return value.length >= question.minSelections;
   return value !== undefined && value !== "";
 }
+function profileAnswerSummary(
+  questions: RoutinePublicQuestion[],
+  answers: Answers,
+  locale: "en" | "ar",
+) {
+  return questions.flatMap((question) => {
+    const value = answers[question.key];
+    const values = Array.isArray(value) ? value : value == null ? [] : [String(value)];
+    const labels = values.map(
+      (item) =>
+        question.answers.find((answer) => answer.key === String(item))?.label[locale] ??
+        String(item),
+    );
+    return labels.filter(Boolean);
+  });
+}
 function moveRank(items: string[], index: number, delta: -1 | 1) {
   const next = [...items];
   const target = index + delta;
@@ -870,7 +1038,7 @@ function selectedTotal(result: RoutineResult, selected: Set<string>) {
   return [
     ...new Map(
       [...result.morningSteps, ...result.eveningSteps]
-        .filter((step) => selected.has(step.id))
+        .filter((step) => selected.has(step.id) && !step.alreadyOwned)
         .map((step) => [step.product.variantId, step.product.price]),
     ).values(),
   ].reduce((sum, price) => sum + price, 0);
@@ -878,7 +1046,7 @@ function selectedTotal(result: RoutineResult, selected: Set<string>) {
 function selectedProductCount(result: RoutineResult, selected: Set<string>) {
   return new Set(
     [...result.morningSteps, ...result.eveningSteps]
-      .filter((step) => selected.has(step.id))
+      .filter((step) => selected.has(step.id) && !step.alreadyOwned)
       .map((step) => step.product.variantId),
   ).size;
 }

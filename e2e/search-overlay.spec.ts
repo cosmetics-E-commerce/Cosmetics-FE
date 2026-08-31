@@ -108,6 +108,7 @@ async function prepareSearch(page: Page) {
   // Use a static route so this browser-level mock does not have to intercept a
   // server-side catalog loader before Playwright has a page to control.
   await page.goto("/privacy-policy", { waitUntil: "networkidle" });
+  await page.locator('html[data-hydrated="true"]').waitFor();
 }
 
 test("search opens focused, presents live results, and dismisses with Escape", async ({ page }) => {

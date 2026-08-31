@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.cartSchema = exports.cartItemSchema = exports.updateCartItemSchema = exports.addCartItemSchema = exports.cartItemStatusEnum = exports.cartOwnerEnum = void 0;
+exports.cartSchema = exports.cartItemSchema = exports.updateCartItemSchema = exports.addCartItemsSchema = exports.addCartItemSchema = exports.cartItemStatusEnum = exports.cartOwnerEnum = void 0;
 const zod_1 = require("zod");
 const primitives_1 = require("../common/primitives");
 const promotion_schema_1 = require("../promotions/promotion.schema");
@@ -16,6 +16,9 @@ exports.addCartItemSchema = zod_1.z
     quantity: zod_1.z.number().int().min(1).max(99).default(1),
 })
     .strict();
+exports.addCartItemsSchema = zod_1.z.object({
+    items: zod_1.z.array(exports.addCartItemSchema).min(1).max(20),
+}).strict();
 exports.updateCartItemSchema = zod_1.z
     .object({
     quantity: zod_1.z.number().int().min(1).max(99),

@@ -96,6 +96,7 @@ type StoreValue = {
   user: AuthUser | null;
   locale: Locale;
   add: (line: AddLine) => Promise<boolean>;
+  acceptCart: (cart: CommerceCartResponse) => void;
   remove: (variantId: string, size?: string) => Promise<void>;
   setQty: (variantId: string, sizeOrQty: string | number, qty?: number) => Promise<void>;
   clear: () => Promise<void>;
@@ -523,6 +524,7 @@ export function StoreProvider({
       user,
       locale,
       add,
+      acceptCart: commitCart,
       remove,
       setQty,
       clear,
@@ -536,6 +538,7 @@ export function StoreProvider({
       setLocale,
     }),
     [
+      commitCart,
       add,
       applyCoupon,
       authHydrated,

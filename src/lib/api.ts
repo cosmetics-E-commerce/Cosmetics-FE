@@ -237,6 +237,75 @@ export type OrderSummary = {
   placedAt: string;
 };
 
+export type ReorderAvailability =
+  "AVAILABLE" | "OUT_OF_STOCK" | "PREVIOUS_VARIANT_UNAVAILABLE" | "PRODUCT_NO_LONGER_AVAILABLE";
+
+export type ReorderItem = {
+  profileId: string;
+  productId: string;
+  variantId: string;
+  slug: string | null;
+  productNameEn: string;
+  productNameAr: string;
+  variantNameEn: string | null;
+  variantNameAr: string | null;
+  variantOptions: Array<{
+    labelEn: string;
+    labelAr: string;
+    valueEn: string;
+    valueAr: string;
+  }>;
+  imageUrl: string | null;
+  currentPrice: number | null;
+  currency: "EGP";
+  availableQuantity: number;
+  availability: ReorderAvailability;
+  purchaseCount: number;
+  totalQuantity: number;
+  lastPurchaseAt: string | null;
+  estimatedIntervalDays: number | null;
+  confidence: "INSUFFICIENT" | "LOW" | "MEDIUM" | "HIGH";
+  replenishmentWindow: { start: string | null; center: string | null; end: string | null };
+  decision: {
+    state: string;
+    priority: number;
+    reasons: Array<{ code: string; detail: string }>;
+  };
+  reminder: { state: "ACTIVE" | "SNOOZED" | "DISABLED"; snoozedUntil: string | null };
+};
+
+export type BuyAgainResponse = {
+  items: ReorderItem[];
+  preference: { smartEnabled: boolean; version: number };
+  meta: PaginationMeta;
+  freshness: { evaluatedAt: string | null; source: string };
+};
+
+export type ReorderOpportunitiesResponse = {
+  items: ReorderItem[];
+  suppressedReason: string | null;
+  configVersion: number;
+  snoozeOptionsDays?: number[];
+};
+
+export type OrderReorderPreview = {
+  orderId: string;
+  orderNumber: string;
+  placedAt: string;
+  items: Array<{
+    variantId: string;
+    productId: string | null;
+    productNameEn: string;
+    productNameAr: string;
+    variantNameEn: string | null;
+    variantNameAr: string | null;
+    quantity: number;
+    currentPrice: number | null;
+    availability: ReorderAvailability;
+    selectable: boolean;
+  }>;
+};
+
 export type OrderTracking = {
   orderId: string;
   orderNumber: string;
@@ -1076,6 +1145,9 @@ export type RoutinePublicConfig = {
   version: number;
   publishedAt: string;
   sessionId?: string;
+  anchor?: RoutineAnchor | null;
+  suggestedAnswers?: Record<string, string | number | boolean | string[]>;
+  profileAvailable?: boolean;
   config: {
     schemaVersion: number;
     title: { en: string; ar: string };
@@ -1085,10 +1157,38 @@ export type RoutinePublicConfig = {
     resultTitle: { en: string; ar: string };
     disclaimer: { en: string; ar: string };
     noResult: { en: string; ar: string };
+    contextualCompletion?: {
+      enabled: boolean;
+      title: { en: string; ar: string };
+      introduction: { en: string; ar: string };
+      unavailableMessage: { en: string; ar: string };
+    };
     questions: RoutinePublicQuestion[];
     concerns: Array<{ id: string; key: string; label: { en: string; ar: string } }>;
     roles: Array<{ id: string; key: string; label: { en: string; ar: string } }>;
   };
+};
+export type RoutineAnchor = {
+  productId: string;
+  variantId: string;
+  slug: string;
+  name: string;
+  variantName: string;
+  imageUrl: string | null;
+  price: number;
+  stock: number;
+  domain: string;
+  roles: string[];
+  primaryRole: string | null;
+  periods: Array<"AM" | "PM">;
+  alreadyOwned: boolean;
+};
+export type RoutineAnchorEligibility = {
+  eligible: boolean;
+  reasonCode: string | null;
+  message: string | null;
+  anchor: RoutineAnchor | null;
+  version: number;
 };
 export type RoutineRecommendationProduct = {
   productId: string;
@@ -1110,6 +1210,8 @@ export type RoutineRecommendationStep = {
   period: "AM" | "PM";
   order: number;
   required: boolean;
+  isAnchor: boolean;
+  alreadyOwned: boolean;
   product: RoutineRecommendationProduct;
   alternatives: RoutineRecommendationProduct[];
   warnings: string[];
@@ -1124,7 +1226,36 @@ export type RoutineOwnedStep = {
 export type RoutineResult = {
   sessionId: string;
   version: number;
+  mode: "FULL" | "CONTEXTUAL";
+  anchor:
+    | (RoutineRecommendationProduct & {
+        roleKey: string;
+        periods: Array<"AM" | "PM">;
+        alreadyOwned: boolean;
+        available: boolean;
+      })
+    | null;
+  anchorAlternatives: RoutineRecommendationProduct[];
   templateKey: string | null;
+  templateIdentity: {
+    id: string;
+    key: string;
+    version: number;
+    familyKey: string | null;
+    name: string;
+    description: string;
+    variant: { kind: string; parameters: Record<string, string | number | boolean> };
+    inheritanceChain: string[];
+    presentation: {
+      style: string;
+      estimatedMinutes: number | null;
+      thumbnailKey: string | null;
+      themeKey: string | null;
+      intro: { en: string; ar: string };
+      outro: { en: string; ar: string };
+      customerVisible: boolean;
+    };
+  } | null;
   answers: Record<string, string | number | boolean | string[]>;
   profileSummary: string[];
   ownedSteps: RoutineOwnedStep[];
@@ -1139,24 +1270,43 @@ export type RoutineResult = {
   recommendationsChanged: boolean;
   changedStepIds: string[];
 };
-export const getRoutineBuilder = () =>
-  rawRequest<RoutinePublicConfig>("/routine-builder", { auth: false });
-export const startRoutineSession = (locale: "en" | "ar") =>
+export const getRoutineBuilder = (mode: "FULL" | "CONTEXTUAL" = "FULL") =>
+  rawRequest<RoutinePublicConfig>(`/routine-builder?mode=${mode}`);
+export const getRoutineAnchorEligibility = (
+  productId: string,
+  variantId: string | undefined,
+  locale: "en" | "ar",
+) => {
+  const query = new URLSearchParams({ locale });
+  if (variantId) query.set("variantId", variantId);
+  return rawRequest<RoutineAnchorEligibility>(`/routine-builder/anchors/${productId}?${query}`);
+};
+export const startRoutineSession = (
+  locale: "en" | "ar",
+  mode: "FULL" | "CONTEXTUAL" = "FULL",
+  anchor: { productId: string; variantId?: string; alreadyOwned: boolean } | null = null,
+) =>
   rawRequest<RoutinePublicConfig>("/routine-builder/sessions", {
     method: "POST",
-    body: { locale },
-    auth: false,
+    body: { locale, mode, anchor },
   });
 export const evaluateRoutine = (input: {
   sessionId?: string;
   answers: Record<string, string | number | boolean | string[]>;
   locale: "en" | "ar";
+  mode?: "FULL" | "CONTEXTUAL";
+  anchor?: { productId: string; variantId?: string; alreadyOwned: boolean } | null;
   selectedVariants?: Record<string, string>;
 }) =>
   rawRequest<RoutineResult>("/routine-builder/evaluate", {
     method: "POST",
-    body: { ...input, selectedVariants: input.selectedVariants ?? {}, includeDiagnostics: false },
-    auth: false,
+    body: {
+      ...input,
+      mode: input.mode ?? "FULL",
+      anchor: input.anchor ?? null,
+      selectedVariants: input.selectedVariants ?? {},
+      includeDiagnostics: false,
+    },
   });
 export const recordRoutineEvent = (
   sessionId: string,
@@ -1167,7 +1317,12 @@ export const recordRoutineEvent = (
       | "ROUTINE_GENERATED"
       | "PRODUCT_SWAPPED"
       | "ROUTINE_ADD_TO_CART"
-      | "ROUTINE_PRODUCT_ADD_TO_CART";
+      | "ROUTINE_PRODUCT_ADD_TO_CART"
+      | "COMPLETE_ROUTINE_CTA_CLICKED"
+      | "CONTEXTUAL_FLOW_STARTED"
+      | "CONTEXTUAL_FLOW_COMPLETED"
+      | "ROUTINE_ALTERNATIVE_OPENED"
+      | "ROUTINE_ALTERNATIVE_SELECTED";
     questionKey?: string;
     productId?: string;
   },
@@ -1175,8 +1330,15 @@ export const recordRoutineEvent = (
   rawRequest(`/routine-builder/sessions/${sessionId}/events`, {
     method: "POST",
     body: input,
-    auth: false,
   });
+export const addRoutineSelectionToCart = (
+  sessionId: string,
+  selections: Array<{ stepId: string; variantId: string }>,
+) =>
+  rawRequest<{ cart: CommerceCartResponse; routine: RoutineResult; addedVariantIds: string[] }>(
+    `/routine-builder/sessions/${sessionId}/cart`,
+    { method: "POST", body: { selections } },
+  );
 export const getPromotionPrices = (
   lines: Array<{
     variantId: string;
@@ -1276,6 +1438,41 @@ export async function listOrders() {
     placedAt: order.placedAt ?? order.createdAt ?? new Date(0).toISOString(),
   }));
 }
+
+export const getBuyAgain = (page = 1, limit = 24) =>
+  rawRequest<BuyAgainResponse>(`/me/reorder/buy-again?page=${page}&limit=${limit}`);
+export const getReorderOpportunities = () =>
+  rawRequest<ReorderOpportunitiesResponse>("/me/reorder/opportunities");
+export const getOrderReorderPreview = (orderId: string) =>
+  rawRequest<OrderReorderPreview>(`/me/reorder/orders/${orderId}`);
+export const addReorderItems = (
+  items: Array<{ variantId: string; quantity: number }>,
+  sessionId = randomUuid(),
+) =>
+  rawRequest<{ cart: CommerceCartResponse; sessionId: string }>("/me/reorder/cart", {
+    method: "POST",
+    headers: { "Idempotency-Key": `reorder-${sessionId}` },
+    body: { items, sessionId },
+  });
+export const snoozeReorderItem = (variantId: string, days: number) =>
+  rawRequest(`/me/reorder/items/${variantId}/snooze`, { method: "POST", body: { days } });
+export const disableReorderItem = (variantId: string) =>
+  rawRequest(`/me/reorder/items/${variantId}/disable`, { method: "POST", body: {} });
+export const restoreReorderItem = (variantId: string) =>
+  rawRequest(`/me/reorder/items/${variantId}/restore`, { method: "POST", body: {} });
+export const updateReorderPreference = (smartEnabled: boolean, expectedVersion?: number) =>
+  rawRequest<{ smartEnabled: boolean; version: number }>("/me/reorder/preferences", {
+    method: "PATCH",
+    body: { smartEnabled, expectedVersion },
+  });
+export const recordReorderEvent = (body: {
+  eventKey: string;
+  eventType: string;
+  productId?: string | null;
+  variantId?: string | null;
+  orderId?: string | null;
+  sessionId?: string | null;
+}) => rawRequest("/me/reorder/events", { method: "POST", body });
 
 export const listShippingCities = () => rawRequest<ShippingCity[]>("/shipping/cities");
 export const listShippingGovernorates = () =>

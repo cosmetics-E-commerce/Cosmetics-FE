@@ -40,6 +40,7 @@ import {
 import { AddressForm } from "@/components/forms/AddressForm";
 import { InternationalPhoneField } from "@/components/forms/InternationalPhoneField";
 import { CustomerAvatar } from "@/components/account/CustomerAvatar";
+import { OrderReorderAction, ReorderCenter } from "@/components/account/ReorderCenter";
 import { ReviewLibrary } from "@/components/account/ReviewLibrary";
 import { WishlistStudio } from "@/components/account/WishlistStudio";
 import {
@@ -76,6 +77,7 @@ export const Route = createFileRoute("/account")({
   validateSearch: (raw: Record<string, unknown>) => ({
     section:
       raw["section"] === "orders" ||
+      raw["section"] === "buy-again" ||
       raw["section"] === "wishlist" ||
       raw["section"] === "reviews" ||
       raw["section"] === "addresses" ||
@@ -94,6 +96,7 @@ export const Route = createFileRoute("/account")({
 const tabs = [
   { label: { en: "Overview", ar: "نظرة عامة" }, value: "overview" },
   { label: { en: "Orders", ar: "الطلبات" }, value: "orders" },
+  { label: { en: "Buy Again", ar: "اشتريها مجدداً" }, value: "buy-again" },
   { label: { en: "Wishlist", ar: "المفضلة" }, value: "wishlist" },
   { label: { en: "Reviews", ar: "مراجعاتي" }, value: "reviews" },
   { label: { en: "Addresses", ar: "العناوين" }, value: "addresses" },
@@ -552,6 +555,9 @@ function Account() {
                                   : "Track order"}
                             </button>
                           )}
+                          {order.status === "DELIVERED" && (
+                            <OrderReorderAction orderId={order.id} locale={locale} />
+                          )}
                         </div>
                         {expandedPaymentOrderId === order.id && (
                           <PaymentContinuation order={order} locale={locale} />
@@ -577,6 +583,7 @@ function Account() {
               )}
             </div>
           )}
+          {tab === "buy-again" && <ReorderCenter locale={locale} />}
           {tab === "wishlist" && (
             <div className="account-detail account-wishlist">
               {wishlistProducts.isLoading ? (

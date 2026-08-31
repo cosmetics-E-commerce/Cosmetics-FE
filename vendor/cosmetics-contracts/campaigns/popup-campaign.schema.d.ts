@@ -1167,8 +1167,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         closeOnOverlay: boolean;
         closeOnEscape: boolean;
     };
-    couponId: string | null;
     internalName: string;
+    couponId: string | null;
     recurringSchedule: {
         enabled: boolean;
         weekdays: number[];
@@ -1491,8 +1491,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         closeOnOverlay: boolean;
         closeOnEscape: boolean;
     };
-    couponId: string | null;
     internalName: string;
+    couponId: string | null;
     recurringSchedule: {
         enabled: boolean;
         weekdays: number[];
@@ -2484,6 +2484,7 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
         closeOnOverlay: boolean;
         closeOnEscape: boolean;
     };
+    version: number;
     recurringSchedule: {
         enabled: boolean;
         weekdays: number[];
@@ -2589,7 +2590,6 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
         mode: "CAMPAIGN_END" | "FIXED_TIMESTAMP";
         targetAt: string | null;
     };
-    version: number;
     image: {
         width: number;
         height: number;
@@ -2602,6 +2602,7 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
     variantId: string;
     priority: number;
     timezone: string;
+    version: number;
     direction: "ltr" | "rtl";
     content: {
         locale: "en" | "ar";
@@ -2622,7 +2623,6 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
         submitLabel?: string | null | undefined;
         consentLabel?: string | null | undefined;
     };
-    version: number;
     category?: {
         id: string;
         name: string;
@@ -3240,6 +3240,7 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             closeOnOverlay: boolean;
             closeOnEscape: boolean;
         };
+        version: number;
         recurringSchedule: {
             enabled: boolean;
             weekdays: number[];
@@ -3345,7 +3346,6 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             mode: "CAMPAIGN_END" | "FIXED_TIMESTAMP";
             targetAt: string | null;
         };
-        version: number;
         image: {
             width: number;
             height: number;
@@ -3358,6 +3358,7 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         variantId: string;
         priority: number;
         timezone: string;
+        version: number;
         direction: "ltr" | "rtl";
         content: {
             locale: "en" | "ar";
@@ -3378,7 +3379,6 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             submitLabel?: string | null | undefined;
             consentLabel?: string | null | undefined;
         };
-        version: number;
         category?: {
             id: string;
             name: string;
@@ -3559,6 +3559,7 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             closeOnOverlay: boolean;
             closeOnEscape: boolean;
         };
+        version: number;
         recurringSchedule: {
             enabled: boolean;
             weekdays: number[];
@@ -3664,7 +3665,6 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             mode: "CAMPAIGN_END" | "FIXED_TIMESTAMP";
             targetAt: string | null;
         };
-        version: number;
         image: {
             width: number;
             height: number;
@@ -3681,6 +3681,7 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         variantId: string;
         priority: number;
         timezone: string;
+        version: number;
         direction: "ltr" | "rtl";
         content: {
             locale: "en" | "ar";
@@ -3701,7 +3702,6 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             submitLabel?: string | null | undefined;
             consentLabel?: string | null | undefined;
         };
-        version: number;
         category?: {
             id: string;
             name: string;
