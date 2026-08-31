@@ -14,6 +14,29 @@ export declare const addCartItemSchema: z.ZodObject<{
     quantity?: number | undefined;
 }>;
 export type AddCartItemInput = z.infer<typeof addCartItemSchema>;
+export declare const addCartItemsSchema: z.ZodObject<{
+    items: z.ZodArray<z.ZodObject<{
+        variantId: z.ZodString;
+        quantity: z.ZodDefault<z.ZodNumber>;
+    }, "strict", z.ZodTypeAny, {
+        variantId: string;
+        quantity: number;
+    }, {
+        variantId: string;
+        quantity?: number | undefined;
+    }>, "many">;
+}, "strict", z.ZodTypeAny, {
+    items: {
+        variantId: string;
+        quantity: number;
+    }[];
+}, {
+    items: {
+        variantId: string;
+        quantity?: number | undefined;
+    }[];
+}>;
+export type AddCartItemsInput = z.infer<typeof addCartItemsSchema>;
 export declare const updateCartItemSchema: z.ZodObject<{
     quantity: z.ZodNumber;
 }, "strict", z.ZodTypeAny, {

@@ -9,6 +9,7 @@ test("full product descriptions preserve authored paragraph breaks without overf
 }) => {
   await page.route("**/api/v1/**", (route) => route.fulfill({ json: { success: true, data: [] } }));
   await page.goto("/privacy-policy", { waitUntil: "networkidle" });
+  await page.locator('html[data-hydrated="true"]').waitFor();
   await mountDescriptionFixture(page);
 
   const details = page.locator(".product-reference-description-copy");

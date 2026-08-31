@@ -172,6 +172,8 @@ exports.adminUsersQuerySchema = zod_1.z.object({
     totalOrdersMax: zod_1.z.coerce.number().int().min(0).optional(),
     totalSpentMin: zod_1.z.coerce.number().int().min(0).optional(),
     totalSpentMax: zod_1.z.coerce.number().int().min(0).optional(),
+    tagId: primitives_1.uuidSchema.optional(),
+    segmentId: primitives_1.uuidSchema.optional(),
     sortBy: zod_1.z
         .enum([
         "createdAt",

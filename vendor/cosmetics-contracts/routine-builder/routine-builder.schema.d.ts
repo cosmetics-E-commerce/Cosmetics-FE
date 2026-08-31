@@ -1,5 +1,5 @@
 import { z } from "zod";
-export declare const routineBuilderSchemaVersion: 1;
+export declare const routineBuilderSchemaVersion: 2;
 export declare const routineKeySchema: z.ZodString;
 export declare const routineLocalizedTextSchema: z.ZodObject<{
     en: z.ZodString;
@@ -61,6 +61,58 @@ export declare const routineConditionGroupSchema: z.ZodObject<{
         id: string;
         operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "CONTAINS_ANY" | "CONTAINS_ALL" | "GREATER_THAN" | "LESS_THAN";
         questionKey: string;
+    }[];
+    mode: "ALL" | "ANY";
+}>;
+export declare const routineSignalOperatorSchema: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+export declare const routineSignalConditionSchema: z.ZodObject<{
+    id: z.ZodString;
+    signalKey: z.ZodString;
+    operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+    value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+}, "strip", z.ZodTypeAny, {
+    value: string | number | boolean | string[] | null;
+    id: string;
+    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+    signalKey: string;
+}, {
+    id: string;
+    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+    signalKey: string;
+    value?: string | number | boolean | string[] | null | undefined;
+}>;
+export declare const routineSignalConditionGroupSchema: z.ZodObject<{
+    mode: z.ZodEnum<["ALL", "ANY"]>;
+    conditions: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        signalKey: z.ZodString;
+        operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+        value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+    }, "strip", z.ZodTypeAny, {
+        value: string | number | boolean | string[] | null;
+        id: string;
+        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+        signalKey: string;
+    }, {
+        id: string;
+        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+        signalKey: string;
+        value?: string | number | boolean | string[] | null | undefined;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    conditions: {
+        value: string | number | boolean | string[] | null;
+        id: string;
+        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+        signalKey: string;
+    }[];
+    mode: "ALL" | "ANY";
+}, {
+    conditions: {
+        id: string;
+        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+        signalKey: string;
+        value?: string | number | boolean | string[] | null | undefined;
     }[];
     mode: "ALL" | "ANY";
 }>;
@@ -253,6 +305,9 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         ar: string;
     }>>;
     required: z.ZodDefault<z.ZodBoolean>;
+    modes: z.ZodDefault<z.ZodArray<z.ZodEnum<["FULL", "CONTEXTUAL"]>, "many">>;
+    contextualRequired: z.ZodDefault<z.ZodBoolean>;
+    contextualOrder: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
     enabled: z.ZodDefault<z.ZodBoolean>;
     order: z.ZodNumber;
     visibility: z.ZodDefault<z.ZodNullable<z.ZodObject<{
@@ -415,6 +470,9 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         ar: string;
     };
     required: boolean;
+    modes: ("FULL" | "CONTEXTUAL")[];
+    contextualRequired: boolean;
+    contextualOrder: number | null;
     answers: {
         id: string;
         key: string;
@@ -470,6 +528,9 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         ar: string;
     } | undefined;
     required?: boolean | undefined;
+    modes?: ("FULL" | "CONTEXTUAL")[] | undefined;
+    contextualRequired?: boolean | undefined;
+    contextualOrder?: number | null | undefined;
     directSignalKey?: string | null | undefined;
     answers?: {
         id: string;
@@ -525,6 +586,9 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         ar: string;
     };
     required: boolean;
+    modes: ("FULL" | "CONTEXTUAL")[];
+    contextualRequired: boolean;
+    contextualOrder: number | null;
     answers: {
         id: string;
         key: string;
@@ -580,6 +644,9 @@ export declare const routineQuestionSchema: z.ZodEffects<z.ZodObject<{
         ar: string;
     } | undefined;
     required?: boolean | undefined;
+    modes?: ("FULL" | "CONTEXTUAL")[] | undefined;
+    contextualRequired?: boolean | undefined;
+    contextualOrder?: number | null | undefined;
     directSignalKey?: string | null | undefined;
     answers?: {
         id: string;
@@ -680,6 +747,10 @@ export declare const routineRoleSchema: z.ZodObject<{
     }>>;
     amOrder: z.ZodNumber;
     pmOrder: z.ZodNumber;
+    domain: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    amAllowed: z.ZodDefault<z.ZodBoolean>;
+    pmAllowed: z.ZodDefault<z.ZodBoolean>;
+    defaultPriority: z.ZodDefault<z.ZodNumber>;
     enabled: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
     id: string;
@@ -695,6 +766,10 @@ export declare const routineRoleSchema: z.ZodObject<{
     enabled: boolean;
     amOrder: number;
     pmOrder: number;
+    domain: string | null;
+    amAllowed: boolean;
+    pmAllowed: boolean;
+    defaultPriority: number;
 }, {
     id: string;
     key: string;
@@ -709,6 +784,10 @@ export declare const routineRoleSchema: z.ZodObject<{
         ar: string;
     } | undefined;
     enabled?: boolean | undefined;
+    domain?: string | null | undefined;
+    amAllowed?: boolean | undefined;
+    pmAllowed?: boolean | undefined;
+    defaultPriority?: number | undefined;
 }>;
 export declare const routineTargetSchema: z.ZodObject<{
     kind: z.ZodEnum<["ALL", "PRODUCT", "VARIANT", "CATEGORY", "BRAND", "TAG", "INGREDIENT", "ROLE"]>;
@@ -1224,9 +1303,57 @@ export declare const routineTemplateStepSchema: z.ZodObject<{
     }>>;
     preferredProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     maxAlternatives: z.ZodDefault<z.ZodNumber>;
+    conditions: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+        mode: z.ZodEnum<["ALL", "ANY"]>;
+        conditions: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            signalKey: z.ZodString;
+            operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+            value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+        }, "strip", z.ZodTypeAny, {
+            value: string | number | boolean | string[] | null;
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+        }, {
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+            value?: string | number | boolean | string[] | null | undefined;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        conditions: {
+            value: string | number | boolean | string[] | null;
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+        }[];
+        mode: "ALL" | "ANY";
+    }, {
+        conditions: {
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+            value?: string | number | boolean | string[] | null | undefined;
+        }[];
+        mode: "ALL" | "ANY";
+    }>>>;
+    optionalPriority: z.ZodDefault<z.ZodNumber>;
+    fallbackMode: z.ZodDefault<z.ZodEnum<["FAIL_TEMPLATE", "SKIP_OPTIONAL", "USE_FALLBACK_ROLE"]>>;
+    fallbackRoleKeys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    spendingWeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
 }, "strip", z.ZodTypeAny, {
     id: string;
     order: number;
+    conditions: {
+        conditions: {
+            value: string | number | boolean | string[] | null;
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+        }[];
+        mode: "ALL" | "ANY";
+    } | null;
     required: boolean;
     target: {
         keys: string[];
@@ -1237,11 +1364,24 @@ export declare const routineTemplateStepSchema: z.ZodObject<{
     period: "AM" | "PM";
     preferredProductIds: string[];
     maxAlternatives: number;
+    optionalPriority: number;
+    fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+    fallbackRoleKeys: string[];
+    spendingWeight: number | null;
 }, {
     id: string;
     order: number;
     roleKey: string;
     period: "AM" | "PM";
+    conditions?: {
+        conditions: {
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+            value?: string | number | boolean | string[] | null | undefined;
+        }[];
+        mode: "ALL" | "ANY";
+    } | null | undefined;
     required?: boolean | undefined;
     target?: {
         kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
@@ -1250,8 +1390,12 @@ export declare const routineTemplateStepSchema: z.ZodObject<{
     } | undefined;
     preferredProductIds?: string[] | undefined;
     maxAlternatives?: number | undefined;
+    optionalPriority?: number | undefined;
+    fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+    fallbackRoleKeys?: string[] | undefined;
+    spendingWeight?: number | null | undefined;
 }>;
-export declare const routineTemplateSchema: z.ZodObject<{
+export declare const routineTemplateFamilySchema: z.ZodObject<{
     id: z.ZodString;
     key: z.ZodString;
     name: z.ZodObject<{
@@ -1274,8 +1418,683 @@ export declare const routineTemplateSchema: z.ZodObject<{
         en: string;
         ar: string;
     }>>;
+    order: z.ZodDefault<z.ZodNumber>;
     enabled: z.ZodDefault<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    key: string;
+    description: {
+        en: string;
+        ar: string;
+    };
+    name: {
+        en: string;
+        ar: string;
+    };
+    order: number;
+    enabled: boolean;
+}, {
+    id: string;
+    key: string;
+    name: {
+        en: string;
+        ar: string;
+    };
+    description?: {
+        en: string;
+        ar: string;
+    } | undefined;
+    order?: number | undefined;
+    enabled?: boolean | undefined;
+}>;
+export declare const routineTemplatePackSchema: z.ZodObject<{
+    id: z.ZodString;
+    key: z.ZodString;
+    name: z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>;
+    description: z.ZodDefault<z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>>;
+    version: z.ZodDefault<z.ZodNumber>;
+    source: z.ZodDefault<z.ZodEnum<["BIOREZA", "ADMIN", "IMPORTED"]>>;
+    createdAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    key: string;
+    description: {
+        en: string;
+        ar: string;
+    };
+    createdAt: string | null;
+    name: {
+        en: string;
+        ar: string;
+    };
+    source: "ADMIN" | "BIOREZA" | "IMPORTED";
+    version: number;
+}, {
+    id: string;
+    key: string;
+    name: {
+        en: string;
+        ar: string;
+    };
+    description?: {
+        en: string;
+        ar: string;
+    } | undefined;
+    createdAt?: string | null | undefined;
+    source?: "ADMIN" | "BIOREZA" | "IMPORTED" | undefined;
+    version?: number | undefined;
+}>;
+export declare const routineTemplateTagSchema: z.ZodObject<{
+    id: z.ZodString;
+    key: z.ZodString;
+    label: z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>;
+    enabled: z.ZodDefault<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    key: string;
+    label: {
+        en: string;
+        ar: string;
+    };
+    enabled: boolean;
+}, {
+    id: string;
+    key: string;
+    label: {
+        en: string;
+        ar: string;
+    };
+    enabled?: boolean | undefined;
+}>;
+export declare const routineStepPresetSchema: z.ZodObject<{
+    id: z.ZodString;
+    key: z.ZodString;
+    name: z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>;
+    description: z.ZodDefault<z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>>;
+    domain: z.ZodString;
+    steps: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        roleKey: z.ZodString;
+        period: z.ZodEnum<["AM", "PM"]>;
+        required: z.ZodDefault<z.ZodBoolean>;
+        order: z.ZodNumber;
+        target: z.ZodDefault<z.ZodObject<{
+            kind: z.ZodEnum<["ALL", "PRODUCT", "VARIANT", "CATEGORY", "BRAND", "TAG", "INGREDIENT", "ROLE"]>;
+            ids: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            keys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        }, "strip", z.ZodTypeAny, {
+            keys: string[];
+            ids: string[];
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+        }, {
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            keys?: string[] | undefined;
+            ids?: string[] | undefined;
+        }>>;
+        preferredProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        maxAlternatives: z.ZodDefault<z.ZodNumber>;
+        conditions: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+            mode: z.ZodEnum<["ALL", "ANY"]>;
+            conditions: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                signalKey: z.ZodString;
+                operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+                value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+            }, "strip", z.ZodTypeAny, {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }, {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }>, "many">;
+        }, "strip", z.ZodTypeAny, {
+            conditions: {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }[];
+            mode: "ALL" | "ANY";
+        }, {
+            conditions: {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }[];
+            mode: "ALL" | "ANY";
+        }>>>;
+        optionalPriority: z.ZodDefault<z.ZodNumber>;
+        fallbackMode: z.ZodDefault<z.ZodEnum<["FAIL_TEMPLATE", "SKIP_OPTIONAL", "USE_FALLBACK_ROLE"]>>;
+        fallbackRoleKeys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        spendingWeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        order: number;
+        conditions: {
+            conditions: {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }[];
+            mode: "ALL" | "ANY";
+        } | null;
+        required: boolean;
+        target: {
+            keys: string[];
+            ids: string[];
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+        };
+        roleKey: string;
+        period: "AM" | "PM";
+        preferredProductIds: string[];
+        maxAlternatives: number;
+        optionalPriority: number;
+        fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+        fallbackRoleKeys: string[];
+        spendingWeight: number | null;
+    }, {
+        id: string;
+        order: number;
+        roleKey: string;
+        period: "AM" | "PM";
+        conditions?: {
+            conditions: {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }[];
+            mode: "ALL" | "ANY";
+        } | null | undefined;
+        required?: boolean | undefined;
+        target?: {
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            keys?: string[] | undefined;
+            ids?: string[] | undefined;
+        } | undefined;
+        preferredProductIds?: string[] | undefined;
+        maxAlternatives?: number | undefined;
+        optionalPriority?: number | undefined;
+        fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+        fallbackRoleKeys?: string[] | undefined;
+        spendingWeight?: number | null | undefined;
+    }>, "many">;
+    enabled: z.ZodDefault<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    key: string;
+    description: {
+        en: string;
+        ar: string;
+    };
+    name: {
+        en: string;
+        ar: string;
+    };
+    enabled: boolean;
+    domain: string;
+    steps: {
+        id: string;
+        order: number;
+        conditions: {
+            conditions: {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }[];
+            mode: "ALL" | "ANY";
+        } | null;
+        required: boolean;
+        target: {
+            keys: string[];
+            ids: string[];
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+        };
+        roleKey: string;
+        period: "AM" | "PM";
+        preferredProductIds: string[];
+        maxAlternatives: number;
+        optionalPriority: number;
+        fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+        fallbackRoleKeys: string[];
+        spendingWeight: number | null;
+    }[];
+}, {
+    id: string;
+    key: string;
+    name: {
+        en: string;
+        ar: string;
+    };
+    domain: string;
+    steps: {
+        id: string;
+        order: number;
+        roleKey: string;
+        period: "AM" | "PM";
+        conditions?: {
+            conditions: {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }[];
+            mode: "ALL" | "ANY";
+        } | null | undefined;
+        required?: boolean | undefined;
+        target?: {
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            keys?: string[] | undefined;
+            ids?: string[] | undefined;
+        } | undefined;
+        preferredProductIds?: string[] | undefined;
+        maxAlternatives?: number | undefined;
+        optionalPriority?: number | undefined;
+        fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+        fallbackRoleKeys?: string[] | undefined;
+        spendingWeight?: number | null | undefined;
+    }[];
+    description?: {
+        en: string;
+        ar: string;
+    } | undefined;
+    enabled?: boolean | undefined;
+}>;
+export declare const routineTemplateSelectionRuleSchema: z.ZodObject<{
+    id: z.ZodString;
+    name: z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>;
+    when: z.ZodObject<{
+        mode: z.ZodEnum<["ALL", "ANY"]>;
+        conditions: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            signalKey: z.ZodString;
+            operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+            value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+        }, "strip", z.ZodTypeAny, {
+            value: string | number | boolean | string[] | null;
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+        }, {
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+            value?: string | number | boolean | string[] | null | undefined;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        conditions: {
+            value: string | number | boolean | string[] | null;
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+        }[];
+        mode: "ALL" | "ANY";
+    }, {
+        conditions: {
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+            value?: string | number | boolean | string[] | null | undefined;
+        }[];
+        mode: "ALL" | "ANY";
+    }>;
+    score: z.ZodNumber;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    name: {
+        en: string;
+        ar: string;
+    };
+    score: number;
+    when: {
+        conditions: {
+            value: string | number | boolean | string[] | null;
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+        }[];
+        mode: "ALL" | "ANY";
+    };
+}, {
+    id: string;
+    name: {
+        en: string;
+        ar: string;
+    };
+    score: number;
+    when: {
+        conditions: {
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+            value?: string | number | boolean | string[] | null | undefined;
+        }[];
+        mode: "ALL" | "ANY";
+    };
+}>;
+export declare const routineTemplateBudgetPolicySchema: z.ZodObject<{
+    mode: z.ZodDefault<z.ZodEnum<["IGNORE", "RESPECT_CUSTOMER", "HARD", "SOFT"]>>;
+    maximum: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+}, "strip", z.ZodTypeAny, {
+    maximum: number | null;
+    mode: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT";
+}, {
+    maximum?: number | null | undefined;
+    mode?: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT" | undefined;
+}>;
+export declare const routineTemplateFallbackPolicySchema: z.ZodObject<{
+    requiredStep: z.ZodDefault<z.ZodEnum<["FAIL_TEMPLATE", "USE_STEP_FALLBACK"]>>;
+    optionalStep: z.ZodDefault<z.ZodLiteral<"SKIP">>;
+    fallbackTemplateKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+}, "strip", z.ZodTypeAny, {
+    requiredStep: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK";
+    optionalStep: "SKIP";
+    fallbackTemplateKey: string | null;
+}, {
+    requiredStep?: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK" | undefined;
+    optionalStep?: "SKIP" | undefined;
+    fallbackTemplateKey?: string | null | undefined;
+}>;
+export declare const routineTemplatePresentationSchema: z.ZodObject<{
+    style: z.ZodDefault<z.ZodEnum<["MINIMAL", "EDITORIAL", "STEP_BY_STEP", "COMPACT", "DETAILED"]>>;
+    estimatedMinutes: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    thumbnailKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    themeKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    intro: z.ZodDefault<z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>>;
+    outro: z.ZodDefault<z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>>;
+    customerVisible: z.ZodDefault<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
+    estimatedMinutes: number | null;
+    thumbnailKey: string | null;
+    themeKey: string | null;
+    intro: {
+        en: string;
+        ar: string;
+    };
+    outro: {
+        en: string;
+        ar: string;
+    };
+    customerVisible: boolean;
+}, {
+    style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
+    estimatedMinutes?: number | null | undefined;
+    thumbnailKey?: string | null | undefined;
+    themeKey?: string | null | undefined;
+    intro?: {
+        en: string;
+        ar: string;
+    } | undefined;
+    outro?: {
+        en: string;
+        ar: string;
+    } | undefined;
+    customerVisible?: boolean | undefined;
+}>;
+export declare const routineTemplateConstraintSchema: z.ZodObject<{
+    mode: z.ZodDefault<z.ZodEnum<["NONE", "PREFERRED", "ONLY"]>>;
+    entityId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    parameterized: z.ZodDefault<z.ZodBoolean>;
+}, "strip", z.ZodTypeAny, {
+    mode: "NONE" | "PREFERRED" | "ONLY";
+    entityId: string | null;
+    parameterized: boolean;
+}, {
+    mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+    entityId?: string | null | undefined;
+    parameterized?: boolean | undefined;
+}>;
+export declare const routineTemplateVariantSchema: z.ZodObject<{
+    kind: z.ZodDefault<z.ZodEnum<["BASE", "SKIN_TYPE", "CONCERN", "COMPLEXITY", "BUDGET", "SEASONAL", "LIFESTYLE", "ANCHOR_ROLE", "BRAND", "CATEGORY", "CUSTOM"]>>;
+    parameters: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+}, "strip", z.ZodTypeAny, {
+    kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+    parameters: Record<string, string | number | boolean | string[]>;
+}, {
+    kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+    parameters?: Record<string, string | number | boolean | string[]> | undefined;
+}>;
+export declare const routineTemplateSchema: z.ZodObject<{
+    id: z.ZodString;
+    key: z.ZodString;
+    name: z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>;
+    internalName: z.ZodOptional<z.ZodString>;
+    description: z.ZodDefault<z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>>;
+    enabled: z.ZodDefault<z.ZodBoolean>;
+    status: z.ZodDefault<z.ZodEnum<["DRAFT", "PUBLISHED", "SCHEDULED", "PAUSED", "ARCHIVED"]>>;
+    version: z.ZodDefault<z.ZodNumber>;
     priority: z.ZodDefault<z.ZodNumber>;
+    domain: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    familyKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    complexity: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    packKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    tags: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    baseTemplateKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    variant: z.ZodDefault<z.ZodObject<{
+        kind: z.ZodDefault<z.ZodEnum<["BASE", "SKIN_TYPE", "CONCERN", "COMPLEXITY", "BUDGET", "SEASONAL", "LIFESTYLE", "ANCHOR_ROLE", "BRAND", "CATEGORY", "CUSTOM"]>>;
+        parameters: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+    }, "strip", z.ZodTypeAny, {
+        kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+        parameters: Record<string, string | number | boolean | string[]>;
+    }, {
+        kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+        parameters?: Record<string, string | number | boolean | string[]> | undefined;
+    }>>;
+    hardEligibility: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+        mode: z.ZodEnum<["ALL", "ANY"]>;
+        conditions: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            signalKey: z.ZodString;
+            operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+            value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+        }, "strip", z.ZodTypeAny, {
+            value: string | number | boolean | string[] | null;
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+        }, {
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+            value?: string | number | boolean | string[] | null | undefined;
+        }>, "many">;
+    }, "strip", z.ZodTypeAny, {
+        conditions: {
+            value: string | number | boolean | string[] | null;
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+        }[];
+        mode: "ALL" | "ANY";
+    }, {
+        conditions: {
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+            value?: string | number | boolean | string[] | null | undefined;
+        }[];
+        mode: "ALL" | "ANY";
+    }>>>;
+    selectionRules: z.ZodDefault<z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        name: z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>;
+        when: z.ZodObject<{
+            mode: z.ZodEnum<["ALL", "ANY"]>;
+            conditions: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                signalKey: z.ZodString;
+                operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+                value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+            }, "strip", z.ZodTypeAny, {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }, {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }>, "many">;
+        }, "strip", z.ZodTypeAny, {
+            conditions: {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }[];
+            mode: "ALL" | "ANY";
+        }, {
+            conditions: {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }[];
+            mode: "ALL" | "ANY";
+        }>;
+        score: z.ZodNumber;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        name: {
+            en: string;
+            ar: string;
+        };
+        score: number;
+        when: {
+            conditions: {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }[];
+            mode: "ALL" | "ANY";
+        };
+    }, {
+        id: string;
+        name: {
+            en: string;
+            ar: string;
+        };
+        score: number;
+        when: {
+            conditions: {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }[];
+            mode: "ALL" | "ANY";
+        };
+    }>, "many">>;
+    allowedAnchorRoles: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     conditions: z.ZodDefault<z.ZodNullable<z.ZodObject<{
         mode: z.ZodEnum<["ALL", "ANY"]>;
         conditions: z.ZodArray<z.ZodObject<{
@@ -1332,9 +2151,57 @@ export declare const routineTemplateSchema: z.ZodObject<{
         }>>;
         preferredProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         maxAlternatives: z.ZodDefault<z.ZodNumber>;
+        conditions: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+            mode: z.ZodEnum<["ALL", "ANY"]>;
+            conditions: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                signalKey: z.ZodString;
+                operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+                value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+            }, "strip", z.ZodTypeAny, {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }, {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }>, "many">;
+        }, "strip", z.ZodTypeAny, {
+            conditions: {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }[];
+            mode: "ALL" | "ANY";
+        }, {
+            conditions: {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }[];
+            mode: "ALL" | "ANY";
+        }>>>;
+        optionalPriority: z.ZodDefault<z.ZodNumber>;
+        fallbackMode: z.ZodDefault<z.ZodEnum<["FAIL_TEMPLATE", "SKIP_OPTIONAL", "USE_FALLBACK_ROLE"]>>;
+        fallbackRoleKeys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        spendingWeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
     }, "strip", z.ZodTypeAny, {
         id: string;
         order: number;
+        conditions: {
+            conditions: {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }[];
+            mode: "ALL" | "ANY";
+        } | null;
         required: boolean;
         target: {
             keys: string[];
@@ -1345,11 +2212,24 @@ export declare const routineTemplateSchema: z.ZodObject<{
         period: "AM" | "PM";
         preferredProductIds: string[];
         maxAlternatives: number;
+        optionalPriority: number;
+        fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+        fallbackRoleKeys: string[];
+        spendingWeight: number | null;
     }, {
         id: string;
         order: number;
         roleKey: string;
         period: "AM" | "PM";
+        conditions?: {
+            conditions: {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }[];
+            mode: "ALL" | "ANY";
+        } | null | undefined;
         required?: boolean | undefined;
         target?: {
             kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
@@ -1358,8 +2238,129 @@ export declare const routineTemplateSchema: z.ZodObject<{
         } | undefined;
         preferredProductIds?: string[] | undefined;
         maxAlternatives?: number | undefined;
+        optionalPriority?: number | undefined;
+        fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+        fallbackRoleKeys?: string[] | undefined;
+        spendingWeight?: number | null | undefined;
     }>, "many">;
+    budgetPolicy: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+        mode: z.ZodDefault<z.ZodEnum<["IGNORE", "RESPECT_CUSTOMER", "HARD", "SOFT"]>>;
+        maximum: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+    }, "strip", z.ZodTypeAny, {
+        maximum: number | null;
+        mode: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT";
+    }, {
+        maximum?: number | null | undefined;
+        mode?: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT" | undefined;
+    }>>>;
+    fallbackPolicy: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+        requiredStep: z.ZodDefault<z.ZodEnum<["FAIL_TEMPLATE", "USE_STEP_FALLBACK"]>>;
+        optionalStep: z.ZodDefault<z.ZodLiteral<"SKIP">>;
+        fallbackTemplateKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        requiredStep: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK";
+        optionalStep: "SKIP";
+        fallbackTemplateKey: string | null;
+    }, {
+        requiredStep?: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK" | undefined;
+        optionalStep?: "SKIP" | undefined;
+        fallbackTemplateKey?: string | null | undefined;
+    }>>>;
+    compatibilityPolicy: z.ZodDefault<z.ZodEnum<["STRICT", "STANDARD"]>>;
+    brandConstraint: z.ZodDefault<z.ZodObject<{
+        mode: z.ZodDefault<z.ZodEnum<["NONE", "PREFERRED", "ONLY"]>>;
+        entityId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        parameterized: z.ZodDefault<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        mode: "NONE" | "PREFERRED" | "ONLY";
+        entityId: string | null;
+        parameterized: boolean;
+    }, {
+        mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+        entityId?: string | null | undefined;
+        parameterized?: boolean | undefined;
+    }>>;
+    categoryConstraint: z.ZodDefault<z.ZodObject<{
+        mode: z.ZodDefault<z.ZodEnum<["NONE", "PREFERRED", "ONLY"]>>;
+        entityId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        parameterized: z.ZodDefault<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        mode: "NONE" | "PREFERRED" | "ONLY";
+        entityId: string | null;
+        parameterized: boolean;
+    }, {
+        mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+        entityId?: string | null | undefined;
+        parameterized?: boolean | undefined;
+    }>>;
+    presentation: z.ZodDefault<z.ZodObject<{
+        style: z.ZodDefault<z.ZodEnum<["MINIMAL", "EDITORIAL", "STEP_BY_STEP", "COMPACT", "DETAILED"]>>;
+        estimatedMinutes: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+        thumbnailKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        themeKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        intro: z.ZodDefault<z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>>;
+        outro: z.ZodDefault<z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>>;
+        customerVisible: z.ZodDefault<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
+        estimatedMinutes: number | null;
+        thumbnailKey: string | null;
+        themeKey: string | null;
+        intro: {
+            en: string;
+            ar: string;
+        };
+        outro: {
+            en: string;
+            ar: string;
+        };
+        customerVisible: boolean;
+    }, {
+        style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
+        estimatedMinutes?: number | null | undefined;
+        thumbnailKey?: string | null | undefined;
+        themeKey?: string | null | undefined;
+        intro?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        outro?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        customerVisible?: boolean | undefined;
+    }>>;
+    schedule: z.ZodDefault<z.ZodObject<{
+        startsAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        endsAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        startsAt: string | null;
+        endsAt: string | null;
+    }, {
+        startsAt?: string | null | undefined;
+        endsAt?: string | null | undefined;
+    }>>;
+    pinned: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
+    status: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED";
     id: string;
     key: string;
     description: {
@@ -1371,6 +2372,7 @@ export declare const routineTemplateSchema: z.ZodObject<{
         ar: string;
     };
     enabled: boolean;
+    tags: string[];
     priority: number;
     conditions: {
         conditions: {
@@ -1381,9 +2383,35 @@ export declare const routineTemplateSchema: z.ZodObject<{
         }[];
         mode: "ALL" | "ANY";
     } | null;
+    presentation: {
+        style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
+        estimatedMinutes: number | null;
+        thumbnailKey: string | null;
+        themeKey: string | null;
+        intro: {
+            en: string;
+            ar: string;
+        };
+        outro: {
+            en: string;
+            ar: string;
+        };
+        customerVisible: boolean;
+    };
+    domain: string | null;
+    version: number;
     steps: {
         id: string;
         order: number;
+        conditions: {
+            conditions: {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }[];
+            mode: "ALL" | "ANY";
+        } | null;
         required: boolean;
         target: {
             keys: string[];
@@ -1394,7 +2422,72 @@ export declare const routineTemplateSchema: z.ZodObject<{
         period: "AM" | "PM";
         preferredProductIds: string[];
         maxAlternatives: number;
+        optionalPriority: number;
+        fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+        fallbackRoleKeys: string[];
+        spendingWeight: number | null;
     }[];
+    familyKey: string | null;
+    complexity: string | null;
+    packKey: string | null;
+    baseTemplateKey: string | null;
+    variant: {
+        kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+        parameters: Record<string, string | number | boolean | string[]>;
+    };
+    hardEligibility: {
+        conditions: {
+            value: string | number | boolean | string[] | null;
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+        }[];
+        mode: "ALL" | "ANY";
+    } | null;
+    selectionRules: {
+        id: string;
+        name: {
+            en: string;
+            ar: string;
+        };
+        score: number;
+        when: {
+            conditions: {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }[];
+            mode: "ALL" | "ANY";
+        };
+    }[];
+    allowedAnchorRoles: string[];
+    budgetPolicy: {
+        maximum: number | null;
+        mode: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT";
+    } | null;
+    fallbackPolicy: {
+        requiredStep: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK";
+        optionalStep: "SKIP";
+        fallbackTemplateKey: string | null;
+    } | null;
+    compatibilityPolicy: "STANDARD" | "STRICT";
+    brandConstraint: {
+        mode: "NONE" | "PREFERRED" | "ONLY";
+        entityId: string | null;
+        parameterized: boolean;
+    };
+    categoryConstraint: {
+        mode: "NONE" | "PREFERRED" | "ONLY";
+        entityId: string | null;
+        parameterized: boolean;
+    };
+    schedule: {
+        startsAt: string | null;
+        endsAt: string | null;
+    };
+    pinned: boolean;
+    internalName?: string | undefined;
 }, {
     id: string;
     key: string;
@@ -1407,6 +2500,15 @@ export declare const routineTemplateSchema: z.ZodObject<{
         order: number;
         roleKey: string;
         period: "AM" | "PM";
+        conditions?: {
+            conditions: {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }[];
+            mode: "ALL" | "ANY";
+        } | null | undefined;
         required?: boolean | undefined;
         target?: {
             kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
@@ -1415,12 +2517,18 @@ export declare const routineTemplateSchema: z.ZodObject<{
         } | undefined;
         preferredProductIds?: string[] | undefined;
         maxAlternatives?: number | undefined;
+        optionalPriority?: number | undefined;
+        fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+        fallbackRoleKeys?: string[] | undefined;
+        spendingWeight?: number | null | undefined;
     }[];
+    status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED" | undefined;
     description?: {
         en: string;
         ar: string;
     } | undefined;
     enabled?: boolean | undefined;
+    tags?: string[] | undefined;
     priority?: number | undefined;
     conditions?: {
         conditions: {
@@ -1431,9 +2539,925 @@ export declare const routineTemplateSchema: z.ZodObject<{
         }[];
         mode: "ALL" | "ANY";
     } | null | undefined;
+    presentation?: {
+        style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
+        estimatedMinutes?: number | null | undefined;
+        thumbnailKey?: string | null | undefined;
+        themeKey?: string | null | undefined;
+        intro?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        outro?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        customerVisible?: boolean | undefined;
+    } | undefined;
+    domain?: string | null | undefined;
+    version?: number | undefined;
+    internalName?: string | undefined;
+    familyKey?: string | null | undefined;
+    complexity?: string | null | undefined;
+    packKey?: string | null | undefined;
+    baseTemplateKey?: string | null | undefined;
+    variant?: {
+        kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+        parameters?: Record<string, string | number | boolean | string[]> | undefined;
+    } | undefined;
+    hardEligibility?: {
+        conditions: {
+            id: string;
+            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+            signalKey: string;
+            value?: string | number | boolean | string[] | null | undefined;
+        }[];
+        mode: "ALL" | "ANY";
+    } | null | undefined;
+    selectionRules?: {
+        id: string;
+        name: {
+            en: string;
+            ar: string;
+        };
+        score: number;
+        when: {
+            conditions: {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }[];
+            mode: "ALL" | "ANY";
+        };
+    }[] | undefined;
+    allowedAnchorRoles?: string[] | undefined;
+    budgetPolicy?: {
+        maximum?: number | null | undefined;
+        mode?: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT" | undefined;
+    } | null | undefined;
+    fallbackPolicy?: {
+        requiredStep?: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK" | undefined;
+        optionalStep?: "SKIP" | undefined;
+        fallbackTemplateKey?: string | null | undefined;
+    } | null | undefined;
+    compatibilityPolicy?: "STANDARD" | "STRICT" | undefined;
+    brandConstraint?: {
+        mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+        entityId?: string | null | undefined;
+        parameterized?: boolean | undefined;
+    } | undefined;
+    categoryConstraint?: {
+        mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+        entityId?: string | null | undefined;
+        parameterized?: boolean | undefined;
+    } | undefined;
+    schedule?: {
+        startsAt?: string | null | undefined;
+        endsAt?: string | null | undefined;
+    } | undefined;
+    pinned?: boolean | undefined;
+}>;
+export declare const routineTemplateUniverseSchema: z.ZodObject<{
+    families: z.ZodDefault<z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        key: z.ZodString;
+        name: z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>;
+        description: z.ZodDefault<z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>>;
+        order: z.ZodDefault<z.ZodNumber>;
+        enabled: z.ZodDefault<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        key: string;
+        description: {
+            en: string;
+            ar: string;
+        };
+        name: {
+            en: string;
+            ar: string;
+        };
+        order: number;
+        enabled: boolean;
+    }, {
+        id: string;
+        key: string;
+        name: {
+            en: string;
+            ar: string;
+        };
+        description?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        order?: number | undefined;
+        enabled?: boolean | undefined;
+    }>, "many">>;
+    packs: z.ZodDefault<z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        key: z.ZodString;
+        name: z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>;
+        description: z.ZodDefault<z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>>;
+        version: z.ZodDefault<z.ZodNumber>;
+        source: z.ZodDefault<z.ZodEnum<["BIOREZA", "ADMIN", "IMPORTED"]>>;
+        createdAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        key: string;
+        description: {
+            en: string;
+            ar: string;
+        };
+        createdAt: string | null;
+        name: {
+            en: string;
+            ar: string;
+        };
+        source: "ADMIN" | "BIOREZA" | "IMPORTED";
+        version: number;
+    }, {
+        id: string;
+        key: string;
+        name: {
+            en: string;
+            ar: string;
+        };
+        description?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        createdAt?: string | null | undefined;
+        source?: "ADMIN" | "BIOREZA" | "IMPORTED" | undefined;
+        version?: number | undefined;
+    }>, "many">>;
+    tags: z.ZodDefault<z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        key: z.ZodString;
+        label: z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>;
+        enabled: z.ZodDefault<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        key: string;
+        label: {
+            en: string;
+            ar: string;
+        };
+        enabled: boolean;
+    }, {
+        id: string;
+        key: string;
+        label: {
+            en: string;
+            ar: string;
+        };
+        enabled?: boolean | undefined;
+    }>, "many">>;
+    stepPresets: z.ZodDefault<z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        key: z.ZodString;
+        name: z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>;
+        description: z.ZodDefault<z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>>;
+        domain: z.ZodString;
+        steps: z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            roleKey: z.ZodString;
+            period: z.ZodEnum<["AM", "PM"]>;
+            required: z.ZodDefault<z.ZodBoolean>;
+            order: z.ZodNumber;
+            target: z.ZodDefault<z.ZodObject<{
+                kind: z.ZodEnum<["ALL", "PRODUCT", "VARIANT", "CATEGORY", "BRAND", "TAG", "INGREDIENT", "ROLE"]>;
+                ids: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+                keys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            }, "strip", z.ZodTypeAny, {
+                keys: string[];
+                ids: string[];
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            }, {
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                keys?: string[] | undefined;
+                ids?: string[] | undefined;
+            }>>;
+            preferredProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            maxAlternatives: z.ZodDefault<z.ZodNumber>;
+            conditions: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+                mode: z.ZodEnum<["ALL", "ANY"]>;
+                conditions: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    signalKey: z.ZodString;
+                    operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+                    value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+                }, "strip", z.ZodTypeAny, {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }, {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }>, "many">;
+            }, "strip", z.ZodTypeAny, {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            }, {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            }>>>;
+            optionalPriority: z.ZodDefault<z.ZodNumber>;
+            fallbackMode: z.ZodDefault<z.ZodEnum<["FAIL_TEMPLATE", "SKIP_OPTIONAL", "USE_FALLBACK_ROLE"]>>;
+            fallbackRoleKeys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            spendingWeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            order: number;
+            conditions: {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null;
+            required: boolean;
+            target: {
+                keys: string[];
+                ids: string[];
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            };
+            roleKey: string;
+            period: "AM" | "PM";
+            preferredProductIds: string[];
+            maxAlternatives: number;
+            optionalPriority: number;
+            fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+            fallbackRoleKeys: string[];
+            spendingWeight: number | null;
+        }, {
+            id: string;
+            order: number;
+            roleKey: string;
+            period: "AM" | "PM";
+            conditions?: {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null | undefined;
+            required?: boolean | undefined;
+            target?: {
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                keys?: string[] | undefined;
+                ids?: string[] | undefined;
+            } | undefined;
+            preferredProductIds?: string[] | undefined;
+            maxAlternatives?: number | undefined;
+            optionalPriority?: number | undefined;
+            fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+            fallbackRoleKeys?: string[] | undefined;
+            spendingWeight?: number | null | undefined;
+        }>, "many">;
+        enabled: z.ZodDefault<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        key: string;
+        description: {
+            en: string;
+            ar: string;
+        };
+        name: {
+            en: string;
+            ar: string;
+        };
+        enabled: boolean;
+        domain: string;
+        steps: {
+            id: string;
+            order: number;
+            conditions: {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null;
+            required: boolean;
+            target: {
+                keys: string[];
+                ids: string[];
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            };
+            roleKey: string;
+            period: "AM" | "PM";
+            preferredProductIds: string[];
+            maxAlternatives: number;
+            optionalPriority: number;
+            fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+            fallbackRoleKeys: string[];
+            spendingWeight: number | null;
+        }[];
+    }, {
+        id: string;
+        key: string;
+        name: {
+            en: string;
+            ar: string;
+        };
+        domain: string;
+        steps: {
+            id: string;
+            order: number;
+            roleKey: string;
+            period: "AM" | "PM";
+            conditions?: {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null | undefined;
+            required?: boolean | undefined;
+            target?: {
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                keys?: string[] | undefined;
+                ids?: string[] | undefined;
+            } | undefined;
+            preferredProductIds?: string[] | undefined;
+            maxAlternatives?: number | undefined;
+            optionalPriority?: number | undefined;
+            fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+            fallbackRoleKeys?: string[] | undefined;
+            spendingWeight?: number | null | undefined;
+        }[];
+        description?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        enabled?: boolean | undefined;
+    }>, "many">>;
+    fallbackTemplateKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    customerChoiceEnabled: z.ZodDefault<z.ZodBoolean>;
+    customerChoiceFamilies: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+}, "strip", z.ZodTypeAny, {
+    tags: {
+        id: string;
+        key: string;
+        label: {
+            en: string;
+            ar: string;
+        };
+        enabled: boolean;
+    }[];
+    fallbackTemplateKey: string | null;
+    families: {
+        id: string;
+        key: string;
+        description: {
+            en: string;
+            ar: string;
+        };
+        name: {
+            en: string;
+            ar: string;
+        };
+        order: number;
+        enabled: boolean;
+    }[];
+    packs: {
+        id: string;
+        key: string;
+        description: {
+            en: string;
+            ar: string;
+        };
+        createdAt: string | null;
+        name: {
+            en: string;
+            ar: string;
+        };
+        source: "ADMIN" | "BIOREZA" | "IMPORTED";
+        version: number;
+    }[];
+    stepPresets: {
+        id: string;
+        key: string;
+        description: {
+            en: string;
+            ar: string;
+        };
+        name: {
+            en: string;
+            ar: string;
+        };
+        enabled: boolean;
+        domain: string;
+        steps: {
+            id: string;
+            order: number;
+            conditions: {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null;
+            required: boolean;
+            target: {
+                keys: string[];
+                ids: string[];
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            };
+            roleKey: string;
+            period: "AM" | "PM";
+            preferredProductIds: string[];
+            maxAlternatives: number;
+            optionalPriority: number;
+            fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+            fallbackRoleKeys: string[];
+            spendingWeight: number | null;
+        }[];
+    }[];
+    customerChoiceEnabled: boolean;
+    customerChoiceFamilies: string[];
+}, {
+    tags?: {
+        id: string;
+        key: string;
+        label: {
+            en: string;
+            ar: string;
+        };
+        enabled?: boolean | undefined;
+    }[] | undefined;
+    fallbackTemplateKey?: string | null | undefined;
+    families?: {
+        id: string;
+        key: string;
+        name: {
+            en: string;
+            ar: string;
+        };
+        description?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        order?: number | undefined;
+        enabled?: boolean | undefined;
+    }[] | undefined;
+    packs?: {
+        id: string;
+        key: string;
+        name: {
+            en: string;
+            ar: string;
+        };
+        description?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        createdAt?: string | null | undefined;
+        source?: "ADMIN" | "BIOREZA" | "IMPORTED" | undefined;
+        version?: number | undefined;
+    }[] | undefined;
+    stepPresets?: {
+        id: string;
+        key: string;
+        name: {
+            en: string;
+            ar: string;
+        };
+        domain: string;
+        steps: {
+            id: string;
+            order: number;
+            roleKey: string;
+            period: "AM" | "PM";
+            conditions?: {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null | undefined;
+            required?: boolean | undefined;
+            target?: {
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                keys?: string[] | undefined;
+                ids?: string[] | undefined;
+            } | undefined;
+            preferredProductIds?: string[] | undefined;
+            maxAlternatives?: number | undefined;
+            optionalPriority?: number | undefined;
+            fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+            fallbackRoleKeys?: string[] | undefined;
+            spendingWeight?: number | null | undefined;
+        }[];
+        description?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        enabled?: boolean | undefined;
+    }[] | undefined;
+    customerChoiceEnabled?: boolean | undefined;
+    customerChoiceFamilies?: string[] | undefined;
+}>;
+export declare const routineAnchorBoostRuleSchema: z.ZodObject<{
+    id: z.ZodString;
+    key: z.ZodString;
+    name: z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>;
+    enabled: z.ZodDefault<z.ZodBoolean>;
+    priority: z.ZodDefault<z.ZodNumber>;
+    anchor: z.ZodObject<{
+        kind: z.ZodEnum<["ALL", "PRODUCT", "VARIANT", "CATEGORY", "BRAND", "TAG", "INGREDIENT", "ROLE"]>;
+        ids: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        keys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        keys: string[];
+        ids: string[];
+        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+    }, {
+        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+        keys?: string[] | undefined;
+        ids?: string[] | undefined;
+    }>;
+    candidate: z.ZodObject<{
+        kind: z.ZodEnum<["ALL", "PRODUCT", "VARIANT", "CATEGORY", "BRAND", "TAG", "INGREDIENT", "ROLE"]>;
+        ids: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        keys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        keys: string[];
+        ids: string[];
+        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+    }, {
+        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+        keys?: string[] | undefined;
+        ids?: string[] | undefined;
+    }>;
+    score: z.ZodNumber;
+    channel: z.ZodDefault<z.ZodEnum<["RECOMMENDATION", "MERCHANDISING"]>>;
+}, "strip", z.ZodTypeAny, {
+    id: string;
+    key: string;
+    channel: "RECOMMENDATION" | "MERCHANDISING";
+    name: {
+        en: string;
+        ar: string;
+    };
+    enabled: boolean;
+    priority: number;
+    score: number;
+    anchor: {
+        keys: string[];
+        ids: string[];
+        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+    };
+    candidate: {
+        keys: string[];
+        ids: string[];
+        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+    };
+}, {
+    id: string;
+    key: string;
+    name: {
+        en: string;
+        ar: string;
+    };
+    score: number;
+    anchor: {
+        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+        keys?: string[] | undefined;
+        ids?: string[] | undefined;
+    };
+    candidate: {
+        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+        keys?: string[] | undefined;
+        ids?: string[] | undefined;
+    };
+    channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
+    enabled?: boolean | undefined;
+    priority?: number | undefined;
+}>;
+export declare const routineContextualCompletionSchema: z.ZodObject<{
+    enabled: z.ZodDefault<z.ZodBoolean>;
+    enabledDomains: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    eligibleAnchorRoles: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    defaultTemplateKeys: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+    allowUnavailableAnchorPlanning: z.ZodDefault<z.ZodBoolean>;
+    requireApprovedReason: z.ZodDefault<z.ZodBoolean>;
+    anchorBoostRules: z.ZodDefault<z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        key: z.ZodString;
+        name: z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>;
+        enabled: z.ZodDefault<z.ZodBoolean>;
+        priority: z.ZodDefault<z.ZodNumber>;
+        anchor: z.ZodObject<{
+            kind: z.ZodEnum<["ALL", "PRODUCT", "VARIANT", "CATEGORY", "BRAND", "TAG", "INGREDIENT", "ROLE"]>;
+            ids: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            keys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        }, "strip", z.ZodTypeAny, {
+            keys: string[];
+            ids: string[];
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+        }, {
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            keys?: string[] | undefined;
+            ids?: string[] | undefined;
+        }>;
+        candidate: z.ZodObject<{
+            kind: z.ZodEnum<["ALL", "PRODUCT", "VARIANT", "CATEGORY", "BRAND", "TAG", "INGREDIENT", "ROLE"]>;
+            ids: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            keys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        }, "strip", z.ZodTypeAny, {
+            keys: string[];
+            ids: string[];
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+        }, {
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            keys?: string[] | undefined;
+            ids?: string[] | undefined;
+        }>;
+        score: z.ZodNumber;
+        channel: z.ZodDefault<z.ZodEnum<["RECOMMENDATION", "MERCHANDISING"]>>;
+    }, "strip", z.ZodTypeAny, {
+        id: string;
+        key: string;
+        channel: "RECOMMENDATION" | "MERCHANDISING";
+        name: {
+            en: string;
+            ar: string;
+        };
+        enabled: boolean;
+        priority: number;
+        score: number;
+        anchor: {
+            keys: string[];
+            ids: string[];
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+        };
+        candidate: {
+            keys: string[];
+            ids: string[];
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+        };
+    }, {
+        id: string;
+        key: string;
+        name: {
+            en: string;
+            ar: string;
+        };
+        score: number;
+        anchor: {
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            keys?: string[] | undefined;
+            ids?: string[] | undefined;
+        };
+        candidate: {
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            keys?: string[] | undefined;
+            ids?: string[] | undefined;
+        };
+        channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
+        enabled?: boolean | undefined;
+        priority?: number | undefined;
+    }>, "many">>;
+    title: z.ZodDefault<z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>>;
+    introduction: z.ZodDefault<z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>>;
+    unavailableMessage: z.ZodDefault<z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>>;
+    anchorExplanation: z.ZodDefault<z.ZodObject<{
+        en: z.ZodString;
+        ar: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        en: string;
+        ar: string;
+    }, {
+        en: string;
+        ar: string;
+    }>>;
+}, "strip", z.ZodTypeAny, {
+    enabled: boolean;
+    title: {
+        en: string;
+        ar: string;
+    };
+    enabledDomains: string[];
+    eligibleAnchorRoles: string[];
+    defaultTemplateKeys: Record<string, string>;
+    allowUnavailableAnchorPlanning: boolean;
+    requireApprovedReason: boolean;
+    anchorBoostRules: {
+        id: string;
+        key: string;
+        channel: "RECOMMENDATION" | "MERCHANDISING";
+        name: {
+            en: string;
+            ar: string;
+        };
+        enabled: boolean;
+        priority: number;
+        score: number;
+        anchor: {
+            keys: string[];
+            ids: string[];
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+        };
+        candidate: {
+            keys: string[];
+            ids: string[];
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+        };
+    }[];
+    introduction: {
+        en: string;
+        ar: string;
+    };
+    unavailableMessage: {
+        en: string;
+        ar: string;
+    };
+    anchorExplanation: {
+        en: string;
+        ar: string;
+    };
+}, {
+    enabled?: boolean | undefined;
+    title?: {
+        en: string;
+        ar: string;
+    } | undefined;
+    enabledDomains?: string[] | undefined;
+    eligibleAnchorRoles?: string[] | undefined;
+    defaultTemplateKeys?: Record<string, string> | undefined;
+    allowUnavailableAnchorPlanning?: boolean | undefined;
+    requireApprovedReason?: boolean | undefined;
+    anchorBoostRules?: {
+        id: string;
+        key: string;
+        name: {
+            en: string;
+            ar: string;
+        };
+        score: number;
+        anchor: {
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            keys?: string[] | undefined;
+            ids?: string[] | undefined;
+        };
+        candidate: {
+            kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            keys?: string[] | undefined;
+            ids?: string[] | undefined;
+        };
+        channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
+        enabled?: boolean | undefined;
+        priority?: number | undefined;
+    }[] | undefined;
+    introduction?: {
+        en: string;
+        ar: string;
+    } | undefined;
+    unavailableMessage?: {
+        en: string;
+        ar: string;
+    } | undefined;
+    anchorExplanation?: {
+        en: string;
+        ar: string;
+    } | undefined;
 }>;
 export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
-    schemaVersion: z.ZodLiteral<1>;
+    schemaVersion: z.ZodUnion<[z.ZodLiteral<1>, z.ZodLiteral<2>]>;
     title: z.ZodObject<{
         en: z.ZodString;
         ar: z.ZodString;
@@ -1530,6 +3554,9 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         }>>;
         required: z.ZodDefault<z.ZodBoolean>;
+        modes: z.ZodDefault<z.ZodArray<z.ZodEnum<["FULL", "CONTEXTUAL"]>, "many">>;
+        contextualRequired: z.ZodDefault<z.ZodBoolean>;
+        contextualOrder: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         enabled: z.ZodDefault<z.ZodBoolean>;
         order: z.ZodNumber;
         visibility: z.ZodDefault<z.ZodNullable<z.ZodObject<{
@@ -1692,6 +3719,9 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         };
         required: boolean;
+        modes: ("FULL" | "CONTEXTUAL")[];
+        contextualRequired: boolean;
+        contextualOrder: number | null;
         answers: {
             id: string;
             key: string;
@@ -1747,6 +3777,9 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         } | undefined;
         required?: boolean | undefined;
+        modes?: ("FULL" | "CONTEXTUAL")[] | undefined;
+        contextualRequired?: boolean | undefined;
+        contextualOrder?: number | null | undefined;
         directSignalKey?: string | null | undefined;
         answers?: {
             id: string;
@@ -1802,6 +3835,9 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         };
         required: boolean;
+        modes: ("FULL" | "CONTEXTUAL")[];
+        contextualRequired: boolean;
+        contextualOrder: number | null;
         answers: {
             id: string;
             key: string;
@@ -1857,6 +3893,9 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         } | undefined;
         required?: boolean | undefined;
+        modes?: ("FULL" | "CONTEXTUAL")[] | undefined;
+        contextualRequired?: boolean | undefined;
+        contextualOrder?: number | null | undefined;
         directSignalKey?: string | null | undefined;
         answers?: {
             id: string;
@@ -2018,6 +4057,10 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         }>>;
         amOrder: z.ZodNumber;
         pmOrder: z.ZodNumber;
+        domain: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        amAllowed: z.ZodDefault<z.ZodBoolean>;
+        pmAllowed: z.ZodDefault<z.ZodBoolean>;
+        defaultPriority: z.ZodDefault<z.ZodNumber>;
         enabled: z.ZodDefault<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
         id: string;
@@ -2033,6 +4076,10 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         enabled: boolean;
         amOrder: number;
         pmOrder: number;
+        domain: string | null;
+        amAllowed: boolean;
+        pmAllowed: boolean;
+        defaultPriority: number;
     }, {
         id: string;
         key: string;
@@ -2047,6 +4094,10 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         } | undefined;
         enabled?: boolean | undefined;
+        domain?: string | null | undefined;
+        amAllowed?: boolean | undefined;
+        pmAllowed?: boolean | undefined;
+        defaultPriority?: number | undefined;
     }>, "many">;
     rules: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -2425,6 +4476,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         }>;
+        internalName: z.ZodOptional<z.ZodString>;
         description: z.ZodDefault<z.ZodObject<{
             en: z.ZodString;
             ar: z.ZodString;
@@ -2436,7 +4488,142 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         }>>;
         enabled: z.ZodDefault<z.ZodBoolean>;
+        status: z.ZodDefault<z.ZodEnum<["DRAFT", "PUBLISHED", "SCHEDULED", "PAUSED", "ARCHIVED"]>>;
+        version: z.ZodDefault<z.ZodNumber>;
         priority: z.ZodDefault<z.ZodNumber>;
+        domain: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        familyKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        complexity: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        packKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        tags: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        baseTemplateKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        variant: z.ZodDefault<z.ZodObject<{
+            kind: z.ZodDefault<z.ZodEnum<["BASE", "SKIN_TYPE", "CONCERN", "COMPLEXITY", "BUDGET", "SEASONAL", "LIFESTYLE", "ANCHOR_ROLE", "BRAND", "CATEGORY", "CUSTOM"]>>;
+            parameters: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+        }, "strip", z.ZodTypeAny, {
+            kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+            parameters: Record<string, string | number | boolean | string[]>;
+        }, {
+            kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+            parameters?: Record<string, string | number | boolean | string[]> | undefined;
+        }>>;
+        hardEligibility: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+            mode: z.ZodEnum<["ALL", "ANY"]>;
+            conditions: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                signalKey: z.ZodString;
+                operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+                value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+            }, "strip", z.ZodTypeAny, {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }, {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }>, "many">;
+        }, "strip", z.ZodTypeAny, {
+            conditions: {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }[];
+            mode: "ALL" | "ANY";
+        }, {
+            conditions: {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }[];
+            mode: "ALL" | "ANY";
+        }>>>;
+        selectionRules: z.ZodDefault<z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            name: z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>;
+            when: z.ZodObject<{
+                mode: z.ZodEnum<["ALL", "ANY"]>;
+                conditions: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    signalKey: z.ZodString;
+                    operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+                    value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+                }, "strip", z.ZodTypeAny, {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }, {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }>, "many">;
+            }, "strip", z.ZodTypeAny, {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            }, {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            }>;
+            score: z.ZodNumber;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            score: number;
+            when: {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            };
+        }, {
+            id: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            score: number;
+            when: {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            };
+        }>, "many">>;
+        allowedAnchorRoles: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         conditions: z.ZodDefault<z.ZodNullable<z.ZodObject<{
             mode: z.ZodEnum<["ALL", "ANY"]>;
             conditions: z.ZodArray<z.ZodObject<{
@@ -2493,9 +4680,57 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }>>;
             preferredProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             maxAlternatives: z.ZodDefault<z.ZodNumber>;
+            conditions: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+                mode: z.ZodEnum<["ALL", "ANY"]>;
+                conditions: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    signalKey: z.ZodString;
+                    operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+                    value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+                }, "strip", z.ZodTypeAny, {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }, {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }>, "many">;
+            }, "strip", z.ZodTypeAny, {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            }, {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            }>>>;
+            optionalPriority: z.ZodDefault<z.ZodNumber>;
+            fallbackMode: z.ZodDefault<z.ZodEnum<["FAIL_TEMPLATE", "SKIP_OPTIONAL", "USE_FALLBACK_ROLE"]>>;
+            fallbackRoleKeys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            spendingWeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         }, "strip", z.ZodTypeAny, {
             id: string;
             order: number;
+            conditions: {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null;
             required: boolean;
             target: {
                 keys: string[];
@@ -2506,11 +4741,24 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             period: "AM" | "PM";
             preferredProductIds: string[];
             maxAlternatives: number;
+            optionalPriority: number;
+            fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+            fallbackRoleKeys: string[];
+            spendingWeight: number | null;
         }, {
             id: string;
             order: number;
             roleKey: string;
             period: "AM" | "PM";
+            conditions?: {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null | undefined;
             required?: boolean | undefined;
             target?: {
                 kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
@@ -2519,8 +4767,129 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             } | undefined;
             preferredProductIds?: string[] | undefined;
             maxAlternatives?: number | undefined;
+            optionalPriority?: number | undefined;
+            fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+            fallbackRoleKeys?: string[] | undefined;
+            spendingWeight?: number | null | undefined;
         }>, "many">;
+        budgetPolicy: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+            mode: z.ZodDefault<z.ZodEnum<["IGNORE", "RESPECT_CUSTOMER", "HARD", "SOFT"]>>;
+            maximum: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+        }, "strip", z.ZodTypeAny, {
+            maximum: number | null;
+            mode: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT";
+        }, {
+            maximum?: number | null | undefined;
+            mode?: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT" | undefined;
+        }>>>;
+        fallbackPolicy: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+            requiredStep: z.ZodDefault<z.ZodEnum<["FAIL_TEMPLATE", "USE_STEP_FALLBACK"]>>;
+            optionalStep: z.ZodDefault<z.ZodLiteral<"SKIP">>;
+            fallbackTemplateKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        }, "strip", z.ZodTypeAny, {
+            requiredStep: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK";
+            optionalStep: "SKIP";
+            fallbackTemplateKey: string | null;
+        }, {
+            requiredStep?: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK" | undefined;
+            optionalStep?: "SKIP" | undefined;
+            fallbackTemplateKey?: string | null | undefined;
+        }>>>;
+        compatibilityPolicy: z.ZodDefault<z.ZodEnum<["STRICT", "STANDARD"]>>;
+        brandConstraint: z.ZodDefault<z.ZodObject<{
+            mode: z.ZodDefault<z.ZodEnum<["NONE", "PREFERRED", "ONLY"]>>;
+            entityId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            parameterized: z.ZodDefault<z.ZodBoolean>;
+        }, "strip", z.ZodTypeAny, {
+            mode: "NONE" | "PREFERRED" | "ONLY";
+            entityId: string | null;
+            parameterized: boolean;
+        }, {
+            mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+            entityId?: string | null | undefined;
+            parameterized?: boolean | undefined;
+        }>>;
+        categoryConstraint: z.ZodDefault<z.ZodObject<{
+            mode: z.ZodDefault<z.ZodEnum<["NONE", "PREFERRED", "ONLY"]>>;
+            entityId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            parameterized: z.ZodDefault<z.ZodBoolean>;
+        }, "strip", z.ZodTypeAny, {
+            mode: "NONE" | "PREFERRED" | "ONLY";
+            entityId: string | null;
+            parameterized: boolean;
+        }, {
+            mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+            entityId?: string | null | undefined;
+            parameterized?: boolean | undefined;
+        }>>;
+        presentation: z.ZodDefault<z.ZodObject<{
+            style: z.ZodDefault<z.ZodEnum<["MINIMAL", "EDITORIAL", "STEP_BY_STEP", "COMPACT", "DETAILED"]>>;
+            estimatedMinutes: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+            thumbnailKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            themeKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            intro: z.ZodDefault<z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>>;
+            outro: z.ZodDefault<z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>>;
+            customerVisible: z.ZodDefault<z.ZodBoolean>;
+        }, "strip", z.ZodTypeAny, {
+            style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
+            estimatedMinutes: number | null;
+            thumbnailKey: string | null;
+            themeKey: string | null;
+            intro: {
+                en: string;
+                ar: string;
+            };
+            outro: {
+                en: string;
+                ar: string;
+            };
+            customerVisible: boolean;
+        }, {
+            style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
+            estimatedMinutes?: number | null | undefined;
+            thumbnailKey?: string | null | undefined;
+            themeKey?: string | null | undefined;
+            intro?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            outro?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            customerVisible?: boolean | undefined;
+        }>>;
+        schedule: z.ZodDefault<z.ZodObject<{
+            startsAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            endsAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        }, "strip", z.ZodTypeAny, {
+            startsAt: string | null;
+            endsAt: string | null;
+        }, {
+            startsAt?: string | null | undefined;
+            endsAt?: string | null | undefined;
+        }>>;
+        pinned: z.ZodDefault<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
+        status: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED";
         id: string;
         key: string;
         description: {
@@ -2532,6 +4901,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         };
         enabled: boolean;
+        tags: string[];
         priority: number;
         conditions: {
             conditions: {
@@ -2542,9 +4912,35 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null;
+        presentation: {
+            style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
+            estimatedMinutes: number | null;
+            thumbnailKey: string | null;
+            themeKey: string | null;
+            intro: {
+                en: string;
+                ar: string;
+            };
+            outro: {
+                en: string;
+                ar: string;
+            };
+            customerVisible: boolean;
+        };
+        domain: string | null;
+        version: number;
         steps: {
             id: string;
             order: number;
+            conditions: {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null;
             required: boolean;
             target: {
                 keys: string[];
@@ -2555,7 +4951,72 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             period: "AM" | "PM";
             preferredProductIds: string[];
             maxAlternatives: number;
+            optionalPriority: number;
+            fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+            fallbackRoleKeys: string[];
+            spendingWeight: number | null;
         }[];
+        familyKey: string | null;
+        complexity: string | null;
+        packKey: string | null;
+        baseTemplateKey: string | null;
+        variant: {
+            kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+            parameters: Record<string, string | number | boolean | string[]>;
+        };
+        hardEligibility: {
+            conditions: {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }[];
+            mode: "ALL" | "ANY";
+        } | null;
+        selectionRules: {
+            id: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            score: number;
+            when: {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            };
+        }[];
+        allowedAnchorRoles: string[];
+        budgetPolicy: {
+            maximum: number | null;
+            mode: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT";
+        } | null;
+        fallbackPolicy: {
+            requiredStep: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK";
+            optionalStep: "SKIP";
+            fallbackTemplateKey: string | null;
+        } | null;
+        compatibilityPolicy: "STANDARD" | "STRICT";
+        brandConstraint: {
+            mode: "NONE" | "PREFERRED" | "ONLY";
+            entityId: string | null;
+            parameterized: boolean;
+        };
+        categoryConstraint: {
+            mode: "NONE" | "PREFERRED" | "ONLY";
+            entityId: string | null;
+            parameterized: boolean;
+        };
+        schedule: {
+            startsAt: string | null;
+            endsAt: string | null;
+        };
+        pinned: boolean;
+        internalName?: string | undefined;
     }, {
         id: string;
         key: string;
@@ -2568,6 +5029,15 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             order: number;
             roleKey: string;
             period: "AM" | "PM";
+            conditions?: {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null | undefined;
             required?: boolean | undefined;
             target?: {
                 kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
@@ -2576,12 +5046,18 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             } | undefined;
             preferredProductIds?: string[] | undefined;
             maxAlternatives?: number | undefined;
+            optionalPriority?: number | undefined;
+            fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+            fallbackRoleKeys?: string[] | undefined;
+            spendingWeight?: number | null | undefined;
         }[];
+        status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED" | undefined;
         description?: {
             en: string;
             ar: string;
         } | undefined;
         enabled?: boolean | undefined;
+        tags?: string[] | undefined;
         priority?: number | undefined;
         conditions?: {
             conditions: {
@@ -2592,7 +5068,837 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null | undefined;
+        presentation?: {
+            style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
+            estimatedMinutes?: number | null | undefined;
+            thumbnailKey?: string | null | undefined;
+            themeKey?: string | null | undefined;
+            intro?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            outro?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            customerVisible?: boolean | undefined;
+        } | undefined;
+        domain?: string | null | undefined;
+        version?: number | undefined;
+        internalName?: string | undefined;
+        familyKey?: string | null | undefined;
+        complexity?: string | null | undefined;
+        packKey?: string | null | undefined;
+        baseTemplateKey?: string | null | undefined;
+        variant?: {
+            kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+            parameters?: Record<string, string | number | boolean | string[]> | undefined;
+        } | undefined;
+        hardEligibility?: {
+            conditions: {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }[];
+            mode: "ALL" | "ANY";
+        } | null | undefined;
+        selectionRules?: {
+            id: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            score: number;
+            when: {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            };
+        }[] | undefined;
+        allowedAnchorRoles?: string[] | undefined;
+        budgetPolicy?: {
+            maximum?: number | null | undefined;
+            mode?: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT" | undefined;
+        } | null | undefined;
+        fallbackPolicy?: {
+            requiredStep?: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK" | undefined;
+            optionalStep?: "SKIP" | undefined;
+            fallbackTemplateKey?: string | null | undefined;
+        } | null | undefined;
+        compatibilityPolicy?: "STANDARD" | "STRICT" | undefined;
+        brandConstraint?: {
+            mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+            entityId?: string | null | undefined;
+            parameterized?: boolean | undefined;
+        } | undefined;
+        categoryConstraint?: {
+            mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+            entityId?: string | null | undefined;
+            parameterized?: boolean | undefined;
+        } | undefined;
+        schedule?: {
+            startsAt?: string | null | undefined;
+            endsAt?: string | null | undefined;
+        } | undefined;
+        pinned?: boolean | undefined;
     }>, "many">;
+    templateUniverse: z.ZodDefault<z.ZodObject<{
+        families: z.ZodDefault<z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            key: z.ZodString;
+            name: z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>;
+            description: z.ZodDefault<z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>>;
+            order: z.ZodDefault<z.ZodNumber>;
+            enabled: z.ZodDefault<z.ZodBoolean>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            key: string;
+            description: {
+                en: string;
+                ar: string;
+            };
+            name: {
+                en: string;
+                ar: string;
+            };
+            order: number;
+            enabled: boolean;
+        }, {
+            id: string;
+            key: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            description?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            order?: number | undefined;
+            enabled?: boolean | undefined;
+        }>, "many">>;
+        packs: z.ZodDefault<z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            key: z.ZodString;
+            name: z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>;
+            description: z.ZodDefault<z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>>;
+            version: z.ZodDefault<z.ZodNumber>;
+            source: z.ZodDefault<z.ZodEnum<["BIOREZA", "ADMIN", "IMPORTED"]>>;
+            createdAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            key: string;
+            description: {
+                en: string;
+                ar: string;
+            };
+            createdAt: string | null;
+            name: {
+                en: string;
+                ar: string;
+            };
+            source: "ADMIN" | "BIOREZA" | "IMPORTED";
+            version: number;
+        }, {
+            id: string;
+            key: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            description?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            createdAt?: string | null | undefined;
+            source?: "ADMIN" | "BIOREZA" | "IMPORTED" | undefined;
+            version?: number | undefined;
+        }>, "many">>;
+        tags: z.ZodDefault<z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            key: z.ZodString;
+            label: z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>;
+            enabled: z.ZodDefault<z.ZodBoolean>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            key: string;
+            label: {
+                en: string;
+                ar: string;
+            };
+            enabled: boolean;
+        }, {
+            id: string;
+            key: string;
+            label: {
+                en: string;
+                ar: string;
+            };
+            enabled?: boolean | undefined;
+        }>, "many">>;
+        stepPresets: z.ZodDefault<z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            key: z.ZodString;
+            name: z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>;
+            description: z.ZodDefault<z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>>;
+            domain: z.ZodString;
+            steps: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                roleKey: z.ZodString;
+                period: z.ZodEnum<["AM", "PM"]>;
+                required: z.ZodDefault<z.ZodBoolean>;
+                order: z.ZodNumber;
+                target: z.ZodDefault<z.ZodObject<{
+                    kind: z.ZodEnum<["ALL", "PRODUCT", "VARIANT", "CATEGORY", "BRAND", "TAG", "INGREDIENT", "ROLE"]>;
+                    ids: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+                    keys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+                }, "strip", z.ZodTypeAny, {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                }, {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                }>>;
+                preferredProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+                maxAlternatives: z.ZodDefault<z.ZodNumber>;
+                conditions: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+                    mode: z.ZodEnum<["ALL", "ANY"]>;
+                    conditions: z.ZodArray<z.ZodObject<{
+                        id: z.ZodString;
+                        signalKey: z.ZodString;
+                        operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+                        value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+                    }, "strip", z.ZodTypeAny, {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }, {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }>, "many">;
+                }, "strip", z.ZodTypeAny, {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                }, {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                }>>>;
+                optionalPriority: z.ZodDefault<z.ZodNumber>;
+                fallbackMode: z.ZodDefault<z.ZodEnum<["FAIL_TEMPLATE", "SKIP_OPTIONAL", "USE_FALLBACK_ROLE"]>>;
+                fallbackRoleKeys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+                spendingWeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+            }, "strip", z.ZodTypeAny, {
+                id: string;
+                order: number;
+                conditions: {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null;
+                required: boolean;
+                target: {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                };
+                roleKey: string;
+                period: "AM" | "PM";
+                preferredProductIds: string[];
+                maxAlternatives: number;
+                optionalPriority: number;
+                fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+                fallbackRoleKeys: string[];
+                spendingWeight: number | null;
+            }, {
+                id: string;
+                order: number;
+                roleKey: string;
+                period: "AM" | "PM";
+                conditions?: {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null | undefined;
+                required?: boolean | undefined;
+                target?: {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                } | undefined;
+                preferredProductIds?: string[] | undefined;
+                maxAlternatives?: number | undefined;
+                optionalPriority?: number | undefined;
+                fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+                fallbackRoleKeys?: string[] | undefined;
+                spendingWeight?: number | null | undefined;
+            }>, "many">;
+            enabled: z.ZodDefault<z.ZodBoolean>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            key: string;
+            description: {
+                en: string;
+                ar: string;
+            };
+            name: {
+                en: string;
+                ar: string;
+            };
+            enabled: boolean;
+            domain: string;
+            steps: {
+                id: string;
+                order: number;
+                conditions: {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null;
+                required: boolean;
+                target: {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                };
+                roleKey: string;
+                period: "AM" | "PM";
+                preferredProductIds: string[];
+                maxAlternatives: number;
+                optionalPriority: number;
+                fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+                fallbackRoleKeys: string[];
+                spendingWeight: number | null;
+            }[];
+        }, {
+            id: string;
+            key: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            domain: string;
+            steps: {
+                id: string;
+                order: number;
+                roleKey: string;
+                period: "AM" | "PM";
+                conditions?: {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null | undefined;
+                required?: boolean | undefined;
+                target?: {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                } | undefined;
+                preferredProductIds?: string[] | undefined;
+                maxAlternatives?: number | undefined;
+                optionalPriority?: number | undefined;
+                fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+                fallbackRoleKeys?: string[] | undefined;
+                spendingWeight?: number | null | undefined;
+            }[];
+            description?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            enabled?: boolean | undefined;
+        }>, "many">>;
+        fallbackTemplateKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        customerChoiceEnabled: z.ZodDefault<z.ZodBoolean>;
+        customerChoiceFamilies: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+    }, "strip", z.ZodTypeAny, {
+        tags: {
+            id: string;
+            key: string;
+            label: {
+                en: string;
+                ar: string;
+            };
+            enabled: boolean;
+        }[];
+        fallbackTemplateKey: string | null;
+        families: {
+            id: string;
+            key: string;
+            description: {
+                en: string;
+                ar: string;
+            };
+            name: {
+                en: string;
+                ar: string;
+            };
+            order: number;
+            enabled: boolean;
+        }[];
+        packs: {
+            id: string;
+            key: string;
+            description: {
+                en: string;
+                ar: string;
+            };
+            createdAt: string | null;
+            name: {
+                en: string;
+                ar: string;
+            };
+            source: "ADMIN" | "BIOREZA" | "IMPORTED";
+            version: number;
+        }[];
+        stepPresets: {
+            id: string;
+            key: string;
+            description: {
+                en: string;
+                ar: string;
+            };
+            name: {
+                en: string;
+                ar: string;
+            };
+            enabled: boolean;
+            domain: string;
+            steps: {
+                id: string;
+                order: number;
+                conditions: {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null;
+                required: boolean;
+                target: {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                };
+                roleKey: string;
+                period: "AM" | "PM";
+                preferredProductIds: string[];
+                maxAlternatives: number;
+                optionalPriority: number;
+                fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+                fallbackRoleKeys: string[];
+                spendingWeight: number | null;
+            }[];
+        }[];
+        customerChoiceEnabled: boolean;
+        customerChoiceFamilies: string[];
+    }, {
+        tags?: {
+            id: string;
+            key: string;
+            label: {
+                en: string;
+                ar: string;
+            };
+            enabled?: boolean | undefined;
+        }[] | undefined;
+        fallbackTemplateKey?: string | null | undefined;
+        families?: {
+            id: string;
+            key: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            description?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            order?: number | undefined;
+            enabled?: boolean | undefined;
+        }[] | undefined;
+        packs?: {
+            id: string;
+            key: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            description?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            createdAt?: string | null | undefined;
+            source?: "ADMIN" | "BIOREZA" | "IMPORTED" | undefined;
+            version?: number | undefined;
+        }[] | undefined;
+        stepPresets?: {
+            id: string;
+            key: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            domain: string;
+            steps: {
+                id: string;
+                order: number;
+                roleKey: string;
+                period: "AM" | "PM";
+                conditions?: {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null | undefined;
+                required?: boolean | undefined;
+                target?: {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                } | undefined;
+                preferredProductIds?: string[] | undefined;
+                maxAlternatives?: number | undefined;
+                optionalPriority?: number | undefined;
+                fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+                fallbackRoleKeys?: string[] | undefined;
+                spendingWeight?: number | null | undefined;
+            }[];
+            description?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            enabled?: boolean | undefined;
+        }[] | undefined;
+        customerChoiceEnabled?: boolean | undefined;
+        customerChoiceFamilies?: string[] | undefined;
+    }>>;
+    contextualCompletion: z.ZodDefault<z.ZodObject<{
+        enabled: z.ZodDefault<z.ZodBoolean>;
+        enabledDomains: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        eligibleAnchorRoles: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        defaultTemplateKeys: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+        allowUnavailableAnchorPlanning: z.ZodDefault<z.ZodBoolean>;
+        requireApprovedReason: z.ZodDefault<z.ZodBoolean>;
+        anchorBoostRules: z.ZodDefault<z.ZodArray<z.ZodObject<{
+            id: z.ZodString;
+            key: z.ZodString;
+            name: z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>;
+            enabled: z.ZodDefault<z.ZodBoolean>;
+            priority: z.ZodDefault<z.ZodNumber>;
+            anchor: z.ZodObject<{
+                kind: z.ZodEnum<["ALL", "PRODUCT", "VARIANT", "CATEGORY", "BRAND", "TAG", "INGREDIENT", "ROLE"]>;
+                ids: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+                keys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            }, "strip", z.ZodTypeAny, {
+                keys: string[];
+                ids: string[];
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            }, {
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                keys?: string[] | undefined;
+                ids?: string[] | undefined;
+            }>;
+            candidate: z.ZodObject<{
+                kind: z.ZodEnum<["ALL", "PRODUCT", "VARIANT", "CATEGORY", "BRAND", "TAG", "INGREDIENT", "ROLE"]>;
+                ids: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+                keys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            }, "strip", z.ZodTypeAny, {
+                keys: string[];
+                ids: string[];
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            }, {
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                keys?: string[] | undefined;
+                ids?: string[] | undefined;
+            }>;
+            score: z.ZodNumber;
+            channel: z.ZodDefault<z.ZodEnum<["RECOMMENDATION", "MERCHANDISING"]>>;
+        }, "strip", z.ZodTypeAny, {
+            id: string;
+            key: string;
+            channel: "RECOMMENDATION" | "MERCHANDISING";
+            name: {
+                en: string;
+                ar: string;
+            };
+            enabled: boolean;
+            priority: number;
+            score: number;
+            anchor: {
+                keys: string[];
+                ids: string[];
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            };
+            candidate: {
+                keys: string[];
+                ids: string[];
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            };
+        }, {
+            id: string;
+            key: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            score: number;
+            anchor: {
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                keys?: string[] | undefined;
+                ids?: string[] | undefined;
+            };
+            candidate: {
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                keys?: string[] | undefined;
+                ids?: string[] | undefined;
+            };
+            channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
+            enabled?: boolean | undefined;
+            priority?: number | undefined;
+        }>, "many">>;
+        title: z.ZodDefault<z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>>;
+        introduction: z.ZodDefault<z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>>;
+        unavailableMessage: z.ZodDefault<z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>>;
+        anchorExplanation: z.ZodDefault<z.ZodObject<{
+            en: z.ZodString;
+            ar: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            en: string;
+            ar: string;
+        }, {
+            en: string;
+            ar: string;
+        }>>;
+    }, "strip", z.ZodTypeAny, {
+        enabled: boolean;
+        title: {
+            en: string;
+            ar: string;
+        };
+        enabledDomains: string[];
+        eligibleAnchorRoles: string[];
+        defaultTemplateKeys: Record<string, string>;
+        allowUnavailableAnchorPlanning: boolean;
+        requireApprovedReason: boolean;
+        anchorBoostRules: {
+            id: string;
+            key: string;
+            channel: "RECOMMENDATION" | "MERCHANDISING";
+            name: {
+                en: string;
+                ar: string;
+            };
+            enabled: boolean;
+            priority: number;
+            score: number;
+            anchor: {
+                keys: string[];
+                ids: string[];
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            };
+            candidate: {
+                keys: string[];
+                ids: string[];
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            };
+        }[];
+        introduction: {
+            en: string;
+            ar: string;
+        };
+        unavailableMessage: {
+            en: string;
+            ar: string;
+        };
+        anchorExplanation: {
+            en: string;
+            ar: string;
+        };
+    }, {
+        enabled?: boolean | undefined;
+        title?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        enabledDomains?: string[] | undefined;
+        eligibleAnchorRoles?: string[] | undefined;
+        defaultTemplateKeys?: Record<string, string> | undefined;
+        allowUnavailableAnchorPlanning?: boolean | undefined;
+        requireApprovedReason?: boolean | undefined;
+        anchorBoostRules?: {
+            id: string;
+            key: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            score: number;
+            anchor: {
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                keys?: string[] | undefined;
+                ids?: string[] | undefined;
+            };
+            candidate: {
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                keys?: string[] | undefined;
+                ids?: string[] | undefined;
+            };
+            channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
+            enabled?: boolean | undefined;
+            priority?: number | undefined;
+        }[] | undefined;
+        introduction?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        unavailableMessage?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        anchorExplanation?: {
+            en: string;
+            ar: string;
+        } | undefined;
+    }>>;
     settings: z.ZodObject<{
         maximumProductsPerBrand: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         preferBrandDiversity: z.ZodDefault<z.ZodBoolean>;
@@ -2643,12 +5949,12 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         en: string;
         ar: string;
     };
-    schemaVersion: 1;
+    schemaVersion: 1 | 2;
+    estimatedMinutes: number;
     introduction: {
         en: string;
         ar: string;
     };
-    estimatedMinutes: number;
     startLabel: {
         en: string;
         ar: string;
@@ -2698,6 +6004,9 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         };
         required: boolean;
+        modes: ("FULL" | "CONTEXTUAL")[];
+        contextualRequired: boolean;
+        contextualOrder: number | null;
         answers: {
             id: string;
             key: string;
@@ -2735,6 +6044,10 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         enabled: boolean;
         amOrder: number;
         pmOrder: number;
+        domain: string | null;
+        amAllowed: boolean;
+        pmAllowed: boolean;
+        defaultPriority: number;
     }[];
     rules: {
         id: string;
@@ -2811,6 +6124,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         } | null;
     }[];
     templates: {
+        status: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED";
         id: string;
         key: string;
         description: {
@@ -2822,6 +6136,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         };
         enabled: boolean;
+        tags: string[];
         priority: number;
         conditions: {
             conditions: {
@@ -2832,9 +6147,35 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null;
+        presentation: {
+            style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
+            estimatedMinutes: number | null;
+            thumbnailKey: string | null;
+            themeKey: string | null;
+            intro: {
+                en: string;
+                ar: string;
+            };
+            outro: {
+                en: string;
+                ar: string;
+            };
+            customerVisible: boolean;
+        };
+        domain: string | null;
+        version: number;
         steps: {
             id: string;
             order: number;
+            conditions: {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null;
             required: boolean;
             target: {
                 keys: string[];
@@ -2845,8 +6186,203 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             period: "AM" | "PM";
             preferredProductIds: string[];
             maxAlternatives: number;
+            optionalPriority: number;
+            fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+            fallbackRoleKeys: string[];
+            spendingWeight: number | null;
         }[];
+        familyKey: string | null;
+        complexity: string | null;
+        packKey: string | null;
+        baseTemplateKey: string | null;
+        variant: {
+            kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+            parameters: Record<string, string | number | boolean | string[]>;
+        };
+        hardEligibility: {
+            conditions: {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }[];
+            mode: "ALL" | "ANY";
+        } | null;
+        selectionRules: {
+            id: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            score: number;
+            when: {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            };
+        }[];
+        allowedAnchorRoles: string[];
+        budgetPolicy: {
+            maximum: number | null;
+            mode: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT";
+        } | null;
+        fallbackPolicy: {
+            requiredStep: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK";
+            optionalStep: "SKIP";
+            fallbackTemplateKey: string | null;
+        } | null;
+        compatibilityPolicy: "STANDARD" | "STRICT";
+        brandConstraint: {
+            mode: "NONE" | "PREFERRED" | "ONLY";
+            entityId: string | null;
+            parameterized: boolean;
+        };
+        categoryConstraint: {
+            mode: "NONE" | "PREFERRED" | "ONLY";
+            entityId: string | null;
+            parameterized: boolean;
+        };
+        schedule: {
+            startsAt: string | null;
+            endsAt: string | null;
+        };
+        pinned: boolean;
+        internalName?: string | undefined;
     }[];
+    templateUniverse: {
+        tags: {
+            id: string;
+            key: string;
+            label: {
+                en: string;
+                ar: string;
+            };
+            enabled: boolean;
+        }[];
+        fallbackTemplateKey: string | null;
+        families: {
+            id: string;
+            key: string;
+            description: {
+                en: string;
+                ar: string;
+            };
+            name: {
+                en: string;
+                ar: string;
+            };
+            order: number;
+            enabled: boolean;
+        }[];
+        packs: {
+            id: string;
+            key: string;
+            description: {
+                en: string;
+                ar: string;
+            };
+            createdAt: string | null;
+            name: {
+                en: string;
+                ar: string;
+            };
+            source: "ADMIN" | "BIOREZA" | "IMPORTED";
+            version: number;
+        }[];
+        stepPresets: {
+            id: string;
+            key: string;
+            description: {
+                en: string;
+                ar: string;
+            };
+            name: {
+                en: string;
+                ar: string;
+            };
+            enabled: boolean;
+            domain: string;
+            steps: {
+                id: string;
+                order: number;
+                conditions: {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null;
+                required: boolean;
+                target: {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                };
+                roleKey: string;
+                period: "AM" | "PM";
+                preferredProductIds: string[];
+                maxAlternatives: number;
+                optionalPriority: number;
+                fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+                fallbackRoleKeys: string[];
+                spendingWeight: number | null;
+            }[];
+        }[];
+        customerChoiceEnabled: boolean;
+        customerChoiceFamilies: string[];
+    };
+    contextualCompletion: {
+        enabled: boolean;
+        title: {
+            en: string;
+            ar: string;
+        };
+        enabledDomains: string[];
+        eligibleAnchorRoles: string[];
+        defaultTemplateKeys: Record<string, string>;
+        allowUnavailableAnchorPlanning: boolean;
+        requireApprovedReason: boolean;
+        anchorBoostRules: {
+            id: string;
+            key: string;
+            channel: "RECOMMENDATION" | "MERCHANDISING";
+            name: {
+                en: string;
+                ar: string;
+            };
+            enabled: boolean;
+            priority: number;
+            score: number;
+            anchor: {
+                keys: string[];
+                ids: string[];
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            };
+            candidate: {
+                keys: string[];
+                ids: string[];
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            };
+        }[];
+        introduction: {
+            en: string;
+            ar: string;
+        };
+        unavailableMessage: {
+            en: string;
+            ar: string;
+        };
+        anchorExplanation: {
+            en: string;
+            ar: string;
+        };
+    };
     settings: {
         maximumProductsPerBrand: number | null;
         preferBrandDiversity: boolean;
@@ -2892,7 +6428,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         en: string;
         ar: string;
     };
-    schemaVersion: 1;
+    schemaVersion: 1 | 2;
     introduction: {
         en: string;
         ar: string;
@@ -2946,6 +6482,9 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         } | undefined;
         required?: boolean | undefined;
+        modes?: ("FULL" | "CONTEXTUAL")[] | undefined;
+        contextualRequired?: boolean | undefined;
+        contextualOrder?: number | null | undefined;
         directSignalKey?: string | null | undefined;
         answers?: {
             id: string;
@@ -2983,6 +6522,10 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         } | undefined;
         enabled?: boolean | undefined;
+        domain?: string | null | undefined;
+        amAllowed?: boolean | undefined;
+        pmAllowed?: boolean | undefined;
+        defaultPriority?: number | undefined;
     }[];
     rules: {
         id: string;
@@ -3070,6 +6613,15 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             order: number;
             roleKey: string;
             period: "AM" | "PM";
+            conditions?: {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null | undefined;
             required?: boolean | undefined;
             target?: {
                 kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
@@ -3078,12 +6630,18 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             } | undefined;
             preferredProductIds?: string[] | undefined;
             maxAlternatives?: number | undefined;
+            optionalPriority?: number | undefined;
+            fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+            fallbackRoleKeys?: string[] | undefined;
+            spendingWeight?: number | null | undefined;
         }[];
+        status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED" | undefined;
         description?: {
             en: string;
             ar: string;
         } | undefined;
         enabled?: boolean | undefined;
+        tags?: string[] | undefined;
         priority?: number | undefined;
         conditions?: {
             conditions: {
@@ -3094,6 +6652,84 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null | undefined;
+        presentation?: {
+            style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
+            estimatedMinutes?: number | null | undefined;
+            thumbnailKey?: string | null | undefined;
+            themeKey?: string | null | undefined;
+            intro?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            outro?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            customerVisible?: boolean | undefined;
+        } | undefined;
+        domain?: string | null | undefined;
+        version?: number | undefined;
+        internalName?: string | undefined;
+        familyKey?: string | null | undefined;
+        complexity?: string | null | undefined;
+        packKey?: string | null | undefined;
+        baseTemplateKey?: string | null | undefined;
+        variant?: {
+            kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+            parameters?: Record<string, string | number | boolean | string[]> | undefined;
+        } | undefined;
+        hardEligibility?: {
+            conditions: {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }[];
+            mode: "ALL" | "ANY";
+        } | null | undefined;
+        selectionRules?: {
+            id: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            score: number;
+            when: {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            };
+        }[] | undefined;
+        allowedAnchorRoles?: string[] | undefined;
+        budgetPolicy?: {
+            maximum?: number | null | undefined;
+            mode?: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT" | undefined;
+        } | null | undefined;
+        fallbackPolicy?: {
+            requiredStep?: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK" | undefined;
+            optionalStep?: "SKIP" | undefined;
+            fallbackTemplateKey?: string | null | undefined;
+        } | null | undefined;
+        compatibilityPolicy?: "STANDARD" | "STRICT" | undefined;
+        brandConstraint?: {
+            mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+            entityId?: string | null | undefined;
+            parameterized?: boolean | undefined;
+        } | undefined;
+        categoryConstraint?: {
+            mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+            entityId?: string | null | undefined;
+            parameterized?: boolean | undefined;
+        } | undefined;
+        schedule?: {
+            startsAt?: string | null | undefined;
+            endsAt?: string | null | undefined;
+        } | undefined;
+        pinned?: boolean | undefined;
     }[];
     settings: {
         maximumProductsPerBrand?: number | null | undefined;
@@ -3122,6 +6758,136 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         aggregation?: "SUM" | "MAX" | "LAST" | undefined;
     }[] | undefined;
     estimatedMinutes?: number | undefined;
+    templateUniverse?: {
+        tags?: {
+            id: string;
+            key: string;
+            label: {
+                en: string;
+                ar: string;
+            };
+            enabled?: boolean | undefined;
+        }[] | undefined;
+        fallbackTemplateKey?: string | null | undefined;
+        families?: {
+            id: string;
+            key: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            description?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            order?: number | undefined;
+            enabled?: boolean | undefined;
+        }[] | undefined;
+        packs?: {
+            id: string;
+            key: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            description?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            createdAt?: string | null | undefined;
+            source?: "ADMIN" | "BIOREZA" | "IMPORTED" | undefined;
+            version?: number | undefined;
+        }[] | undefined;
+        stepPresets?: {
+            id: string;
+            key: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            domain: string;
+            steps: {
+                id: string;
+                order: number;
+                roleKey: string;
+                period: "AM" | "PM";
+                conditions?: {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null | undefined;
+                required?: boolean | undefined;
+                target?: {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                } | undefined;
+                preferredProductIds?: string[] | undefined;
+                maxAlternatives?: number | undefined;
+                optionalPriority?: number | undefined;
+                fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+                fallbackRoleKeys?: string[] | undefined;
+                spendingWeight?: number | null | undefined;
+            }[];
+            description?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            enabled?: boolean | undefined;
+        }[] | undefined;
+        customerChoiceEnabled?: boolean | undefined;
+        customerChoiceFamilies?: string[] | undefined;
+    } | undefined;
+    contextualCompletion?: {
+        enabled?: boolean | undefined;
+        title?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        enabledDomains?: string[] | undefined;
+        eligibleAnchorRoles?: string[] | undefined;
+        defaultTemplateKeys?: Record<string, string> | undefined;
+        allowUnavailableAnchorPlanning?: boolean | undefined;
+        requireApprovedReason?: boolean | undefined;
+        anchorBoostRules?: {
+            id: string;
+            key: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            score: number;
+            anchor: {
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                keys?: string[] | undefined;
+                ids?: string[] | undefined;
+            };
+            candidate: {
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                keys?: string[] | undefined;
+                ids?: string[] | undefined;
+            };
+            channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
+            enabled?: boolean | undefined;
+            priority?: number | undefined;
+        }[] | undefined;
+        introduction?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        unavailableMessage?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        anchorExplanation?: {
+            en: string;
+            ar: string;
+        } | undefined;
+    } | undefined;
 }>, {
     concerns: {
         id: string;
@@ -3141,12 +6907,12 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         en: string;
         ar: string;
     };
-    schemaVersion: 1;
+    schemaVersion: 1 | 2;
+    estimatedMinutes: number;
     introduction: {
         en: string;
         ar: string;
     };
-    estimatedMinutes: number;
     startLabel: {
         en: string;
         ar: string;
@@ -3196,6 +6962,9 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         };
         required: boolean;
+        modes: ("FULL" | "CONTEXTUAL")[];
+        contextualRequired: boolean;
+        contextualOrder: number | null;
         answers: {
             id: string;
             key: string;
@@ -3233,6 +7002,10 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         enabled: boolean;
         amOrder: number;
         pmOrder: number;
+        domain: string | null;
+        amAllowed: boolean;
+        pmAllowed: boolean;
+        defaultPriority: number;
     }[];
     rules: {
         id: string;
@@ -3309,6 +7082,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         } | null;
     }[];
     templates: {
+        status: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED";
         id: string;
         key: string;
         description: {
@@ -3320,6 +7094,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         };
         enabled: boolean;
+        tags: string[];
         priority: number;
         conditions: {
             conditions: {
@@ -3330,9 +7105,35 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null;
+        presentation: {
+            style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
+            estimatedMinutes: number | null;
+            thumbnailKey: string | null;
+            themeKey: string | null;
+            intro: {
+                en: string;
+                ar: string;
+            };
+            outro: {
+                en: string;
+                ar: string;
+            };
+            customerVisible: boolean;
+        };
+        domain: string | null;
+        version: number;
         steps: {
             id: string;
             order: number;
+            conditions: {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null;
             required: boolean;
             target: {
                 keys: string[];
@@ -3343,8 +7144,203 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             period: "AM" | "PM";
             preferredProductIds: string[];
             maxAlternatives: number;
+            optionalPriority: number;
+            fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+            fallbackRoleKeys: string[];
+            spendingWeight: number | null;
         }[];
+        familyKey: string | null;
+        complexity: string | null;
+        packKey: string | null;
+        baseTemplateKey: string | null;
+        variant: {
+            kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+            parameters: Record<string, string | number | boolean | string[]>;
+        };
+        hardEligibility: {
+            conditions: {
+                value: string | number | boolean | string[] | null;
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+            }[];
+            mode: "ALL" | "ANY";
+        } | null;
+        selectionRules: {
+            id: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            score: number;
+            when: {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            };
+        }[];
+        allowedAnchorRoles: string[];
+        budgetPolicy: {
+            maximum: number | null;
+            mode: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT";
+        } | null;
+        fallbackPolicy: {
+            requiredStep: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK";
+            optionalStep: "SKIP";
+            fallbackTemplateKey: string | null;
+        } | null;
+        compatibilityPolicy: "STANDARD" | "STRICT";
+        brandConstraint: {
+            mode: "NONE" | "PREFERRED" | "ONLY";
+            entityId: string | null;
+            parameterized: boolean;
+        };
+        categoryConstraint: {
+            mode: "NONE" | "PREFERRED" | "ONLY";
+            entityId: string | null;
+            parameterized: boolean;
+        };
+        schedule: {
+            startsAt: string | null;
+            endsAt: string | null;
+        };
+        pinned: boolean;
+        internalName?: string | undefined;
     }[];
+    templateUniverse: {
+        tags: {
+            id: string;
+            key: string;
+            label: {
+                en: string;
+                ar: string;
+            };
+            enabled: boolean;
+        }[];
+        fallbackTemplateKey: string | null;
+        families: {
+            id: string;
+            key: string;
+            description: {
+                en: string;
+                ar: string;
+            };
+            name: {
+                en: string;
+                ar: string;
+            };
+            order: number;
+            enabled: boolean;
+        }[];
+        packs: {
+            id: string;
+            key: string;
+            description: {
+                en: string;
+                ar: string;
+            };
+            createdAt: string | null;
+            name: {
+                en: string;
+                ar: string;
+            };
+            source: "ADMIN" | "BIOREZA" | "IMPORTED";
+            version: number;
+        }[];
+        stepPresets: {
+            id: string;
+            key: string;
+            description: {
+                en: string;
+                ar: string;
+            };
+            name: {
+                en: string;
+                ar: string;
+            };
+            enabled: boolean;
+            domain: string;
+            steps: {
+                id: string;
+                order: number;
+                conditions: {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null;
+                required: boolean;
+                target: {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                };
+                roleKey: string;
+                period: "AM" | "PM";
+                preferredProductIds: string[];
+                maxAlternatives: number;
+                optionalPriority: number;
+                fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+                fallbackRoleKeys: string[];
+                spendingWeight: number | null;
+            }[];
+        }[];
+        customerChoiceEnabled: boolean;
+        customerChoiceFamilies: string[];
+    };
+    contextualCompletion: {
+        enabled: boolean;
+        title: {
+            en: string;
+            ar: string;
+        };
+        enabledDomains: string[];
+        eligibleAnchorRoles: string[];
+        defaultTemplateKeys: Record<string, string>;
+        allowUnavailableAnchorPlanning: boolean;
+        requireApprovedReason: boolean;
+        anchorBoostRules: {
+            id: string;
+            key: string;
+            channel: "RECOMMENDATION" | "MERCHANDISING";
+            name: {
+                en: string;
+                ar: string;
+            };
+            enabled: boolean;
+            priority: number;
+            score: number;
+            anchor: {
+                keys: string[];
+                ids: string[];
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            };
+            candidate: {
+                keys: string[];
+                ids: string[];
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+            };
+        }[];
+        introduction: {
+            en: string;
+            ar: string;
+        };
+        unavailableMessage: {
+            en: string;
+            ar: string;
+        };
+        anchorExplanation: {
+            en: string;
+            ar: string;
+        };
+    };
     settings: {
         maximumProductsPerBrand: number | null;
         preferBrandDiversity: boolean;
@@ -3390,7 +7386,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         en: string;
         ar: string;
     };
-    schemaVersion: 1;
+    schemaVersion: 1 | 2;
     introduction: {
         en: string;
         ar: string;
@@ -3444,6 +7440,9 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         } | undefined;
         required?: boolean | undefined;
+        modes?: ("FULL" | "CONTEXTUAL")[] | undefined;
+        contextualRequired?: boolean | undefined;
+        contextualOrder?: number | null | undefined;
         directSignalKey?: string | null | undefined;
         answers?: {
             id: string;
@@ -3481,6 +7480,10 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         } | undefined;
         enabled?: boolean | undefined;
+        domain?: string | null | undefined;
+        amAllowed?: boolean | undefined;
+        pmAllowed?: boolean | undefined;
+        defaultPriority?: number | undefined;
     }[];
     rules: {
         id: string;
@@ -3568,6 +7571,15 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             order: number;
             roleKey: string;
             period: "AM" | "PM";
+            conditions?: {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null | undefined;
             required?: boolean | undefined;
             target?: {
                 kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
@@ -3576,12 +7588,18 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             } | undefined;
             preferredProductIds?: string[] | undefined;
             maxAlternatives?: number | undefined;
+            optionalPriority?: number | undefined;
+            fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+            fallbackRoleKeys?: string[] | undefined;
+            spendingWeight?: number | null | undefined;
         }[];
+        status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED" | undefined;
         description?: {
             en: string;
             ar: string;
         } | undefined;
         enabled?: boolean | undefined;
+        tags?: string[] | undefined;
         priority?: number | undefined;
         conditions?: {
             conditions: {
@@ -3592,6 +7610,84 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null | undefined;
+        presentation?: {
+            style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
+            estimatedMinutes?: number | null | undefined;
+            thumbnailKey?: string | null | undefined;
+            themeKey?: string | null | undefined;
+            intro?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            outro?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            customerVisible?: boolean | undefined;
+        } | undefined;
+        domain?: string | null | undefined;
+        version?: number | undefined;
+        internalName?: string | undefined;
+        familyKey?: string | null | undefined;
+        complexity?: string | null | undefined;
+        packKey?: string | null | undefined;
+        baseTemplateKey?: string | null | undefined;
+        variant?: {
+            kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+            parameters?: Record<string, string | number | boolean | string[]> | undefined;
+        } | undefined;
+        hardEligibility?: {
+            conditions: {
+                id: string;
+                operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                signalKey: string;
+                value?: string | number | boolean | string[] | null | undefined;
+            }[];
+            mode: "ALL" | "ANY";
+        } | null | undefined;
+        selectionRules?: {
+            id: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            score: number;
+            when: {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            };
+        }[] | undefined;
+        allowedAnchorRoles?: string[] | undefined;
+        budgetPolicy?: {
+            maximum?: number | null | undefined;
+            mode?: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT" | undefined;
+        } | null | undefined;
+        fallbackPolicy?: {
+            requiredStep?: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK" | undefined;
+            optionalStep?: "SKIP" | undefined;
+            fallbackTemplateKey?: string | null | undefined;
+        } | null | undefined;
+        compatibilityPolicy?: "STANDARD" | "STRICT" | undefined;
+        brandConstraint?: {
+            mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+            entityId?: string | null | undefined;
+            parameterized?: boolean | undefined;
+        } | undefined;
+        categoryConstraint?: {
+            mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+            entityId?: string | null | undefined;
+            parameterized?: boolean | undefined;
+        } | undefined;
+        schedule?: {
+            startsAt?: string | null | undefined;
+            endsAt?: string | null | undefined;
+        } | undefined;
+        pinned?: boolean | undefined;
     }[];
     settings: {
         maximumProductsPerBrand?: number | null | undefined;
@@ -3620,6 +7716,136 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         aggregation?: "SUM" | "MAX" | "LAST" | undefined;
     }[] | undefined;
     estimatedMinutes?: number | undefined;
+    templateUniverse?: {
+        tags?: {
+            id: string;
+            key: string;
+            label: {
+                en: string;
+                ar: string;
+            };
+            enabled?: boolean | undefined;
+        }[] | undefined;
+        fallbackTemplateKey?: string | null | undefined;
+        families?: {
+            id: string;
+            key: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            description?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            order?: number | undefined;
+            enabled?: boolean | undefined;
+        }[] | undefined;
+        packs?: {
+            id: string;
+            key: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            description?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            createdAt?: string | null | undefined;
+            source?: "ADMIN" | "BIOREZA" | "IMPORTED" | undefined;
+            version?: number | undefined;
+        }[] | undefined;
+        stepPresets?: {
+            id: string;
+            key: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            domain: string;
+            steps: {
+                id: string;
+                order: number;
+                roleKey: string;
+                period: "AM" | "PM";
+                conditions?: {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null | undefined;
+                required?: boolean | undefined;
+                target?: {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                } | undefined;
+                preferredProductIds?: string[] | undefined;
+                maxAlternatives?: number | undefined;
+                optionalPriority?: number | undefined;
+                fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+                fallbackRoleKeys?: string[] | undefined;
+                spendingWeight?: number | null | undefined;
+            }[];
+            description?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            enabled?: boolean | undefined;
+        }[] | undefined;
+        customerChoiceEnabled?: boolean | undefined;
+        customerChoiceFamilies?: string[] | undefined;
+    } | undefined;
+    contextualCompletion?: {
+        enabled?: boolean | undefined;
+        title?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        enabledDomains?: string[] | undefined;
+        eligibleAnchorRoles?: string[] | undefined;
+        defaultTemplateKeys?: Record<string, string> | undefined;
+        allowUnavailableAnchorPlanning?: boolean | undefined;
+        requireApprovedReason?: boolean | undefined;
+        anchorBoostRules?: {
+            id: string;
+            key: string;
+            name: {
+                en: string;
+                ar: string;
+            };
+            score: number;
+            anchor: {
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                keys?: string[] | undefined;
+                ids?: string[] | undefined;
+            };
+            candidate: {
+                kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                keys?: string[] | undefined;
+                ids?: string[] | undefined;
+            };
+            channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
+            enabled?: boolean | undefined;
+            priority?: number | undefined;
+        }[] | undefined;
+        introduction?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        unavailableMessage?: {
+            en: string;
+            ar: string;
+        } | undefined;
+        anchorExplanation?: {
+            en: string;
+            ar: string;
+        } | undefined;
+    } | undefined;
 }>;
 export declare const routineAnswerValueSchema: z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>;
 export declare const routineAnswersSchema: z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>;
@@ -3627,25 +7853,72 @@ export declare const routineEvaluationInputSchema: z.ZodObject<{
     sessionId: z.ZodOptional<z.ZodString>;
     answers: z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>;
     locale: z.ZodDefault<z.ZodEnum<["en", "ar"]>>;
+    mode: z.ZodDefault<z.ZodEnum<["FULL", "CONTEXTUAL"]>>;
+    anchor: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+        productId: z.ZodString;
+        variantId: z.ZodOptional<z.ZodString>;
+        alreadyOwned: z.ZodDefault<z.ZodBoolean>;
+    }, "strip", z.ZodTypeAny, {
+        productId: string;
+        alreadyOwned: boolean;
+        variantId?: string | undefined;
+    }, {
+        productId: string;
+        variantId?: string | undefined;
+        alreadyOwned?: boolean | undefined;
+    }>>>;
     selectedVariants: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+    requestedTemplateKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    templateParameters: z.ZodDefault<z.ZodObject<{
+        brandId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+        categoryId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    }, "strip", z.ZodTypeAny, {
+        categoryId: string | null;
+        brandId: string | null;
+    }, {
+        categoryId?: string | null | undefined;
+        brandId?: string | null | undefined;
+    }>>;
     includeDiagnostics: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
+    mode: "FULL" | "CONTEXTUAL";
     answers: Record<string, string | number | boolean | string[]>;
+    anchor: {
+        productId: string;
+        alreadyOwned: boolean;
+        variantId?: string | undefined;
+    } | null;
     locale: "en" | "ar";
     selectedVariants: Record<string, string>;
+    requestedTemplateKey: string | null;
+    templateParameters: {
+        categoryId: string | null;
+        brandId: string | null;
+    };
     includeDiagnostics: boolean;
     sessionId?: string | undefined;
 }, {
     answers: Record<string, string | number | boolean | string[]>;
+    mode?: "FULL" | "CONTEXTUAL" | undefined;
+    anchor?: {
+        productId: string;
+        variantId?: string | undefined;
+        alreadyOwned?: boolean | undefined;
+    } | null | undefined;
     sessionId?: string | undefined;
     locale?: "en" | "ar" | undefined;
     selectedVariants?: Record<string, string> | undefined;
+    requestedTemplateKey?: string | null | undefined;
+    templateParameters?: {
+        categoryId?: string | null | undefined;
+        brandId?: string | null | undefined;
+    } | undefined;
     includeDiagnostics?: boolean | undefined;
 }>;
 export declare const routineDraftSaveSchema: z.ZodObject<{
     expectedRevision: z.ZodNumber;
     config: z.ZodEffects<z.ZodObject<{
-        schemaVersion: z.ZodLiteral<1>;
+        schemaVersion: z.ZodUnion<[z.ZodLiteral<1>, z.ZodLiteral<2>]>;
         title: z.ZodObject<{
             en: z.ZodString;
             ar: z.ZodString;
@@ -3742,6 +8015,9 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             }>>;
             required: z.ZodDefault<z.ZodBoolean>;
+            modes: z.ZodDefault<z.ZodArray<z.ZodEnum<["FULL", "CONTEXTUAL"]>, "many">>;
+            contextualRequired: z.ZodDefault<z.ZodBoolean>;
+            contextualOrder: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
             enabled: z.ZodDefault<z.ZodBoolean>;
             order: z.ZodNumber;
             visibility: z.ZodDefault<z.ZodNullable<z.ZodObject<{
@@ -3904,6 +8180,9 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             };
             required: boolean;
+            modes: ("FULL" | "CONTEXTUAL")[];
+            contextualRequired: boolean;
+            contextualOrder: number | null;
             answers: {
                 id: string;
                 key: string;
@@ -3959,6 +8238,9 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             required?: boolean | undefined;
+            modes?: ("FULL" | "CONTEXTUAL")[] | undefined;
+            contextualRequired?: boolean | undefined;
+            contextualOrder?: number | null | undefined;
             directSignalKey?: string | null | undefined;
             answers?: {
                 id: string;
@@ -4014,6 +8296,9 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             };
             required: boolean;
+            modes: ("FULL" | "CONTEXTUAL")[];
+            contextualRequired: boolean;
+            contextualOrder: number | null;
             answers: {
                 id: string;
                 key: string;
@@ -4069,6 +8354,9 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             required?: boolean | undefined;
+            modes?: ("FULL" | "CONTEXTUAL")[] | undefined;
+            contextualRequired?: boolean | undefined;
+            contextualOrder?: number | null | undefined;
             directSignalKey?: string | null | undefined;
             answers?: {
                 id: string;
@@ -4230,6 +8518,10 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             }>>;
             amOrder: z.ZodNumber;
             pmOrder: z.ZodNumber;
+            domain: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            amAllowed: z.ZodDefault<z.ZodBoolean>;
+            pmAllowed: z.ZodDefault<z.ZodBoolean>;
+            defaultPriority: z.ZodDefault<z.ZodNumber>;
             enabled: z.ZodDefault<z.ZodBoolean>;
         }, "strip", z.ZodTypeAny, {
             id: string;
@@ -4245,6 +8537,10 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             enabled: boolean;
             amOrder: number;
             pmOrder: number;
+            domain: string | null;
+            amAllowed: boolean;
+            pmAllowed: boolean;
+            defaultPriority: number;
         }, {
             id: string;
             key: string;
@@ -4259,6 +8555,10 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             enabled?: boolean | undefined;
+            domain?: string | null | undefined;
+            amAllowed?: boolean | undefined;
+            pmAllowed?: boolean | undefined;
+            defaultPriority?: number | undefined;
         }>, "many">;
         rules: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -4637,6 +8937,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             }>;
+            internalName: z.ZodOptional<z.ZodString>;
             description: z.ZodDefault<z.ZodObject<{
                 en: z.ZodString;
                 ar: z.ZodString;
@@ -4648,7 +8949,142 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             }>>;
             enabled: z.ZodDefault<z.ZodBoolean>;
+            status: z.ZodDefault<z.ZodEnum<["DRAFT", "PUBLISHED", "SCHEDULED", "PAUSED", "ARCHIVED"]>>;
+            version: z.ZodDefault<z.ZodNumber>;
             priority: z.ZodDefault<z.ZodNumber>;
+            domain: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            familyKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            complexity: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            packKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            tags: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            baseTemplateKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            variant: z.ZodDefault<z.ZodObject<{
+                kind: z.ZodDefault<z.ZodEnum<["BASE", "SKIN_TYPE", "CONCERN", "COMPLEXITY", "BUDGET", "SEASONAL", "LIFESTYLE", "ANCHOR_ROLE", "BRAND", "CATEGORY", "CUSTOM"]>>;
+                parameters: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+            }, "strip", z.ZodTypeAny, {
+                kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+                parameters: Record<string, string | number | boolean | string[]>;
+            }, {
+                kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+                parameters?: Record<string, string | number | boolean | string[]> | undefined;
+            }>>;
+            hardEligibility: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+                mode: z.ZodEnum<["ALL", "ANY"]>;
+                conditions: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    signalKey: z.ZodString;
+                    operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+                    value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+                }, "strip", z.ZodTypeAny, {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }, {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }>, "many">;
+            }, "strip", z.ZodTypeAny, {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            }, {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            }>>>;
+            selectionRules: z.ZodDefault<z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                name: z.ZodObject<{
+                    en: z.ZodString;
+                    ar: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    en: string;
+                    ar: string;
+                }, {
+                    en: string;
+                    ar: string;
+                }>;
+                when: z.ZodObject<{
+                    mode: z.ZodEnum<["ALL", "ANY"]>;
+                    conditions: z.ZodArray<z.ZodObject<{
+                        id: z.ZodString;
+                        signalKey: z.ZodString;
+                        operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+                        value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+                    }, "strip", z.ZodTypeAny, {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }, {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }>, "many">;
+                }, "strip", z.ZodTypeAny, {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                }, {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                }>;
+                score: z.ZodNumber;
+            }, "strip", z.ZodTypeAny, {
+                id: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                score: number;
+                when: {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                };
+            }, {
+                id: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                score: number;
+                when: {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                };
+            }>, "many">>;
+            allowedAnchorRoles: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             conditions: z.ZodDefault<z.ZodNullable<z.ZodObject<{
                 mode: z.ZodEnum<["ALL", "ANY"]>;
                 conditions: z.ZodArray<z.ZodObject<{
@@ -4705,9 +9141,57 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }>>;
                 preferredProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
                 maxAlternatives: z.ZodDefault<z.ZodNumber>;
+                conditions: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+                    mode: z.ZodEnum<["ALL", "ANY"]>;
+                    conditions: z.ZodArray<z.ZodObject<{
+                        id: z.ZodString;
+                        signalKey: z.ZodString;
+                        operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+                        value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+                    }, "strip", z.ZodTypeAny, {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }, {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }>, "many">;
+                }, "strip", z.ZodTypeAny, {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                }, {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                }>>>;
+                optionalPriority: z.ZodDefault<z.ZodNumber>;
+                fallbackMode: z.ZodDefault<z.ZodEnum<["FAIL_TEMPLATE", "SKIP_OPTIONAL", "USE_FALLBACK_ROLE"]>>;
+                fallbackRoleKeys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+                spendingWeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
             }, "strip", z.ZodTypeAny, {
                 id: string;
                 order: number;
+                conditions: {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null;
                 required: boolean;
                 target: {
                     keys: string[];
@@ -4718,11 +9202,24 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 period: "AM" | "PM";
                 preferredProductIds: string[];
                 maxAlternatives: number;
+                optionalPriority: number;
+                fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+                fallbackRoleKeys: string[];
+                spendingWeight: number | null;
             }, {
                 id: string;
                 order: number;
                 roleKey: string;
                 period: "AM" | "PM";
+                conditions?: {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null | undefined;
                 required?: boolean | undefined;
                 target?: {
                     kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
@@ -4731,8 +9228,129 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 } | undefined;
                 preferredProductIds?: string[] | undefined;
                 maxAlternatives?: number | undefined;
+                optionalPriority?: number | undefined;
+                fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+                fallbackRoleKeys?: string[] | undefined;
+                spendingWeight?: number | null | undefined;
             }>, "many">;
+            budgetPolicy: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+                mode: z.ZodDefault<z.ZodEnum<["IGNORE", "RESPECT_CUSTOMER", "HARD", "SOFT"]>>;
+                maximum: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+            }, "strip", z.ZodTypeAny, {
+                maximum: number | null;
+                mode: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT";
+            }, {
+                maximum?: number | null | undefined;
+                mode?: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT" | undefined;
+            }>>>;
+            fallbackPolicy: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+                requiredStep: z.ZodDefault<z.ZodEnum<["FAIL_TEMPLATE", "USE_STEP_FALLBACK"]>>;
+                optionalStep: z.ZodDefault<z.ZodLiteral<"SKIP">>;
+                fallbackTemplateKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            }, "strip", z.ZodTypeAny, {
+                requiredStep: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK";
+                optionalStep: "SKIP";
+                fallbackTemplateKey: string | null;
+            }, {
+                requiredStep?: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK" | undefined;
+                optionalStep?: "SKIP" | undefined;
+                fallbackTemplateKey?: string | null | undefined;
+            }>>>;
+            compatibilityPolicy: z.ZodDefault<z.ZodEnum<["STRICT", "STANDARD"]>>;
+            brandConstraint: z.ZodDefault<z.ZodObject<{
+                mode: z.ZodDefault<z.ZodEnum<["NONE", "PREFERRED", "ONLY"]>>;
+                entityId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+                parameterized: z.ZodDefault<z.ZodBoolean>;
+            }, "strip", z.ZodTypeAny, {
+                mode: "NONE" | "PREFERRED" | "ONLY";
+                entityId: string | null;
+                parameterized: boolean;
+            }, {
+                mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+                entityId?: string | null | undefined;
+                parameterized?: boolean | undefined;
+            }>>;
+            categoryConstraint: z.ZodDefault<z.ZodObject<{
+                mode: z.ZodDefault<z.ZodEnum<["NONE", "PREFERRED", "ONLY"]>>;
+                entityId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+                parameterized: z.ZodDefault<z.ZodBoolean>;
+            }, "strip", z.ZodTypeAny, {
+                mode: "NONE" | "PREFERRED" | "ONLY";
+                entityId: string | null;
+                parameterized: boolean;
+            }, {
+                mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+                entityId?: string | null | undefined;
+                parameterized?: boolean | undefined;
+            }>>;
+            presentation: z.ZodDefault<z.ZodObject<{
+                style: z.ZodDefault<z.ZodEnum<["MINIMAL", "EDITORIAL", "STEP_BY_STEP", "COMPACT", "DETAILED"]>>;
+                estimatedMinutes: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+                thumbnailKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+                themeKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+                intro: z.ZodDefault<z.ZodObject<{
+                    en: z.ZodString;
+                    ar: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    en: string;
+                    ar: string;
+                }, {
+                    en: string;
+                    ar: string;
+                }>>;
+                outro: z.ZodDefault<z.ZodObject<{
+                    en: z.ZodString;
+                    ar: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    en: string;
+                    ar: string;
+                }, {
+                    en: string;
+                    ar: string;
+                }>>;
+                customerVisible: z.ZodDefault<z.ZodBoolean>;
+            }, "strip", z.ZodTypeAny, {
+                style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
+                estimatedMinutes: number | null;
+                thumbnailKey: string | null;
+                themeKey: string | null;
+                intro: {
+                    en: string;
+                    ar: string;
+                };
+                outro: {
+                    en: string;
+                    ar: string;
+                };
+                customerVisible: boolean;
+            }, {
+                style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
+                estimatedMinutes?: number | null | undefined;
+                thumbnailKey?: string | null | undefined;
+                themeKey?: string | null | undefined;
+                intro?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                outro?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                customerVisible?: boolean | undefined;
+            }>>;
+            schedule: z.ZodDefault<z.ZodObject<{
+                startsAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+                endsAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            }, "strip", z.ZodTypeAny, {
+                startsAt: string | null;
+                endsAt: string | null;
+            }, {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+            }>>;
+            pinned: z.ZodDefault<z.ZodBoolean>;
         }, "strip", z.ZodTypeAny, {
+            status: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED";
             id: string;
             key: string;
             description: {
@@ -4744,6 +9362,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             };
             enabled: boolean;
+            tags: string[];
             priority: number;
             conditions: {
                 conditions: {
@@ -4754,9 +9373,35 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            presentation: {
+                style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
+                estimatedMinutes: number | null;
+                thumbnailKey: string | null;
+                themeKey: string | null;
+                intro: {
+                    en: string;
+                    ar: string;
+                };
+                outro: {
+                    en: string;
+                    ar: string;
+                };
+                customerVisible: boolean;
+            };
+            domain: string | null;
+            version: number;
             steps: {
                 id: string;
                 order: number;
+                conditions: {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null;
                 required: boolean;
                 target: {
                     keys: string[];
@@ -4767,7 +9412,72 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 period: "AM" | "PM";
                 preferredProductIds: string[];
                 maxAlternatives: number;
+                optionalPriority: number;
+                fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+                fallbackRoleKeys: string[];
+                spendingWeight: number | null;
             }[];
+            familyKey: string | null;
+            complexity: string | null;
+            packKey: string | null;
+            baseTemplateKey: string | null;
+            variant: {
+                kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+                parameters: Record<string, string | number | boolean | string[]>;
+            };
+            hardEligibility: {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null;
+            selectionRules: {
+                id: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                score: number;
+                when: {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                };
+            }[];
+            allowedAnchorRoles: string[];
+            budgetPolicy: {
+                maximum: number | null;
+                mode: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT";
+            } | null;
+            fallbackPolicy: {
+                requiredStep: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK";
+                optionalStep: "SKIP";
+                fallbackTemplateKey: string | null;
+            } | null;
+            compatibilityPolicy: "STANDARD" | "STRICT";
+            brandConstraint: {
+                mode: "NONE" | "PREFERRED" | "ONLY";
+                entityId: string | null;
+                parameterized: boolean;
+            };
+            categoryConstraint: {
+                mode: "NONE" | "PREFERRED" | "ONLY";
+                entityId: string | null;
+                parameterized: boolean;
+            };
+            schedule: {
+                startsAt: string | null;
+                endsAt: string | null;
+            };
+            pinned: boolean;
+            internalName?: string | undefined;
         }, {
             id: string;
             key: string;
@@ -4780,6 +9490,15 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 order: number;
                 roleKey: string;
                 period: "AM" | "PM";
+                conditions?: {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null | undefined;
                 required?: boolean | undefined;
                 target?: {
                     kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
@@ -4788,12 +9507,18 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 } | undefined;
                 preferredProductIds?: string[] | undefined;
                 maxAlternatives?: number | undefined;
+                optionalPriority?: number | undefined;
+                fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+                fallbackRoleKeys?: string[] | undefined;
+                spendingWeight?: number | null | undefined;
             }[];
+            status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED" | undefined;
             description?: {
                 en: string;
                 ar: string;
             } | undefined;
             enabled?: boolean | undefined;
+            tags?: string[] | undefined;
             priority?: number | undefined;
             conditions?: {
                 conditions: {
@@ -4804,7 +9529,837 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null | undefined;
+            presentation?: {
+                style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
+                estimatedMinutes?: number | null | undefined;
+                thumbnailKey?: string | null | undefined;
+                themeKey?: string | null | undefined;
+                intro?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                outro?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                customerVisible?: boolean | undefined;
+            } | undefined;
+            domain?: string | null | undefined;
+            version?: number | undefined;
+            internalName?: string | undefined;
+            familyKey?: string | null | undefined;
+            complexity?: string | null | undefined;
+            packKey?: string | null | undefined;
+            baseTemplateKey?: string | null | undefined;
+            variant?: {
+                kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+                parameters?: Record<string, string | number | boolean | string[]> | undefined;
+            } | undefined;
+            hardEligibility?: {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null | undefined;
+            selectionRules?: {
+                id: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                score: number;
+                when: {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                };
+            }[] | undefined;
+            allowedAnchorRoles?: string[] | undefined;
+            budgetPolicy?: {
+                maximum?: number | null | undefined;
+                mode?: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT" | undefined;
+            } | null | undefined;
+            fallbackPolicy?: {
+                requiredStep?: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK" | undefined;
+                optionalStep?: "SKIP" | undefined;
+                fallbackTemplateKey?: string | null | undefined;
+            } | null | undefined;
+            compatibilityPolicy?: "STANDARD" | "STRICT" | undefined;
+            brandConstraint?: {
+                mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+                entityId?: string | null | undefined;
+                parameterized?: boolean | undefined;
+            } | undefined;
+            categoryConstraint?: {
+                mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+                entityId?: string | null | undefined;
+                parameterized?: boolean | undefined;
+            } | undefined;
+            schedule?: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+            } | undefined;
+            pinned?: boolean | undefined;
         }>, "many">;
+        templateUniverse: z.ZodDefault<z.ZodObject<{
+            families: z.ZodDefault<z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                key: z.ZodString;
+                name: z.ZodObject<{
+                    en: z.ZodString;
+                    ar: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    en: string;
+                    ar: string;
+                }, {
+                    en: string;
+                    ar: string;
+                }>;
+                description: z.ZodDefault<z.ZodObject<{
+                    en: z.ZodString;
+                    ar: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    en: string;
+                    ar: string;
+                }, {
+                    en: string;
+                    ar: string;
+                }>>;
+                order: z.ZodDefault<z.ZodNumber>;
+                enabled: z.ZodDefault<z.ZodBoolean>;
+            }, "strip", z.ZodTypeAny, {
+                id: string;
+                key: string;
+                description: {
+                    en: string;
+                    ar: string;
+                };
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                order: number;
+                enabled: boolean;
+            }, {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                description?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                order?: number | undefined;
+                enabled?: boolean | undefined;
+            }>, "many">>;
+            packs: z.ZodDefault<z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                key: z.ZodString;
+                name: z.ZodObject<{
+                    en: z.ZodString;
+                    ar: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    en: string;
+                    ar: string;
+                }, {
+                    en: string;
+                    ar: string;
+                }>;
+                description: z.ZodDefault<z.ZodObject<{
+                    en: z.ZodString;
+                    ar: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    en: string;
+                    ar: string;
+                }, {
+                    en: string;
+                    ar: string;
+                }>>;
+                version: z.ZodDefault<z.ZodNumber>;
+                source: z.ZodDefault<z.ZodEnum<["BIOREZA", "ADMIN", "IMPORTED"]>>;
+                createdAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            }, "strip", z.ZodTypeAny, {
+                id: string;
+                key: string;
+                description: {
+                    en: string;
+                    ar: string;
+                };
+                createdAt: string | null;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                source: "ADMIN" | "BIOREZA" | "IMPORTED";
+                version: number;
+            }, {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                description?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                createdAt?: string | null | undefined;
+                source?: "ADMIN" | "BIOREZA" | "IMPORTED" | undefined;
+                version?: number | undefined;
+            }>, "many">>;
+            tags: z.ZodDefault<z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                key: z.ZodString;
+                label: z.ZodObject<{
+                    en: z.ZodString;
+                    ar: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    en: string;
+                    ar: string;
+                }, {
+                    en: string;
+                    ar: string;
+                }>;
+                enabled: z.ZodDefault<z.ZodBoolean>;
+            }, "strip", z.ZodTypeAny, {
+                id: string;
+                key: string;
+                label: {
+                    en: string;
+                    ar: string;
+                };
+                enabled: boolean;
+            }, {
+                id: string;
+                key: string;
+                label: {
+                    en: string;
+                    ar: string;
+                };
+                enabled?: boolean | undefined;
+            }>, "many">>;
+            stepPresets: z.ZodDefault<z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                key: z.ZodString;
+                name: z.ZodObject<{
+                    en: z.ZodString;
+                    ar: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    en: string;
+                    ar: string;
+                }, {
+                    en: string;
+                    ar: string;
+                }>;
+                description: z.ZodDefault<z.ZodObject<{
+                    en: z.ZodString;
+                    ar: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    en: string;
+                    ar: string;
+                }, {
+                    en: string;
+                    ar: string;
+                }>>;
+                domain: z.ZodString;
+                steps: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    roleKey: z.ZodString;
+                    period: z.ZodEnum<["AM", "PM"]>;
+                    required: z.ZodDefault<z.ZodBoolean>;
+                    order: z.ZodNumber;
+                    target: z.ZodDefault<z.ZodObject<{
+                        kind: z.ZodEnum<["ALL", "PRODUCT", "VARIANT", "CATEGORY", "BRAND", "TAG", "INGREDIENT", "ROLE"]>;
+                        ids: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+                        keys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+                    }, "strip", z.ZodTypeAny, {
+                        keys: string[];
+                        ids: string[];
+                        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    }, {
+                        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                        keys?: string[] | undefined;
+                        ids?: string[] | undefined;
+                    }>>;
+                    preferredProductIds: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+                    maxAlternatives: z.ZodDefault<z.ZodNumber>;
+                    conditions: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+                        mode: z.ZodEnum<["ALL", "ANY"]>;
+                        conditions: z.ZodArray<z.ZodObject<{
+                            id: z.ZodString;
+                            signalKey: z.ZodString;
+                            operator: z.ZodEnum<["EXISTS", "NOT_EXISTS", "EQUALS", "NOT_EQUALS", "CONTAINS", "GREATER_THAN_OR_EQUAL", "LESS_THAN_OR_EQUAL"]>;
+                            value: z.ZodDefault<z.ZodNullable<z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
+                        }, "strip", z.ZodTypeAny, {
+                            value: string | number | boolean | string[] | null;
+                            id: string;
+                            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                            signalKey: string;
+                        }, {
+                            id: string;
+                            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                            signalKey: string;
+                            value?: string | number | boolean | string[] | null | undefined;
+                        }>, "many">;
+                    }, "strip", z.ZodTypeAny, {
+                        conditions: {
+                            value: string | number | boolean | string[] | null;
+                            id: string;
+                            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                            signalKey: string;
+                        }[];
+                        mode: "ALL" | "ANY";
+                    }, {
+                        conditions: {
+                            id: string;
+                            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                            signalKey: string;
+                            value?: string | number | boolean | string[] | null | undefined;
+                        }[];
+                        mode: "ALL" | "ANY";
+                    }>>>;
+                    optionalPriority: z.ZodDefault<z.ZodNumber>;
+                    fallbackMode: z.ZodDefault<z.ZodEnum<["FAIL_TEMPLATE", "SKIP_OPTIONAL", "USE_FALLBACK_ROLE"]>>;
+                    fallbackRoleKeys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+                    spendingWeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
+                }, "strip", z.ZodTypeAny, {
+                    id: string;
+                    order: number;
+                    conditions: {
+                        conditions: {
+                            value: string | number | boolean | string[] | null;
+                            id: string;
+                            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                            signalKey: string;
+                        }[];
+                        mode: "ALL" | "ANY";
+                    } | null;
+                    required: boolean;
+                    target: {
+                        keys: string[];
+                        ids: string[];
+                        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    };
+                    roleKey: string;
+                    period: "AM" | "PM";
+                    preferredProductIds: string[];
+                    maxAlternatives: number;
+                    optionalPriority: number;
+                    fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+                    fallbackRoleKeys: string[];
+                    spendingWeight: number | null;
+                }, {
+                    id: string;
+                    order: number;
+                    roleKey: string;
+                    period: "AM" | "PM";
+                    conditions?: {
+                        conditions: {
+                            id: string;
+                            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                            signalKey: string;
+                            value?: string | number | boolean | string[] | null | undefined;
+                        }[];
+                        mode: "ALL" | "ANY";
+                    } | null | undefined;
+                    required?: boolean | undefined;
+                    target?: {
+                        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                        keys?: string[] | undefined;
+                        ids?: string[] | undefined;
+                    } | undefined;
+                    preferredProductIds?: string[] | undefined;
+                    maxAlternatives?: number | undefined;
+                    optionalPriority?: number | undefined;
+                    fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+                    fallbackRoleKeys?: string[] | undefined;
+                    spendingWeight?: number | null | undefined;
+                }>, "many">;
+                enabled: z.ZodDefault<z.ZodBoolean>;
+            }, "strip", z.ZodTypeAny, {
+                id: string;
+                key: string;
+                description: {
+                    en: string;
+                    ar: string;
+                };
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                enabled: boolean;
+                domain: string;
+                steps: {
+                    id: string;
+                    order: number;
+                    conditions: {
+                        conditions: {
+                            value: string | number | boolean | string[] | null;
+                            id: string;
+                            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                            signalKey: string;
+                        }[];
+                        mode: "ALL" | "ANY";
+                    } | null;
+                    required: boolean;
+                    target: {
+                        keys: string[];
+                        ids: string[];
+                        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    };
+                    roleKey: string;
+                    period: "AM" | "PM";
+                    preferredProductIds: string[];
+                    maxAlternatives: number;
+                    optionalPriority: number;
+                    fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+                    fallbackRoleKeys: string[];
+                    spendingWeight: number | null;
+                }[];
+            }, {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                domain: string;
+                steps: {
+                    id: string;
+                    order: number;
+                    roleKey: string;
+                    period: "AM" | "PM";
+                    conditions?: {
+                        conditions: {
+                            id: string;
+                            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                            signalKey: string;
+                            value?: string | number | boolean | string[] | null | undefined;
+                        }[];
+                        mode: "ALL" | "ANY";
+                    } | null | undefined;
+                    required?: boolean | undefined;
+                    target?: {
+                        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                        keys?: string[] | undefined;
+                        ids?: string[] | undefined;
+                    } | undefined;
+                    preferredProductIds?: string[] | undefined;
+                    maxAlternatives?: number | undefined;
+                    optionalPriority?: number | undefined;
+                    fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+                    fallbackRoleKeys?: string[] | undefined;
+                    spendingWeight?: number | null | undefined;
+                }[];
+                description?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                enabled?: boolean | undefined;
+            }>, "many">>;
+            fallbackTemplateKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+            customerChoiceEnabled: z.ZodDefault<z.ZodBoolean>;
+            customerChoiceFamilies: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+        }, "strip", z.ZodTypeAny, {
+            tags: {
+                id: string;
+                key: string;
+                label: {
+                    en: string;
+                    ar: string;
+                };
+                enabled: boolean;
+            }[];
+            fallbackTemplateKey: string | null;
+            families: {
+                id: string;
+                key: string;
+                description: {
+                    en: string;
+                    ar: string;
+                };
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                order: number;
+                enabled: boolean;
+            }[];
+            packs: {
+                id: string;
+                key: string;
+                description: {
+                    en: string;
+                    ar: string;
+                };
+                createdAt: string | null;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                source: "ADMIN" | "BIOREZA" | "IMPORTED";
+                version: number;
+            }[];
+            stepPresets: {
+                id: string;
+                key: string;
+                description: {
+                    en: string;
+                    ar: string;
+                };
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                enabled: boolean;
+                domain: string;
+                steps: {
+                    id: string;
+                    order: number;
+                    conditions: {
+                        conditions: {
+                            value: string | number | boolean | string[] | null;
+                            id: string;
+                            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                            signalKey: string;
+                        }[];
+                        mode: "ALL" | "ANY";
+                    } | null;
+                    required: boolean;
+                    target: {
+                        keys: string[];
+                        ids: string[];
+                        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    };
+                    roleKey: string;
+                    period: "AM" | "PM";
+                    preferredProductIds: string[];
+                    maxAlternatives: number;
+                    optionalPriority: number;
+                    fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+                    fallbackRoleKeys: string[];
+                    spendingWeight: number | null;
+                }[];
+            }[];
+            customerChoiceEnabled: boolean;
+            customerChoiceFamilies: string[];
+        }, {
+            tags?: {
+                id: string;
+                key: string;
+                label: {
+                    en: string;
+                    ar: string;
+                };
+                enabled?: boolean | undefined;
+            }[] | undefined;
+            fallbackTemplateKey?: string | null | undefined;
+            families?: {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                description?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                order?: number | undefined;
+                enabled?: boolean | undefined;
+            }[] | undefined;
+            packs?: {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                description?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                createdAt?: string | null | undefined;
+                source?: "ADMIN" | "BIOREZA" | "IMPORTED" | undefined;
+                version?: number | undefined;
+            }[] | undefined;
+            stepPresets?: {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                domain: string;
+                steps: {
+                    id: string;
+                    order: number;
+                    roleKey: string;
+                    period: "AM" | "PM";
+                    conditions?: {
+                        conditions: {
+                            id: string;
+                            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                            signalKey: string;
+                            value?: string | number | boolean | string[] | null | undefined;
+                        }[];
+                        mode: "ALL" | "ANY";
+                    } | null | undefined;
+                    required?: boolean | undefined;
+                    target?: {
+                        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                        keys?: string[] | undefined;
+                        ids?: string[] | undefined;
+                    } | undefined;
+                    preferredProductIds?: string[] | undefined;
+                    maxAlternatives?: number | undefined;
+                    optionalPriority?: number | undefined;
+                    fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+                    fallbackRoleKeys?: string[] | undefined;
+                    spendingWeight?: number | null | undefined;
+                }[];
+                description?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                enabled?: boolean | undefined;
+            }[] | undefined;
+            customerChoiceEnabled?: boolean | undefined;
+            customerChoiceFamilies?: string[] | undefined;
+        }>>;
+        contextualCompletion: z.ZodDefault<z.ZodObject<{
+            enabled: z.ZodDefault<z.ZodBoolean>;
+            enabledDomains: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            eligibleAnchorRoles: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+            defaultTemplateKeys: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodString>>;
+            allowUnavailableAnchorPlanning: z.ZodDefault<z.ZodBoolean>;
+            requireApprovedReason: z.ZodDefault<z.ZodBoolean>;
+            anchorBoostRules: z.ZodDefault<z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                key: z.ZodString;
+                name: z.ZodObject<{
+                    en: z.ZodString;
+                    ar: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    en: string;
+                    ar: string;
+                }, {
+                    en: string;
+                    ar: string;
+                }>;
+                enabled: z.ZodDefault<z.ZodBoolean>;
+                priority: z.ZodDefault<z.ZodNumber>;
+                anchor: z.ZodObject<{
+                    kind: z.ZodEnum<["ALL", "PRODUCT", "VARIANT", "CATEGORY", "BRAND", "TAG", "INGREDIENT", "ROLE"]>;
+                    ids: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+                    keys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+                }, "strip", z.ZodTypeAny, {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                }, {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                }>;
+                candidate: z.ZodObject<{
+                    kind: z.ZodEnum<["ALL", "PRODUCT", "VARIANT", "CATEGORY", "BRAND", "TAG", "INGREDIENT", "ROLE"]>;
+                    ids: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+                    keys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
+                }, "strip", z.ZodTypeAny, {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                }, {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                }>;
+                score: z.ZodNumber;
+                channel: z.ZodDefault<z.ZodEnum<["RECOMMENDATION", "MERCHANDISING"]>>;
+            }, "strip", z.ZodTypeAny, {
+                id: string;
+                key: string;
+                channel: "RECOMMENDATION" | "MERCHANDISING";
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                enabled: boolean;
+                priority: number;
+                score: number;
+                anchor: {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                };
+                candidate: {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                };
+            }, {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                score: number;
+                anchor: {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                };
+                candidate: {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                };
+                channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
+                enabled?: boolean | undefined;
+                priority?: number | undefined;
+            }>, "many">>;
+            title: z.ZodDefault<z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>>;
+            introduction: z.ZodDefault<z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>>;
+            unavailableMessage: z.ZodDefault<z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>>;
+            anchorExplanation: z.ZodDefault<z.ZodObject<{
+                en: z.ZodString;
+                ar: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                en: string;
+                ar: string;
+            }, {
+                en: string;
+                ar: string;
+            }>>;
+        }, "strip", z.ZodTypeAny, {
+            enabled: boolean;
+            title: {
+                en: string;
+                ar: string;
+            };
+            enabledDomains: string[];
+            eligibleAnchorRoles: string[];
+            defaultTemplateKeys: Record<string, string>;
+            allowUnavailableAnchorPlanning: boolean;
+            requireApprovedReason: boolean;
+            anchorBoostRules: {
+                id: string;
+                key: string;
+                channel: "RECOMMENDATION" | "MERCHANDISING";
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                enabled: boolean;
+                priority: number;
+                score: number;
+                anchor: {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                };
+                candidate: {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                };
+            }[];
+            introduction: {
+                en: string;
+                ar: string;
+            };
+            unavailableMessage: {
+                en: string;
+                ar: string;
+            };
+            anchorExplanation: {
+                en: string;
+                ar: string;
+            };
+        }, {
+            enabled?: boolean | undefined;
+            title?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            enabledDomains?: string[] | undefined;
+            eligibleAnchorRoles?: string[] | undefined;
+            defaultTemplateKeys?: Record<string, string> | undefined;
+            allowUnavailableAnchorPlanning?: boolean | undefined;
+            requireApprovedReason?: boolean | undefined;
+            anchorBoostRules?: {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                score: number;
+                anchor: {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                };
+                candidate: {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                };
+                channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
+                enabled?: boolean | undefined;
+                priority?: number | undefined;
+            }[] | undefined;
+            introduction?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            unavailableMessage?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            anchorExplanation?: {
+                en: string;
+                ar: string;
+            } | undefined;
+        }>>;
         settings: z.ZodObject<{
             maximumProductsPerBrand: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
             preferBrandDiversity: z.ZodDefault<z.ZodBoolean>;
@@ -4855,12 +10410,12 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        schemaVersion: 1;
+        schemaVersion: 1 | 2;
+        estimatedMinutes: number;
         introduction: {
             en: string;
             ar: string;
         };
-        estimatedMinutes: number;
         startLabel: {
             en: string;
             ar: string;
@@ -4910,6 +10465,9 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             };
             required: boolean;
+            modes: ("FULL" | "CONTEXTUAL")[];
+            contextualRequired: boolean;
+            contextualOrder: number | null;
             answers: {
                 id: string;
                 key: string;
@@ -4947,6 +10505,10 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             enabled: boolean;
             amOrder: number;
             pmOrder: number;
+            domain: string | null;
+            amAllowed: boolean;
+            pmAllowed: boolean;
+            defaultPriority: number;
         }[];
         rules: {
             id: string;
@@ -5023,6 +10585,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             } | null;
         }[];
         templates: {
+            status: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED";
             id: string;
             key: string;
             description: {
@@ -5034,6 +10597,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             };
             enabled: boolean;
+            tags: string[];
             priority: number;
             conditions: {
                 conditions: {
@@ -5044,9 +10608,35 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            presentation: {
+                style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
+                estimatedMinutes: number | null;
+                thumbnailKey: string | null;
+                themeKey: string | null;
+                intro: {
+                    en: string;
+                    ar: string;
+                };
+                outro: {
+                    en: string;
+                    ar: string;
+                };
+                customerVisible: boolean;
+            };
+            domain: string | null;
+            version: number;
             steps: {
                 id: string;
                 order: number;
+                conditions: {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null;
                 required: boolean;
                 target: {
                     keys: string[];
@@ -5057,8 +10647,203 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 period: "AM" | "PM";
                 preferredProductIds: string[];
                 maxAlternatives: number;
+                optionalPriority: number;
+                fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+                fallbackRoleKeys: string[];
+                spendingWeight: number | null;
             }[];
+            familyKey: string | null;
+            complexity: string | null;
+            packKey: string | null;
+            baseTemplateKey: string | null;
+            variant: {
+                kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+                parameters: Record<string, string | number | boolean | string[]>;
+            };
+            hardEligibility: {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null;
+            selectionRules: {
+                id: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                score: number;
+                when: {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                };
+            }[];
+            allowedAnchorRoles: string[];
+            budgetPolicy: {
+                maximum: number | null;
+                mode: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT";
+            } | null;
+            fallbackPolicy: {
+                requiredStep: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK";
+                optionalStep: "SKIP";
+                fallbackTemplateKey: string | null;
+            } | null;
+            compatibilityPolicy: "STANDARD" | "STRICT";
+            brandConstraint: {
+                mode: "NONE" | "PREFERRED" | "ONLY";
+                entityId: string | null;
+                parameterized: boolean;
+            };
+            categoryConstraint: {
+                mode: "NONE" | "PREFERRED" | "ONLY";
+                entityId: string | null;
+                parameterized: boolean;
+            };
+            schedule: {
+                startsAt: string | null;
+                endsAt: string | null;
+            };
+            pinned: boolean;
+            internalName?: string | undefined;
         }[];
+        templateUniverse: {
+            tags: {
+                id: string;
+                key: string;
+                label: {
+                    en: string;
+                    ar: string;
+                };
+                enabled: boolean;
+            }[];
+            fallbackTemplateKey: string | null;
+            families: {
+                id: string;
+                key: string;
+                description: {
+                    en: string;
+                    ar: string;
+                };
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                order: number;
+                enabled: boolean;
+            }[];
+            packs: {
+                id: string;
+                key: string;
+                description: {
+                    en: string;
+                    ar: string;
+                };
+                createdAt: string | null;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                source: "ADMIN" | "BIOREZA" | "IMPORTED";
+                version: number;
+            }[];
+            stepPresets: {
+                id: string;
+                key: string;
+                description: {
+                    en: string;
+                    ar: string;
+                };
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                enabled: boolean;
+                domain: string;
+                steps: {
+                    id: string;
+                    order: number;
+                    conditions: {
+                        conditions: {
+                            value: string | number | boolean | string[] | null;
+                            id: string;
+                            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                            signalKey: string;
+                        }[];
+                        mode: "ALL" | "ANY";
+                    } | null;
+                    required: boolean;
+                    target: {
+                        keys: string[];
+                        ids: string[];
+                        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    };
+                    roleKey: string;
+                    period: "AM" | "PM";
+                    preferredProductIds: string[];
+                    maxAlternatives: number;
+                    optionalPriority: number;
+                    fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+                    fallbackRoleKeys: string[];
+                    spendingWeight: number | null;
+                }[];
+            }[];
+            customerChoiceEnabled: boolean;
+            customerChoiceFamilies: string[];
+        };
+        contextualCompletion: {
+            enabled: boolean;
+            title: {
+                en: string;
+                ar: string;
+            };
+            enabledDomains: string[];
+            eligibleAnchorRoles: string[];
+            defaultTemplateKeys: Record<string, string>;
+            allowUnavailableAnchorPlanning: boolean;
+            requireApprovedReason: boolean;
+            anchorBoostRules: {
+                id: string;
+                key: string;
+                channel: "RECOMMENDATION" | "MERCHANDISING";
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                enabled: boolean;
+                priority: number;
+                score: number;
+                anchor: {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                };
+                candidate: {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                };
+            }[];
+            introduction: {
+                en: string;
+                ar: string;
+            };
+            unavailableMessage: {
+                en: string;
+                ar: string;
+            };
+            anchorExplanation: {
+                en: string;
+                ar: string;
+            };
+        };
         settings: {
             maximumProductsPerBrand: number | null;
             preferBrandDiversity: boolean;
@@ -5104,7 +10889,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        schemaVersion: 1;
+        schemaVersion: 1 | 2;
         introduction: {
             en: string;
             ar: string;
@@ -5158,6 +10943,9 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             required?: boolean | undefined;
+            modes?: ("FULL" | "CONTEXTUAL")[] | undefined;
+            contextualRequired?: boolean | undefined;
+            contextualOrder?: number | null | undefined;
             directSignalKey?: string | null | undefined;
             answers?: {
                 id: string;
@@ -5195,6 +10983,10 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             enabled?: boolean | undefined;
+            domain?: string | null | undefined;
+            amAllowed?: boolean | undefined;
+            pmAllowed?: boolean | undefined;
+            defaultPriority?: number | undefined;
         }[];
         rules: {
             id: string;
@@ -5282,6 +11074,15 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 order: number;
                 roleKey: string;
                 period: "AM" | "PM";
+                conditions?: {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null | undefined;
                 required?: boolean | undefined;
                 target?: {
                     kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
@@ -5290,12 +11091,18 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 } | undefined;
                 preferredProductIds?: string[] | undefined;
                 maxAlternatives?: number | undefined;
+                optionalPriority?: number | undefined;
+                fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+                fallbackRoleKeys?: string[] | undefined;
+                spendingWeight?: number | null | undefined;
             }[];
+            status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED" | undefined;
             description?: {
                 en: string;
                 ar: string;
             } | undefined;
             enabled?: boolean | undefined;
+            tags?: string[] | undefined;
             priority?: number | undefined;
             conditions?: {
                 conditions: {
@@ -5306,6 +11113,84 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null | undefined;
+            presentation?: {
+                style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
+                estimatedMinutes?: number | null | undefined;
+                thumbnailKey?: string | null | undefined;
+                themeKey?: string | null | undefined;
+                intro?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                outro?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                customerVisible?: boolean | undefined;
+            } | undefined;
+            domain?: string | null | undefined;
+            version?: number | undefined;
+            internalName?: string | undefined;
+            familyKey?: string | null | undefined;
+            complexity?: string | null | undefined;
+            packKey?: string | null | undefined;
+            baseTemplateKey?: string | null | undefined;
+            variant?: {
+                kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+                parameters?: Record<string, string | number | boolean | string[]> | undefined;
+            } | undefined;
+            hardEligibility?: {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null | undefined;
+            selectionRules?: {
+                id: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                score: number;
+                when: {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                };
+            }[] | undefined;
+            allowedAnchorRoles?: string[] | undefined;
+            budgetPolicy?: {
+                maximum?: number | null | undefined;
+                mode?: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT" | undefined;
+            } | null | undefined;
+            fallbackPolicy?: {
+                requiredStep?: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK" | undefined;
+                optionalStep?: "SKIP" | undefined;
+                fallbackTemplateKey?: string | null | undefined;
+            } | null | undefined;
+            compatibilityPolicy?: "STANDARD" | "STRICT" | undefined;
+            brandConstraint?: {
+                mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+                entityId?: string | null | undefined;
+                parameterized?: boolean | undefined;
+            } | undefined;
+            categoryConstraint?: {
+                mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+                entityId?: string | null | undefined;
+                parameterized?: boolean | undefined;
+            } | undefined;
+            schedule?: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+            } | undefined;
+            pinned?: boolean | undefined;
         }[];
         settings: {
             maximumProductsPerBrand?: number | null | undefined;
@@ -5334,6 +11219,136 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             aggregation?: "SUM" | "MAX" | "LAST" | undefined;
         }[] | undefined;
         estimatedMinutes?: number | undefined;
+        templateUniverse?: {
+            tags?: {
+                id: string;
+                key: string;
+                label: {
+                    en: string;
+                    ar: string;
+                };
+                enabled?: boolean | undefined;
+            }[] | undefined;
+            fallbackTemplateKey?: string | null | undefined;
+            families?: {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                description?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                order?: number | undefined;
+                enabled?: boolean | undefined;
+            }[] | undefined;
+            packs?: {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                description?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                createdAt?: string | null | undefined;
+                source?: "ADMIN" | "BIOREZA" | "IMPORTED" | undefined;
+                version?: number | undefined;
+            }[] | undefined;
+            stepPresets?: {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                domain: string;
+                steps: {
+                    id: string;
+                    order: number;
+                    roleKey: string;
+                    period: "AM" | "PM";
+                    conditions?: {
+                        conditions: {
+                            id: string;
+                            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                            signalKey: string;
+                            value?: string | number | boolean | string[] | null | undefined;
+                        }[];
+                        mode: "ALL" | "ANY";
+                    } | null | undefined;
+                    required?: boolean | undefined;
+                    target?: {
+                        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                        keys?: string[] | undefined;
+                        ids?: string[] | undefined;
+                    } | undefined;
+                    preferredProductIds?: string[] | undefined;
+                    maxAlternatives?: number | undefined;
+                    optionalPriority?: number | undefined;
+                    fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+                    fallbackRoleKeys?: string[] | undefined;
+                    spendingWeight?: number | null | undefined;
+                }[];
+                description?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                enabled?: boolean | undefined;
+            }[] | undefined;
+            customerChoiceEnabled?: boolean | undefined;
+            customerChoiceFamilies?: string[] | undefined;
+        } | undefined;
+        contextualCompletion?: {
+            enabled?: boolean | undefined;
+            title?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            enabledDomains?: string[] | undefined;
+            eligibleAnchorRoles?: string[] | undefined;
+            defaultTemplateKeys?: Record<string, string> | undefined;
+            allowUnavailableAnchorPlanning?: boolean | undefined;
+            requireApprovedReason?: boolean | undefined;
+            anchorBoostRules?: {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                score: number;
+                anchor: {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                };
+                candidate: {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                };
+                channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
+                enabled?: boolean | undefined;
+                priority?: number | undefined;
+            }[] | undefined;
+            introduction?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            unavailableMessage?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            anchorExplanation?: {
+                en: string;
+                ar: string;
+            } | undefined;
+        } | undefined;
     }>, {
         concerns: {
             id: string;
@@ -5353,12 +11368,12 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        schemaVersion: 1;
+        schemaVersion: 1 | 2;
+        estimatedMinutes: number;
         introduction: {
             en: string;
             ar: string;
         };
-        estimatedMinutes: number;
         startLabel: {
             en: string;
             ar: string;
@@ -5408,6 +11423,9 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             };
             required: boolean;
+            modes: ("FULL" | "CONTEXTUAL")[];
+            contextualRequired: boolean;
+            contextualOrder: number | null;
             answers: {
                 id: string;
                 key: string;
@@ -5445,6 +11463,10 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             enabled: boolean;
             amOrder: number;
             pmOrder: number;
+            domain: string | null;
+            amAllowed: boolean;
+            pmAllowed: boolean;
+            defaultPriority: number;
         }[];
         rules: {
             id: string;
@@ -5521,6 +11543,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             } | null;
         }[];
         templates: {
+            status: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED";
             id: string;
             key: string;
             description: {
@@ -5532,6 +11555,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             };
             enabled: boolean;
+            tags: string[];
             priority: number;
             conditions: {
                 conditions: {
@@ -5542,9 +11566,35 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            presentation: {
+                style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
+                estimatedMinutes: number | null;
+                thumbnailKey: string | null;
+                themeKey: string | null;
+                intro: {
+                    en: string;
+                    ar: string;
+                };
+                outro: {
+                    en: string;
+                    ar: string;
+                };
+                customerVisible: boolean;
+            };
+            domain: string | null;
+            version: number;
             steps: {
                 id: string;
                 order: number;
+                conditions: {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null;
                 required: boolean;
                 target: {
                     keys: string[];
@@ -5555,8 +11605,203 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 period: "AM" | "PM";
                 preferredProductIds: string[];
                 maxAlternatives: number;
+                optionalPriority: number;
+                fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+                fallbackRoleKeys: string[];
+                spendingWeight: number | null;
             }[];
+            familyKey: string | null;
+            complexity: string | null;
+            packKey: string | null;
+            baseTemplateKey: string | null;
+            variant: {
+                kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+                parameters: Record<string, string | number | boolean | string[]>;
+            };
+            hardEligibility: {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null;
+            selectionRules: {
+                id: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                score: number;
+                when: {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                };
+            }[];
+            allowedAnchorRoles: string[];
+            budgetPolicy: {
+                maximum: number | null;
+                mode: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT";
+            } | null;
+            fallbackPolicy: {
+                requiredStep: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK";
+                optionalStep: "SKIP";
+                fallbackTemplateKey: string | null;
+            } | null;
+            compatibilityPolicy: "STANDARD" | "STRICT";
+            brandConstraint: {
+                mode: "NONE" | "PREFERRED" | "ONLY";
+                entityId: string | null;
+                parameterized: boolean;
+            };
+            categoryConstraint: {
+                mode: "NONE" | "PREFERRED" | "ONLY";
+                entityId: string | null;
+                parameterized: boolean;
+            };
+            schedule: {
+                startsAt: string | null;
+                endsAt: string | null;
+            };
+            pinned: boolean;
+            internalName?: string | undefined;
         }[];
+        templateUniverse: {
+            tags: {
+                id: string;
+                key: string;
+                label: {
+                    en: string;
+                    ar: string;
+                };
+                enabled: boolean;
+            }[];
+            fallbackTemplateKey: string | null;
+            families: {
+                id: string;
+                key: string;
+                description: {
+                    en: string;
+                    ar: string;
+                };
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                order: number;
+                enabled: boolean;
+            }[];
+            packs: {
+                id: string;
+                key: string;
+                description: {
+                    en: string;
+                    ar: string;
+                };
+                createdAt: string | null;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                source: "ADMIN" | "BIOREZA" | "IMPORTED";
+                version: number;
+            }[];
+            stepPresets: {
+                id: string;
+                key: string;
+                description: {
+                    en: string;
+                    ar: string;
+                };
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                enabled: boolean;
+                domain: string;
+                steps: {
+                    id: string;
+                    order: number;
+                    conditions: {
+                        conditions: {
+                            value: string | number | boolean | string[] | null;
+                            id: string;
+                            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                            signalKey: string;
+                        }[];
+                        mode: "ALL" | "ANY";
+                    } | null;
+                    required: boolean;
+                    target: {
+                        keys: string[];
+                        ids: string[];
+                        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    };
+                    roleKey: string;
+                    period: "AM" | "PM";
+                    preferredProductIds: string[];
+                    maxAlternatives: number;
+                    optionalPriority: number;
+                    fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+                    fallbackRoleKeys: string[];
+                    spendingWeight: number | null;
+                }[];
+            }[];
+            customerChoiceEnabled: boolean;
+            customerChoiceFamilies: string[];
+        };
+        contextualCompletion: {
+            enabled: boolean;
+            title: {
+                en: string;
+                ar: string;
+            };
+            enabledDomains: string[];
+            eligibleAnchorRoles: string[];
+            defaultTemplateKeys: Record<string, string>;
+            allowUnavailableAnchorPlanning: boolean;
+            requireApprovedReason: boolean;
+            anchorBoostRules: {
+                id: string;
+                key: string;
+                channel: "RECOMMENDATION" | "MERCHANDISING";
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                enabled: boolean;
+                priority: number;
+                score: number;
+                anchor: {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                };
+                candidate: {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                };
+            }[];
+            introduction: {
+                en: string;
+                ar: string;
+            };
+            unavailableMessage: {
+                en: string;
+                ar: string;
+            };
+            anchorExplanation: {
+                en: string;
+                ar: string;
+            };
+        };
         settings: {
             maximumProductsPerBrand: number | null;
             preferBrandDiversity: boolean;
@@ -5602,7 +11847,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        schemaVersion: 1;
+        schemaVersion: 1 | 2;
         introduction: {
             en: string;
             ar: string;
@@ -5656,6 +11901,9 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             required?: boolean | undefined;
+            modes?: ("FULL" | "CONTEXTUAL")[] | undefined;
+            contextualRequired?: boolean | undefined;
+            contextualOrder?: number | null | undefined;
             directSignalKey?: string | null | undefined;
             answers?: {
                 id: string;
@@ -5693,6 +11941,10 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             enabled?: boolean | undefined;
+            domain?: string | null | undefined;
+            amAllowed?: boolean | undefined;
+            pmAllowed?: boolean | undefined;
+            defaultPriority?: number | undefined;
         }[];
         rules: {
             id: string;
@@ -5780,6 +12032,15 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 order: number;
                 roleKey: string;
                 period: "AM" | "PM";
+                conditions?: {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null | undefined;
                 required?: boolean | undefined;
                 target?: {
                     kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
@@ -5788,12 +12049,18 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 } | undefined;
                 preferredProductIds?: string[] | undefined;
                 maxAlternatives?: number | undefined;
+                optionalPriority?: number | undefined;
+                fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+                fallbackRoleKeys?: string[] | undefined;
+                spendingWeight?: number | null | undefined;
             }[];
+            status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED" | undefined;
             description?: {
                 en: string;
                 ar: string;
             } | undefined;
             enabled?: boolean | undefined;
+            tags?: string[] | undefined;
             priority?: number | undefined;
             conditions?: {
                 conditions: {
@@ -5804,6 +12071,84 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null | undefined;
+            presentation?: {
+                style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
+                estimatedMinutes?: number | null | undefined;
+                thumbnailKey?: string | null | undefined;
+                themeKey?: string | null | undefined;
+                intro?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                outro?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                customerVisible?: boolean | undefined;
+            } | undefined;
+            domain?: string | null | undefined;
+            version?: number | undefined;
+            internalName?: string | undefined;
+            familyKey?: string | null | undefined;
+            complexity?: string | null | undefined;
+            packKey?: string | null | undefined;
+            baseTemplateKey?: string | null | undefined;
+            variant?: {
+                kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+                parameters?: Record<string, string | number | boolean | string[]> | undefined;
+            } | undefined;
+            hardEligibility?: {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null | undefined;
+            selectionRules?: {
+                id: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                score: number;
+                when: {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                };
+            }[] | undefined;
+            allowedAnchorRoles?: string[] | undefined;
+            budgetPolicy?: {
+                maximum?: number | null | undefined;
+                mode?: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT" | undefined;
+            } | null | undefined;
+            fallbackPolicy?: {
+                requiredStep?: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK" | undefined;
+                optionalStep?: "SKIP" | undefined;
+                fallbackTemplateKey?: string | null | undefined;
+            } | null | undefined;
+            compatibilityPolicy?: "STANDARD" | "STRICT" | undefined;
+            brandConstraint?: {
+                mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+                entityId?: string | null | undefined;
+                parameterized?: boolean | undefined;
+            } | undefined;
+            categoryConstraint?: {
+                mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+                entityId?: string | null | undefined;
+                parameterized?: boolean | undefined;
+            } | undefined;
+            schedule?: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+            } | undefined;
+            pinned?: boolean | undefined;
         }[];
         settings: {
             maximumProductsPerBrand?: number | null | undefined;
@@ -5832,6 +12177,136 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             aggregation?: "SUM" | "MAX" | "LAST" | undefined;
         }[] | undefined;
         estimatedMinutes?: number | undefined;
+        templateUniverse?: {
+            tags?: {
+                id: string;
+                key: string;
+                label: {
+                    en: string;
+                    ar: string;
+                };
+                enabled?: boolean | undefined;
+            }[] | undefined;
+            fallbackTemplateKey?: string | null | undefined;
+            families?: {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                description?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                order?: number | undefined;
+                enabled?: boolean | undefined;
+            }[] | undefined;
+            packs?: {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                description?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                createdAt?: string | null | undefined;
+                source?: "ADMIN" | "BIOREZA" | "IMPORTED" | undefined;
+                version?: number | undefined;
+            }[] | undefined;
+            stepPresets?: {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                domain: string;
+                steps: {
+                    id: string;
+                    order: number;
+                    roleKey: string;
+                    period: "AM" | "PM";
+                    conditions?: {
+                        conditions: {
+                            id: string;
+                            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                            signalKey: string;
+                            value?: string | number | boolean | string[] | null | undefined;
+                        }[];
+                        mode: "ALL" | "ANY";
+                    } | null | undefined;
+                    required?: boolean | undefined;
+                    target?: {
+                        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                        keys?: string[] | undefined;
+                        ids?: string[] | undefined;
+                    } | undefined;
+                    preferredProductIds?: string[] | undefined;
+                    maxAlternatives?: number | undefined;
+                    optionalPriority?: number | undefined;
+                    fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+                    fallbackRoleKeys?: string[] | undefined;
+                    spendingWeight?: number | null | undefined;
+                }[];
+                description?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                enabled?: boolean | undefined;
+            }[] | undefined;
+            customerChoiceEnabled?: boolean | undefined;
+            customerChoiceFamilies?: string[] | undefined;
+        } | undefined;
+        contextualCompletion?: {
+            enabled?: boolean | undefined;
+            title?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            enabledDomains?: string[] | undefined;
+            eligibleAnchorRoles?: string[] | undefined;
+            defaultTemplateKeys?: Record<string, string> | undefined;
+            allowUnavailableAnchorPlanning?: boolean | undefined;
+            requireApprovedReason?: boolean | undefined;
+            anchorBoostRules?: {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                score: number;
+                anchor: {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                };
+                candidate: {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                };
+                channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
+                enabled?: boolean | undefined;
+                priority?: number | undefined;
+            }[] | undefined;
+            introduction?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            unavailableMessage?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            anchorExplanation?: {
+                en: string;
+                ar: string;
+            } | undefined;
+        } | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
     expectedRevision: number;
@@ -5854,12 +12329,12 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        schemaVersion: 1;
+        schemaVersion: 1 | 2;
+        estimatedMinutes: number;
         introduction: {
             en: string;
             ar: string;
         };
-        estimatedMinutes: number;
         startLabel: {
             en: string;
             ar: string;
@@ -5909,6 +12384,9 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             };
             required: boolean;
+            modes: ("FULL" | "CONTEXTUAL")[];
+            contextualRequired: boolean;
+            contextualOrder: number | null;
             answers: {
                 id: string;
                 key: string;
@@ -5946,6 +12424,10 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             enabled: boolean;
             amOrder: number;
             pmOrder: number;
+            domain: string | null;
+            amAllowed: boolean;
+            pmAllowed: boolean;
+            defaultPriority: number;
         }[];
         rules: {
             id: string;
@@ -6022,6 +12504,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             } | null;
         }[];
         templates: {
+            status: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED";
             id: string;
             key: string;
             description: {
@@ -6033,6 +12516,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             };
             enabled: boolean;
+            tags: string[];
             priority: number;
             conditions: {
                 conditions: {
@@ -6043,9 +12527,35 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            presentation: {
+                style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
+                estimatedMinutes: number | null;
+                thumbnailKey: string | null;
+                themeKey: string | null;
+                intro: {
+                    en: string;
+                    ar: string;
+                };
+                outro: {
+                    en: string;
+                    ar: string;
+                };
+                customerVisible: boolean;
+            };
+            domain: string | null;
+            version: number;
             steps: {
                 id: string;
                 order: number;
+                conditions: {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null;
                 required: boolean;
                 target: {
                     keys: string[];
@@ -6056,8 +12566,203 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 period: "AM" | "PM";
                 preferredProductIds: string[];
                 maxAlternatives: number;
+                optionalPriority: number;
+                fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+                fallbackRoleKeys: string[];
+                spendingWeight: number | null;
             }[];
+            familyKey: string | null;
+            complexity: string | null;
+            packKey: string | null;
+            baseTemplateKey: string | null;
+            variant: {
+                kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+                parameters: Record<string, string | number | boolean | string[]>;
+            };
+            hardEligibility: {
+                conditions: {
+                    value: string | number | boolean | string[] | null;
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null;
+            selectionRules: {
+                id: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                score: number;
+                when: {
+                    conditions: {
+                        value: string | number | boolean | string[] | null;
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                    }[];
+                    mode: "ALL" | "ANY";
+                };
+            }[];
+            allowedAnchorRoles: string[];
+            budgetPolicy: {
+                maximum: number | null;
+                mode: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT";
+            } | null;
+            fallbackPolicy: {
+                requiredStep: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK";
+                optionalStep: "SKIP";
+                fallbackTemplateKey: string | null;
+            } | null;
+            compatibilityPolicy: "STANDARD" | "STRICT";
+            brandConstraint: {
+                mode: "NONE" | "PREFERRED" | "ONLY";
+                entityId: string | null;
+                parameterized: boolean;
+            };
+            categoryConstraint: {
+                mode: "NONE" | "PREFERRED" | "ONLY";
+                entityId: string | null;
+                parameterized: boolean;
+            };
+            schedule: {
+                startsAt: string | null;
+                endsAt: string | null;
+            };
+            pinned: boolean;
+            internalName?: string | undefined;
         }[];
+        templateUniverse: {
+            tags: {
+                id: string;
+                key: string;
+                label: {
+                    en: string;
+                    ar: string;
+                };
+                enabled: boolean;
+            }[];
+            fallbackTemplateKey: string | null;
+            families: {
+                id: string;
+                key: string;
+                description: {
+                    en: string;
+                    ar: string;
+                };
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                order: number;
+                enabled: boolean;
+            }[];
+            packs: {
+                id: string;
+                key: string;
+                description: {
+                    en: string;
+                    ar: string;
+                };
+                createdAt: string | null;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                source: "ADMIN" | "BIOREZA" | "IMPORTED";
+                version: number;
+            }[];
+            stepPresets: {
+                id: string;
+                key: string;
+                description: {
+                    en: string;
+                    ar: string;
+                };
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                enabled: boolean;
+                domain: string;
+                steps: {
+                    id: string;
+                    order: number;
+                    conditions: {
+                        conditions: {
+                            value: string | number | boolean | string[] | null;
+                            id: string;
+                            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                            signalKey: string;
+                        }[];
+                        mode: "ALL" | "ANY";
+                    } | null;
+                    required: boolean;
+                    target: {
+                        keys: string[];
+                        ids: string[];
+                        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    };
+                    roleKey: string;
+                    period: "AM" | "PM";
+                    preferredProductIds: string[];
+                    maxAlternatives: number;
+                    optionalPriority: number;
+                    fallbackMode: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE";
+                    fallbackRoleKeys: string[];
+                    spendingWeight: number | null;
+                }[];
+            }[];
+            customerChoiceEnabled: boolean;
+            customerChoiceFamilies: string[];
+        };
+        contextualCompletion: {
+            enabled: boolean;
+            title: {
+                en: string;
+                ar: string;
+            };
+            enabledDomains: string[];
+            eligibleAnchorRoles: string[];
+            defaultTemplateKeys: Record<string, string>;
+            allowUnavailableAnchorPlanning: boolean;
+            requireApprovedReason: boolean;
+            anchorBoostRules: {
+                id: string;
+                key: string;
+                channel: "RECOMMENDATION" | "MERCHANDISING";
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                enabled: boolean;
+                priority: number;
+                score: number;
+                anchor: {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                };
+                candidate: {
+                    keys: string[];
+                    ids: string[];
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                };
+            }[];
+            introduction: {
+                en: string;
+                ar: string;
+            };
+            unavailableMessage: {
+                en: string;
+                ar: string;
+            };
+            anchorExplanation: {
+                en: string;
+                ar: string;
+            };
+        };
         settings: {
             maximumProductsPerBrand: number | null;
             preferBrandDiversity: boolean;
@@ -6106,7 +12811,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        schemaVersion: 1;
+        schemaVersion: 1 | 2;
         introduction: {
             en: string;
             ar: string;
@@ -6160,6 +12865,9 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             required?: boolean | undefined;
+            modes?: ("FULL" | "CONTEXTUAL")[] | undefined;
+            contextualRequired?: boolean | undefined;
+            contextualOrder?: number | null | undefined;
             directSignalKey?: string | null | undefined;
             answers?: {
                 id: string;
@@ -6197,6 +12905,10 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             } | undefined;
             enabled?: boolean | undefined;
+            domain?: string | null | undefined;
+            amAllowed?: boolean | undefined;
+            pmAllowed?: boolean | undefined;
+            defaultPriority?: number | undefined;
         }[];
         rules: {
             id: string;
@@ -6284,6 +12996,15 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 order: number;
                 roleKey: string;
                 period: "AM" | "PM";
+                conditions?: {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                } | null | undefined;
                 required?: boolean | undefined;
                 target?: {
                     kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
@@ -6292,12 +13013,18 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 } | undefined;
                 preferredProductIds?: string[] | undefined;
                 maxAlternatives?: number | undefined;
+                optionalPriority?: number | undefined;
+                fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+                fallbackRoleKeys?: string[] | undefined;
+                spendingWeight?: number | null | undefined;
             }[];
+            status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED" | undefined;
             description?: {
                 en: string;
                 ar: string;
             } | undefined;
             enabled?: boolean | undefined;
+            tags?: string[] | undefined;
             priority?: number | undefined;
             conditions?: {
                 conditions: {
@@ -6308,6 +13035,84 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null | undefined;
+            presentation?: {
+                style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
+                estimatedMinutes?: number | null | undefined;
+                thumbnailKey?: string | null | undefined;
+                themeKey?: string | null | undefined;
+                intro?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                outro?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                customerVisible?: boolean | undefined;
+            } | undefined;
+            domain?: string | null | undefined;
+            version?: number | undefined;
+            internalName?: string | undefined;
+            familyKey?: string | null | undefined;
+            complexity?: string | null | undefined;
+            packKey?: string | null | undefined;
+            baseTemplateKey?: string | null | undefined;
+            variant?: {
+                kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+                parameters?: Record<string, string | number | boolean | string[]> | undefined;
+            } | undefined;
+            hardEligibility?: {
+                conditions: {
+                    id: string;
+                    operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                    signalKey: string;
+                    value?: string | number | boolean | string[] | null | undefined;
+                }[];
+                mode: "ALL" | "ANY";
+            } | null | undefined;
+            selectionRules?: {
+                id: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                score: number;
+                when: {
+                    conditions: {
+                        id: string;
+                        operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                        signalKey: string;
+                        value?: string | number | boolean | string[] | null | undefined;
+                    }[];
+                    mode: "ALL" | "ANY";
+                };
+            }[] | undefined;
+            allowedAnchorRoles?: string[] | undefined;
+            budgetPolicy?: {
+                maximum?: number | null | undefined;
+                mode?: "IGNORE" | "RESPECT_CUSTOMER" | "HARD" | "SOFT" | undefined;
+            } | null | undefined;
+            fallbackPolicy?: {
+                requiredStep?: "FAIL_TEMPLATE" | "USE_STEP_FALLBACK" | undefined;
+                optionalStep?: "SKIP" | undefined;
+                fallbackTemplateKey?: string | null | undefined;
+            } | null | undefined;
+            compatibilityPolicy?: "STANDARD" | "STRICT" | undefined;
+            brandConstraint?: {
+                mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+                entityId?: string | null | undefined;
+                parameterized?: boolean | undefined;
+            } | undefined;
+            categoryConstraint?: {
+                mode?: "NONE" | "PREFERRED" | "ONLY" | undefined;
+                entityId?: string | null | undefined;
+                parameterized?: boolean | undefined;
+            } | undefined;
+            schedule?: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+            } | undefined;
+            pinned?: boolean | undefined;
         }[];
         settings: {
             maximumProductsPerBrand?: number | null | undefined;
@@ -6336,10 +13141,143 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             aggregation?: "SUM" | "MAX" | "LAST" | undefined;
         }[] | undefined;
         estimatedMinutes?: number | undefined;
+        templateUniverse?: {
+            tags?: {
+                id: string;
+                key: string;
+                label: {
+                    en: string;
+                    ar: string;
+                };
+                enabled?: boolean | undefined;
+            }[] | undefined;
+            fallbackTemplateKey?: string | null | undefined;
+            families?: {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                description?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                order?: number | undefined;
+                enabled?: boolean | undefined;
+            }[] | undefined;
+            packs?: {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                description?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                createdAt?: string | null | undefined;
+                source?: "ADMIN" | "BIOREZA" | "IMPORTED" | undefined;
+                version?: number | undefined;
+            }[] | undefined;
+            stepPresets?: {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                domain: string;
+                steps: {
+                    id: string;
+                    order: number;
+                    roleKey: string;
+                    period: "AM" | "PM";
+                    conditions?: {
+                        conditions: {
+                            id: string;
+                            operator: "EQUALS" | "NOT_EQUALS" | "CONTAINS" | "EXISTS" | "NOT_EXISTS" | "GREATER_THAN_OR_EQUAL" | "LESS_THAN_OR_EQUAL";
+                            signalKey: string;
+                            value?: string | number | boolean | string[] | null | undefined;
+                        }[];
+                        mode: "ALL" | "ANY";
+                    } | null | undefined;
+                    required?: boolean | undefined;
+                    target?: {
+                        kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                        keys?: string[] | undefined;
+                        ids?: string[] | undefined;
+                    } | undefined;
+                    preferredProductIds?: string[] | undefined;
+                    maxAlternatives?: number | undefined;
+                    optionalPriority?: number | undefined;
+                    fallbackMode?: "FAIL_TEMPLATE" | "SKIP_OPTIONAL" | "USE_FALLBACK_ROLE" | undefined;
+                    fallbackRoleKeys?: string[] | undefined;
+                    spendingWeight?: number | null | undefined;
+                }[];
+                description?: {
+                    en: string;
+                    ar: string;
+                } | undefined;
+                enabled?: boolean | undefined;
+            }[] | undefined;
+            customerChoiceEnabled?: boolean | undefined;
+            customerChoiceFamilies?: string[] | undefined;
+        } | undefined;
+        contextualCompletion?: {
+            enabled?: boolean | undefined;
+            title?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            enabledDomains?: string[] | undefined;
+            eligibleAnchorRoles?: string[] | undefined;
+            defaultTemplateKeys?: Record<string, string> | undefined;
+            allowUnavailableAnchorPlanning?: boolean | undefined;
+            requireApprovedReason?: boolean | undefined;
+            anchorBoostRules?: {
+                id: string;
+                key: string;
+                name: {
+                    en: string;
+                    ar: string;
+                };
+                score: number;
+                anchor: {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                };
+                candidate: {
+                    kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
+                    keys?: string[] | undefined;
+                    ids?: string[] | undefined;
+                };
+                channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
+                enabled?: boolean | undefined;
+                priority?: number | undefined;
+            }[] | undefined;
+            introduction?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            unavailableMessage?: {
+                en: string;
+                ar: string;
+            } | undefined;
+            anchorExplanation?: {
+                en: string;
+                ar: string;
+            } | undefined;
+        } | undefined;
     };
 }>;
 export declare const routineProductProfileInputSchema: z.ZodObject<{
     roles: z.ZodArray<z.ZodString, "many">;
+    primaryRole: z.ZodDefault<z.ZodNullable<z.ZodString>>;
+    domain: z.ZodDefault<z.ZodString>;
+    completionEligibility: z.ZodDefault<z.ZodEnum<["AUTO", "YES", "NO"]>>;
     skinTypes: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     concernKeys: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     textures: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
@@ -6377,7 +13315,10 @@ export declare const routineProductProfileInputSchema: z.ZodObject<{
     neverRecommend: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
     skinTypes: string[];
+    domain: string;
     roles: string[];
+    primaryRole: string | null;
+    completionEligibility: "NO" | "AUTO" | "YES";
     concernKeys: string[];
     textures: string[];
     periods: ("AM" | "PM")[];
@@ -6397,6 +13338,9 @@ export declare const routineProductProfileInputSchema: z.ZodObject<{
 }, {
     roles: string[];
     skinTypes?: string[] | undefined;
+    domain?: string | undefined;
+    primaryRole?: string | null | undefined;
+    completionEligibility?: "NO" | "AUTO" | "YES" | undefined;
     concernKeys?: string[] | undefined;
     textures?: string[] | undefined;
     periods?: ("AM" | "PM")[] | undefined;
@@ -6416,23 +13360,48 @@ export declare const routineProductProfileInputSchema: z.ZodObject<{
 }>;
 export declare const routineEventInputSchema: z.ZodObject<{
     sessionId: z.ZodString;
-    type: z.ZodEnum<["QUESTION_ANSWERED", "BUILDER_ABANDONED", "ROUTINE_GENERATED", "PRODUCT_SWAPPED", "ROUTINE_ADD_TO_CART", "ROUTINE_PRODUCT_ADD_TO_CART"]>;
+    type: z.ZodEnum<["QUESTION_ANSWERED", "BUILDER_ABANDONED", "ROUTINE_GENERATED", "TEMPLATE_SELECTED", "TEMPLATE_ZERO_MATCH", "PRODUCT_SWAPPED", "ROUTINE_ADD_TO_CART", "ROUTINE_PRODUCT_ADD_TO_CART", "COMPLETE_ROUTINE_CTA_VIEWED", "COMPLETE_ROUTINE_CTA_CLICKED", "CONTEXTUAL_FLOW_STARTED", "CONTEXTUAL_FLOW_COMPLETED", "ANCHOR_ALTERNATIVES_OPENED", "ROUTINE_ALTERNATIVE_OPENED", "ROUTINE_ALTERNATIVE_SELECTED"]>;
     questionKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
     productId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
 }, "strip", z.ZodTypeAny, {
-    type: "QUESTION_ANSWERED" | "BUILDER_ABANDONED" | "ROUTINE_GENERATED" | "PRODUCT_SWAPPED" | "ROUTINE_ADD_TO_CART" | "ROUTINE_PRODUCT_ADD_TO_CART";
+    type: "QUESTION_ANSWERED" | "BUILDER_ABANDONED" | "ROUTINE_GENERATED" | "TEMPLATE_SELECTED" | "TEMPLATE_ZERO_MATCH" | "PRODUCT_SWAPPED" | "ROUTINE_ADD_TO_CART" | "ROUTINE_PRODUCT_ADD_TO_CART" | "COMPLETE_ROUTINE_CTA_VIEWED" | "COMPLETE_ROUTINE_CTA_CLICKED" | "CONTEXTUAL_FLOW_STARTED" | "CONTEXTUAL_FLOW_COMPLETED" | "ANCHOR_ALTERNATIVES_OPENED" | "ROUTINE_ALTERNATIVE_OPENED" | "ROUTINE_ALTERNATIVE_SELECTED";
     productId: string | null;
     questionKey: string | null;
     sessionId: string;
 }, {
-    type: "QUESTION_ANSWERED" | "BUILDER_ABANDONED" | "ROUTINE_GENERATED" | "PRODUCT_SWAPPED" | "ROUTINE_ADD_TO_CART" | "ROUTINE_PRODUCT_ADD_TO_CART";
+    type: "QUESTION_ANSWERED" | "BUILDER_ABANDONED" | "ROUTINE_GENERATED" | "TEMPLATE_SELECTED" | "TEMPLATE_ZERO_MATCH" | "PRODUCT_SWAPPED" | "ROUTINE_ADD_TO_CART" | "ROUTINE_PRODUCT_ADD_TO_CART" | "COMPLETE_ROUTINE_CTA_VIEWED" | "COMPLETE_ROUTINE_CTA_CLICKED" | "CONTEXTUAL_FLOW_STARTED" | "CONTEXTUAL_FLOW_COMPLETED" | "ANCHOR_ALTERNATIVES_OPENED" | "ROUTINE_ALTERNATIVE_OPENED" | "ROUTINE_ALTERNATIVE_SELECTED";
     sessionId: string;
     productId?: string | null | undefined;
     questionKey?: string | null | undefined;
 }>;
+export declare const routineCartInputSchema: z.ZodObject<{
+    selections: z.ZodArray<z.ZodObject<{
+        stepId: z.ZodString;
+        variantId: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        variantId: string;
+        stepId: string;
+    }, {
+        variantId: string;
+        stepId: string;
+    }>, "many">;
+}, "strip", z.ZodTypeAny, {
+    selections: {
+        variantId: string;
+        stepId: string;
+    }[];
+}, {
+    selections: {
+        variantId: string;
+        stepId: string;
+    }[];
+}>;
+export type RoutineCartInput = z.infer<typeof routineCartInputSchema>;
 export type RoutineBuilderConfig = z.infer<typeof routineBuilderConfigSchema>;
 export type RoutineQuestion = z.infer<typeof routineQuestionSchema>;
 export type RoutineRule = z.infer<typeof routineRuleSchema>;
+export type RoutineTemplate = z.infer<typeof routineTemplateSchema>;
+export type RoutineTemplateStep = z.infer<typeof routineTemplateStepSchema>;
 export type RoutineTarget = z.infer<typeof routineTargetSchema>;
 export type RoutineAnswers = z.infer<typeof routineAnswersSchema>;
 export type RoutineEvaluationInput = z.infer<typeof routineEvaluationInputSchema>;

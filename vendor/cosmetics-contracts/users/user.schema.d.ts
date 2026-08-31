@@ -726,6 +726,8 @@ export declare const adminUsersQuerySchema: z.ZodObject<{
     totalOrdersMax: z.ZodOptional<z.ZodNumber>;
     totalSpentMin: z.ZodOptional<z.ZodNumber>;
     totalSpentMax: z.ZodOptional<z.ZodNumber>;
+    tagId: z.ZodOptional<z.ZodString>;
+    segmentId: z.ZodOptional<z.ZodString>;
     sortBy: z.ZodDefault<z.ZodEnum<["createdAt", "updatedAt", "firstName", "newest", "oldest", "name", "orders", "spending"]>>;
     sortOrder: z.ZodDefault<z.ZodEnum<["asc", "desc"]>>;
 }, "strip", z.ZodTypeAny, {
@@ -744,6 +746,8 @@ export declare const adminUsersQuerySchema: z.ZodObject<{
     totalOrdersMax?: number | undefined;
     totalSpentMin?: number | undefined;
     totalSpentMax?: number | undefined;
+    tagId?: string | undefined;
+    segmentId?: string | undefined;
 }, {
     status?: "ACTIVE" | "INACTIVE" | "DELETED" | undefined;
     page?: number | undefined;
@@ -760,6 +764,8 @@ export declare const adminUsersQuerySchema: z.ZodObject<{
     totalOrdersMax?: number | undefined;
     totalSpentMin?: number | undefined;
     totalSpentMax?: number | undefined;
+    tagId?: string | undefined;
+    segmentId?: string | undefined;
 }>;
 export type AdminUsersQuery = z.infer<typeof adminUsersQuerySchema>;
 export declare const adminCustomerOrdersQuerySchema: z.ZodObject<{

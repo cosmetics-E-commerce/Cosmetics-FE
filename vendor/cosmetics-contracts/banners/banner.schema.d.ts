@@ -832,6 +832,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         countdownAt?: string | null | undefined;
     }[];
     mode: "CAROUSEL" | "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "FREE_SHIPPING_PROGRESS";
+    internalName: string;
     animation: {
         loop: boolean;
         pauseOnHover: boolean;
@@ -864,7 +865,6 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         hideCtaMobile: boolean;
         hideIconsMobile: boolean;
     };
-    internalName: string;
     recurringSchedule: {
         enabled: boolean;
         weekdays: number[];
@@ -1122,6 +1122,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         countdownAt?: string | null | undefined;
     }[];
     mode: "CAROUSEL" | "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "FREE_SHIPPING_PROGRESS";
+    internalName: string;
     animation: {
         loop: boolean;
         pauseOnHover: boolean;
@@ -1154,7 +1155,6 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         hideCtaMobile: boolean;
         hideIconsMobile: boolean;
     };
-    internalName: string;
     recurringSchedule: {
         enabled: boolean;
         weekdays: number[];
@@ -1938,6 +1938,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             countdownAt?: string | null | undefined;
         }[];
         mode: "CAROUSEL" | "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "FREE_SHIPPING_PROGRESS";
+        internalName: string;
         animation: {
             loop: boolean;
             pauseOnHover: boolean;
@@ -1970,7 +1971,6 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             hideCtaMobile: boolean;
             hideIconsMobile: boolean;
         };
-        internalName: string;
         recurringSchedule: {
             enabled: boolean;
             weekdays: number[];
@@ -2228,6 +2228,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             countdownAt?: string | null | undefined;
         }[];
         mode: "CAROUSEL" | "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "FREE_SHIPPING_PROGRESS";
+        internalName: string;
         animation: {
             loop: boolean;
             pauseOnHover: boolean;
@@ -2260,7 +2261,6 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             hideCtaMobile: boolean;
             hideIconsMobile: boolean;
         };
-        internalName: string;
         recurringSchedule: {
             enabled: boolean;
             weekdays: number[];
@@ -2521,6 +2521,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             countdownAt?: string | null | undefined;
         }[];
         mode: "CAROUSEL" | "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "FREE_SHIPPING_PROGRESS";
+        internalName: string;
         animation: {
             loop: boolean;
             pauseOnHover: boolean;
@@ -2553,7 +2554,6 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             hideCtaMobile: boolean;
             hideIconsMobile: boolean;
         };
-        internalName: string;
         recurringSchedule: {
             enabled: boolean;
             weekdays: number[];

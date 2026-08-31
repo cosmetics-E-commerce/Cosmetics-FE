@@ -791,6 +791,10 @@ export declare const landingPageHeroSlideSchema: z.ZodObject<{
         en: string;
         ar: string;
     };
+    schedule: {
+        startsAt: string | null;
+        endsAt: string | null;
+    };
     mobile: {
         height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
         enabled: boolean;
@@ -942,10 +946,6 @@ export declare const landingPageHeroSlideSchema: z.ZodObject<{
         playsInline: boolean;
         preload: "NONE" | "AUTO" | "METADATA";
     };
-    schedule: {
-        startsAt: string | null;
-        endsAt: string | null;
-    };
 }, {
     id: string;
     description: {
@@ -964,6 +964,10 @@ export declare const landingPageHeroSlideSchema: z.ZodObject<{
     imageAlt: {
         en?: string | undefined;
         ar?: string | undefined;
+    };
+    schedule: {
+        startsAt?: string | null | undefined;
+        endsAt?: string | null | undefined;
     };
     mobile: {
         height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
@@ -1110,10 +1114,6 @@ export declare const landingPageHeroSlideSchema: z.ZodObject<{
         playsInline?: boolean | undefined;
         preload?: "NONE" | "AUTO" | "METADATA" | undefined;
     };
-    schedule: {
-        startsAt?: string | null | undefined;
-        endsAt?: string | null | undefined;
-    };
     enabled?: boolean | undefined;
     mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
     signatureMedia?: "MINIMAL" | "RADIANCE" | "SERUM" | null | undefined;
@@ -1201,17 +1201,17 @@ declare const productSourceSchema: z.ZodDiscriminatedUnion<"mode", [z.ZodObject<
     sort: z.ZodDefault<z.ZodEnum<["NEWEST", "NAME", "PRICE_LOW", "PRICE_HIGH"]>>;
 }, "strict", z.ZodTypeAny, {
     sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+    tagId: string | null;
     categoryId: string | null;
     brandId: string | null;
     mode: "DYNAMIC_RULE";
-    tagId: string | null;
     availability: "ALL" | "IN_STOCK";
 }, {
     mode: "DYNAMIC_RULE";
     sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+    tagId?: string | null | undefined;
     categoryId?: string | null | undefined;
     brandId?: string | null | undefined;
-    tagId?: string | null | undefined;
     availability?: "ALL" | "IN_STOCK" | undefined;
 }>]>;
 export type LandingPageProductSource = z.infer<typeof productSourceSchema>;
@@ -2517,6 +2517,10 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
             en: string;
             ar: string;
         };
+        schedule: {
+            startsAt: string | null;
+            endsAt: string | null;
+        };
         mobile: {
             height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
             enabled: boolean;
@@ -2668,10 +2672,6 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
             playsInline: boolean;
             preload: "NONE" | "AUTO" | "METADATA";
         };
-        schedule: {
-            startsAt: string | null;
-            endsAt: string | null;
-        };
     }, {
         id: string;
         description: {
@@ -2690,6 +2690,10 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
         imageAlt: {
             en?: string | undefined;
             ar?: string | undefined;
+        };
+        schedule: {
+            startsAt?: string | null | undefined;
+            endsAt?: string | null | undefined;
         };
         mobile: {
             height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
@@ -2835,10 +2839,6 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
             controls?: boolean | undefined;
             playsInline?: boolean | undefined;
             preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-        };
-        schedule: {
-            startsAt?: string | null | undefined;
-            endsAt?: string | null | undefined;
         };
         enabled?: boolean | undefined;
         mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -3097,6 +3097,10 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
             en: string;
             ar: string;
         };
+        schedule: {
+            startsAt: string | null;
+            endsAt: string | null;
+        };
         mobile: {
             height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
             enabled: boolean;
@@ -3247,10 +3251,6 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
             controls: boolean;
             playsInline: boolean;
             preload: "NONE" | "AUTO" | "METADATA";
-        };
-        schedule: {
-            startsAt: string | null;
-            endsAt: string | null;
         };
     }[] | undefined;
     carousel?: {
@@ -3418,6 +3418,10 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
             en?: string | undefined;
             ar?: string | undefined;
         };
+        schedule: {
+            startsAt?: string | null | undefined;
+            endsAt?: string | null | undefined;
+        };
         mobile: {
             height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
             enabled?: boolean | undefined;
@@ -3562,10 +3566,6 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
             controls?: boolean | undefined;
             playsInline?: boolean | undefined;
             preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-        };
-        schedule: {
-            startsAt?: string | null | undefined;
-            endsAt?: string | null | undefined;
         };
         enabled?: boolean | undefined;
         mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -4092,17 +4092,17 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
         sort: z.ZodDefault<z.ZodEnum<["NEWEST", "NAME", "PRICE_LOW", "PRICE_HIGH"]>>;
     }, "strict", z.ZodTypeAny, {
         sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+        tagId: string | null;
         categoryId: string | null;
         brandId: string | null;
         mode: "DYNAMIC_RULE";
-        tagId: string | null;
         availability: "ALL" | "IN_STOCK";
     }, {
         mode: "DYNAMIC_RULE";
         sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+        tagId?: string | null | undefined;
         categoryId?: string | null | undefined;
         brandId?: string | null | undefined;
-        tagId?: string | null | undefined;
         availability?: "ALL" | "IN_STOCK" | undefined;
     }>]>;
     limit: z.ZodDefault<z.ZodNumber>;
@@ -4346,10 +4346,10 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
         mode: "CURRENT_CONTEXT";
     } | {
         sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+        tagId: string | null;
         categoryId: string | null;
         brandId: string | null;
         mode: "DYNAMIC_RULE";
-        tagId: string | null;
         availability: "ALL" | "IN_STOCK";
     };
     enabled: boolean;
@@ -4396,7 +4396,7 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
         type: "PAGE";
         id: string;
     } | null;
-    style: "COMPACT" | "CLEAN" | "EDITORIAL";
+    style: "COMPACT" | "EDITORIAL" | "CLEAN";
     visibility: {
         startsAt: string | null;
         endsAt: string | null;
@@ -4458,9 +4458,9 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
     } | {
         mode: "DYNAMIC_RULE";
         sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+        tagId?: string | null | undefined;
         categoryId?: string | null | undefined;
         brandId?: string | null | undefined;
-        tagId?: string | null | undefined;
         availability?: "ALL" | "IN_STOCK" | undefined;
     };
     heading: {
@@ -4521,7 +4521,7 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
         type: "PAGE";
         id: string;
     } | null | undefined;
-    style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+    style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
     showViewAll?: boolean | undefined;
     schemaVersion?: number | undefined;
     spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -4638,17 +4638,17 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
         sort: z.ZodDefault<z.ZodEnum<["NEWEST", "NAME", "PRICE_LOW", "PRICE_HIGH"]>>;
     }, "strict", z.ZodTypeAny, {
         sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+        tagId: string | null;
         categoryId: string | null;
         brandId: string | null;
         mode: "DYNAMIC_RULE";
-        tagId: string | null;
         availability: "ALL" | "IN_STOCK";
     }, {
         mode: "DYNAMIC_RULE";
         sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+        tagId?: string | null | undefined;
         categoryId?: string | null | undefined;
         brandId?: string | null | undefined;
-        tagId?: string | null | undefined;
         availability?: "ALL" | "IN_STOCK" | undefined;
     }>]>;
     limit: z.ZodDefault<z.ZodNumber>;
@@ -4892,10 +4892,10 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
         mode: "CURRENT_CONTEXT";
     } | {
         sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+        tagId: string | null;
         categoryId: string | null;
         brandId: string | null;
         mode: "DYNAMIC_RULE";
-        tagId: string | null;
         availability: "ALL" | "IN_STOCK";
     };
     enabled: boolean;
@@ -4942,7 +4942,7 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
         type: "PAGE";
         id: string;
     } | null;
-    style: "COMPACT" | "CLEAN" | "EDITORIAL";
+    style: "COMPACT" | "EDITORIAL" | "CLEAN";
     visibility: {
         startsAt: string | null;
         endsAt: string | null;
@@ -5005,9 +5005,9 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
     } | {
         mode: "DYNAMIC_RULE";
         sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+        tagId?: string | null | undefined;
         categoryId?: string | null | undefined;
         brandId?: string | null | undefined;
-        tagId?: string | null | undefined;
         availability?: "ALL" | "IN_STOCK" | undefined;
     };
     heading: {
@@ -5068,7 +5068,7 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
         type: "PAGE";
         id: string;
     } | null | undefined;
-    style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+    style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
     showViewAll?: boolean | undefined;
     schemaVersion?: number | undefined;
     spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -5749,7 +5749,7 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
         en: string;
         ar: string;
     };
-    style: "DARK" | "EDITORIAL" | "BANNER";
+    style: "EDITORIAL" | "DARK" | "BANNER";
     visibility: {
         startsAt: string | null;
         endsAt: string | null;
@@ -5842,7 +5842,7 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
         id: string;
     } | null | undefined;
     mediaAssetId?: string | null | undefined;
-    style?: "DARK" | "EDITORIAL" | "BANNER" | undefined;
+    style?: "EDITORIAL" | "DARK" | "BANNER" | undefined;
     schemaVersion?: number | undefined;
     spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
     globalSectionId?: string | null | undefined;
@@ -6154,7 +6154,7 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
         en: string;
         ar: string;
     };
-    style: "COMPACT" | "DARK" | "EDITORIAL";
+    style: "COMPACT" | "EDITORIAL" | "DARK";
     visibility: {
         startsAt: string | null;
         endsAt: string | null;
@@ -6245,7 +6245,7 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
         id: string;
     } | undefined;
     mediaAssetId?: string | null | undefined;
-    style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+    style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
     schemaVersion?: number | undefined;
     spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
     globalSectionId?: string | null | undefined;
@@ -7388,7 +7388,7 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
         en: string;
         ar: string;
     };
-    style: "COMPACT" | "DARK" | "EDITORIAL";
+    style: "COMPACT" | "EDITORIAL" | "DARK";
     visibility: {
         startsAt: string | null;
         endsAt: string | null;
@@ -7435,7 +7435,7 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
     analyticsKey: string;
     width?: "CONTENT" | "WIDE" | "FULL" | undefined;
     enabled?: boolean | undefined;
-    style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+    style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
     schemaVersion?: number | undefined;
     spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
     globalSectionId?: string | null | undefined;
@@ -9833,6 +9833,10 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 en: string;
                 ar: string;
             };
+            schedule: {
+                startsAt: string | null;
+                endsAt: string | null;
+            };
             mobile: {
                 height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
                 enabled: boolean;
@@ -9984,10 +9988,6 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 playsInline: boolean;
                 preload: "NONE" | "AUTO" | "METADATA";
             };
-            schedule: {
-                startsAt: string | null;
-                endsAt: string | null;
-            };
         }, {
             id: string;
             description: {
@@ -10006,6 +10006,10 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             imageAlt: {
                 en?: string | undefined;
                 ar?: string | undefined;
+            };
+            schedule: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
             };
             mobile: {
                 height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
@@ -10151,10 +10155,6 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 controls?: boolean | undefined;
                 playsInline?: boolean | undefined;
                 preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-            };
-            schedule: {
-                startsAt?: string | null | undefined;
-                endsAt?: string | null | undefined;
             };
             enabled?: boolean | undefined;
             mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -10413,6 +10413,10 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 en: string;
                 ar: string;
             };
+            schedule: {
+                startsAt: string | null;
+                endsAt: string | null;
+            };
             mobile: {
                 height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
                 enabled: boolean;
@@ -10563,10 +10567,6 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 controls: boolean;
                 playsInline: boolean;
                 preload: "NONE" | "AUTO" | "METADATA";
-            };
-            schedule: {
-                startsAt: string | null;
-                endsAt: string | null;
             };
         }[] | undefined;
         carousel?: {
@@ -10734,6 +10734,10 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
+            schedule: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+            };
             mobile: {
                 height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
                 enabled?: boolean | undefined;
@@ -10878,10 +10882,6 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 controls?: boolean | undefined;
                 playsInline?: boolean | undefined;
                 preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-            };
-            schedule: {
-                startsAt?: string | null | undefined;
-                endsAt?: string | null | undefined;
             };
             enabled?: boolean | undefined;
             mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -11408,17 +11408,17 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             sort: z.ZodDefault<z.ZodEnum<["NEWEST", "NAME", "PRICE_LOW", "PRICE_HIGH"]>>;
         }, "strict", z.ZodTypeAny, {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         }, {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         }>]>;
         limit: z.ZodDefault<z.ZodNumber>;
@@ -11662,10 +11662,10 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             mode: "CURRENT_CONTEXT";
         } | {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         };
         enabled: boolean;
@@ -11712,7 +11712,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null;
-        style: "COMPACT" | "CLEAN" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "CLEAN";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -11774,9 +11774,9 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         } | {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         };
         heading: {
@@ -11837,7 +11837,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null | undefined;
-        style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
         showViewAll?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -11954,17 +11954,17 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             sort: z.ZodDefault<z.ZodEnum<["NEWEST", "NAME", "PRICE_LOW", "PRICE_HIGH"]>>;
         }, "strict", z.ZodTypeAny, {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         }, {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         }>]>;
         limit: z.ZodDefault<z.ZodNumber>;
@@ -12208,10 +12208,10 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             mode: "CURRENT_CONTEXT";
         } | {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         };
         enabled: boolean;
@@ -12258,7 +12258,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null;
-        style: "COMPACT" | "CLEAN" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "CLEAN";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -12321,9 +12321,9 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         } | {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         };
         heading: {
@@ -12384,7 +12384,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null | undefined;
-        style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
         showViewAll?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -13065,7 +13065,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "DARK" | "EDITORIAL" | "BANNER";
+        style: "EDITORIAL" | "DARK" | "BANNER";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -13158,7 +13158,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             id: string;
         } | null | undefined;
         mediaAssetId?: string | null | undefined;
-        style?: "DARK" | "EDITORIAL" | "BANNER" | undefined;
+        style?: "EDITORIAL" | "DARK" | "BANNER" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -13470,7 +13470,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "COMPACT" | "DARK" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "DARK";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -13561,7 +13561,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             id: string;
         } | undefined;
         mediaAssetId?: string | null | undefined;
-        style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -14704,7 +14704,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "COMPACT" | "DARK" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "DARK";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -14751,7 +14751,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         analyticsKey: string;
         width?: "CONTENT" | "WIDE" | "FULL" | undefined;
         enabled?: boolean | undefined;
-        style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -16251,6 +16251,10 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 en: string;
                 ar: string;
             };
+            schedule: {
+                startsAt: string | null;
+                endsAt: string | null;
+            };
             mobile: {
                 height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
                 enabled: boolean;
@@ -16402,10 +16406,6 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 playsInline: boolean;
                 preload: "NONE" | "AUTO" | "METADATA";
             };
-            schedule: {
-                startsAt: string | null;
-                endsAt: string | null;
-            };
         }[] | undefined;
         carousel?: {
             autoplay: boolean;
@@ -16548,10 +16548,10 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             mode: "CURRENT_CONTEXT";
         } | {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         };
         enabled: boolean;
@@ -16598,7 +16598,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null;
-        style: "COMPACT" | "CLEAN" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "CLEAN";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -16661,10 +16661,10 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             mode: "CURRENT_CONTEXT";
         } | {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         };
         enabled: boolean;
@@ -16711,7 +16711,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null;
-        style: "COMPACT" | "CLEAN" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "CLEAN";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -16882,7 +16882,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "DARK" | "EDITORIAL" | "BANNER";
+        style: "EDITORIAL" | "DARK" | "BANNER";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -16967,7 +16967,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "COMPACT" | "DARK" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "DARK";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -17217,7 +17217,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "COMPACT" | "DARK" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "DARK";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -17648,6 +17648,10 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
+            schedule: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+            };
             mobile: {
                 height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
                 enabled?: boolean | undefined;
@@ -17792,10 +17796,6 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 controls?: boolean | undefined;
                 playsInline?: boolean | undefined;
                 preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-            };
-            schedule: {
-                startsAt?: string | null | undefined;
-                endsAt?: string | null | undefined;
             };
             enabled?: boolean | undefined;
             mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -17946,9 +17946,9 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         } | {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         };
         heading: {
@@ -18009,7 +18009,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null | undefined;
-        style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
         showViewAll?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -18059,9 +18059,9 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         } | {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         };
         heading: {
@@ -18122,7 +18122,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null | undefined;
-        style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
         showViewAll?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -18288,7 +18288,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             id: string;
         } | null | undefined;
         mediaAssetId?: string | null | undefined;
-        style?: "DARK" | "EDITORIAL" | "BANNER" | undefined;
+        style?: "EDITORIAL" | "DARK" | "BANNER" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -18373,7 +18373,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             id: string;
         } | undefined;
         mediaAssetId?: string | null | undefined;
-        style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -18623,7 +18623,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         analyticsKey: string;
         width?: "CONTENT" | "WIDE" | "FULL" | undefined;
         enabled?: boolean | undefined;
-        style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -19049,6 +19049,10 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 en: string;
                 ar: string;
             };
+            schedule: {
+                startsAt: string | null;
+                endsAt: string | null;
+            };
             mobile: {
                 height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
                 enabled: boolean;
@@ -19200,10 +19204,6 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 playsInline: boolean;
                 preload: "NONE" | "AUTO" | "METADATA";
             };
-            schedule: {
-                startsAt: string | null;
-                endsAt: string | null;
-            };
         }[] | undefined;
         carousel?: {
             autoplay: boolean;
@@ -19346,10 +19346,10 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             mode: "CURRENT_CONTEXT";
         } | {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         };
         enabled: boolean;
@@ -19396,7 +19396,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null;
-        style: "COMPACT" | "CLEAN" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "CLEAN";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -19459,10 +19459,10 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             mode: "CURRENT_CONTEXT";
         } | {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         };
         enabled: boolean;
@@ -19509,7 +19509,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null;
-        style: "COMPACT" | "CLEAN" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "CLEAN";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -19680,7 +19680,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "DARK" | "EDITORIAL" | "BANNER";
+        style: "EDITORIAL" | "DARK" | "BANNER";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -19765,7 +19765,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "COMPACT" | "DARK" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "DARK";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -20015,7 +20015,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "COMPACT" | "DARK" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "DARK";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -20446,6 +20446,10 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
+            schedule: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+            };
             mobile: {
                 height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
                 enabled?: boolean | undefined;
@@ -20590,10 +20594,6 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 controls?: boolean | undefined;
                 playsInline?: boolean | undefined;
                 preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-            };
-            schedule: {
-                startsAt?: string | null | undefined;
-                endsAt?: string | null | undefined;
             };
             enabled?: boolean | undefined;
             mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -20744,9 +20744,9 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         } | {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         };
         heading: {
@@ -20807,7 +20807,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null | undefined;
-        style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
         showViewAll?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -20857,9 +20857,9 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         } | {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         };
         heading: {
@@ -20920,7 +20920,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null | undefined;
-        style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
         showViewAll?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -21086,7 +21086,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             id: string;
         } | null | undefined;
         mediaAssetId?: string | null | undefined;
-        style?: "DARK" | "EDITORIAL" | "BANNER" | undefined;
+        style?: "EDITORIAL" | "DARK" | "BANNER" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -21171,7 +21171,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
             id: string;
         } | undefined;
         mediaAssetId?: string | null | undefined;
-        style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -21421,7 +21421,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         analyticsKey: string;
         width?: "CONTENT" | "WIDE" | "FULL" | undefined;
         enabled?: boolean | undefined;
-        style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -21695,13 +21695,13 @@ export declare const createLandingPageSchema: z.ZodObject<{
     templateKey: z.ZodDefault<z.ZodEnum<["BLANK", "HOMEPAGE", "CAMPAIGN", "BRAND_LANDING", "CATEGORY_LANDING", "ROUTINE_CAMPAIGN", "BIOREZA_DEFAULT_HOME", "LUXURY_EDITORIAL_HOME", "PRODUCT_DISCOVERY_HOME", "BRAND_DISCOVERY_HOME", "MINIMAL_BEAUTY_HOME", "CAMPAIGN_HOME", "SEASONAL_CAMPAIGN", "RAMADAN_CAMPAIGN", "EID_CAMPAIGN", "SUMMER_ESSENTIALS", "WINTER_SKINCARE", "SALE_PROMOTION", "NEW_ARRIVALS_CAMPAIGN", "BEST_SELLERS_CAMPAIGN", "PRODUCT_LAUNCH", "SINGLE_PRODUCT_SPOTLIGHT", "PRODUCT_FAMILY", "ROUTINE_COLLECTION", "PRODUCT_COMPARISON", "BUNDLE_SET_LANDING", "BRAND_EDITORIAL", "BRAND_CATALOG", "BRAND_STORY_PRODUCTS", "BRAND_CATEGORY_SHOWCASE", "CATEGORY_EDITORIAL", "CATEGORY_PRODUCT_DISCOVERY", "CATEGORY_FEATURED_PRODUCTS", "CATEGORY_STORY", "ABOUT_BIOREZA", "BEAUTY_GUIDE", "INGREDIENT_STORY", "ROUTINE_GUIDE", "FAQ_INFORMATION", "EDITORIAL_STORY", "BLANK_CAMPAIGN"]>>;
     templateId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
 }, "strict", z.ZodTypeAny, {
-    type: "CATEGORY" | "BRAND" | "HOMEPAGE" | "CAMPAIGN" | "OFFER" | "SEASONAL" | "COLLECTION" | "CUSTOM";
+    type: "CATEGORY" | "BRAND" | "SEASONAL" | "CUSTOM" | "HOMEPAGE" | "CAMPAIGN" | "OFFER" | "COLLECTION";
     name: string;
     slug: string;
     templateKey: "HOMEPAGE" | "CAMPAIGN" | "BLANK" | "BRAND_LANDING" | "CATEGORY_LANDING" | "ROUTINE_CAMPAIGN" | "BIOREZA_DEFAULT_HOME" | "LUXURY_EDITORIAL_HOME" | "PRODUCT_DISCOVERY_HOME" | "BRAND_DISCOVERY_HOME" | "MINIMAL_BEAUTY_HOME" | "CAMPAIGN_HOME" | "SEASONAL_CAMPAIGN" | "RAMADAN_CAMPAIGN" | "EID_CAMPAIGN" | "SUMMER_ESSENTIALS" | "WINTER_SKINCARE" | "SALE_PROMOTION" | "NEW_ARRIVALS_CAMPAIGN" | "BEST_SELLERS_CAMPAIGN" | "PRODUCT_LAUNCH" | "SINGLE_PRODUCT_SPOTLIGHT" | "PRODUCT_FAMILY" | "ROUTINE_COLLECTION" | "PRODUCT_COMPARISON" | "BUNDLE_SET_LANDING" | "BRAND_EDITORIAL" | "BRAND_CATALOG" | "BRAND_STORY_PRODUCTS" | "BRAND_CATEGORY_SHOWCASE" | "CATEGORY_EDITORIAL" | "CATEGORY_PRODUCT_DISCOVERY" | "CATEGORY_FEATURED_PRODUCTS" | "CATEGORY_STORY" | "ABOUT_BIOREZA" | "BEAUTY_GUIDE" | "INGREDIENT_STORY" | "ROUTINE_GUIDE" | "FAQ_INFORMATION" | "EDITORIAL_STORY" | "BLANK_CAMPAIGN";
     templateId?: string | null | undefined;
 }, {
-    type: "CATEGORY" | "BRAND" | "HOMEPAGE" | "CAMPAIGN" | "OFFER" | "SEASONAL" | "COLLECTION" | "CUSTOM";
+    type: "CATEGORY" | "BRAND" | "SEASONAL" | "CUSTOM" | "HOMEPAGE" | "CAMPAIGN" | "OFFER" | "COLLECTION";
     name: string;
     slug: string;
     templateKey?: "HOMEPAGE" | "CAMPAIGN" | "BLANK" | "BRAND_LANDING" | "CATEGORY_LANDING" | "ROUTINE_CAMPAIGN" | "BIOREZA_DEFAULT_HOME" | "LUXURY_EDITORIAL_HOME" | "PRODUCT_DISCOVERY_HOME" | "BRAND_DISCOVERY_HOME" | "MINIMAL_BEAUTY_HOME" | "CAMPAIGN_HOME" | "SEASONAL_CAMPAIGN" | "RAMADAN_CAMPAIGN" | "EID_CAMPAIGN" | "SUMMER_ESSENTIALS" | "WINTER_SKINCARE" | "SALE_PROMOTION" | "NEW_ARRIVALS_CAMPAIGN" | "BEST_SELLERS_CAMPAIGN" | "PRODUCT_LAUNCH" | "SINGLE_PRODUCT_SPOTLIGHT" | "PRODUCT_FAMILY" | "ROUTINE_COLLECTION" | "PRODUCT_COMPARISON" | "BUNDLE_SET_LANDING" | "BRAND_EDITORIAL" | "BRAND_CATALOG" | "BRAND_STORY_PRODUCTS" | "BRAND_CATEGORY_SHOWCASE" | "CATEGORY_EDITORIAL" | "CATEGORY_PRODUCT_DISCOVERY" | "CATEGORY_FEATURED_PRODUCTS" | "CATEGORY_STORY" | "ABOUT_BIOREZA" | "BEAUTY_GUIDE" | "INGREDIENT_STORY" | "ROUTINE_GUIDE" | "FAQ_INFORMATION" | "EDITORIAL_STORY" | "BLANK_CAMPAIGN" | undefined;
@@ -22726,6 +22726,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     en: string;
                     ar: string;
                 };
+                schedule: {
+                    startsAt: string | null;
+                    endsAt: string | null;
+                };
                 mobile: {
                     height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
                     enabled: boolean;
@@ -22877,10 +22881,6 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     playsInline: boolean;
                     preload: "NONE" | "AUTO" | "METADATA";
                 };
-                schedule: {
-                    startsAt: string | null;
-                    endsAt: string | null;
-                };
             }, {
                 id: string;
                 description: {
@@ -22899,6 +22899,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 imageAlt: {
                     en?: string | undefined;
                     ar?: string | undefined;
+                };
+                schedule: {
+                    startsAt?: string | null | undefined;
+                    endsAt?: string | null | undefined;
                 };
                 mobile: {
                     height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
@@ -23044,10 +23048,6 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     controls?: boolean | undefined;
                     playsInline?: boolean | undefined;
                     preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-                };
-                schedule: {
-                    startsAt?: string | null | undefined;
-                    endsAt?: string | null | undefined;
                 };
                 enabled?: boolean | undefined;
                 mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -23306,6 +23306,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     en: string;
                     ar: string;
                 };
+                schedule: {
+                    startsAt: string | null;
+                    endsAt: string | null;
+                };
                 mobile: {
                     height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
                     enabled: boolean;
@@ -23456,10 +23460,6 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     controls: boolean;
                     playsInline: boolean;
                     preload: "NONE" | "AUTO" | "METADATA";
-                };
-                schedule: {
-                    startsAt: string | null;
-                    endsAt: string | null;
                 };
             }[] | undefined;
             carousel?: {
@@ -23627,6 +23627,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
+                schedule: {
+                    startsAt?: string | null | undefined;
+                    endsAt?: string | null | undefined;
+                };
                 mobile: {
                     height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
                     enabled?: boolean | undefined;
@@ -23771,10 +23775,6 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     controls?: boolean | undefined;
                     playsInline?: boolean | undefined;
                     preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-                };
-                schedule: {
-                    startsAt?: string | null | undefined;
-                    endsAt?: string | null | undefined;
                 };
                 enabled?: boolean | undefined;
                 mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -24301,17 +24301,17 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 sort: z.ZodDefault<z.ZodEnum<["NEWEST", "NAME", "PRICE_LOW", "PRICE_HIGH"]>>;
             }, "strict", z.ZodTypeAny, {
                 sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+                tagId: string | null;
                 categoryId: string | null;
                 brandId: string | null;
                 mode: "DYNAMIC_RULE";
-                tagId: string | null;
                 availability: "ALL" | "IN_STOCK";
             }, {
                 mode: "DYNAMIC_RULE";
                 sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+                tagId?: string | null | undefined;
                 categoryId?: string | null | undefined;
                 brandId?: string | null | undefined;
-                tagId?: string | null | undefined;
                 availability?: "ALL" | "IN_STOCK" | undefined;
             }>]>;
             limit: z.ZodDefault<z.ZodNumber>;
@@ -24555,10 +24555,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 mode: "CURRENT_CONTEXT";
             } | {
                 sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+                tagId: string | null;
                 categoryId: string | null;
                 brandId: string | null;
                 mode: "DYNAMIC_RULE";
-                tagId: string | null;
                 availability: "ALL" | "IN_STOCK";
             };
             enabled: boolean;
@@ -24605,7 +24605,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 type: "PAGE";
                 id: string;
             } | null;
-            style: "COMPACT" | "CLEAN" | "EDITORIAL";
+            style: "COMPACT" | "EDITORIAL" | "CLEAN";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -24667,9 +24667,9 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             } | {
                 mode: "DYNAMIC_RULE";
                 sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+                tagId?: string | null | undefined;
                 categoryId?: string | null | undefined;
                 brandId?: string | null | undefined;
-                tagId?: string | null | undefined;
                 availability?: "ALL" | "IN_STOCK" | undefined;
             };
             heading: {
@@ -24730,7 +24730,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 type: "PAGE";
                 id: string;
             } | null | undefined;
-            style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+            style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
             showViewAll?: boolean | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -24847,17 +24847,17 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 sort: z.ZodDefault<z.ZodEnum<["NEWEST", "NAME", "PRICE_LOW", "PRICE_HIGH"]>>;
             }, "strict", z.ZodTypeAny, {
                 sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+                tagId: string | null;
                 categoryId: string | null;
                 brandId: string | null;
                 mode: "DYNAMIC_RULE";
-                tagId: string | null;
                 availability: "ALL" | "IN_STOCK";
             }, {
                 mode: "DYNAMIC_RULE";
                 sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+                tagId?: string | null | undefined;
                 categoryId?: string | null | undefined;
                 brandId?: string | null | undefined;
-                tagId?: string | null | undefined;
                 availability?: "ALL" | "IN_STOCK" | undefined;
             }>]>;
             limit: z.ZodDefault<z.ZodNumber>;
@@ -25101,10 +25101,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 mode: "CURRENT_CONTEXT";
             } | {
                 sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+                tagId: string | null;
                 categoryId: string | null;
                 brandId: string | null;
                 mode: "DYNAMIC_RULE";
-                tagId: string | null;
                 availability: "ALL" | "IN_STOCK";
             };
             enabled: boolean;
@@ -25151,7 +25151,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 type: "PAGE";
                 id: string;
             } | null;
-            style: "COMPACT" | "CLEAN" | "EDITORIAL";
+            style: "COMPACT" | "EDITORIAL" | "CLEAN";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -25214,9 +25214,9 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             } | {
                 mode: "DYNAMIC_RULE";
                 sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+                tagId?: string | null | undefined;
                 categoryId?: string | null | undefined;
                 brandId?: string | null | undefined;
-                tagId?: string | null | undefined;
                 availability?: "ALL" | "IN_STOCK" | undefined;
             };
             heading: {
@@ -25277,7 +25277,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 type: "PAGE";
                 id: string;
             } | null | undefined;
-            style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+            style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
             showViewAll?: boolean | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -25958,7 +25958,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            style: "DARK" | "EDITORIAL" | "BANNER";
+            style: "EDITORIAL" | "DARK" | "BANNER";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -26051,7 +26051,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 id: string;
             } | null | undefined;
             mediaAssetId?: string | null | undefined;
-            style?: "DARK" | "EDITORIAL" | "BANNER" | undefined;
+            style?: "EDITORIAL" | "DARK" | "BANNER" | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             globalSectionId?: string | null | undefined;
@@ -26363,7 +26363,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            style: "COMPACT" | "DARK" | "EDITORIAL";
+            style: "COMPACT" | "EDITORIAL" | "DARK";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -26454,7 +26454,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 id: string;
             } | undefined;
             mediaAssetId?: string | null | undefined;
-            style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+            style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             globalSectionId?: string | null | undefined;
@@ -27597,7 +27597,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            style: "COMPACT" | "DARK" | "EDITORIAL";
+            style: "COMPACT" | "EDITORIAL" | "DARK";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -27644,7 +27644,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             analyticsKey: string;
             width?: "CONTENT" | "WIDE" | "FULL" | undefined;
             enabled?: boolean | undefined;
-            style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+            style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             globalSectionId?: string | null | undefined;
@@ -29144,6 +29144,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     en: string;
                     ar: string;
                 };
+                schedule: {
+                    startsAt: string | null;
+                    endsAt: string | null;
+                };
                 mobile: {
                     height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
                     enabled: boolean;
@@ -29295,10 +29299,6 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     playsInline: boolean;
                     preload: "NONE" | "AUTO" | "METADATA";
                 };
-                schedule: {
-                    startsAt: string | null;
-                    endsAt: string | null;
-                };
             }[] | undefined;
             carousel?: {
                 autoplay: boolean;
@@ -29441,10 +29441,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 mode: "CURRENT_CONTEXT";
             } | {
                 sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+                tagId: string | null;
                 categoryId: string | null;
                 brandId: string | null;
                 mode: "DYNAMIC_RULE";
-                tagId: string | null;
                 availability: "ALL" | "IN_STOCK";
             };
             enabled: boolean;
@@ -29491,7 +29491,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 type: "PAGE";
                 id: string;
             } | null;
-            style: "COMPACT" | "CLEAN" | "EDITORIAL";
+            style: "COMPACT" | "EDITORIAL" | "CLEAN";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -29554,10 +29554,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 mode: "CURRENT_CONTEXT";
             } | {
                 sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+                tagId: string | null;
                 categoryId: string | null;
                 brandId: string | null;
                 mode: "DYNAMIC_RULE";
-                tagId: string | null;
                 availability: "ALL" | "IN_STOCK";
             };
             enabled: boolean;
@@ -29604,7 +29604,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 type: "PAGE";
                 id: string;
             } | null;
-            style: "COMPACT" | "CLEAN" | "EDITORIAL";
+            style: "COMPACT" | "EDITORIAL" | "CLEAN";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -29775,7 +29775,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            style: "DARK" | "EDITORIAL" | "BANNER";
+            style: "EDITORIAL" | "DARK" | "BANNER";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -29860,7 +29860,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            style: "COMPACT" | "DARK" | "EDITORIAL";
+            style: "COMPACT" | "EDITORIAL" | "DARK";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -30110,7 +30110,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            style: "COMPACT" | "DARK" | "EDITORIAL";
+            style: "COMPACT" | "EDITORIAL" | "DARK";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -30541,6 +30541,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
+                schedule: {
+                    startsAt?: string | null | undefined;
+                    endsAt?: string | null | undefined;
+                };
                 mobile: {
                     height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
                     enabled?: boolean | undefined;
@@ -30685,10 +30689,6 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     controls?: boolean | undefined;
                     playsInline?: boolean | undefined;
                     preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-                };
-                schedule: {
-                    startsAt?: string | null | undefined;
-                    endsAt?: string | null | undefined;
                 };
                 enabled?: boolean | undefined;
                 mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -30839,9 +30839,9 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             } | {
                 mode: "DYNAMIC_RULE";
                 sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+                tagId?: string | null | undefined;
                 categoryId?: string | null | undefined;
                 brandId?: string | null | undefined;
-                tagId?: string | null | undefined;
                 availability?: "ALL" | "IN_STOCK" | undefined;
             };
             heading: {
@@ -30902,7 +30902,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 type: "PAGE";
                 id: string;
             } | null | undefined;
-            style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+            style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
             showViewAll?: boolean | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -30952,9 +30952,9 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             } | {
                 mode: "DYNAMIC_RULE";
                 sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+                tagId?: string | null | undefined;
                 categoryId?: string | null | undefined;
                 brandId?: string | null | undefined;
-                tagId?: string | null | undefined;
                 availability?: "ALL" | "IN_STOCK" | undefined;
             };
             heading: {
@@ -31015,7 +31015,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 type: "PAGE";
                 id: string;
             } | null | undefined;
-            style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+            style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
             showViewAll?: boolean | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -31181,7 +31181,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 id: string;
             } | null | undefined;
             mediaAssetId?: string | null | undefined;
-            style?: "DARK" | "EDITORIAL" | "BANNER" | undefined;
+            style?: "EDITORIAL" | "DARK" | "BANNER" | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             globalSectionId?: string | null | undefined;
@@ -31266,7 +31266,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 id: string;
             } | undefined;
             mediaAssetId?: string | null | undefined;
-            style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+            style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             globalSectionId?: string | null | undefined;
@@ -31516,7 +31516,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             analyticsKey: string;
             width?: "CONTENT" | "WIDE" | "FULL" | undefined;
             enabled?: boolean | undefined;
-            style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+            style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             globalSectionId?: string | null | undefined;
@@ -31942,6 +31942,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     en: string;
                     ar: string;
                 };
+                schedule: {
+                    startsAt: string | null;
+                    endsAt: string | null;
+                };
                 mobile: {
                     height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
                     enabled: boolean;
@@ -32093,10 +32097,6 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     playsInline: boolean;
                     preload: "NONE" | "AUTO" | "METADATA";
                 };
-                schedule: {
-                    startsAt: string | null;
-                    endsAt: string | null;
-                };
             }[] | undefined;
             carousel?: {
                 autoplay: boolean;
@@ -32239,10 +32239,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 mode: "CURRENT_CONTEXT";
             } | {
                 sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+                tagId: string | null;
                 categoryId: string | null;
                 brandId: string | null;
                 mode: "DYNAMIC_RULE";
-                tagId: string | null;
                 availability: "ALL" | "IN_STOCK";
             };
             enabled: boolean;
@@ -32289,7 +32289,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 type: "PAGE";
                 id: string;
             } | null;
-            style: "COMPACT" | "CLEAN" | "EDITORIAL";
+            style: "COMPACT" | "EDITORIAL" | "CLEAN";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -32352,10 +32352,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 mode: "CURRENT_CONTEXT";
             } | {
                 sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+                tagId: string | null;
                 categoryId: string | null;
                 brandId: string | null;
                 mode: "DYNAMIC_RULE";
-                tagId: string | null;
                 availability: "ALL" | "IN_STOCK";
             };
             enabled: boolean;
@@ -32402,7 +32402,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 type: "PAGE";
                 id: string;
             } | null;
-            style: "COMPACT" | "CLEAN" | "EDITORIAL";
+            style: "COMPACT" | "EDITORIAL" | "CLEAN";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -32573,7 +32573,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            style: "DARK" | "EDITORIAL" | "BANNER";
+            style: "EDITORIAL" | "DARK" | "BANNER";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -32658,7 +32658,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            style: "COMPACT" | "DARK" | "EDITORIAL";
+            style: "COMPACT" | "EDITORIAL" | "DARK";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -32908,7 +32908,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            style: "COMPACT" | "DARK" | "EDITORIAL";
+            style: "COMPACT" | "EDITORIAL" | "DARK";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -33339,6 +33339,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
+                schedule: {
+                    startsAt?: string | null | undefined;
+                    endsAt?: string | null | undefined;
+                };
                 mobile: {
                     height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
                     enabled?: boolean | undefined;
@@ -33483,10 +33487,6 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     controls?: boolean | undefined;
                     playsInline?: boolean | undefined;
                     preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-                };
-                schedule: {
-                    startsAt?: string | null | undefined;
-                    endsAt?: string | null | undefined;
                 };
                 enabled?: boolean | undefined;
                 mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -33637,9 +33637,9 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             } | {
                 mode: "DYNAMIC_RULE";
                 sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+                tagId?: string | null | undefined;
                 categoryId?: string | null | undefined;
                 brandId?: string | null | undefined;
-                tagId?: string | null | undefined;
                 availability?: "ALL" | "IN_STOCK" | undefined;
             };
             heading: {
@@ -33700,7 +33700,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 type: "PAGE";
                 id: string;
             } | null | undefined;
-            style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+            style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
             showViewAll?: boolean | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -33750,9 +33750,9 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             } | {
                 mode: "DYNAMIC_RULE";
                 sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+                tagId?: string | null | undefined;
                 categoryId?: string | null | undefined;
                 brandId?: string | null | undefined;
-                tagId?: string | null | undefined;
                 availability?: "ALL" | "IN_STOCK" | undefined;
             };
             heading: {
@@ -33813,7 +33813,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 type: "PAGE";
                 id: string;
             } | null | undefined;
-            style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+            style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
             showViewAll?: boolean | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -33979,7 +33979,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 id: string;
             } | null | undefined;
             mediaAssetId?: string | null | undefined;
-            style?: "DARK" | "EDITORIAL" | "BANNER" | undefined;
+            style?: "EDITORIAL" | "DARK" | "BANNER" | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             globalSectionId?: string | null | undefined;
@@ -34064,7 +34064,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 id: string;
             } | undefined;
             mediaAssetId?: string | null | undefined;
-            style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+            style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             globalSectionId?: string | null | undefined;
@@ -34314,7 +34314,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             analyticsKey: string;
             width?: "CONTENT" | "WIDE" | "FULL" | undefined;
             enabled?: boolean | undefined;
-            style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+            style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             globalSectionId?: string | null | undefined;
@@ -34745,6 +34745,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     en: string;
                     ar: string;
                 };
+                schedule: {
+                    startsAt: string | null;
+                    endsAt: string | null;
+                };
                 mobile: {
                     height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
                     enabled: boolean;
@@ -34896,10 +34900,6 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     playsInline: boolean;
                     preload: "NONE" | "AUTO" | "METADATA";
                 };
-                schedule: {
-                    startsAt: string | null;
-                    endsAt: string | null;
-                };
             }[] | undefined;
             carousel?: {
                 autoplay: boolean;
@@ -35042,10 +35042,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 mode: "CURRENT_CONTEXT";
             } | {
                 sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+                tagId: string | null;
                 categoryId: string | null;
                 brandId: string | null;
                 mode: "DYNAMIC_RULE";
-                tagId: string | null;
                 availability: "ALL" | "IN_STOCK";
             };
             enabled: boolean;
@@ -35092,7 +35092,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 type: "PAGE";
                 id: string;
             } | null;
-            style: "COMPACT" | "CLEAN" | "EDITORIAL";
+            style: "COMPACT" | "EDITORIAL" | "CLEAN";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -35155,10 +35155,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 mode: "CURRENT_CONTEXT";
             } | {
                 sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+                tagId: string | null;
                 categoryId: string | null;
                 brandId: string | null;
                 mode: "DYNAMIC_RULE";
-                tagId: string | null;
                 availability: "ALL" | "IN_STOCK";
             };
             enabled: boolean;
@@ -35205,7 +35205,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 type: "PAGE";
                 id: string;
             } | null;
-            style: "COMPACT" | "CLEAN" | "EDITORIAL";
+            style: "COMPACT" | "EDITORIAL" | "CLEAN";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -35376,7 +35376,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            style: "DARK" | "EDITORIAL" | "BANNER";
+            style: "EDITORIAL" | "DARK" | "BANNER";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -35461,7 +35461,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            style: "COMPACT" | "DARK" | "EDITORIAL";
+            style: "COMPACT" | "EDITORIAL" | "DARK";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -35711,7 +35711,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            style: "COMPACT" | "DARK" | "EDITORIAL";
+            style: "COMPACT" | "EDITORIAL" | "DARK";
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -36147,6 +36147,10 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
+                schedule: {
+                    startsAt?: string | null | undefined;
+                    endsAt?: string | null | undefined;
+                };
                 mobile: {
                     height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
                     enabled?: boolean | undefined;
@@ -36291,10 +36295,6 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     controls?: boolean | undefined;
                     playsInline?: boolean | undefined;
                     preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-                };
-                schedule: {
-                    startsAt?: string | null | undefined;
-                    endsAt?: string | null | undefined;
                 };
                 enabled?: boolean | undefined;
                 mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -36445,9 +36445,9 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             } | {
                 mode: "DYNAMIC_RULE";
                 sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+                tagId?: string | null | undefined;
                 categoryId?: string | null | undefined;
                 brandId?: string | null | undefined;
-                tagId?: string | null | undefined;
                 availability?: "ALL" | "IN_STOCK" | undefined;
             };
             heading: {
@@ -36508,7 +36508,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 type: "PAGE";
                 id: string;
             } | null | undefined;
-            style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+            style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
             showViewAll?: boolean | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -36558,9 +36558,9 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             } | {
                 mode: "DYNAMIC_RULE";
                 sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+                tagId?: string | null | undefined;
                 categoryId?: string | null | undefined;
                 brandId?: string | null | undefined;
-                tagId?: string | null | undefined;
                 availability?: "ALL" | "IN_STOCK" | undefined;
             };
             heading: {
@@ -36621,7 +36621,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 type: "PAGE";
                 id: string;
             } | null | undefined;
-            style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+            style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
             showViewAll?: boolean | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -36787,7 +36787,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 id: string;
             } | null | undefined;
             mediaAssetId?: string | null | undefined;
-            style?: "DARK" | "EDITORIAL" | "BANNER" | undefined;
+            style?: "EDITORIAL" | "DARK" | "BANNER" | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             globalSectionId?: string | null | undefined;
@@ -36872,7 +36872,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                 id: string;
             } | undefined;
             mediaAssetId?: string | null | undefined;
-            style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+            style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             globalSectionId?: string | null | undefined;
@@ -37122,7 +37122,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             analyticsKey: string;
             width?: "CONTENT" | "WIDE" | "FULL" | undefined;
             enabled?: boolean | undefined;
-            style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+            style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             globalSectionId?: string | null | undefined;
@@ -37439,11 +37439,11 @@ export declare const landingPageListQuerySchema: z.ZodObject<{
     limit: number;
     sortBy: "NAME" | "UPDATED_AT" | "STATUS" | "PUBLISHED_AT";
     sortOrder: "asc" | "desc";
-    type?: "CATEGORY" | "BRAND" | "HOMEPAGE" | "CAMPAIGN" | "OFFER" | "SEASONAL" | "COLLECTION" | "CUSTOM" | undefined;
+    type?: "CATEGORY" | "BRAND" | "SEASONAL" | "CUSTOM" | "HOMEPAGE" | "CAMPAIGN" | "OFFER" | "COLLECTION" | undefined;
     status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "SCHEDULED" | undefined;
     search?: string | undefined;
 }, {
-    type?: "CATEGORY" | "BRAND" | "HOMEPAGE" | "CAMPAIGN" | "OFFER" | "SEASONAL" | "COLLECTION" | "CUSTOM" | undefined;
+    type?: "CATEGORY" | "BRAND" | "SEASONAL" | "CUSTOM" | "HOMEPAGE" | "CAMPAIGN" | "OFFER" | "COLLECTION" | undefined;
     status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "SCHEDULED" | undefined;
     page?: number | undefined;
     limit?: number | undefined;
@@ -38536,6 +38536,10 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
+            schedule: {
+                startsAt: string | null;
+                endsAt: string | null;
+            };
             mobile: {
                 height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
                 enabled: boolean;
@@ -38687,10 +38691,6 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
                 playsInline: boolean;
                 preload: "NONE" | "AUTO" | "METADATA";
             };
-            schedule: {
-                startsAt: string | null;
-                endsAt: string | null;
-            };
         }, {
             id: string;
             description: {
@@ -38709,6 +38709,10 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             imageAlt: {
                 en?: string | undefined;
                 ar?: string | undefined;
+            };
+            schedule: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
             };
             mobile: {
                 height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
@@ -38854,10 +38858,6 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
                 controls?: boolean | undefined;
                 playsInline?: boolean | undefined;
                 preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-            };
-            schedule: {
-                startsAt?: string | null | undefined;
-                endsAt?: string | null | undefined;
             };
             enabled?: boolean | undefined;
             mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -39116,6 +39116,10 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
+            schedule: {
+                startsAt: string | null;
+                endsAt: string | null;
+            };
             mobile: {
                 height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
                 enabled: boolean;
@@ -39266,10 +39270,6 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
                 controls: boolean;
                 playsInline: boolean;
                 preload: "NONE" | "AUTO" | "METADATA";
-            };
-            schedule: {
-                startsAt: string | null;
-                endsAt: string | null;
             };
         }[] | undefined;
         carousel?: {
@@ -39437,6 +39437,10 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
+            schedule: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+            };
             mobile: {
                 height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
                 enabled?: boolean | undefined;
@@ -39581,10 +39585,6 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
                 controls?: boolean | undefined;
                 playsInline?: boolean | undefined;
                 preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-            };
-            schedule: {
-                startsAt?: string | null | undefined;
-                endsAt?: string | null | undefined;
             };
             enabled?: boolean | undefined;
             mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -40111,17 +40111,17 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             sort: z.ZodDefault<z.ZodEnum<["NEWEST", "NAME", "PRICE_LOW", "PRICE_HIGH"]>>;
         }, "strict", z.ZodTypeAny, {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         }, {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         }>]>;
         limit: z.ZodDefault<z.ZodNumber>;
@@ -40365,10 +40365,10 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             mode: "CURRENT_CONTEXT";
         } | {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         };
         enabled: boolean;
@@ -40415,7 +40415,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null;
-        style: "COMPACT" | "CLEAN" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "CLEAN";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -40477,9 +40477,9 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
         } | {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         };
         heading: {
@@ -40540,7 +40540,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null | undefined;
-        style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
         showViewAll?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -40657,17 +40657,17 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             sort: z.ZodDefault<z.ZodEnum<["NEWEST", "NAME", "PRICE_LOW", "PRICE_HIGH"]>>;
         }, "strict", z.ZodTypeAny, {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         }, {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         }>]>;
         limit: z.ZodDefault<z.ZodNumber>;
@@ -40911,10 +40911,10 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             mode: "CURRENT_CONTEXT";
         } | {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         };
         enabled: boolean;
@@ -40961,7 +40961,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null;
-        style: "COMPACT" | "CLEAN" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "CLEAN";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -41024,9 +41024,9 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
         } | {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         };
         heading: {
@@ -41087,7 +41087,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null | undefined;
-        style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
         showViewAll?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -41768,7 +41768,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "DARK" | "EDITORIAL" | "BANNER";
+        style: "EDITORIAL" | "DARK" | "BANNER";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -41861,7 +41861,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             id: string;
         } | null | undefined;
         mediaAssetId?: string | null | undefined;
-        style?: "DARK" | "EDITORIAL" | "BANNER" | undefined;
+        style?: "EDITORIAL" | "DARK" | "BANNER" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -42173,7 +42173,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "COMPACT" | "DARK" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "DARK";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -42264,7 +42264,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             id: string;
         } | undefined;
         mediaAssetId?: string | null | undefined;
-        style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -43407,7 +43407,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "COMPACT" | "DARK" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "DARK";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -43454,7 +43454,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
         analyticsKey: string;
         width?: "CONTENT" | "WIDE" | "FULL" | undefined;
         enabled?: boolean | undefined;
-        style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -44937,6 +44937,10 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
+            schedule: {
+                startsAt: string | null;
+                endsAt: string | null;
+            };
             mobile: {
                 height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
                 enabled: boolean;
@@ -45088,10 +45092,6 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
                 playsInline: boolean;
                 preload: "NONE" | "AUTO" | "METADATA";
             };
-            schedule: {
-                startsAt: string | null;
-                endsAt: string | null;
-            };
         }[] | undefined;
         carousel?: {
             autoplay: boolean;
@@ -45234,10 +45234,10 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             mode: "CURRENT_CONTEXT";
         } | {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         };
         enabled: boolean;
@@ -45284,7 +45284,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null;
-        style: "COMPACT" | "CLEAN" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "CLEAN";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -45347,10 +45347,10 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             mode: "CURRENT_CONTEXT";
         } | {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         };
         enabled: boolean;
@@ -45397,7 +45397,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null;
-        style: "COMPACT" | "CLEAN" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "CLEAN";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -45568,7 +45568,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "DARK" | "EDITORIAL" | "BANNER";
+        style: "EDITORIAL" | "DARK" | "BANNER";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -45653,7 +45653,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "COMPACT" | "DARK" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "DARK";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -45903,7 +45903,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "COMPACT" | "DARK" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "DARK";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -46317,6 +46317,10 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
+            schedule: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+            };
             mobile: {
                 height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
                 enabled?: boolean | undefined;
@@ -46461,10 +46465,6 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
                 controls?: boolean | undefined;
                 playsInline?: boolean | undefined;
                 preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-            };
-            schedule: {
-                startsAt?: string | null | undefined;
-                endsAt?: string | null | undefined;
             };
             enabled?: boolean | undefined;
             mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -46615,9 +46615,9 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
         } | {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         };
         heading: {
@@ -46678,7 +46678,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null | undefined;
-        style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
         showViewAll?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -46728,9 +46728,9 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
         } | {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         };
         heading: {
@@ -46791,7 +46791,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null | undefined;
-        style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
         showViewAll?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -46957,7 +46957,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             id: string;
         } | null | undefined;
         mediaAssetId?: string | null | undefined;
-        style?: "DARK" | "EDITORIAL" | "BANNER" | undefined;
+        style?: "EDITORIAL" | "DARK" | "BANNER" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -47042,7 +47042,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
             id: string;
         } | undefined;
         mediaAssetId?: string | null | undefined;
-        style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -47292,7 +47292,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
         analyticsKey: string;
         width?: "CONTENT" | "WIDE" | "FULL" | undefined;
         enabled?: boolean | undefined;
-        style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -48510,6 +48510,10 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
+            schedule: {
+                startsAt: string | null;
+                endsAt: string | null;
+            };
             mobile: {
                 height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
                 enabled: boolean;
@@ -48661,10 +48665,6 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
                 playsInline: boolean;
                 preload: "NONE" | "AUTO" | "METADATA";
             };
-            schedule: {
-                startsAt: string | null;
-                endsAt: string | null;
-            };
         }, {
             id: string;
             description: {
@@ -48683,6 +48683,10 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             imageAlt: {
                 en?: string | undefined;
                 ar?: string | undefined;
+            };
+            schedule: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
             };
             mobile: {
                 height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
@@ -48828,10 +48832,6 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
                 controls?: boolean | undefined;
                 playsInline?: boolean | undefined;
                 preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-            };
-            schedule: {
-                startsAt?: string | null | undefined;
-                endsAt?: string | null | undefined;
             };
             enabled?: boolean | undefined;
             mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -49090,6 +49090,10 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
+            schedule: {
+                startsAt: string | null;
+                endsAt: string | null;
+            };
             mobile: {
                 height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
                 enabled: boolean;
@@ -49240,10 +49244,6 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
                 controls: boolean;
                 playsInline: boolean;
                 preload: "NONE" | "AUTO" | "METADATA";
-            };
-            schedule: {
-                startsAt: string | null;
-                endsAt: string | null;
             };
         }[] | undefined;
         carousel?: {
@@ -49411,6 +49411,10 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
+            schedule: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+            };
             mobile: {
                 height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
                 enabled?: boolean | undefined;
@@ -49555,10 +49559,6 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
                 controls?: boolean | undefined;
                 playsInline?: boolean | undefined;
                 preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-            };
-            schedule: {
-                startsAt?: string | null | undefined;
-                endsAt?: string | null | undefined;
             };
             enabled?: boolean | undefined;
             mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -50085,17 +50085,17 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             sort: z.ZodDefault<z.ZodEnum<["NEWEST", "NAME", "PRICE_LOW", "PRICE_HIGH"]>>;
         }, "strict", z.ZodTypeAny, {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         }, {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         }>]>;
         limit: z.ZodDefault<z.ZodNumber>;
@@ -50339,10 +50339,10 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             mode: "CURRENT_CONTEXT";
         } | {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         };
         enabled: boolean;
@@ -50389,7 +50389,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null;
-        style: "COMPACT" | "CLEAN" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "CLEAN";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -50451,9 +50451,9 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
         } | {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         };
         heading: {
@@ -50514,7 +50514,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null | undefined;
-        style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
         showViewAll?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -50631,17 +50631,17 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             sort: z.ZodDefault<z.ZodEnum<["NEWEST", "NAME", "PRICE_LOW", "PRICE_HIGH"]>>;
         }, "strict", z.ZodTypeAny, {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         }, {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         }>]>;
         limit: z.ZodDefault<z.ZodNumber>;
@@ -50885,10 +50885,10 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             mode: "CURRENT_CONTEXT";
         } | {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         };
         enabled: boolean;
@@ -50935,7 +50935,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null;
-        style: "COMPACT" | "CLEAN" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "CLEAN";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -50998,9 +50998,9 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
         } | {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         };
         heading: {
@@ -51061,7 +51061,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null | undefined;
-        style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
         showViewAll?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -51742,7 +51742,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "DARK" | "EDITORIAL" | "BANNER";
+        style: "EDITORIAL" | "DARK" | "BANNER";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -51835,7 +51835,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             id: string;
         } | null | undefined;
         mediaAssetId?: string | null | undefined;
-        style?: "DARK" | "EDITORIAL" | "BANNER" | undefined;
+        style?: "EDITORIAL" | "DARK" | "BANNER" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -52147,7 +52147,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "COMPACT" | "DARK" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "DARK";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -52238,7 +52238,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             id: string;
         } | undefined;
         mediaAssetId?: string | null | undefined;
-        style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -53381,7 +53381,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "COMPACT" | "DARK" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "DARK";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -53428,7 +53428,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
         analyticsKey: string;
         width?: "CONTENT" | "WIDE" | "FULL" | undefined;
         enabled?: boolean | undefined;
-        style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -54911,6 +54911,10 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
+            schedule: {
+                startsAt: string | null;
+                endsAt: string | null;
+            };
             mobile: {
                 height: "STANDARD" | "COMPACT" | "FULL" | "TALL";
                 enabled: boolean;
@@ -55062,10 +55066,6 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
                 playsInline: boolean;
                 preload: "NONE" | "AUTO" | "METADATA";
             };
-            schedule: {
-                startsAt: string | null;
-                endsAt: string | null;
-            };
         }[] | undefined;
         carousel?: {
             autoplay: boolean;
@@ -55208,10 +55208,10 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             mode: "CURRENT_CONTEXT";
         } | {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         };
         enabled: boolean;
@@ -55258,7 +55258,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null;
-        style: "COMPACT" | "CLEAN" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "CLEAN";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -55321,10 +55321,10 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             mode: "CURRENT_CONTEXT";
         } | {
             sort: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH";
+            tagId: string | null;
             categoryId: string | null;
             brandId: string | null;
             mode: "DYNAMIC_RULE";
-            tagId: string | null;
             availability: "ALL" | "IN_STOCK";
         };
         enabled: boolean;
@@ -55371,7 +55371,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null;
-        style: "COMPACT" | "CLEAN" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "CLEAN";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -55542,7 +55542,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "DARK" | "EDITORIAL" | "BANNER";
+        style: "EDITORIAL" | "DARK" | "BANNER";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -55627,7 +55627,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "COMPACT" | "DARK" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "DARK";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -55877,7 +55877,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        style: "COMPACT" | "DARK" | "EDITORIAL";
+        style: "COMPACT" | "EDITORIAL" | "DARK";
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -56292,6 +56292,10 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
+            schedule: {
+                startsAt?: string | null | undefined;
+                endsAt?: string | null | undefined;
+            };
             mobile: {
                 height?: "STANDARD" | "COMPACT" | "FULL" | "TALL" | undefined;
                 enabled?: boolean | undefined;
@@ -56436,10 +56440,6 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
                 controls?: boolean | undefined;
                 playsInline?: boolean | undefined;
                 preload?: "NONE" | "AUTO" | "METADATA" | undefined;
-            };
-            schedule: {
-                startsAt?: string | null | undefined;
-                endsAt?: string | null | undefined;
             };
             enabled?: boolean | undefined;
             mediaType?: "NONE" | "IMAGE" | "VIDEO" | undefined;
@@ -56590,9 +56590,9 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
         } | {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         };
         heading: {
@@ -56653,7 +56653,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null | undefined;
-        style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
         showViewAll?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -56703,9 +56703,9 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
         } | {
             mode: "DYNAMIC_RULE";
             sort?: "NEWEST" | "NAME" | "PRICE_LOW" | "PRICE_HIGH" | undefined;
+            tagId?: string | null | undefined;
             categoryId?: string | null | undefined;
             brandId?: string | null | undefined;
-            tagId?: string | null | undefined;
             availability?: "ALL" | "IN_STOCK" | undefined;
         };
         heading: {
@@ -56766,7 +56766,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             type: "PAGE";
             id: string;
         } | null | undefined;
-        style?: "COMPACT" | "CLEAN" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "CLEAN" | undefined;
         showViewAll?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -56932,7 +56932,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             id: string;
         } | null | undefined;
         mediaAssetId?: string | null | undefined;
-        style?: "DARK" | "EDITORIAL" | "BANNER" | undefined;
+        style?: "EDITORIAL" | "DARK" | "BANNER" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -57017,7 +57017,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
             id: string;
         } | undefined;
         mediaAssetId?: string | null | undefined;
-        style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;
@@ -57267,7 +57267,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
         analyticsKey: string;
         width?: "CONTENT" | "WIDE" | "FULL" | undefined;
         enabled?: boolean | undefined;
-        style?: "COMPACT" | "DARK" | "EDITORIAL" | undefined;
+        style?: "COMPACT" | "EDITORIAL" | "DARK" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         globalSectionId?: string | null | undefined;

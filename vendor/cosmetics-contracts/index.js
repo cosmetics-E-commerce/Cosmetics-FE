@@ -45,4 +45,6 @@ __exportStar(require("./store/store.schema"), exports);
 __exportStar(require("./media/media.schema"), exports);
 __exportStar(require("./media/image-reference.schema"), exports);
 __exportStar(require("./campaigns/popup-campaign.schema"), exports);
+__exportStar(require("./customer-360/customer-360.schema"), exports);
+__exportStar(require("./reorder/reorder.schema"), exports);
 //# sourceMappingURL=index.js.map

@@ -65,6 +65,7 @@
   display: block;
   width: auto;
   height: auto;
+  background-color: transparent;
   max-width: 82%;
   max-height: 72%;
   object-fit: contain;
