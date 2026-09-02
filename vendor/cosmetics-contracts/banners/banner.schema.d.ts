@@ -131,7 +131,7 @@ export declare const bannerDesignSchema: z.ZodObject<{
     borderWidth: number;
     borderColor: string;
     borderStyle: "SOLID" | "DASHED" | "DOTTED";
-    shadow: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE";
+    shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
     zIndex: number;
     ctaBackground: string;
     ctaColor: string;
@@ -168,7 +168,7 @@ export declare const bannerDesignSchema: z.ZodObject<{
     borderWidth?: number | undefined;
     borderColor?: string | undefined;
     borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-    shadow?: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE" | undefined;
+    shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
     zIndex?: number | undefined;
     ctaBackground?: string | undefined;
     ctaColor?: string | undefined;
@@ -484,7 +484,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth: number;
         borderColor: string;
         borderStyle: "SOLID" | "DASHED" | "DOTTED";
-        shadow: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE";
+        shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
         zIndex: number;
         ctaBackground: string;
         ctaColor: string;
@@ -521,7 +521,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth?: number | undefined;
         borderColor?: string | undefined;
         borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-        shadow?: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE" | undefined;
+        shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
         zIndex?: number | undefined;
         ctaBackground?: string | undefined;
         ctaColor?: string | undefined;
@@ -896,7 +896,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth: number;
         borderColor: string;
         borderStyle: "SOLID" | "DASHED" | "DOTTED";
-        shadow: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE";
+        shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
         zIndex: number;
         ctaBackground: string;
         ctaColor: string;
@@ -1045,7 +1045,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth?: number | undefined;
         borderColor?: string | undefined;
         borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-        shadow?: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE" | undefined;
+        shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
         zIndex?: number | undefined;
         ctaBackground?: string | undefined;
         ctaColor?: string | undefined;
@@ -1186,7 +1186,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth: number;
         borderColor: string;
         borderStyle: "SOLID" | "DASHED" | "DOTTED";
-        shadow: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE";
+        shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
         zIndex: number;
         ctaBackground: string;
         ctaColor: string;
@@ -1335,7 +1335,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         borderWidth?: number | undefined;
         borderColor?: string | undefined;
         borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-        shadow?: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE" | undefined;
+        shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
         zIndex?: number | undefined;
         ctaBackground?: string | undefined;
         ctaColor?: string | undefined;
@@ -1590,7 +1590,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth: number;
             borderColor: string;
             borderStyle: "SOLID" | "DASHED" | "DOTTED";
-            shadow: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE";
+            shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
             zIndex: number;
             ctaBackground: string;
             ctaColor: string;
@@ -1627,7 +1627,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth?: number | undefined;
             borderColor?: string | undefined;
             borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-            shadow?: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE" | undefined;
+            shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
             zIndex?: number | undefined;
             ctaBackground?: string | undefined;
             ctaColor?: string | undefined;
@@ -2002,7 +2002,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth: number;
             borderColor: string;
             borderStyle: "SOLID" | "DASHED" | "DOTTED";
-            shadow: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE";
+            shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
             zIndex: number;
             ctaBackground: string;
             ctaColor: string;
@@ -2151,7 +2151,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth?: number | undefined;
             borderColor?: string | undefined;
             borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-            shadow?: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE" | undefined;
+            shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
             zIndex?: number | undefined;
             ctaBackground?: string | undefined;
             ctaColor?: string | undefined;
@@ -2292,7 +2292,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth: number;
             borderColor: string;
             borderStyle: "SOLID" | "DASHED" | "DOTTED";
-            shadow: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE";
+            shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
             zIndex: number;
             ctaBackground: string;
             ctaColor: string;
@@ -2441,7 +2441,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth?: number | undefined;
             borderColor?: string | undefined;
             borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-            shadow?: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE" | undefined;
+            shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
             zIndex?: number | undefined;
             ctaBackground?: string | undefined;
             ctaColor?: string | undefined;
@@ -2585,7 +2585,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth: number;
             borderColor: string;
             borderStyle: "SOLID" | "DASHED" | "DOTTED";
-            shadow: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE";
+            shadow: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG";
             zIndex: number;
             ctaBackground: string;
             ctaColor: string;
@@ -2738,7 +2738,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             borderWidth?: number | undefined;
             borderColor?: string | undefined;
             borderStyle?: "SOLID" | "DASHED" | "DOTTED" | undefined;
-            shadow?: "NONE" | "MEDIUM" | "STRONG" | "SUBTLE" | undefined;
+            shadow?: "NONE" | "SUBTLE" | "MEDIUM" | "STRONG" | undefined;
             zIndex?: number | undefined;
             ctaBackground?: string | undefined;
             ctaColor?: string | undefined;

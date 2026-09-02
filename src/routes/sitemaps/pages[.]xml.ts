@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { listOffers } from "@/lib/api";
+import { listConcerns, listOffers } from "@/lib/api";
 import { sitemapFailure, sitemapResponse, urlsetXml } from "@/lib/sitemap";
 
 const PUBLIC_PAGES = [
@@ -21,8 +21,16 @@ export const Route = createFileRoute("/sitemaps/pages.xml")({
     handlers: {
       GET: async () => {
         try {
-          const offers = await listOffers().catch(() => []);
-          const paths = offers.length ? [...PUBLIC_PAGES, "/offers"] : PUBLIC_PAGES;
+          const [offers, concerns] = await Promise.all([
+            listOffers().catch(() => []),
+            listConcerns().catch(() => []),
+          ]);
+          const paths = [
+            ...PUBLIC_PAGES,
+            "/skin-concerns",
+            ...(offers.length ? ["/offers"] : []),
+            ...concerns.map((concern) => `/skin-concerns/${encodeURIComponent(concern.slug)}`),
+          ];
           return sitemapResponse(urlsetXml(paths.map((path) => ({ path }))));
         } catch (error) {
           return sitemapFailure(error);

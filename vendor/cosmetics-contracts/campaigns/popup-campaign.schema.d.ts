@@ -52,7 +52,7 @@ export declare const popupAppearanceSchema: z.ZodDefault<z.ZodObject<{
     animation: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT";
     overlayOpacity: number;
     surface: "SOLID" | "TINTED" | "GLASS";
-    borderRadius: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED";
+    borderRadius: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED";
     theme: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD";
     maxWidth: number;
     imagePosition: "START" | "END" | "TOP" | "BACKGROUND";
@@ -67,7 +67,7 @@ export declare const popupAppearanceSchema: z.ZodDefault<z.ZodObject<{
     animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
     overlayOpacity?: number | undefined;
     surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-    borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+    borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
     theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
     maxWidth?: number | undefined;
     imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -466,7 +466,7 @@ export declare const popupVariantInputSchema: z.ZodObject<{
         animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
         overlayOpacity?: number | undefined;
         surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-        borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+        borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
         theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
         maxWidth?: number | undefined;
         imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -481,7 +481,7 @@ export declare const popupVariantInputSchema: z.ZodObject<{
         animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
         overlayOpacity?: number | undefined;
         surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-        borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+        borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
         theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
         maxWidth?: number | undefined;
         imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -520,7 +520,7 @@ export declare const popupVariantInputSchema: z.ZodObject<{
         animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
         overlayOpacity?: number | undefined;
         surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-        borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+        borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
         theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
         maxWidth?: number | undefined;
         imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -561,7 +561,7 @@ export declare const popupVariantInputSchema: z.ZodObject<{
         animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
         overlayOpacity?: number | undefined;
         surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-        borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+        borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
         theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
         maxWidth?: number | undefined;
         imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -640,7 +640,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         animation: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT";
         overlayOpacity: number;
         surface: "SOLID" | "TINTED" | "GLASS";
-        borderRadius: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED";
+        borderRadius: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED";
         theme: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD";
         maxWidth: number;
         imagePosition: "START" | "END" | "TOP" | "BACKGROUND";
@@ -655,7 +655,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
         overlayOpacity?: number | undefined;
         surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-        borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+        borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
         theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
         maxWidth?: number | undefined;
         imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -989,7 +989,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
             animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
             overlayOpacity?: number | undefined;
             surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-            borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+            borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
             theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
             maxWidth?: number | undefined;
             imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -1004,7 +1004,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
             animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
             overlayOpacity?: number | undefined;
             surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-            borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+            borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
             theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
             maxWidth?: number | undefined;
             imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -1043,7 +1043,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
             animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
             overlayOpacity?: number | undefined;
             surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-            borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+            borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
             theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
             maxWidth?: number | undefined;
             imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -1084,7 +1084,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
             animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
             overlayOpacity?: number | undefined;
             surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-            borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+            borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
             theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
             maxWidth?: number | undefined;
             imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -1093,7 +1093,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         } | undefined;
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
-    type: "FREE_SHIPPING" | "FIRST_ORDER" | "PROMOTIONAL" | "SEASONAL" | "CUSTOM" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
+    type: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
     productId: string | null;
     promotionId: string | null;
     categoryId: string | null;
@@ -1129,7 +1129,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
             animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
             overlayOpacity?: number | undefined;
             surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-            borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+            borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
             theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
             maxWidth?: number | undefined;
             imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -1199,7 +1199,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         animation: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT";
         overlayOpacity: number;
         surface: "SOLID" | "TINTED" | "GLASS";
-        borderRadius: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED";
+        borderRadius: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED";
         theme: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD";
         maxWidth: number;
         imagePosition: "START" | "END" | "TOP" | "BACKGROUND";
@@ -1288,7 +1288,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
             animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
             overlayOpacity?: number | undefined;
             surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-            borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+            borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
             theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
             maxWidth?: number | undefined;
             imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -1297,7 +1297,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         } | undefined;
     }[];
     internalName: string;
-    type?: "FREE_SHIPPING" | "FIRST_ORDER" | "PROMOTIONAL" | "SEASONAL" | "CUSTOM" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE" | undefined;
+    type?: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE" | undefined;
     productId?: string | null | undefined;
     promotionId?: string | null | undefined;
     categoryId?: string | null | undefined;
@@ -1361,7 +1361,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
         overlayOpacity?: number | undefined;
         surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-        borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+        borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
         theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
         maxWidth?: number | undefined;
         imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -1417,7 +1417,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         targetAt?: string | null | undefined;
     } | undefined;
 }>, {
-    type: "FREE_SHIPPING" | "FIRST_ORDER" | "PROMOTIONAL" | "SEASONAL" | "CUSTOM" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
+    type: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
     productId: string | null;
     promotionId: string | null;
     categoryId: string | null;
@@ -1453,7 +1453,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
             animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
             overlayOpacity?: number | undefined;
             surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-            borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+            borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
             theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
             maxWidth?: number | undefined;
             imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -1523,7 +1523,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         animation: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT";
         overlayOpacity: number;
         surface: "SOLID" | "TINTED" | "GLASS";
-        borderRadius: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED";
+        borderRadius: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED";
         theme: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD";
         maxWidth: number;
         imagePosition: "START" | "END" | "TOP" | "BACKGROUND";
@@ -1612,7 +1612,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
             animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
             overlayOpacity?: number | undefined;
             surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-            borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+            borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
             theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
             maxWidth?: number | undefined;
             imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -1621,7 +1621,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         } | undefined;
     }[];
     internalName: string;
-    type?: "FREE_SHIPPING" | "FIRST_ORDER" | "PROMOTIONAL" | "SEASONAL" | "CUSTOM" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE" | undefined;
+    type?: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE" | undefined;
     productId?: string | null | undefined;
     promotionId?: string | null | undefined;
     categoryId?: string | null | undefined;
@@ -1685,7 +1685,7 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
         overlayOpacity?: number | undefined;
         surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-        borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+        borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
         theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
         maxWidth?: number | undefined;
         imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -1757,11 +1757,11 @@ export declare const popupCampaignQuerySchema: z.ZodObject<{
     limit: number;
     sortBy: "createdAt" | "updatedAt" | "name" | "priority" | "startsAt" | "impressions";
     sortOrder: "asc" | "desc";
-    type?: "FREE_SHIPPING" | "FIRST_ORDER" | "PROMOTIONAL" | "SEASONAL" | "CUSTOM" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE" | undefined;
+    type?: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE" | undefined;
     status?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "ENDED" | undefined;
     search?: string | undefined;
 }, {
-    type?: "FREE_SHIPPING" | "FIRST_ORDER" | "PROMOTIONAL" | "SEASONAL" | "CUSTOM" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE" | undefined;
+    type?: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE" | undefined;
     status?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "ENDED" | undefined;
     page?: number | undefined;
     limit?: number | undefined;
@@ -1927,6 +1927,13 @@ export declare const popupStorefrontContextSchema: z.ZodObject<{
         productSlug: string | null;
         categoryName: string | null;
     };
+    cart: {
+        total: number;
+        couponCode: string | null;
+        categoryIds: string[];
+        productIds: string[];
+        itemCount: number;
+    };
     locale: "en" | "ar";
     behavior: {
         productViews: {
@@ -1948,13 +1955,6 @@ export declare const popupStorefrontContextSchema: z.ZodObject<{
         referrerDomain: string | null;
         utmSource: string | null;
         utmCampaign: string | null;
-    };
-    cart: {
-        total: number;
-        couponCode: string | null;
-        categoryIds: string[];
-        productIds: string[];
-        itemCount: number;
     };
     previewToken: string | null;
 }, {
@@ -1979,6 +1979,13 @@ export declare const popupStorefrontContextSchema: z.ZodObject<{
         utmSource?: string | null | undefined;
         utmCampaign?: string | null | undefined;
     };
+    cart?: {
+        total?: number | undefined;
+        couponCode?: string | null | undefined;
+        categoryIds?: string[] | undefined;
+        productIds?: string[] | undefined;
+        itemCount?: number | undefined;
+    } | undefined;
     locale?: "en" | "ar" | undefined;
     behavior?: {
         productViews?: {
@@ -1990,13 +1997,6 @@ export declare const popupStorefrontContextSchema: z.ZodObject<{
         }[] | undefined;
     } | undefined;
     device?: "tablet" | "mobile" | "desktop" | undefined;
-    cart?: {
-        total?: number | undefined;
-        couponCode?: string | null | undefined;
-        categoryIds?: string[] | undefined;
-        productIds?: string[] | undefined;
-        itemCount?: number | undefined;
-    } | undefined;
     previewToken?: string | null | undefined;
 }>;
 export type PopupStorefrontContext = z.infer<typeof popupStorefrontContextSchema>;
@@ -2071,7 +2071,7 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
         animation: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT";
         overlayOpacity: number;
         surface: "SOLID" | "TINTED" | "GLASS";
-        borderRadius: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED";
+        borderRadius: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED";
         theme: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD";
         maxWidth: number;
         imagePosition: "START" | "END" | "TOP" | "BACKGROUND";
@@ -2086,7 +2086,7 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
         animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
         overlayOpacity?: number | undefined;
         surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-        borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+        borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
         theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
         maxWidth?: number | undefined;
         imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -2440,7 +2440,7 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
         slug: string;
     }>>>;
 }, "strip", z.ZodTypeAny, {
-    type: "FREE_SHIPPING" | "FIRST_ORDER" | "PROMOTIONAL" | "SEASONAL" | "CUSTOM" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
+    type: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
     id: string;
     variantId: string;
     category: {
@@ -2471,6 +2471,7 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
         code: string;
         id: string;
     } | null;
+    version: number;
     product: {
         id: string;
         name: string;
@@ -2484,7 +2485,6 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
         closeOnOverlay: boolean;
         closeOnEscape: boolean;
     };
-    version: number;
     recurringSchedule: {
         enabled: boolean;
         weekdays: number[];
@@ -2535,7 +2535,7 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
         animation: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT";
         overlayOpacity: number;
         surface: "SOLID" | "TINTED" | "GLASS";
-        borderRadius: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED";
+        borderRadius: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED";
         theme: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD";
         maxWidth: number;
         imagePosition: "START" | "END" | "TOP" | "BACKGROUND";
@@ -2597,7 +2597,7 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
         alt: string;
     } | null;
 }, {
-    type: "FREE_SHIPPING" | "FIRST_ORDER" | "PROMOTIONAL" | "SEASONAL" | "CUSTOM" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
+    type: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
     id: string;
     variantId: string;
     priority: number;
@@ -2692,7 +2692,7 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
         animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
         overlayOpacity?: number | undefined;
         surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-        borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+        borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
         theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
         maxWidth?: number | undefined;
         imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -2827,7 +2827,7 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             animation: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT";
             overlayOpacity: number;
             surface: "SOLID" | "TINTED" | "GLASS";
-            borderRadius: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED";
+            borderRadius: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED";
             theme: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD";
             maxWidth: number;
             imagePosition: "START" | "END" | "TOP" | "BACKGROUND";
@@ -2842,7 +2842,7 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
             overlayOpacity?: number | undefined;
             surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-            borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+            borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
             theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
             maxWidth?: number | undefined;
             imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -3196,7 +3196,7 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             slug: string;
         }>>>;
     }, "strip", z.ZodTypeAny, {
-        type: "FREE_SHIPPING" | "FIRST_ORDER" | "PROMOTIONAL" | "SEASONAL" | "CUSTOM" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
+        type: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
         id: string;
         variantId: string;
         category: {
@@ -3227,6 +3227,7 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             code: string;
             id: string;
         } | null;
+        version: number;
         product: {
             id: string;
             name: string;
@@ -3240,7 +3241,6 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             closeOnOverlay: boolean;
             closeOnEscape: boolean;
         };
-        version: number;
         recurringSchedule: {
             enabled: boolean;
             weekdays: number[];
@@ -3291,7 +3291,7 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             animation: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT";
             overlayOpacity: number;
             surface: "SOLID" | "TINTED" | "GLASS";
-            borderRadius: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED";
+            borderRadius: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED";
             theme: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD";
             maxWidth: number;
             imagePosition: "START" | "END" | "TOP" | "BACKGROUND";
@@ -3353,7 +3353,7 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             alt: string;
         } | null;
     }, {
-        type: "FREE_SHIPPING" | "FIRST_ORDER" | "PROMOTIONAL" | "SEASONAL" | "CUSTOM" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
+        type: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
         id: string;
         variantId: string;
         priority: number;
@@ -3448,7 +3448,7 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
             overlayOpacity?: number | undefined;
             surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-            borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+            borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
             theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
             maxWidth?: number | undefined;
             imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;
@@ -3515,7 +3515,7 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     freeShippingThreshold: number | null;
     campaigns: {
-        type: "FREE_SHIPPING" | "FIRST_ORDER" | "PROMOTIONAL" | "SEASONAL" | "CUSTOM" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
+        type: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
         id: string;
         variantId: string;
         category: {
@@ -3546,6 +3546,7 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             code: string;
             id: string;
         } | null;
+        version: number;
         product: {
             id: string;
             name: string;
@@ -3559,7 +3560,6 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             closeOnOverlay: boolean;
             closeOnEscape: boolean;
         };
-        version: number;
         recurringSchedule: {
             enabled: boolean;
             weekdays: number[];
@@ -3610,7 +3610,7 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             animation: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT";
             overlayOpacity: number;
             surface: "SOLID" | "TINTED" | "GLASS";
-            borderRadius: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED";
+            borderRadius: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED";
             theme: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD";
             maxWidth: number;
             imagePosition: "START" | "END" | "TOP" | "BACKGROUND";
@@ -3676,7 +3676,7 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
 }, {
     freeShippingThreshold: number | null;
     campaigns: {
-        type: "FREE_SHIPPING" | "FIRST_ORDER" | "PROMOTIONAL" | "SEASONAL" | "CUSTOM" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
+        type: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
         id: string;
         variantId: string;
         priority: number;
@@ -3771,7 +3771,7 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             animation?: "NONE" | "SCALE" | "FADE" | "SLIDE" | "LIFT" | undefined;
             overlayOpacity?: number | undefined;
             surface?: "SOLID" | "TINTED" | "GLASS" | undefined;
-            borderRadius?: "NONE" | "SOFT" | "SUBTLE" | "ROUNDED" | undefined;
+            borderRadius?: "NONE" | "SUBTLE" | "SOFT" | "ROUNDED" | undefined;
             theme?: "BRAND" | "IVORY" | "INK" | "SAGE" | "BLUSH" | "GOLD" | undefined;
             maxWidth?: number | undefined;
             imagePosition?: "START" | "END" | "TOP" | "BACKGROUND" | undefined;

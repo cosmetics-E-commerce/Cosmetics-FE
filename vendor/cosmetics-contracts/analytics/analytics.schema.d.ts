@@ -69,9 +69,9 @@ export declare const businessAnalyticsQuerySchema: z.ZodObject<{
     promotionIds?: string | undefined;
     metric?: string | undefined;
 }>;
-export declare const commerceEventNames: readonly ["product_viewed", "product_added_to_cart", "product_removed_from_cart", "wishlist_added", "wishlist_removed", "search_performed", "search_result_clicked", "cart_viewed", "checkout_started", "checkout_step_completed", "purchase_completed", "coupon_applied", "offer_viewed", "product_shared"];
+export declare const commerceEventNames: readonly ["product_viewed", "product_added_to_cart", "product_removed_from_cart", "save_for_later_clicked", "saved_item_moved_to_cart", "saved_item_removed", "move_all_saved_to_cart", "wishlist_added", "wishlist_removed", "search_performed", "search_result_clicked", "cart_viewed", "checkout_started", "checkout_step_completed", "purchase_completed", "coupon_applied", "offer_viewed", "product_shared"];
 export declare const commerceEventSchema: z.ZodObject<{
-    name: z.ZodEnum<["product_viewed", "product_added_to_cart", "product_removed_from_cart", "wishlist_added", "wishlist_removed", "search_performed", "search_result_clicked", "cart_viewed", "checkout_started", "checkout_step_completed", "purchase_completed", "coupon_applied", "offer_viewed", "product_shared"]>;
+    name: z.ZodEnum<["product_viewed", "product_added_to_cart", "product_removed_from_cart", "save_for_later_clicked", "saved_item_moved_to_cart", "saved_item_removed", "move_all_saved_to_cart", "wishlist_added", "wishlist_removed", "search_performed", "search_result_clicked", "cart_viewed", "checkout_started", "checkout_step_completed", "purchase_completed", "coupon_applied", "offer_viewed", "product_shared"]>;
     sessionId: z.ZodString;
     productId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
     variantId: z.ZodOptional<z.ZodNullable<z.ZodString>>;
@@ -83,7 +83,7 @@ export declare const commerceEventSchema: z.ZodObject<{
     deviceType: z.ZodDefault<z.ZodEnum<["mobile", "tablet", "desktop", "unknown"]>>;
     metadata: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodNull]>>>;
 }, "strip", z.ZodTypeAny, {
-    name: "product_viewed" | "product_added_to_cart" | "product_removed_from_cart" | "wishlist_added" | "wishlist_removed" | "search_performed" | "search_result_clicked" | "cart_viewed" | "checkout_started" | "checkout_step_completed" | "purchase_completed" | "coupon_applied" | "offer_viewed" | "product_shared";
+    name: "product_viewed" | "product_added_to_cart" | "product_removed_from_cart" | "save_for_later_clicked" | "saved_item_moved_to_cart" | "saved_item_removed" | "move_all_saved_to_cart" | "wishlist_added" | "wishlist_removed" | "search_performed" | "search_result_clicked" | "cart_viewed" | "checkout_started" | "checkout_step_completed" | "purchase_completed" | "coupon_applied" | "offer_viewed" | "product_shared";
     source: "storefront" | "admin" | "server";
     metadata: Record<string, string | number | boolean | null>;
     sessionId: string;
@@ -95,7 +95,7 @@ export declare const commerceEventSchema: z.ZodObject<{
     searchTerm?: string | null | undefined;
     resultCount?: number | null | undefined;
 }, {
-    name: "product_viewed" | "product_added_to_cart" | "product_removed_from_cart" | "wishlist_added" | "wishlist_removed" | "search_performed" | "search_result_clicked" | "cart_viewed" | "checkout_started" | "checkout_step_completed" | "purchase_completed" | "coupon_applied" | "offer_viewed" | "product_shared";
+    name: "product_viewed" | "product_added_to_cart" | "product_removed_from_cart" | "save_for_later_clicked" | "saved_item_moved_to_cart" | "saved_item_removed" | "move_all_saved_to_cart" | "wishlist_added" | "wishlist_removed" | "search_performed" | "search_result_clicked" | "cart_viewed" | "checkout_started" | "checkout_step_completed" | "purchase_completed" | "coupon_applied" | "offer_viewed" | "product_shared";
     sessionId: string;
     orderId?: string | null | undefined;
     variantId?: string | null | undefined;

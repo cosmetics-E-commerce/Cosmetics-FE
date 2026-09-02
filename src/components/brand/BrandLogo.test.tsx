@@ -44,6 +44,16 @@ describe("BrandLogo", () => {
     expect(container.firstElementChild).toHaveAttribute("data-align-y", "BOTTOM");
   });
 
+  it("falls back to safe framing when legacy API data contains a null display", () => {
+    const { container } = render(
+      <BrandLogo name="Legacy Brand" logoUrl="/legacy.svg" display={null} />,
+    );
+    expect(container.firstElementChild).toHaveAttribute("data-scale", "STANDARD");
+    expect(container.firstElementChild).toHaveAttribute("data-padding", "STANDARD");
+    expect(container.firstElementChild).toHaveAttribute("data-align-x", "CENTER");
+    expect(container.firstElementChild).toHaveAttribute("data-align-y", "CENTER");
+  });
+
   it("renders the canonical Brand name for missing and failed media", () => {
     const { rerender } = render(<BrandLogo name="Missing Brand" logoUrl={null} />);
     expect(screen.getByText("Missing Brand")).toBeInTheDocument();

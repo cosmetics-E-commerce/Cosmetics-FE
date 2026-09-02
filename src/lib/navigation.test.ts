@@ -28,7 +28,7 @@ describe("published navigation", () => {
 
   it("rejects the server safety snapshot so the existing header remains the fallback", () => {
     const fallback = {
-      schemaVersion: 1 as const,
+      schemaVersion: 2 as const,
       revisionId: "fallback",
       revision: 0,
       publishedAt: new Date(0).toISOString(),

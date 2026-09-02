@@ -38,7 +38,7 @@ export function publishedNavigationIsUsable(
   return Boolean(
     snapshot?.revisionId &&
     snapshot.revisionId !== "fallback" &&
-    snapshot.config.schemaVersion === 1 &&
+    snapshot.config.schemaVersion === 2 &&
     snapshot.config.items.length,
   );
 }

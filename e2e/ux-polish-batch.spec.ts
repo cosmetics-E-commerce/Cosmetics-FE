@@ -200,7 +200,7 @@ test("concern links, brand filtering, and grouped brand merchandising use canoni
     /Acne-Prone Skin/,
     /All Skin Types/,
   ]);
-  await expect(concernList.locator("a").first()).toHaveAttribute("href", /tags=dry-skin/);
+  await expect(concernList.locator("a").first()).toHaveAttribute("href", "/skin-concerns/dry-skin");
 
   await page.goto("/shop");
   await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");

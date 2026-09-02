@@ -13,7 +13,7 @@ const defaultDisplay: BrandLogoDisplay = {
 type BrandLogoProps = {
   name: string;
   logoUrl?: string | null | undefined;
-  display?: BrandLogoDisplay | undefined;
+  display?: BrandLogoDisplay | null | undefined;
   className?: string | undefined;
   decorative?: boolean | undefined;
   priority?: boolean | undefined;
@@ -26,13 +26,14 @@ type LogoShape = "wide" | "standard" | "square" | "tall";
 export function BrandLogo({
   name,
   logoUrl,
-  display = defaultDisplay,
+  display,
   className = "",
   decorative = false,
   priority = false,
   surface = "neutral",
   sizes,
 }: BrandLogoProps) {
+  const resolvedDisplay = display ?? defaultDisplay;
   const normalizedUrl = logoUrl?.trim() || null;
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -67,10 +68,10 @@ export function BrandLogo({
   return (
     <span
       className={`brand-logo-frame${className ? ` ${className}` : ""}`}
-      data-align-x={display.alignX}
-      data-align-y={display.alignY}
-      data-padding={display.padding}
-      data-scale={display.scale}
+      data-align-x={resolvedDisplay.alignX}
+      data-align-y={resolvedDisplay.alignY}
+      data-padding={resolvedDisplay.padding}
+      data-scale={resolvedDisplay.scale}
       data-shape={shape}
       data-surface={surface}
       data-logo-state={normalizedUrl && !failed ? "ready" : "fallback"}

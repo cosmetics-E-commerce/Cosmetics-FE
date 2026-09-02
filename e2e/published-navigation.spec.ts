@@ -190,6 +190,58 @@ test("multi-category navigation uses parent disclosures on mobile", async ({ pag
   }
 });
 
+test("Navigation V2 renders eight real canonical columns across the required viewport matrix", async ({
+  page,
+}, testInfo) => {
+  test.skip(testInfo.project.name !== "chromium", "One browser owns the full viewport matrix");
+
+  for (const width of [1366, 1440, 1920]) {
+    await page.setViewportSize({ width, height: width === 1366 ? 768 : 900 });
+    await page.goto("/about", { waitUntil: "networkidle" });
+    const trigger = page
+      .getByRole("navigation", { name: "Primary" })
+      .getByRole("button", { name: "Shop V2", exact: true });
+    await trigger.hover();
+    const menu = page.locator('.published-mega[data-category-columns="8"]');
+    await expect(menu).toBeVisible();
+    await expect(menu.locator(".published-category-column")).toHaveCount(8);
+    await expect(menu.getByRole("link", { name: "Body Care", exact: true })).toBeVisible();
+    await expect(menu.getByRole("link", { name: "Wellness", exact: true })).toBeVisible();
+    const geometry = await menu.evaluate((element) => {
+      const bounds = element.getBoundingClientRect();
+      return {
+        left: bounds.left,
+        right: bounds.right,
+        width: bounds.width,
+        viewport: window.innerWidth,
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      };
+    });
+    expect(geometry.left).toBeGreaterThanOrEqual(0);
+    expect(geometry.right).toBeLessThanOrEqual(geometry.viewport + 1);
+    expect(geometry.width).toBeLessThanOrEqual(geometry.viewport - 32);
+    expect(geometry.overflow).toBeLessThanOrEqual(1);
+  }
+
+  for (const width of [320, 360, 375, 390, 414, 430, 768, 1024]) {
+    await page.setViewportSize({ width, height: width < 500 ? 844 : 900 });
+    await page.goto("/about?lang=ar", { waitUntil: "networkidle" });
+    await page.getByRole("button", { name: "فتح القائمة", exact: true }).click();
+    const drawer = page.getByRole("dialog", { name: "فتح القائمة" });
+    await drawer.getByRole("button", { name: "تسوق V2", exact: true }).click();
+    const groups = drawer.locator(".published-mobile-category-group");
+    await expect(groups).toHaveCount(8);
+    await expect(groups.first()).toContainText("العناية بالجسم");
+    await groups.first().locator("summary").click();
+    await expect(drawer.getByRole("link", { name: "العناية بالجسم 1" })).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      ),
+    ).toBeLessThanOrEqual(1);
+  }
+});
+
 test("published alphabetical Brands remains usable in the mobile menu", async ({
   page,
 }, testInfo) => {

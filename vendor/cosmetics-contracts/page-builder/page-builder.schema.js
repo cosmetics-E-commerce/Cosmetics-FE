@@ -15,6 +15,8 @@ exports.landingPageTypeSchema = zod_1.z.enum([
     "CAMPAIGN",
     "BRAND",
     "CATEGORY",
+    "CONCERN",
+    "BUNDLE",
     "OFFER",
     "SEASONAL",
     "COLLECTION",
@@ -275,7 +277,9 @@ const productSourceSchema = zod_1.z.discriminatedUnion("mode", [
         brandId: zod_1.z.string().uuid().nullable().default(null),
         tagId: zod_1.z.string().uuid().nullable().default(null),
         availability: zod_1.z.enum(["ALL", "IN_STOCK"]).default("IN_STOCK"),
-        sort: zod_1.z.enum(["NEWEST", "NAME", "PRICE_LOW", "PRICE_HIGH"]).default("NEWEST"),
+        sort: zod_1.z
+            .enum(["NEWEST", "NAME", "PRICE_LOW", "PRICE_HIGH"])
+            .default("NEWEST"),
     })
         .strict(),
 ]);
@@ -747,6 +751,14 @@ exports.landingPageTemplateKeySchema = zod_1.z.enum([
     "ROUTINE_GUIDE",
     "FAQ_INFORMATION",
     "EDITORIAL_STORY",
+    "BIOREZA_CONCERN_SIGNATURE",
+    "CONCERN_EDITORIAL",
+    "CONCERN_PRODUCT_DISCOVERY",
+    "CONCERN_ROUTINE_FIRST",
+    "CONCERN_EDUCATION_FIRST",
+    "MINIMAL_CONCERN",
+    "INGREDIENT_LED_CONCERN",
+    "PREMIUM_EDITORIAL_CONCERN",
     "BLANK_CAMPAIGN",
 ]);
 exports.createLandingPageSchema = zod_1.z
@@ -819,6 +831,7 @@ exports.pageTemplateFamilySchema = zod_1.z.enum([
     "PRODUCT",
     "BRAND",
     "CATEGORY",
+    "CONCERN",
     "CONTENT",
     "BLANK",
 ]);

@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
   ChevronLeft,
@@ -37,10 +38,10 @@ import {
   TextReveal,
 } from "@/components/motion/Primitives";
 import { useMotionPreferences } from "@/components/motion/motion-context";
-import { apiErrorMessage, subscribeNewsletter } from "@/lib/api";
+import { apiErrorMessage, listConcerns, subscribeNewsletter } from "@/lib/api";
 import { useCategories, useMerchandisingCatalog } from "@/lib/catalog";
 import { useI18n } from "@/lib/i18n";
-import { concerns, images, type Product } from "@/lib/products";
+import { images, type Product } from "@/lib/products";
 import { useStore } from "@/lib/store";
 
 const heroSlides = [
@@ -485,24 +486,14 @@ export function Concerns() {
   const { locale } = useStore();
   const { finePointer, reducedMotion } = useMotionPreferences();
   const ar = locale === "ar";
+  const concernQuery = useQuery({
+    queryKey: ["concerns", "public"],
+    queryFn: ({ signal }) => listConcerns(signal),
+    staleTime: 5 * 60_000,
+  });
+  const concernItems = concernQuery.data ?? [];
   const sectionRef = useRef<HTMLElement>(null);
   const pointerFrameRef = useRef<number | null>(null);
-  const arabicConcerns: Record<string, string> = {
-    "Dry Skin": "البشرة الجافة",
-    "Sensitive Skin": "البشرة الحساسة",
-    "Combination Skin": "البشرة المختلطة",
-    "Oily Skin": "البشرة الدهنية",
-    "Acne-Prone Skin": "البشرة المعرّضة للحبوب",
-    "All Skin Types": "جميع أنواع البشرة",
-  };
-  const concernIds: Record<string, string> = {
-    "Dry Skin": "dry-skin",
-    "Sensitive Skin": "sensitive-skin",
-    "Combination Skin": "combination-skin",
-    "Oily Skin": "oily-skin",
-    "Acne-Prone Skin": "acne-prone-skin",
-    "All Skin Types": "all-skin-types",
-  };
   const headlineLines = ar
     ? ["روتين يبدأ", "من بشرتك."]
     : ["A ritual that", "begins with", "your skin."];
@@ -537,11 +528,11 @@ export function Concerns() {
   return (
     <section ref={sectionRef} className="sf-concerns" onPointerMove={handlePointerMove}>
       <div className="sf-concerns__atmosphere" aria-hidden="true">
-        {concerns.map((concern) => (
+        {concernItems.map((concern, index) => (
           <span
-            key={concern.name}
-            data-concern={concernIds[concern.name]}
-            style={{ "--concern-color": concern.token } as CSSProperties}
+            key={concern.id}
+            data-concern={concern.slug}
+            style={{ "--concern-color": concernColor(index) } as CSSProperties}
           />
         ))}
       </div>
@@ -566,17 +557,15 @@ export function Concerns() {
           distance={18}
           className="sf-concern-list"
         >
-          {concerns.map((concern) => (
+          {concernItems.map((concern, index) => (
             <li
-              key={concern.name}
-              data-concern={concernIds[concern.name]}
-              style={{ "--concern-color": concern.token } as CSSProperties}
+              key={concern.id}
+              data-concern={concern.slug}
+              style={{ "--concern-color": concernColor(index) } as CSSProperties}
             >
-              <Link to="/shop" search={{ tags: concernIds[concern.name]! }}>
+              <Link to="/skin-concerns/$slug" params={{ slug: concern.slug }}>
                 <span className="sf-concern-list__dot" aria-hidden="true" />
-                <span className="sf-concern-list__label">
-                  {ar ? arabicConcerns[concern.name] : concern.name}
-                </span>
+                <span className="sf-concern-list__label">{concern.name[locale]}</span>
                 <span className="sf-concern-list__arrow" aria-hidden="true">
                   <ArrowRight className="sf-concern-list__arrow-primary" />
                   <ArrowRight className="sf-concern-list__arrow-echo" />
@@ -588,6 +577,10 @@ export function Concerns() {
       </div>
     </section>
   );
+}
+
+function concernColor(index: number) {
+  return ["#cdbba7", "#b9c3b0", "#d2b7ad", "#c8bd9e", "#b7c2c5", "#c4b6c8"][index % 6];
 }
 
 export function BestSellers({ initialProducts }: { initialProducts?: Product[] }) {

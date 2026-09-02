@@ -44,7 +44,20 @@ export function PublishedMegaMenu({
   if (!rows?.length) return null;
   const categoryColumnCount = Math.max(
     0,
-    ...rows.map(({ columns }) => (isCategoryColumnRow(columns) ? columns.length : 0)),
+    ...rows.map(({ columns }) => {
+      const legacyCount = isCategoryColumnRow(columns) ? columns.length : 0;
+      const v2Count = Math.max(
+        0,
+        ...columns.flatMap((column) =>
+          column.blocks.map((block) =>
+            block.type === "CATEGORY_COLUMNS"
+              ? block.columns.filter((entry) => entry.enabled).length
+              : 0,
+          ),
+        ),
+      );
+      return Math.max(legacyCount, v2Count);
+    }),
   );
   return (
     <div
@@ -181,6 +194,16 @@ function PublishedBlock({
   mobile = false,
 }: PublishedBlockProps) {
   const entities = snapshot.resolvedBlocks[block.id] ?? [];
+  if (block.type === "CATEGORY_COLUMNS")
+    return (
+      <CategoryColumnsBlock
+        block={block}
+        entities={entities}
+        locale={locale}
+        onNavigate={onNavigate}
+        mobile={mobile}
+      />
+    );
   if (block.type === "CATEGORY_EXPLORER")
     return (
       <CategoryExplorer
@@ -323,6 +346,213 @@ function PublishedBlock({
       />
     );
   return null;
+}
+
+function CategoryColumnsBlock({
+  block,
+  entities,
+  locale,
+  onNavigate,
+  mobile,
+}: {
+  block: Extract<NavigationBlock, { type: "CATEGORY_COLUMNS" }>;
+  entities: NavigationResolvedEntity[];
+  locale: Locale;
+  onNavigate: () => void;
+  mobile: boolean;
+}) {
+  const configured = block.columns.flatMap((column) => {
+    if (!column.enabled || !column.parentCategoryId) return [];
+    const parent = entities.find(
+      (entity) => entity.id === column.parentCategoryId && entity.navigationColumnId === column.id,
+    );
+    if (!parent) return [];
+    const children = entities.filter(
+      (entity) =>
+        entity.kind === "CATEGORY" &&
+        entity.secondaryLabel === parent.id &&
+        entity.navigationColumnId === column.id,
+    );
+    return [{ column, parent, children }];
+  });
+  if (!configured.length) return null;
+  return (
+    <section
+      className="published-category-columns"
+      data-mobile={mobile || undefined}
+      data-template={block.template.toLowerCase()}
+      data-padding={block.padding.toLowerCase()}
+      data-gap={block.columnGap.toLowerCase()}
+      data-density={block.density.toLowerCase()}
+      data-parent-style={block.parentStyle.toLowerCase()}
+      data-child-style={block.childStyle.toLowerCase()}
+      data-separators={block.separators === "SUBTLE" || undefined}
+      data-alignment={block.alignment.toLowerCase()}
+      data-tablet-columns={block.tabletColumns.toLowerCase()}
+      style={{ "--published-category-columns": configured.length } as React.CSSProperties}
+    >
+      {configured.map(({ column, parent, children }) => (
+        <CategoryColumn
+          key={column.id}
+          column={column}
+          parent={parent}
+          children={children}
+          entities={entities}
+          locale={locale}
+          onNavigate={onNavigate}
+          mobile={mobile}
+          mobilePresentation={block.mobilePresentation}
+          template={block.template}
+        />
+      ))}
+    </section>
+  );
+}
+
+function CategoryColumn({
+  column,
+  parent,
+  children,
+  entities,
+  locale,
+  onNavigate,
+  mobile,
+  mobilePresentation,
+  template,
+}: {
+  column: Extract<NavigationBlock, { type: "CATEGORY_COLUMNS" }>["columns"][number];
+  parent: NavigationResolvedEntity;
+  children: NavigationResolvedEntity[];
+  entities: NavigationResolvedEntity[];
+  locale: Locale;
+  onNavigate: () => void;
+  mobile: boolean;
+  mobilePresentation: "ACCORDION" | "LIST";
+  template: Extract<NavigationBlock, { type: "CATEGORY_COLUMNS" }>["template"];
+}) {
+  const heading =
+    column.headingMode === "NONE"
+      ? ""
+      : column.headingMode === "CUSTOM"
+        ? localizedNavigationText(column.customHeading, locale)
+        : entityLabel(parent, locale);
+  const content = (
+    <>
+      {children.length ? (
+        <ul className="published-category-column__children">
+          {children.map((child) => {
+            const grandchildren =
+              column.depth === "LEVEL_3"
+                ? entities.filter(
+                    (entity) =>
+                      entity.kind === "CATEGORY" &&
+                      entity.secondaryLabel === child.id &&
+                      entity.navigationColumnId === column.id,
+                  )
+                : [];
+            return (
+              <li key={child.id}>
+                <SafeLink href={child.href} onNavigate={onNavigate}>
+                  {entityLabel(child, locale)}
+                </SafeLink>
+                {grandchildren.length ? (
+                  column.grandchildDisplay === "EXPANDABLE" ? (
+                    <details className="published-category-column__grandchildren is-expandable">
+                      <summary>
+                        {locale === "ar" ? "استعراض الأقسام" : "Browse subcategories"}
+                        <ChevronRight aria-hidden="true" />
+                      </summary>
+                      <ul>
+                        {grandchildren.map((grandchild) => (
+                          <li key={grandchild.id}>
+                            <SafeLink href={grandchild.href} onNavigate={onNavigate}>
+                              {entityLabel(grandchild, locale)}
+                            </SafeLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </details>
+                  ) : (
+                    <ul
+                      className={`published-category-column__grandchildren is-${column.grandchildDisplay.toLowerCase()}`}
+                    >
+                      {grandchildren.map((grandchild) => (
+                        <li key={grandchild.id}>
+                          <SafeLink href={grandchild.href} onNavigate={onNavigate}>
+                            {entityLabel(grandchild, locale)}
+                          </SafeLink>
+                        </li>
+                      ))}
+                    </ul>
+                  )
+                ) : null}
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <span className="published-category-column__empty" aria-hidden="true" />
+      )}
+      {column.showViewAll ? (
+        <SafeLink href={parent.href} onNavigate={onNavigate} className="published-mega__view-all">
+          {localizedNavigationText(column.viewAllLabel, locale) ||
+            (locale === "ar" ? "عرض الكل" : "View all")}
+        </SafeLink>
+      ) : null}
+    </>
+  );
+
+  if (mobile && mobilePresentation === "ACCORDION")
+    return (
+      <details className="published-mobile-category-group published-category-column">
+        <summary>
+          <span>{heading || entityLabel(parent, locale)}</span>
+          <ChevronRight aria-hidden="true" />
+        </summary>
+        <div className="published-mobile-category-group__content">
+          {column.parentClickable ? (
+            <SafeLink
+              href={parent.href}
+              onNavigate={onNavigate}
+              className="published-category-column__parent-link"
+            >
+              {locale === "ar"
+                ? `عرض كل ${entityLabel(parent, locale)}`
+                : `View all ${entityLabel(parent, locale)}`}
+            </SafeLink>
+          ) : null}
+          {content}
+        </div>
+      </details>
+    );
+
+  return (
+    <section className="published-category-column">
+      {template === "CATEGORY_GRID" && parent.imageUrl ? (
+        <SafeLink
+          href={parent.href}
+          onNavigate={onNavigate}
+          className="published-category-column__media"
+        >
+          <img src={parent.imageUrl} alt="" />
+        </SafeLink>
+      ) : null}
+      {heading ? (
+        column.parentClickable ? (
+          <SafeLink
+            href={parent.href}
+            onNavigate={onNavigate}
+            className="published-category-column__heading"
+          >
+            {heading}
+          </SafeLink>
+        ) : (
+          <h3 className="published-category-column__heading">{heading}</h3>
+        )
+      ) : null}
+      {content}
+    </section>
+  );
 }
 
 function CategoryExplorer({
