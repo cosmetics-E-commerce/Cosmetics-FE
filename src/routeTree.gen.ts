@@ -14,6 +14,7 @@ import { Route as LandingSlugRouteImport } from './routes/$landingSlug'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as BrandsRouteImport } from './routes/brands'
+import { Route as BundlesRouteImport } from './routes/bundles'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -34,18 +35,24 @@ import { Route as ShippingPolicyRouteImport } from './routes/shipping-policy'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SkinConcernsRouteImport } from './routes/skin-concerns'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as BrandsIndexRouteImport } from './routes/brands.index'
 import { Route as BrandsSlugRouteImport } from './routes/brands.$slug'
+import { Route as BundlesIndexRouteImport } from './routes/bundles.index'
+import { Route as BundlesSlugRouteImport } from './routes/bundles.$slug'
 import { Route as CategoriesSlugRouteImport } from './routes/categories.$slug'
 import { Route as ProductSlugRouteImport } from './routes/product.$slug'
 import { Route as SitemapsBrandsDotxmlRouteImport } from './routes/sitemaps/brands[.]xml'
 import { Route as SitemapsCategoriesDotxmlRouteImport } from './routes/sitemaps/categories[.]xml'
 import { Route as SitemapsPagesDotxmlRouteImport } from './routes/sitemaps/pages[.]xml'
 import { Route as SitemapsProductsDotxmlRouteImport } from './routes/sitemaps/products[.]xml'
+import { Route as SkinConcernsIndexRouteImport } from './routes/skin-concerns.index'
+import { Route as SkinConcernsSlugRouteImport } from './routes/skin-concerns.$slug'
 import { Route as WishlistShareTokenRouteImport } from './routes/wishlist.$shareToken'
 import { Route as PreviewPageTokenRouteImport } from './routes/preview.page.$token'
+import { Route as SkinConcernsSlugProductsRouteImport } from './routes/skin-concerns.$slug.products'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -70,6 +77,11 @@ const AccountRoute = AccountRouteImport.update({
 const BrandsRoute = BrandsRouteImport.update({
   id: '/brands',
   path: '/brands',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BundlesRoute = BundlesRouteImport.update({
+  id: '/bundles',
+  path: '/bundles',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CartRoute = CartRouteImport.update({
@@ -172,6 +184,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SkinConcernsRoute = SkinConcernsRouteImport.update({
+  id: '/skin-concerns',
+  path: '/skin-concerns',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -191,6 +208,16 @@ const BrandsSlugRoute = BrandsSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => BrandsRoute,
+} as any)
+const BundlesIndexRoute = BundlesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BundlesRoute,
+} as any)
+const BundlesSlugRoute = BundlesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BundlesRoute,
 } as any)
 const CategoriesSlugRoute = CategoriesSlugRouteImport.update({
   id: '/categories/$slug',
@@ -223,6 +250,16 @@ const SitemapsProductsDotxmlRoute = SitemapsProductsDotxmlRouteImport.update({
   path: '/sitemaps/products.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SkinConcernsIndexRoute = SkinConcernsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => SkinConcernsRoute,
+} as any)
+const SkinConcernsSlugRoute = SkinConcernsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => SkinConcernsRoute,
+} as any)
 const WishlistShareTokenRoute = WishlistShareTokenRouteImport.update({
   id: '/wishlist/$shareToken',
   path: '/wishlist/$shareToken',
@@ -233,6 +270,12 @@ const PreviewPageTokenRoute = PreviewPageTokenRouteImport.update({
   path: '/preview/page/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SkinConcernsSlugProductsRoute =
+  SkinConcernsSlugProductsRouteImport.update({
+    id: '/products',
+    path: '/products',
+    getParentRoute: () => SkinConcernsSlugRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -240,6 +283,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/brands': typeof BrandsRouteWithChildren
+  '/bundles': typeof BundlesRouteWithChildren
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
@@ -260,18 +304,24 @@ export interface FileRoutesByFullPath {
   '/shop': typeof ShopRoute
   '/sign-in': typeof SignInRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/skin-concerns': typeof SkinConcernsRouteWithChildren
   '/terms': typeof TermsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/brands/$slug': typeof BrandsSlugRoute
+  '/bundles/$slug': typeof BundlesSlugRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/product/$slug': typeof ProductSlugRoute
   '/sitemaps/brands.xml': typeof SitemapsBrandsDotxmlRoute
   '/sitemaps/categories.xml': typeof SitemapsCategoriesDotxmlRoute
   '/sitemaps/pages.xml': typeof SitemapsPagesDotxmlRoute
   '/sitemaps/products.xml': typeof SitemapsProductsDotxmlRoute
+  '/skin-concerns/$slug': typeof SkinConcernsSlugRouteWithChildren
   '/wishlist/$shareToken': typeof WishlistShareTokenRoute
   '/brands/': typeof BrandsIndexRoute
+  '/bundles/': typeof BundlesIndexRoute
+  '/skin-concerns/': typeof SkinConcernsIndexRoute
   '/preview/page/$token': typeof PreviewPageTokenRoute
+  '/skin-concerns/$slug/products': typeof SkinConcernsSlugProductsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -301,15 +351,20 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/brands/$slug': typeof BrandsSlugRoute
+  '/bundles/$slug': typeof BundlesSlugRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/product/$slug': typeof ProductSlugRoute
   '/sitemaps/brands.xml': typeof SitemapsBrandsDotxmlRoute
   '/sitemaps/categories.xml': typeof SitemapsCategoriesDotxmlRoute
   '/sitemaps/pages.xml': typeof SitemapsPagesDotxmlRoute
   '/sitemaps/products.xml': typeof SitemapsProductsDotxmlRoute
+  '/skin-concerns/$slug': typeof SkinConcernsSlugRouteWithChildren
   '/wishlist/$shareToken': typeof WishlistShareTokenRoute
   '/brands': typeof BrandsIndexRoute
+  '/bundles': typeof BundlesIndexRoute
+  '/skin-concerns': typeof SkinConcernsIndexRoute
   '/preview/page/$token': typeof PreviewPageTokenRoute
+  '/skin-concerns/$slug/products': typeof SkinConcernsSlugProductsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -318,6 +373,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/account': typeof AccountRoute
   '/brands': typeof BrandsRouteWithChildren
+  '/bundles': typeof BundlesRouteWithChildren
   '/cart': typeof CartRoute
   '/checkout': typeof CheckoutRoute
   '/contact': typeof ContactRoute
@@ -338,18 +394,24 @@ export interface FileRoutesById {
   '/shop': typeof ShopRoute
   '/sign-in': typeof SignInRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/skin-concerns': typeof SkinConcernsRouteWithChildren
   '/terms': typeof TermsRoute
   '/verify-email': typeof VerifyEmailRoute
   '/brands/$slug': typeof BrandsSlugRoute
+  '/bundles/$slug': typeof BundlesSlugRoute
   '/categories/$slug': typeof CategoriesSlugRoute
   '/product/$slug': typeof ProductSlugRoute
   '/sitemaps/brands.xml': typeof SitemapsBrandsDotxmlRoute
   '/sitemaps/categories.xml': typeof SitemapsCategoriesDotxmlRoute
   '/sitemaps/pages.xml': typeof SitemapsPagesDotxmlRoute
   '/sitemaps/products.xml': typeof SitemapsProductsDotxmlRoute
+  '/skin-concerns/$slug': typeof SkinConcernsSlugRouteWithChildren
   '/wishlist/$shareToken': typeof WishlistShareTokenRoute
   '/brands/': typeof BrandsIndexRoute
+  '/bundles/': typeof BundlesIndexRoute
+  '/skin-concerns/': typeof SkinConcernsIndexRoute
   '/preview/page/$token': typeof PreviewPageTokenRoute
+  '/skin-concerns/$slug/products': typeof SkinConcernsSlugProductsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -359,6 +421,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/account'
     | '/brands'
+    | '/bundles'
     | '/cart'
     | '/checkout'
     | '/contact'
@@ -379,18 +442,24 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sign-in'
     | '/sitemap.xml'
+    | '/skin-concerns'
     | '/terms'
     | '/verify-email'
     | '/brands/$slug'
+    | '/bundles/$slug'
     | '/categories/$slug'
     | '/product/$slug'
     | '/sitemaps/brands.xml'
     | '/sitemaps/categories.xml'
     | '/sitemaps/pages.xml'
     | '/sitemaps/products.xml'
+    | '/skin-concerns/$slug'
     | '/wishlist/$shareToken'
     | '/brands/'
+    | '/bundles/'
+    | '/skin-concerns/'
     | '/preview/page/$token'
+    | '/skin-concerns/$slug/products'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -420,15 +489,20 @@ export interface FileRouteTypes {
     | '/terms'
     | '/verify-email'
     | '/brands/$slug'
+    | '/bundles/$slug'
     | '/categories/$slug'
     | '/product/$slug'
     | '/sitemaps/brands.xml'
     | '/sitemaps/categories.xml'
     | '/sitemaps/pages.xml'
     | '/sitemaps/products.xml'
+    | '/skin-concerns/$slug'
     | '/wishlist/$shareToken'
     | '/brands'
+    | '/bundles'
+    | '/skin-concerns'
     | '/preview/page/$token'
+    | '/skin-concerns/$slug/products'
   id:
     | '__root__'
     | '/'
@@ -436,6 +510,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/account'
     | '/brands'
+    | '/bundles'
     | '/cart'
     | '/checkout'
     | '/contact'
@@ -456,18 +531,24 @@ export interface FileRouteTypes {
     | '/shop'
     | '/sign-in'
     | '/sitemap.xml'
+    | '/skin-concerns'
     | '/terms'
     | '/verify-email'
     | '/brands/$slug'
+    | '/bundles/$slug'
     | '/categories/$slug'
     | '/product/$slug'
     | '/sitemaps/brands.xml'
     | '/sitemaps/categories.xml'
     | '/sitemaps/pages.xml'
     | '/sitemaps/products.xml'
+    | '/skin-concerns/$slug'
     | '/wishlist/$shareToken'
     | '/brands/'
+    | '/bundles/'
+    | '/skin-concerns/'
     | '/preview/page/$token'
+    | '/skin-concerns/$slug/products'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -476,6 +557,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AccountRoute: typeof AccountRoute
   BrandsRoute: typeof BrandsRouteWithChildren
+  BundlesRoute: typeof BundlesRouteWithChildren
   CartRoute: typeof CartRoute
   CheckoutRoute: typeof CheckoutRoute
   ContactRoute: typeof ContactRoute
@@ -496,6 +578,7 @@ export interface RootRouteChildren {
   ShopRoute: typeof ShopRoute
   SignInRoute: typeof SignInRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  SkinConcernsRoute: typeof SkinConcernsRouteWithChildren
   TermsRoute: typeof TermsRoute
   VerifyEmailRoute: typeof VerifyEmailRoute
   CategoriesSlugRoute: typeof CategoriesSlugRoute
@@ -543,6 +626,13 @@ declare module '@tanstack/react-router' {
       path: '/brands'
       fullPath: '/brands'
       preLoaderRoute: typeof BrandsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bundles': {
+      id: '/bundles'
+      path: '/bundles'
+      fullPath: '/bundles'
+      preLoaderRoute: typeof BundlesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cart': {
@@ -685,6 +775,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/skin-concerns': {
+      id: '/skin-concerns'
+      path: '/skin-concerns'
+      fullPath: '/skin-concerns'
+      preLoaderRoute: typeof SkinConcernsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -712,6 +809,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/brands/$slug'
       preLoaderRoute: typeof BrandsSlugRouteImport
       parentRoute: typeof BrandsRoute
+    }
+    '/bundles/': {
+      id: '/bundles/'
+      path: '/'
+      fullPath: '/bundles/'
+      preLoaderRoute: typeof BundlesIndexRouteImport
+      parentRoute: typeof BundlesRoute
+    }
+    '/bundles/$slug': {
+      id: '/bundles/$slug'
+      path: '/$slug'
+      fullPath: '/bundles/$slug'
+      preLoaderRoute: typeof BundlesSlugRouteImport
+      parentRoute: typeof BundlesRoute
     }
     '/categories/$slug': {
       id: '/categories/$slug'
@@ -755,6 +866,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapsProductsDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/skin-concerns/': {
+      id: '/skin-concerns/'
+      path: '/'
+      fullPath: '/skin-concerns/'
+      preLoaderRoute: typeof SkinConcernsIndexRouteImport
+      parentRoute: typeof SkinConcernsRoute
+    }
+    '/skin-concerns/$slug': {
+      id: '/skin-concerns/$slug'
+      path: '/$slug'
+      fullPath: '/skin-concerns/$slug'
+      preLoaderRoute: typeof SkinConcernsSlugRouteImport
+      parentRoute: typeof SkinConcernsRoute
+    }
     '/wishlist/$shareToken': {
       id: '/wishlist/$shareToken'
       path: '/wishlist/$shareToken'
@@ -768,6 +893,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/preview/page/$token'
       preLoaderRoute: typeof PreviewPageTokenRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/skin-concerns/$slug/products': {
+      id: '/skin-concerns/$slug/products'
+      path: '/products'
+      fullPath: '/skin-concerns/$slug/products'
+      preLoaderRoute: typeof SkinConcernsSlugProductsRouteImport
+      parentRoute: typeof SkinConcernsSlugRoute
     }
   }
 }
@@ -785,12 +917,51 @@ const BrandsRouteChildren: BrandsRouteChildren = {
 const BrandsRouteWithChildren =
   BrandsRoute._addFileChildren(BrandsRouteChildren)
 
+interface BundlesRouteChildren {
+  BundlesSlugRoute: typeof BundlesSlugRoute
+  BundlesIndexRoute: typeof BundlesIndexRoute
+}
+
+const BundlesRouteChildren: BundlesRouteChildren = {
+  BundlesSlugRoute: BundlesSlugRoute,
+  BundlesIndexRoute: BundlesIndexRoute,
+}
+
+const BundlesRouteWithChildren =
+  BundlesRoute._addFileChildren(BundlesRouteChildren)
+
+interface SkinConcernsSlugRouteChildren {
+  SkinConcernsSlugProductsRoute: typeof SkinConcernsSlugProductsRoute
+}
+
+const SkinConcernsSlugRouteChildren: SkinConcernsSlugRouteChildren = {
+  SkinConcernsSlugProductsRoute: SkinConcernsSlugProductsRoute,
+}
+
+const SkinConcernsSlugRouteWithChildren =
+  SkinConcernsSlugRoute._addFileChildren(SkinConcernsSlugRouteChildren)
+
+interface SkinConcernsRouteChildren {
+  SkinConcernsSlugRoute: typeof SkinConcernsSlugRouteWithChildren
+  SkinConcernsIndexRoute: typeof SkinConcernsIndexRoute
+}
+
+const SkinConcernsRouteChildren: SkinConcernsRouteChildren = {
+  SkinConcernsSlugRoute: SkinConcernsSlugRouteWithChildren,
+  SkinConcernsIndexRoute: SkinConcernsIndexRoute,
+}
+
+const SkinConcernsRouteWithChildren = SkinConcernsRoute._addFileChildren(
+  SkinConcernsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LandingSlugRoute: LandingSlugRoute,
   AboutRoute: AboutRoute,
   AccountRoute: AccountRoute,
   BrandsRoute: BrandsRouteWithChildren,
+  BundlesRoute: BundlesRouteWithChildren,
   CartRoute: CartRoute,
   CheckoutRoute: CheckoutRoute,
   ContactRoute: ContactRoute,
@@ -811,6 +982,7 @@ const rootRouteChildren: RootRouteChildren = {
   ShopRoute: ShopRoute,
   SignInRoute: SignInRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  SkinConcernsRoute: SkinConcernsRouteWithChildren,
   TermsRoute: TermsRoute,
   VerifyEmailRoute: VerifyEmailRoute,
   CategoriesSlugRoute: CategoriesSlugRoute,

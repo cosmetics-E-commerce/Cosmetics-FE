@@ -2,6 +2,8 @@ import type {
   AuthSession,
   AuthUser,
   CartResponse,
+  BulkMoveSavedResponse,
+  SavedForLaterItemResponse,
   CatalogFacetResponse,
   AddressResponse as ContractAddressResponse,
   CreateAddressInput as ContractCreateAddressInput,
@@ -34,6 +36,8 @@ export type {
   AuthSession,
   AuthUser,
   CartResponse,
+  BulkMoveSavedResponse,
+  SavedForLaterItemResponse,
   CatalogFacetResponse,
   PublicBrandListItemResponse,
   PublicCategoryResponse,
@@ -78,6 +82,99 @@ export async function getPublishedLandingPage(slug: string, signal?: AbortSignal
   return rawRequest<LandingPagePublicSnapshot>(`/pages/${encodeURIComponent(slug)}`, {
     auth: false,
     ...(signal ? { signal } : {}),
+  });
+}
+
+export function listConcerns(signal?: AbortSignal) {
+  return rawRequest<PublicConcernSummary[]>("/concerns", {
+    auth: false,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+export function getConcern(slug: string, signal?: AbortSignal) {
+  return rawRequest<PublicConcernDetail>(`/concerns/${encodeURIComponent(slug)}`, {
+    auth: false,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+export function getConcernProducts(
+  slug: string,
+  params: Record<string, string | number | boolean | undefined>,
+  signal?: AbortSignal,
+) {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== "") query.set(key, String(value));
+  });
+  return rawRequest<ConcernProductsPage>(
+    `/concerns/${encodeURIComponent(slug)}/products${query.size ? `?${query}` : ""}`,
+    { auth: false, ...(signal ? { signal } : {}) },
+  );
+}
+
+export function listDynamicBundles(signal?: AbortSignal) {
+  return rawRequest<PublicDynamicBundle[]>("/bundles", {
+    auth: false,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+export function getDynamicBundle(slug: string, signal?: AbortSignal) {
+  return rawRequest<PublicDynamicBundle>(`/bundles/${encodeURIComponent(slug)}`, {
+    auth: false,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+export function getBundleSlotProducts(
+  slug: string,
+  slotKey: string,
+  params: Record<string, string | number | boolean | undefined>,
+  signal?: AbortSignal,
+) {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== "") query.set(key, String(value));
+  });
+  return rawRequest<{
+    data: PublicProductResponse[];
+    meta: PaginationMeta;
+    slot: PublicBundleSlot;
+  }>(
+    `/bundles/${encodeURIComponent(slug)}/slots/${encodeURIComponent(slotKey)}/products${query.size ? `?${query}` : ""}`,
+    { auth: false, ...(signal ? { signal } : {}) },
+  );
+}
+
+export function previewDynamicBundle(
+  slug: string,
+  version: number,
+  selections: BundleSelection[],
+  signal?: AbortSignal,
+) {
+  return rawRequest<BundlePreview>(`/bundles/${encodeURIComponent(slug)}/preview`, {
+    method: "POST",
+    auth: false,
+    body: { expectedVersion: version, selections },
+    ...(signal ? { signal } : {}),
+  });
+}
+
+export function addDynamicBundleToCart(
+  slug: string,
+  version: number,
+  selections: BundleSelection[],
+) {
+  return rawRequest<CommerceCartResponse>(`/bundles/${encodeURIComponent(slug)}/cart`, {
+    method: "POST",
+    body: {
+      expectedVersion: version,
+      selections,
+      clientMutationId: randomUuid(),
+    },
+    headers: { "Idempotency-Key": randomUuid() },
   });
 }
 
@@ -144,6 +241,143 @@ export type StorefrontOffer = {
   productIds: string[];
   categoryIds: string[];
   brandIds: string[];
+};
+
+export type LocalizedText = { en: string; ar: string };
+export type PublicConcernSummary = {
+  id: string;
+  slug: string;
+  kind: "SKIN_TYPE" | "CONCERN";
+  featured: boolean;
+  name: LocalizedText;
+  shortDescription: LocalizedText;
+  heroMediaKey: string | null;
+  iconMediaKey: string | null;
+  productCount: number;
+};
+export type PublicConcernDetail = PublicConcernSummary & {
+  revision: number;
+  publishedAt: string;
+  config: {
+    name: LocalizedText;
+    shortDescription: LocalizedText;
+    longDescription: LocalizedText;
+    heroMediaKey: string | null;
+    mobileHeroMediaKey: string | null;
+    content: Array<{
+      id: string;
+      type: string;
+      heading: LocalizedText;
+      body: LocalizedText;
+      enabled: boolean;
+      order: number;
+    }>;
+    faq: Array<{
+      id: string;
+      question: LocalizedText;
+      answer: LocalizedText;
+      enabled: boolean;
+      order: number;
+    }>;
+    seo: {
+      title: LocalizedText;
+      description: LocalizedText;
+      openGraphTitle: LocalizedText;
+      openGraphDescription: LocalizedText;
+      openGraphImageKey: string | null;
+      indexable: boolean;
+    };
+  };
+  products: ConcernProductsPage;
+  ingredients: Array<{
+    id: string;
+    slug: string;
+    name: string;
+    shortDescription: LocalizedText;
+    role: "FEATURED" | "RELEVANT" | "USE_WITH_CARE";
+  }>;
+  featuredCategories: PublicCategoryResponse[];
+  curatedBrands: PublicBrandListItemResponse[];
+  relatedConcerns: Array<Pick<PublicConcernSummary, "id" | "slug" | "name" | "shortDescription">>;
+  coverage: {
+    products: number;
+    brands: number;
+    categories: number;
+    ingredients: number;
+    routineRoles: string[];
+  };
+  routineHandoff: string | null;
+  page: LandingPagePublicSnapshot | null;
+};
+export type ConcernProductsPage = {
+  data: PublicProductResponse[];
+  meta: PaginationMeta;
+  facets: {
+    brands: Array<{ id: string; slug: string; name: string; count: number }>;
+    categories: Array<{
+      id: string;
+      slug: string;
+      nameEn: string;
+      nameAr: string;
+      count: number;
+    }>;
+  };
+};
+
+export type PublicBundleSlot = {
+  key: string;
+  label: LocalizedText;
+  description: LocalizedText;
+  required: boolean;
+  quantity: { minimum: number; maximum: number };
+  order: number;
+  allowSameProduct: boolean;
+  coverage?: {
+    eligibleProducts: number;
+    eligibleVariants: number;
+    outOfStock: number;
+    health: "HEALTHY" | "WARNING" | "BROKEN";
+  };
+};
+export type PublicDynamicBundle = {
+  id: string;
+  slug: string;
+  version: number;
+  name: LocalizedText;
+  description: LocalizedText;
+  instructions: LocalizedText;
+  terms: LocalizedText;
+  slots: PublicBundleSlot[];
+  discountLabel: LocalizedText;
+  heroMediaKey: string | null;
+};
+export type BundleSelection = {
+  slotKey: string;
+  productId: string;
+  variantId: string;
+  quantity: number;
+};
+export type BundlePreview = {
+  valid: boolean;
+  bundleId: string;
+  version: number;
+  state: "INCOMPLETE" | "VALID" | "INVALID" | "STALE";
+  missingSlots: string[];
+  errors: Array<{ code: string; slotKey: string | null; message: LocalizedText }>;
+  lines: Array<{
+    slotKey: string;
+    productId: string;
+    variantId: string;
+    quantity: number;
+    unitPrice: number;
+    retailTotal: number;
+    discount: number;
+    finalTotal: number;
+  }>;
+  retailTotal: number;
+  discountTotal: number;
+  finalTotal: number;
+  stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
 };
 
 export type ApiError = StoreApiError;
@@ -1093,6 +1327,40 @@ export const updateCartItem = (variantId: string, quantity: number) =>
   });
 export const removeCartItem = (variantId: string) =>
   rawRequest<CommerceCartResponse>(`/cart/items/${variantId}`, { method: "DELETE" });
+export const breakCartBundle = (instanceId: string) =>
+  rawRequest<CommerceCartResponse>(`/cart/bundles/${instanceId}/break`, {
+    method: "POST",
+    body: {},
+    headers: { "Idempotency-Key": randomUuid() },
+  });
+export const removeCartBundle = (instanceId: string) =>
+  rawRequest<CommerceCartResponse>(`/cart/bundles/${instanceId}`, {
+    method: "DELETE",
+    headers: { "Idempotency-Key": randomUuid() },
+  });
+export const saveCartItemForLater = (variantId: string) =>
+  rawRequest<CommerceCartResponse>(`/cart/items/${variantId}/save-for-later`, {
+    method: "POST",
+    body: {},
+    headers: { "Idempotency-Key": randomUuid() },
+  });
+export const moveSavedItemToCart = (itemId: string) =>
+  rawRequest<CommerceCartResponse>(`/cart/saved-for-later/${itemId}/move-to-cart`, {
+    method: "POST",
+    body: {},
+    headers: { "Idempotency-Key": randomUuid() },
+  });
+export const removeSavedForLaterItem = (itemId: string) =>
+  rawRequest<CommerceCartResponse>(`/cart/saved-for-later/${itemId}`, {
+    method: "DELETE",
+    headers: { "Idempotency-Key": randomUuid() },
+  });
+export const moveAvailableSavedItemsToCart = (itemIds?: string[]) =>
+  rawRequest<BulkMoveSavedResponse>("/cart/saved-for-later/move-to-cart", {
+    method: "POST",
+    body: itemIds ? { itemIds } : {},
+    headers: { "Idempotency-Key": randomUuid() },
+  });
 export const clearCartRequest = () =>
   rawRequest<CommerceCartResponse>("/cart", { method: "DELETE" });
 export const applyCartCoupon = (code: string) =>
@@ -1285,10 +1553,11 @@ export const startRoutineSession = (
   locale: "en" | "ar",
   mode: "FULL" | "CONTEXTUAL" = "FULL",
   anchor: { productId: string; variantId?: string; alreadyOwned: boolean } | null = null,
+  contextConcernId: string | null = null,
 ) =>
   rawRequest<RoutinePublicConfig>("/routine-builder/sessions", {
     method: "POST",
-    body: { locale, mode, anchor },
+    body: { locale, mode, anchor, contextConcernId },
   });
 export const evaluateRoutine = (input: {
   sessionId?: string;

@@ -51,6 +51,9 @@ export const Route = createFileRoute("/routine")({
       ? { anchorVariantId: raw["anchorVariantId"] }
       : {}),
     ...(raw["owned"] === "1" ? { owned: "1" as const } : {}),
+    ...(typeof raw["contextConcernId"] === "string" && raw["contextConcernId"]
+      ? { contextConcernId: raw["contextConcernId"] }
+      : {}),
   }),
   head: ({ match }) => {
     const ar = match.search.lang === "ar";
@@ -97,6 +100,7 @@ function RoutinePage() {
             }
           : null
       }
+      contextConcernId={search.contextConcernId ?? null}
     />
   );
 }
@@ -104,9 +108,11 @@ function RoutinePage() {
 function RoutineExperience({
   snapshot,
   anchorIdentity,
+  contextConcernId,
 }: {
   snapshot: RoutinePublicConfig;
   anchorIdentity: { productId: string; variantId?: string; alreadyOwned: boolean } | null;
+  contextConcernId: string | null;
 }) {
   const { locale, acceptCart, setCartOpen } = useStore();
   const ar = locale === "ar";
@@ -167,6 +173,7 @@ function RoutineExperience({
         locale,
         mode,
         anchorIdentity ? { ...anchorIdentity, alreadyOwned: anchorOwned } : null,
+        contextConcernId,
       );
       setSessionId(session.sessionId);
       setSessionSnapshot(session);

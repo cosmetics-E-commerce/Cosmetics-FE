@@ -36,7 +36,7 @@ const blockId = categoriesItem.megaMenu!.rows[0]!.columns[0]!.blocks[0]!.id;
 const brandsItem = DEFAULT_NAVIGATION_CONFIG.items.find((item) => item.key === "brands")!;
 const brandBlockId = brandsItem.megaMenu!.rows[0]!.columns[0]!.blocks[0]!.id;
 const snapshot: NavigationPublicSnapshot = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   revisionId: "a0000000-0000-4000-8000-000000000001",
   revision: 4,
   publishedAt: "2026-08-23T12:00:00.000Z",
@@ -560,5 +560,98 @@ describe("published mega menu renderer", () => {
     expect(container.querySelector(".published-mobile-menu")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /العناية بالبشرة/ })).toHaveClass("is-depth-0");
     expect(screen.getByRole("link", { name: /^أحمر شفاه سائل/ })).toHaveClass("is-depth-2");
+  });
+
+  it("renders eight first-class Category Columns on desktop and eight parent accordions on mobile RTL", () => {
+    const parents = Array.from({ length: 8 }, (_, index) => ({
+      id: `d1000000-0000-4000-8000-00000000000${index + 1}`,
+      labelEn: `Department ${index + 1}`,
+      labelAr: `القسم ${index + 1}`,
+      href: `/categories/department-${index + 1}`,
+    }));
+    const categoryColumns = navigationBlockSchema.parse({
+      id: "d4000000-0000-4000-8000-000000000001",
+      type: "CATEGORY_COLUMNS",
+      enabled: true,
+      visibility: categoriesItem.visibility,
+      mobileOrder: 0,
+      template: "CATEGORY_COLUMNS",
+      columns: parents.map((parent, index) => ({
+        id: `d5000000-0000-4000-8000-00000000000${index + 1}`,
+        parentCategoryId: parent.id,
+      })),
+      density: "COMPACT",
+    });
+    const item = structuredClone(categoriesItem);
+    item.megaMenu = {
+      enabled: true,
+      width: "FULL",
+      style: "MINIMAL",
+      mobilePresentation: "ACCORDION",
+      rows: [
+        {
+          id: "d2000000-0000-4000-8000-000000000001",
+          preset: "TWO_EQUAL",
+          presentation: "DEFAULT",
+          columnSeparators: false,
+          enabled: true,
+          visibility: item.visibility,
+          columns: [
+            {
+              id: "d3000000-0000-4000-8000-000000000001",
+              span: 12,
+              blocks: [categoryColumns],
+            },
+          ],
+        },
+      ],
+    };
+    const entities: NavigationResolvedEntity[] = parents.flatMap((parent, index) => [
+      {
+        kind: "CATEGORY",
+        ...parent,
+        secondaryLabel: "root",
+        navigationColumnId: `d5000000-0000-4000-8000-00000000000${index + 1}`,
+      },
+      {
+        kind: "CATEGORY",
+        id: `d6000000-0000-4000-8000-00000000000${index + 1}`,
+        labelEn: `Child ${index + 1}`,
+        labelAr: `فرع ${index + 1}`,
+        href: `/categories/child-${index + 1}`,
+        secondaryLabel: parent.id,
+        navigationColumnId: `d5000000-0000-4000-8000-00000000000${index + 1}`,
+      },
+    ]);
+    const categorySnapshot: NavigationPublicSnapshot = {
+      ...snapshot,
+      config: { ...snapshot.config, items: [item] },
+      resolvedBlocks: { [categoryColumns.id]: entities },
+    };
+    const { container, rerender } = render(
+      <PublishedMegaMenu
+        item={item}
+        snapshot={categorySnapshot}
+        locale="en"
+        onNavigate={vi.fn()}
+      />,
+    );
+    expect(container.querySelector('[data-category-columns="8"]')).toBeInTheDocument();
+    expect(container.querySelectorAll(".published-category-column")).toHaveLength(8);
+    expect(screen.getByRole("link", { name: "Department 8" })).toHaveAttribute(
+      "href",
+      "/categories/department-8",
+    );
+
+    rerender(
+      <PublishedMobileMenuItem
+        item={item}
+        snapshot={categorySnapshot}
+        locale="ar"
+        onNavigate={vi.fn()}
+      />,
+    );
+    expect(container.querySelectorAll(".published-mobile-category-group")).toHaveLength(8);
+    expect(screen.getByText("القسم 1")).toBeInTheDocument();
   });
 });

@@ -1928,10 +1928,10 @@ export declare const routineTemplateVariantSchema: z.ZodObject<{
     kind: z.ZodDefault<z.ZodEnum<["BASE", "SKIN_TYPE", "CONCERN", "COMPLEXITY", "BUDGET", "SEASONAL", "LIFESTYLE", "ANCHOR_ROLE", "BRAND", "CATEGORY", "CUSTOM"]>>;
     parameters: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
 }, "strip", z.ZodTypeAny, {
-    kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+    kind: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE";
     parameters: Record<string, string | number | boolean | string[]>;
 }, {
-    kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+    kind?: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | undefined;
     parameters?: Record<string, string | number | boolean | string[]> | undefined;
 }>;
 export declare const routineTemplateSchema: z.ZodObject<{
@@ -1972,10 +1972,10 @@ export declare const routineTemplateSchema: z.ZodObject<{
         kind: z.ZodDefault<z.ZodEnum<["BASE", "SKIN_TYPE", "CONCERN", "COMPLEXITY", "BUDGET", "SEASONAL", "LIFESTYLE", "ANCHOR_ROLE", "BRAND", "CATEGORY", "CUSTOM"]>>;
         parameters: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
     }, "strip", z.ZodTypeAny, {
-        kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+        kind: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE";
         parameters: Record<string, string | number | boolean | string[]>;
     }, {
-        kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+        kind?: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | undefined;
         parameters?: Record<string, string | number | boolean | string[]> | undefined;
     }>>;
     hardEligibility: z.ZodDefault<z.ZodNullable<z.ZodObject<{
@@ -2383,6 +2383,7 @@ export declare const routineTemplateSchema: z.ZodObject<{
         }[];
         mode: "ALL" | "ANY";
     } | null;
+    version: number;
     presentation: {
         style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
         estimatedMinutes: number | null;
@@ -2399,7 +2400,6 @@ export declare const routineTemplateSchema: z.ZodObject<{
         customerVisible: boolean;
     };
     domain: string | null;
-    version: number;
     steps: {
         id: string;
         order: number;
@@ -2432,7 +2432,7 @@ export declare const routineTemplateSchema: z.ZodObject<{
     packKey: string | null;
     baseTemplateKey: string | null;
     variant: {
-        kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+        kind: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE";
         parameters: Record<string, string | number | boolean | string[]>;
     };
     hardEligibility: {
@@ -2539,6 +2539,7 @@ export declare const routineTemplateSchema: z.ZodObject<{
         }[];
         mode: "ALL" | "ANY";
     } | null | undefined;
+    version?: number | undefined;
     presentation?: {
         style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
         estimatedMinutes?: number | null | undefined;
@@ -2555,14 +2556,13 @@ export declare const routineTemplateSchema: z.ZodObject<{
         customerVisible?: boolean | undefined;
     } | undefined;
     domain?: string | null | undefined;
-    version?: number | undefined;
     internalName?: string | undefined;
     familyKey?: string | null | undefined;
     complexity?: string | null | undefined;
     packKey?: string | null | undefined;
     baseTemplateKey?: string | null | undefined;
     variant?: {
-        kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+        kind?: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | undefined;
         parameters?: Record<string, string | number | boolean | string[]> | undefined;
     } | undefined;
     hardEligibility?: {
@@ -4501,10 +4501,10 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             kind: z.ZodDefault<z.ZodEnum<["BASE", "SKIN_TYPE", "CONCERN", "COMPLEXITY", "BUDGET", "SEASONAL", "LIFESTYLE", "ANCHOR_ROLE", "BRAND", "CATEGORY", "CUSTOM"]>>;
             parameters: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
         }, "strip", z.ZodTypeAny, {
-            kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+            kind: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE";
             parameters: Record<string, string | number | boolean | string[]>;
         }, {
-            kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+            kind?: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | undefined;
             parameters?: Record<string, string | number | boolean | string[]> | undefined;
         }>>;
         hardEligibility: z.ZodDefault<z.ZodNullable<z.ZodObject<{
@@ -4912,6 +4912,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null;
+        version: number;
         presentation: {
             style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
             estimatedMinutes: number | null;
@@ -4928,7 +4929,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             customerVisible: boolean;
         };
         domain: string | null;
-        version: number;
         steps: {
             id: string;
             order: number;
@@ -4961,7 +4961,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         packKey: string | null;
         baseTemplateKey: string | null;
         variant: {
-            kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+            kind: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE";
             parameters: Record<string, string | number | boolean | string[]>;
         };
         hardEligibility: {
@@ -5068,6 +5068,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null | undefined;
+        version?: number | undefined;
         presentation?: {
             style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
             estimatedMinutes?: number | null | undefined;
@@ -5084,14 +5085,13 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             customerVisible?: boolean | undefined;
         } | undefined;
         domain?: string | null | undefined;
-        version?: number | undefined;
         internalName?: string | undefined;
         familyKey?: string | null | undefined;
         complexity?: string | null | undefined;
         packKey?: string | null | undefined;
         baseTemplateKey?: string | null | undefined;
         variant?: {
-            kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+            kind?: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | undefined;
             parameters?: Record<string, string | number | boolean | string[]> | undefined;
         } | undefined;
         hardEligibility?: {
@@ -6147,6 +6147,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null;
+        version: number;
         presentation: {
             style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
             estimatedMinutes: number | null;
@@ -6163,7 +6164,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             customerVisible: boolean;
         };
         domain: string | null;
-        version: number;
         steps: {
             id: string;
             order: number;
@@ -6196,7 +6196,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         packKey: string | null;
         baseTemplateKey: string | null;
         variant: {
-            kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+            kind: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE";
             parameters: Record<string, string | number | boolean | string[]>;
         };
         hardEligibility: {
@@ -6652,6 +6652,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null | undefined;
+        version?: number | undefined;
         presentation?: {
             style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
             estimatedMinutes?: number | null | undefined;
@@ -6668,14 +6669,13 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             customerVisible?: boolean | undefined;
         } | undefined;
         domain?: string | null | undefined;
-        version?: number | undefined;
         internalName?: string | undefined;
         familyKey?: string | null | undefined;
         complexity?: string | null | undefined;
         packKey?: string | null | undefined;
         baseTemplateKey?: string | null | undefined;
         variant?: {
-            kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+            kind?: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | undefined;
             parameters?: Record<string, string | number | boolean | string[]> | undefined;
         } | undefined;
         hardEligibility?: {
@@ -7105,6 +7105,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null;
+        version: number;
         presentation: {
             style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
             estimatedMinutes: number | null;
@@ -7121,7 +7122,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             customerVisible: boolean;
         };
         domain: string | null;
-        version: number;
         steps: {
             id: string;
             order: number;
@@ -7154,7 +7154,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         packKey: string | null;
         baseTemplateKey: string | null;
         variant: {
-            kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+            kind: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE";
             parameters: Record<string, string | number | boolean | string[]>;
         };
         hardEligibility: {
@@ -7610,6 +7610,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null | undefined;
+        version?: number | undefined;
         presentation?: {
             style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
             estimatedMinutes?: number | null | undefined;
@@ -7626,14 +7627,13 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             customerVisible?: boolean | undefined;
         } | undefined;
         domain?: string | null | undefined;
-        version?: number | undefined;
         internalName?: string | undefined;
         familyKey?: string | null | undefined;
         complexity?: string | null | undefined;
         packKey?: string | null | undefined;
         baseTemplateKey?: string | null | undefined;
         variant?: {
-            kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+            kind?: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | undefined;
             parameters?: Record<string, string | number | boolean | string[]> | undefined;
         } | undefined;
         hardEligibility?: {
@@ -8962,10 +8962,10 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 kind: z.ZodDefault<z.ZodEnum<["BASE", "SKIN_TYPE", "CONCERN", "COMPLEXITY", "BUDGET", "SEASONAL", "LIFESTYLE", "ANCHOR_ROLE", "BRAND", "CATEGORY", "CUSTOM"]>>;
                 parameters: z.ZodDefault<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodString, z.ZodNumber, z.ZodBoolean, z.ZodArray<z.ZodString, "many">]>>>;
             }, "strip", z.ZodTypeAny, {
-                kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+                kind: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE";
                 parameters: Record<string, string | number | boolean | string[]>;
             }, {
-                kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+                kind?: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | undefined;
                 parameters?: Record<string, string | number | boolean | string[]> | undefined;
             }>>;
             hardEligibility: z.ZodDefault<z.ZodNullable<z.ZodObject<{
@@ -9373,6 +9373,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            version: number;
             presentation: {
                 style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
                 estimatedMinutes: number | null;
@@ -9389,7 +9390,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 customerVisible: boolean;
             };
             domain: string | null;
-            version: number;
             steps: {
                 id: string;
                 order: number;
@@ -9422,7 +9422,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             packKey: string | null;
             baseTemplateKey: string | null;
             variant: {
-                kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+                kind: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE";
                 parameters: Record<string, string | number | boolean | string[]>;
             };
             hardEligibility: {
@@ -9529,6 +9529,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null | undefined;
+            version?: number | undefined;
             presentation?: {
                 style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
                 estimatedMinutes?: number | null | undefined;
@@ -9545,14 +9546,13 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 customerVisible?: boolean | undefined;
             } | undefined;
             domain?: string | null | undefined;
-            version?: number | undefined;
             internalName?: string | undefined;
             familyKey?: string | null | undefined;
             complexity?: string | null | undefined;
             packKey?: string | null | undefined;
             baseTemplateKey?: string | null | undefined;
             variant?: {
-                kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+                kind?: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | undefined;
                 parameters?: Record<string, string | number | boolean | string[]> | undefined;
             } | undefined;
             hardEligibility?: {
@@ -10608,6 +10608,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            version: number;
             presentation: {
                 style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
                 estimatedMinutes: number | null;
@@ -10624,7 +10625,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 customerVisible: boolean;
             };
             domain: string | null;
-            version: number;
             steps: {
                 id: string;
                 order: number;
@@ -10657,7 +10657,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             packKey: string | null;
             baseTemplateKey: string | null;
             variant: {
-                kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+                kind: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE";
                 parameters: Record<string, string | number | boolean | string[]>;
             };
             hardEligibility: {
@@ -11113,6 +11113,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null | undefined;
+            version?: number | undefined;
             presentation?: {
                 style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
                 estimatedMinutes?: number | null | undefined;
@@ -11129,14 +11130,13 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 customerVisible?: boolean | undefined;
             } | undefined;
             domain?: string | null | undefined;
-            version?: number | undefined;
             internalName?: string | undefined;
             familyKey?: string | null | undefined;
             complexity?: string | null | undefined;
             packKey?: string | null | undefined;
             baseTemplateKey?: string | null | undefined;
             variant?: {
-                kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+                kind?: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | undefined;
                 parameters?: Record<string, string | number | boolean | string[]> | undefined;
             } | undefined;
             hardEligibility?: {
@@ -11566,6 +11566,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            version: number;
             presentation: {
                 style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
                 estimatedMinutes: number | null;
@@ -11582,7 +11583,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 customerVisible: boolean;
             };
             domain: string | null;
-            version: number;
             steps: {
                 id: string;
                 order: number;
@@ -11615,7 +11615,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             packKey: string | null;
             baseTemplateKey: string | null;
             variant: {
-                kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+                kind: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE";
                 parameters: Record<string, string | number | boolean | string[]>;
             };
             hardEligibility: {
@@ -12071,6 +12071,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null | undefined;
+            version?: number | undefined;
             presentation?: {
                 style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
                 estimatedMinutes?: number | null | undefined;
@@ -12087,14 +12088,13 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 customerVisible?: boolean | undefined;
             } | undefined;
             domain?: string | null | undefined;
-            version?: number | undefined;
             internalName?: string | undefined;
             familyKey?: string | null | undefined;
             complexity?: string | null | undefined;
             packKey?: string | null | undefined;
             baseTemplateKey?: string | null | undefined;
             variant?: {
-                kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+                kind?: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | undefined;
                 parameters?: Record<string, string | number | boolean | string[]> | undefined;
             } | undefined;
             hardEligibility?: {
@@ -12527,6 +12527,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            version: number;
             presentation: {
                 style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
                 estimatedMinutes: number | null;
@@ -12543,7 +12544,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 customerVisible: boolean;
             };
             domain: string | null;
-            version: number;
             steps: {
                 id: string;
                 order: number;
@@ -12576,7 +12576,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             packKey: string | null;
             baseTemplateKey: string | null;
             variant: {
-                kind: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM";
+                kind: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE";
                 parameters: Record<string, string | number | boolean | string[]>;
             };
             hardEligibility: {
@@ -13035,6 +13035,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null | undefined;
+            version?: number | undefined;
             presentation?: {
                 style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
                 estimatedMinutes?: number | null | undefined;
@@ -13051,14 +13052,13 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 customerVisible?: boolean | undefined;
             } | undefined;
             domain?: string | null | undefined;
-            version?: number | undefined;
             internalName?: string | undefined;
             familyKey?: string | null | undefined;
             complexity?: string | null | undefined;
             packKey?: string | null | undefined;
             baseTemplateKey?: string | null | undefined;
             variant?: {
-                kind?: "CATEGORY" | "BRAND" | "BASE" | "SKIN_TYPE" | "CONCERN" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | "CUSTOM" | undefined;
+                kind?: "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "BASE" | "SKIN_TYPE" | "COMPLEXITY" | "BUDGET" | "SEASONAL" | "LIFESTYLE" | "ANCHOR_ROLE" | undefined;
                 parameters?: Record<string, string | number | boolean | string[]> | undefined;
             } | undefined;
             hardEligibility?: {

@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DEFAULT_NAVIGATION_CONFIG = exports.NAVIGATION_LAYOUT_PRESETS = exports.navigationEntityQuerySchema = exports.navigationEntityTypeSchema = exports.navigationDraftSaveSchema = exports.navigationConfigSchema = exports.navigationItemSchema = exports.navigationMegaMenuSchema = exports.navigationRowSchema = exports.navigationColumnSchema = exports.navigationLayoutPresetSchema = exports.navigationBlockSchema = exports.navigationDestinationSchema = exports.navigationVisibilitySchema = exports.navigationLocaleSchema = exports.navigationDeviceSchema = exports.localizedNavigationTextSchema = exports.navigationSchemaVersion = void 0;
+exports.DEFAULT_NAVIGATION_CONFIG = exports.NAVIGATION_LAYOUT_PRESETS = exports.navigationEntityQuerySchema = exports.navigationEntityTypeSchema = exports.navigationDraftSaveSchema = exports.navigationConfigSchema = exports.navigationItemSchema = exports.navigationMegaMenuSchema = exports.navigationRowSchema = exports.navigationColumnSchema = exports.navigationLayoutPresetSchema = exports.navigationBlockSchema = exports.categoryMenuTemplateSchema = exports.categoryColumnSchema = exports.navigationDestinationSchema = exports.navigationVisibilitySchema = exports.navigationLocaleSchema = exports.navigationDeviceSchema = exports.localizedNavigationTextSchema = exports.navigationSchemaVersion = void 0;
+exports.migrateNavigationConfig = migrateNavigationConfig;
 const zod_1 = require("zod");
-exports.navigationSchemaVersion = 1;
+exports.navigationSchemaVersion = 2;
 exports.localizedNavigationTextSchema = zod_1.z.object({
     en: zod_1.z.string().trim().max(180).default(""),
     ar: zod_1.z.string().trim().max(180).default(""),
@@ -46,6 +47,8 @@ exports.navigationDestinationSchema = zod_1.z.discriminatedUnion("type", [
     zod_1.z.object({ type: zod_1.z.literal("BRAND"), id: zod_1.z.string().uuid() }),
     zod_1.z.object({ type: zod_1.z.literal("PRODUCT"), id: zod_1.z.string().uuid() }),
     zod_1.z.object({ type: zod_1.z.literal("TAG"), id: zod_1.z.string().uuid() }),
+    zod_1.z.object({ type: zod_1.z.literal("CONCERN"), id: zod_1.z.string().uuid() }),
+    zod_1.z.object({ type: zod_1.z.literal("BUNDLE"), id: zod_1.z.string().uuid() }),
     zod_1.z.object({
         type: zod_1.z.literal("CUSTOM_PATH"),
         path: zod_1.z
@@ -77,7 +80,58 @@ const listHeadingShape = {
     viewAllLabel: exports.localizedNavigationTextSchema,
     viewAllDestination: exports.navigationDestinationSchema.nullable().default(null),
 };
+exports.categoryColumnSchema = zod_1.z.object({
+    id: zod_1.z.string().uuid(),
+    enabled: zod_1.z.boolean().default(true),
+    parentCategoryId: zod_1.z.string().uuid().nullable().default(null),
+    childMode: zod_1.z
+        .enum(["ALL_ACTIVE", "SELECTED", "ALL_EXCEPT"])
+        .default("ALL_ACTIVE"),
+    selectedChildIds: zod_1.z.array(zod_1.z.string().uuid()).max(60).default([]),
+    excludedChildIds: zod_1.z.array(zod_1.z.string().uuid()).max(60).default([]),
+    orderMode: zod_1.z
+        .enum(["CANONICAL", "ALPHABETICAL", "CUSTOM"])
+        .default("CANONICAL"),
+    customOrder: zod_1.z.array(zod_1.z.string().uuid()).max(60).default([]),
+    headingMode: zod_1.z.enum(["PARENT", "CUSTOM", "NONE"]).default("PARENT"),
+    customHeading: exports.localizedNavigationTextSchema.default({ en: "", ar: "" }),
+    parentClickable: zod_1.z.boolean().default(true),
+    showViewAll: zod_1.z.boolean().default(true),
+    viewAllLabel: exports.localizedNavigationTextSchema.default({
+        en: "View all",
+        ar: "عرض الكل",
+    }),
+    depth: zod_1.z.enum(["LEVEL_2", "LEVEL_3"]).default("LEVEL_2"),
+    grandchildDisplay: zod_1.z
+        .enum(["INDENTED", "COMPACT", "EXPANDABLE"])
+        .default("INDENTED"),
+    maximumChildren: zod_1.z.number().int().min(1).max(60).nullable().default(12),
+});
+exports.categoryMenuTemplateSchema = zod_1.z.enum([
+    "CATEGORY_COLUMNS",
+    "CATEGORY_TREE",
+    "EXPANDED_CATEGORY_TREE",
+    "COMPACT_CATEGORIES",
+    "CATEGORIES_FEATURED",
+    "MULTI_CATEGORY_MEGA_MENU",
+    "CATEGORY_GRID",
+]);
 exports.navigationBlockSchema = zod_1.z.discriminatedUnion("type", [
+    zod_1.z.object({
+        ...blockBaseShape,
+        type: zod_1.z.literal("CATEGORY_COLUMNS"),
+        template: exports.categoryMenuTemplateSchema.default("CATEGORY_COLUMNS"),
+        columns: zod_1.z.array(exports.categoryColumnSchema).min(1).max(8),
+        padding: zod_1.z.enum(["COMPACT", "STANDARD", "COMFORTABLE"]).default("STANDARD"),
+        columnGap: zod_1.z.enum(["TIGHT", "STANDARD", "WIDE"]).default("STANDARD"),
+        density: zod_1.z.enum(["COMPACT", "STANDARD", "RELAXED"]).default("STANDARD"),
+        parentStyle: zod_1.z.enum(["SMALL", "STANDARD", "PROMINENT"]).default("STANDARD"),
+        childStyle: zod_1.z.enum(["COMPACT", "STANDARD"]).default("STANDARD"),
+        separators: zod_1.z.enum(["NONE", "SUBTLE"]).default("NONE"),
+        alignment: zod_1.z.enum(["START", "CENTER"]).default("START"),
+        tabletColumns: zod_1.z.enum(["AUTO", "TWO", "THREE", "FOUR"]).default("AUTO"),
+        mobilePresentation: zod_1.z.enum(["ACCORDION", "LIST"]).default("ACCORDION"),
+    }),
     zod_1.z.object({
         ...blockBaseShape,
         type: zod_1.z.literal("CATEGORY_EXPLORER"),
@@ -311,7 +365,7 @@ exports.navigationItemSchema = zod_1.z.object({
     visibility: exports.navigationVisibilitySchema,
     megaMenu: exports.navigationMegaMenuSchema.nullable().default(null),
 });
-exports.navigationConfigSchema = zod_1.z
+const navigationConfigV2Schema = zod_1.z
     .object({
     schemaVersion: zod_1.z.literal(exports.navigationSchemaVersion),
     items: zod_1.z.array(exports.navigationItemSchema).min(1).max(16),
@@ -367,6 +421,8 @@ exports.navigationConfigSchema = zod_1.z
                     registerId(block.id, [...blockPath, "id"], "Block");
                     if (block.type === "CUSTOM_LINKS")
                         block.links.forEach((link, linkIndex) => registerId(link.id, [...blockPath, "links", linkIndex, "id"], "Custom link"));
+                    if (block.type === "CATEGORY_COLUMNS")
+                        block.columns.forEach((categoryColumn, categoryColumnIndex) => registerId(categoryColumn.id, [...blockPath, "columns", categoryColumnIndex, "id"], "Category column"));
                 });
             });
         });
@@ -378,6 +434,19 @@ exports.navigationConfigSchema = zod_1.z
             message: "A navigation configuration can contain at most 60 blocks.",
         });
 });
+/**
+ * Navigation v2 is additive. Existing v1 publications are deterministically
+ * upgraded at the contract boundary, preserving every item, row and block.
+ */
+function migrateNavigationConfig(value) {
+    if (!value || typeof value !== "object" || Array.isArray(value))
+        return value;
+    const candidate = value;
+    if (candidate.schemaVersion !== 1)
+        return value;
+    return { ...candidate, schemaVersion: exports.navigationSchemaVersion };
+}
+exports.navigationConfigSchema = zod_1.z.preprocess(migrateNavigationConfig, navigationConfigV2Schema);
 exports.navigationDraftSaveSchema = zod_1.z.object({
     expectedRevision: zod_1.z.number().int().min(1),
     config: exports.navigationConfigSchema,
@@ -387,6 +456,8 @@ exports.navigationEntityTypeSchema = zod_1.z.enum([
     "BRAND",
     "PRODUCT",
     "TAG",
+    "CONCERN",
+    "BUNDLE",
     "MEDIA",
 ]);
 exports.navigationEntityQuerySchema = zod_1.z.object({
@@ -422,7 +493,7 @@ const visibleEverywhere = {
     endsAt: null,
 };
 exports.DEFAULT_NAVIGATION_CONFIG = exports.navigationConfigSchema.parse({
-    schemaVersion: 1,
+    schemaVersion: exports.navigationSchemaVersion,
     items: [
         {
             id: "10000000-0000-4000-8000-000000000001",

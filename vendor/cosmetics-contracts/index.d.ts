@@ -28,4 +28,6 @@ export * from "./media/image-reference.schema";
 export * from "./campaigns/popup-campaign.schema";
 export * from "./customer-360/customer-360.schema";
 export * from "./reorder/reorder.schema";
+export * from "./concerns/concern.schema";
+export * from "./bundles/dynamic-bundle.schema";
 //# sourceMappingURL=index.d.ts.map

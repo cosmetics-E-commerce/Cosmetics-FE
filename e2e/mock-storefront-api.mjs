@@ -264,18 +264,116 @@ const multiCategoryItem = {
     ],
   },
 };
+const categoryV2BlockId = "c7000000-0000-4000-8000-000000000001";
+const categoryV2Parents = [
+  ["Body Care", "العناية بالجسم", "body-care"],
+  ["Fragrance", "العطور", "fragrance"],
+  ["Hair Care", "العناية بالشعر", "hair-care"],
+  ["Skin Care", "العناية بالبشرة", "skin-care"],
+  ["Korean", "الكوري", "korean"],
+  ["Offers & Bundles", "العروض والباقات", "offers-bundles"],
+  ["Makeup", "المكياج", "makeup"],
+  ["Wellness", "العافية", "wellness"],
+].map(([en, ar, slug], index) => ({
+  id: `c7100000-0000-4000-8000-00000000000${index + 1}`,
+  en,
+  ar,
+  slug,
+}));
+const categoryV2Block = {
+  ...blockBase(categoryV2BlockId),
+  type: "CATEGORY_COLUMNS",
+  template: "CATEGORY_COLUMNS",
+  columns: categoryV2Parents.map((parent, index) => ({
+    id: `c7200000-0000-4000-8000-00000000000${index + 1}`,
+    enabled: true,
+    parentCategoryId: parent.id,
+    childMode: "ALL_ACTIVE",
+    selectedChildIds: [],
+    excludedChildIds: [],
+    orderMode: "CANONICAL",
+    customOrder: [],
+    headingMode: "PARENT",
+    customHeading: { en: "", ar: "" },
+    parentClickable: true,
+    showViewAll: true,
+    viewAllLabel: { en: "View all", ar: "عرض الكل" },
+    depth: "LEVEL_2",
+    grandchildDisplay: "INDENTED",
+    maximumChildren: 12,
+  })),
+  padding: "STANDARD",
+  columnGap: "TIGHT",
+  density: "COMPACT",
+  parentStyle: "SMALL",
+  childStyle: "COMPACT",
+  separators: "NONE",
+  alignment: "START",
+  tabletColumns: "AUTO",
+  mobilePresentation: "ACCORDION",
+};
+const categoryV2Item = {
+  ...categoriesNavigationItem,
+  id: "c7300000-0000-4000-8000-000000000001",
+  key: "shop-v2",
+  label: { en: "Shop V2", ar: "تسوق V2" },
+  megaMenu: {
+    enabled: true,
+    width: "FULL",
+    style: "MINIMAL",
+    mobilePresentation: "ACCORDION",
+    rows: [
+      {
+        id: "c7400000-0000-4000-8000-000000000001",
+        preset: "TWO_EQUAL",
+        presentation: "DEFAULT",
+        columnSeparators: false,
+        enabled: true,
+        visibility: navigationVisibility,
+        columns: [
+          {
+            id: "c7500000-0000-4000-8000-000000000001",
+            span: 12,
+            blocks: [categoryV2Block],
+          },
+        ],
+      },
+    ],
+  },
+};
 classicNavigationConfig.items.splice(
   classicNavigationConfig.items.indexOf(categoriesNavigationItem) + 1,
   0,
   multiCategoryItem,
+  categoryV2Item,
 );
 const publishedNavigation = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   revisionId: "a0000000-0000-4000-8000-000000000020",
   revision: 7,
   publishedAt: "2026-08-23T12:00:00.000Z",
   config: classicNavigationConfig,
   resolvedBlocks: {
+    [categoryV2BlockId]: categoryV2Parents.flatMap((parent, index) => [
+      {
+        kind: "CATEGORY",
+        id: parent.id,
+        navigationColumnId: categoryV2Block.columns[index].id,
+        labelEn: parent.en,
+        labelAr: parent.ar,
+        href: `/categories/${parent.slug}`,
+        secondaryLabel: "root",
+      },
+      ...Array.from({ length: index % 3 === 0 ? 5 : 3 }, (_, childIndex) => ({
+        kind: "CATEGORY",
+        navigationColumnId: categoryV2Block.columns[index].id,
+        id: `c7600000-0000-4${String(index).padStart(3, "0")}-8000-${String(childIndex + 1).padStart(12, "0")}`,
+        labelEn: `${parent.en} ${childIndex + 1}`,
+        labelAr: `${parent.ar} ${childIndex + 1}`,
+        href: `/categories/${parent.slug}-${childIndex + 1}`,
+        secondaryLabel: parent.id,
+      })),
+    ]),
     [brandDirectoryBlockId]: [
       ["d1000000-0000-4000-8000-000000000001", "cerave", "CeraVe"],
       ["d1000000-0000-4000-8000-000000000002", "anua", "Anua"],
@@ -628,7 +726,218 @@ const emptyCart = {
   giftOptions: [],
   totalQuantity: 0,
   hasIssues: false,
+  bundleInstances: [],
   updatedAt: "2026-08-18T00:00:00.000Z",
+};
+
+const concernProducts = {
+  data: [product],
+  meta: {
+    page: 1,
+    limit: 24,
+    total: 200,
+    totalPages: 9,
+    hasNext: true,
+    hasPrev: false,
+  },
+  facets: {
+    brands: [{ id: brands[0].id, slug: brands[0].slug, name: brands[0].name, count: 1 }],
+    categories: [
+      {
+        id: category.id,
+        slug: category.slug,
+        nameEn: category.nameEn,
+        nameAr: category.nameAr,
+        count: 1,
+      },
+    ],
+  },
+};
+
+const drySkinConcern = {
+  id: "61000000-0000-4000-8000-000000000001",
+  slug: "dry-skin",
+  kind: "SKIN_TYPE",
+  featured: true,
+  name: { en: "Dry Skin", ar: "البشرة الجافة" },
+  shortDescription: {
+    en: "Explore approved product, ingredient, and routine context for dry skin.",
+    ar: "استكشفي المنتجات والمكونات وخطوات الروتين المعتمدة للبشرة الجافة.",
+  },
+  heroMediaKey: null,
+  iconMediaKey: null,
+  productCount: 200,
+  revision: 3,
+  publishedAt: "2026-09-02T09:00:00.000Z",
+  config: {
+    name: { en: "Dry Skin", ar: "البشرة الجافة" },
+    shortDescription: {
+      en: "Explore approved product, ingredient, and routine context for dry skin.",
+      ar: "استكشفي المنتجات والمكونات وخطوات الروتين المعتمدة للبشرة الجافة.",
+    },
+    longDescription: {
+      en: "A commerce-led guide assembled from BioReza's approved concern mappings.",
+      ar: "دليل تسوق مبني على روابط الاحتياجات المعتمدة لدى بايوريزا.",
+    },
+    heroMediaKey: null,
+    mobileHeroMediaKey: null,
+    content: [
+      {
+        id: "61000000-0000-4000-8000-000000000002",
+        type: "ABOUT",
+        heading: { en: "About this concern", ar: "عن هذا الاحتياج" },
+        body: {
+          en: "Use this page for beauty discovery, not diagnosis or treatment advice.",
+          ar: "استخدمي هذه الصفحة لاكتشاف الجمال وليس للتشخيص أو العلاج.",
+        },
+        enabled: true,
+        order: 0,
+      },
+    ],
+    faq: [
+      {
+        id: "61000000-0000-4000-8000-000000000003",
+        question: { en: "Can I build a routine?", ar: "هل يمكنني بناء روتين؟" },
+        answer: {
+          en: "Yes. The routine builder receives this concern as an editable starting signal.",
+          ar: "نعم. يستقبل منشئ الروتين هذا الاحتياج كنقطة بداية قابلة للتعديل.",
+        },
+        enabled: true,
+        order: 0,
+      },
+    ],
+    seo: {
+      title: {
+        en: "Dry Skin Products and Routines | BioReza",
+        ar: "منتجات وروتين البشرة الجافة | بايوريزا",
+      },
+      description: {
+        en: "Explore products and routines mapped to dry skin.",
+        ar: "استكشفي المنتجات والروتين المرتبط بالبشرة الجافة.",
+      },
+      openGraphTitle: { en: "Dry Skin", ar: "البشرة الجافة" },
+      openGraphDescription: {
+        en: "Approved BioReza concern discovery.",
+        ar: "اكتشاف احتياجات البشرة المعتمدة من بايوريزا.",
+      },
+      openGraphImageKey: null,
+      indexable: true,
+    },
+  },
+  products: concernProducts,
+  ingredients: [
+    {
+      id: "62000000-0000-4000-8000-000000000001",
+      slug: "glycerin",
+      name: "Glycerin",
+      shortDescription: {
+        en: "Approved ingredient information maintained by the catalog team.",
+        ar: "معلومات مكونات معتمدة يديرها فريق الكتالوج.",
+      },
+      role: "FEATURED",
+    },
+  ],
+  featuredCategories: [category],
+  curatedBrands: [{ ...brands[0], logoDisplay: null }],
+  relatedConcerns: [
+    {
+      id: "61000000-0000-4000-8000-000000000004",
+      slug: "sensitive-skin",
+      name: { en: "Sensitive Skin", ar: "البشرة الحساسة" },
+      shortDescription: {
+        en: "Explore sensitive-skin choices.",
+        ar: "استكشفي خيارات البشرة الحساسة.",
+      },
+    },
+  ],
+  coverage: {
+    products: 200,
+    brands: 20,
+    categories: 8,
+    ingredients: 1,
+    routineRoles: ["CLEANSE", "HYDRATE", "MOISTURIZE", "PROTECT"],
+  },
+  routineHandoff: "concern.dryness",
+  page: null,
+};
+
+const publicConcerns = [
+  drySkinConcern,
+  {
+    id: "61000000-0000-4000-8000-000000000005",
+    slug: "sensitive-skin",
+    kind: "SKIN_TYPE",
+    featured: true,
+    name: { en: "Sensitive Skin", ar: "البشرة الحساسة" },
+  },
+  {
+    id: "61000000-0000-4000-8000-000000000006",
+    slug: "combination-skin",
+    kind: "SKIN_TYPE",
+    featured: true,
+    name: { en: "Combination Skin", ar: "البشرة المختلطة" },
+  },
+  {
+    id: "61000000-0000-4000-8000-000000000007",
+    slug: "oily-skin",
+    kind: "SKIN_TYPE",
+    featured: true,
+    name: { en: "Oily Skin", ar: "البشرة الدهنية" },
+  },
+  {
+    id: "61000000-0000-4000-8000-000000000008",
+    slug: "acne-prone-skin",
+    kind: "SKIN_TYPE",
+    featured: true,
+    name: { en: "Acne-Prone Skin", ar: "البشرة المعرّضة للحبوب" },
+  },
+  {
+    id: "61000000-0000-4000-8000-000000000009",
+    slug: "all-skin-types",
+    kind: "SKIN_TYPE",
+    featured: true,
+    name: { en: "All Skin Types", ar: "جميع أنواع البشرة" },
+  },
+].map((concern, index) => ({
+  shortDescription: { en: "", ar: "" },
+  heroMediaKey: null,
+  iconMediaKey: null,
+  productCount: index === 0 ? 200 : 0,
+  revision: 1,
+  publishedAt: "2026-09-02T09:00:00.000Z",
+  ...concern,
+}));
+
+const dynamicBundle = {
+  id: "63000000-0000-4000-8000-000000000001",
+  slug: "build-your-routine",
+  version: 4,
+  name: { en: "Build Your Skincare Routine", ar: "ابني مجموعة العناية ببشرتك" },
+  description: {
+    en: "Choose one cleanser, one serum, and one moisturizer.",
+    ar: "اختاري غسولاً وسيرومًا ومرطبًا واحدًا.",
+  },
+  instructions: { en: "Complete each step.", ar: "أكملي كل خطوة." },
+  terms: { en: "Subject to current availability.", ar: "حسب التوفر الحالي." },
+  slots: [
+    ["cleanser", "Choose your Cleanser", "اختاري الغسول"],
+    ["serum", "Choose your Serum", "اختاري السيروم"],
+    ["moisturizer", "Choose your Moisturizer", "اختاري المرطب"],
+  ].map(([key, en, ar], order) => ({
+    key,
+    label: { en, ar },
+    description: {
+      en: "Current eligible catalog products.",
+      ar: "منتجات الكتالوج المؤهلة حاليًا.",
+    },
+    required: true,
+    quantity: { minimum: 1, maximum: 1 },
+    order,
+    allowSameProduct: false,
+    coverage: { eligibleProducts: 80, eligibleVariants: 80, outOfStock: 3, health: "HEALTHY" },
+  })),
+  discountLabel: { en: "SAVE 10%", ar: "وفري 10٪" },
+  heroMediaKey: null,
 };
 
 const pageBuilderImageIds = {
@@ -1134,6 +1443,28 @@ const server = createServer((request, response) => {
   }
   if (path === "/categories") return success(response, categories);
   if (path === "/brands") return success(response, brands);
+  if (path === "/concerns") return success(response, publicConcerns);
+  if (path === "/concerns/dry-skin") return success(response, drySkinConcern);
+  if (path === "/concerns/dry-skin/products") return success(response, concernProducts);
+  if (path === "/bundles") return success(response, [dynamicBundle]);
+  if (path === "/bundles/build-your-routine") return success(response, dynamicBundle);
+  if (path.startsWith("/bundles/build-your-routine/slots/") && path.endsWith("/products")) {
+    const slotKey = path.split("/")[4];
+    const slot = dynamicBundle.slots.find((item) => item.key === slotKey);
+    if (!slot) return json(response, 404, { code: "BUNDLE_SLOT_NOT_FOUND" });
+    return success(response, {
+      data: [product],
+      meta: {
+        page: 1,
+        limit: 24,
+        total: slot.coverage.eligibleProducts,
+        totalPages: Math.ceil(slot.coverage.eligibleProducts / 24),
+        hasNext: true,
+        hasPrev: false,
+      },
+      slot,
+    });
+  }
   if (path === "/navigation") return success(response, publishedNavigation);
   if (path === "/store/settings") {
     return success(response, {

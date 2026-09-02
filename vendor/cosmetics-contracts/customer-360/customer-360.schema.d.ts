@@ -560,11 +560,11 @@ export declare const customer360LayoutWidgetSchema: z.ZodObject<{
     size: z.ZodEnum<["SMALL", "MEDIUM", "WIDE"]>;
     visible: z.ZodBoolean;
 }, "strict", z.ZodTypeAny, {
-    size: "SMALL" | "MEDIUM" | "WIDE";
+    size: "SMALL" | "WIDE" | "MEDIUM";
     widgetId: "CART" | "INSIGHTS" | "ORDERS" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS" | "IDENTITY" | "TAGS" | "SEGMENTS" | "COMMERCIAL_SUMMARY" | "LATEST_ORDER" | "ADDRESSES" | "AFFINITY" | "ACTIVITY" | "NOTES";
     visible: boolean;
 }, {
-    size: "SMALL" | "MEDIUM" | "WIDE";
+    size: "SMALL" | "WIDE" | "MEDIUM";
     widgetId: "CART" | "INSIGHTS" | "ORDERS" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS" | "IDENTITY" | "TAGS" | "SEGMENTS" | "COMMERCIAL_SUMMARY" | "LATEST_ORDER" | "ADDRESSES" | "AFFINITY" | "ACTIVITY" | "NOTES";
     visible: boolean;
 }>;
@@ -575,32 +575,32 @@ export declare const customer360LayoutInputSchema: z.ZodObject<{
         size: z.ZodEnum<["SMALL", "MEDIUM", "WIDE"]>;
         visible: z.ZodBoolean;
     }, "strict", z.ZodTypeAny, {
-        size: "SMALL" | "MEDIUM" | "WIDE";
+        size: "SMALL" | "WIDE" | "MEDIUM";
         widgetId: "CART" | "INSIGHTS" | "ORDERS" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS" | "IDENTITY" | "TAGS" | "SEGMENTS" | "COMMERCIAL_SUMMARY" | "LATEST_ORDER" | "ADDRESSES" | "AFFINITY" | "ACTIVITY" | "NOTES";
         visible: boolean;
     }, {
-        size: "SMALL" | "MEDIUM" | "WIDE";
+        size: "SMALL" | "WIDE" | "MEDIUM";
         widgetId: "CART" | "INSIGHTS" | "ORDERS" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS" | "IDENTITY" | "TAGS" | "SEGMENTS" | "COMMERCIAL_SUMMARY" | "LATEST_ORDER" | "ADDRESSES" | "AFFINITY" | "ACTIVITY" | "NOTES";
         visible: boolean;
     }>, "many">, {
-        size: "SMALL" | "MEDIUM" | "WIDE";
+        size: "SMALL" | "WIDE" | "MEDIUM";
         widgetId: "CART" | "INSIGHTS" | "ORDERS" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS" | "IDENTITY" | "TAGS" | "SEGMENTS" | "COMMERCIAL_SUMMARY" | "LATEST_ORDER" | "ADDRESSES" | "AFFINITY" | "ACTIVITY" | "NOTES";
         visible: boolean;
     }[], {
-        size: "SMALL" | "MEDIUM" | "WIDE";
+        size: "SMALL" | "WIDE" | "MEDIUM";
         widgetId: "CART" | "INSIGHTS" | "ORDERS" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS" | "IDENTITY" | "TAGS" | "SEGMENTS" | "COMMERCIAL_SUMMARY" | "LATEST_ORDER" | "ADDRESSES" | "AFFINITY" | "ACTIVITY" | "NOTES";
         visible: boolean;
     }[]>;
 }, "strict", z.ZodTypeAny, {
     widgets: {
-        size: "SMALL" | "MEDIUM" | "WIDE";
+        size: "SMALL" | "WIDE" | "MEDIUM";
         widgetId: "CART" | "INSIGHTS" | "ORDERS" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS" | "IDENTITY" | "TAGS" | "SEGMENTS" | "COMMERCIAL_SUMMARY" | "LATEST_ORDER" | "ADDRESSES" | "AFFINITY" | "ACTIVITY" | "NOTES";
         visible: boolean;
     }[];
     expectedVersion: number;
 }, {
     widgets: {
-        size: "SMALL" | "MEDIUM" | "WIDE";
+        size: "SMALL" | "WIDE" | "MEDIUM";
         widgetId: "CART" | "INSIGHTS" | "ORDERS" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS" | "IDENTITY" | "TAGS" | "SEGMENTS" | "COMMERCIAL_SUMMARY" | "LATEST_ORDER" | "ADDRESSES" | "AFFINITY" | "ACTIVITY" | "NOTES";
         visible: boolean;
     }[];
@@ -1413,13 +1413,13 @@ export declare const customer360OverviewSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         push: "UNKNOWN";
         source: string;
-        orderEmail: "ENABLED" | "UNAVAILABLE";
+        orderEmail: "UNAVAILABLE" | "ENABLED";
         marketingEmail: "SUBSCRIBED" | "UNSUBSCRIBED" | "UNKNOWN";
         sms: "UNKNOWN";
     }, {
         push: "UNKNOWN";
         source: string;
-        orderEmail: "ENABLED" | "UNAVAILABLE";
+        orderEmail: "UNAVAILABLE" | "ENABLED";
         marketingEmail: "SUBSCRIBED" | "UNSUBSCRIBED" | "UNKNOWN";
         sms: "UNKNOWN";
     }>;
@@ -1797,7 +1797,7 @@ export declare const customer360OverviewSchema: z.ZodObject<{
     communications: {
         push: "UNKNOWN";
         source: string;
-        orderEmail: "ENABLED" | "UNAVAILABLE";
+        orderEmail: "UNAVAILABLE" | "ENABLED";
         marketingEmail: "SUBSCRIBED" | "UNSUBSCRIBED" | "UNKNOWN";
         sms: "UNKNOWN";
     };
@@ -2040,7 +2040,7 @@ export declare const customer360OverviewSchema: z.ZodObject<{
     communications: {
         push: "UNKNOWN";
         source: string;
-        orderEmail: "ENABLED" | "UNAVAILABLE";
+        orderEmail: "UNAVAILABLE" | "ENABLED";
         marketingEmail: "SUBSCRIBED" | "UNSUBSCRIBED" | "UNKNOWN";
         sms: "UNKNOWN";
     };

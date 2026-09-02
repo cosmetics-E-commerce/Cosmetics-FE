@@ -30,11 +30,17 @@ import {
   hasRefreshSession,
   logoutRequest,
   mergeGuestCart,
+  moveAvailableSavedItemsToCart,
+  moveSavedItemToCart,
   refreshSession,
   removeCartItem,
   removeCartCoupon,
+  removeSavedForLaterItem,
   removeWishlist,
   rememberSession,
+  saveCartItemForLater,
+  breakCartBundle,
+  removeCartBundle,
   updateCartItem,
 } from "@/lib/api";
 
@@ -55,6 +61,24 @@ export type CartLine = {
   issues: string[];
 };
 
+export type SavedForLaterLine = {
+  id: string;
+  productId: string | null;
+  variantId: string | null;
+  slug: string;
+  name: string;
+  variant: string;
+  brand: string | null;
+  image: string;
+  desiredQuantity: number;
+  priceWhenSaved: number;
+  currentPrice: number | null;
+  priceChange: string;
+  available: number;
+  status: string;
+  savedAt: string;
+};
+
 type Locale = "ar" | "en";
 export type AddLine = {
   variantId?: string | undefined;
@@ -71,6 +95,8 @@ export type AddLine = {
 };
 type StoreValue = {
   lines: CartLine[];
+  bundleInstances: CommerceCartResponse["bundleInstances"];
+  savedForLater: SavedForLaterLine[];
   wishlist: string[];
   cartOpen: boolean;
   searchOpen: boolean;
@@ -92,12 +118,19 @@ type StoreValue = {
   }>;
   cartLoading: boolean;
   pendingVariants: string[];
+  pendingSavedItems: string[];
   authHydrated: boolean;
   user: AuthUser | null;
   locale: Locale;
   add: (line: AddLine) => Promise<boolean>;
   acceptCart: (cart: CommerceCartResponse) => void;
   remove: (variantId: string, size?: string) => Promise<void>;
+  saveForLater: (variantId: string) => Promise<void>;
+  moveSavedToCart: (itemId: string) => Promise<void>;
+  removeSaved: (itemId: string) => Promise<void>;
+  moveAllSaved: () => Promise<void>;
+  breakBundle: (instanceId: string) => Promise<void>;
+  removeBundle: (instanceId: string) => Promise<void>;
   setQty: (variantId: string, sizeOrQty: string | number, qty?: number) => Promise<void>;
   clear: () => Promise<void>;
   applyCoupon: (code: string) => Promise<boolean>;
@@ -131,6 +164,7 @@ export function StoreProvider({
   const searchTriggerRef = useRef<HTMLButtonElement>(null);
   const [locale, setLocaleState] = useState<Locale>(initialLocale);
   const [pendingVariants, setPendingVariants] = useState<string[]>([]);
+  const [pendingSavedItems, setPendingSavedItems] = useState<string[]>([]);
   const pendingVariantIds = useRef(new Set<string>());
   const [wishOverrides, setWishOverrides] = useState<Record<string, boolean>>({});
 
@@ -346,6 +380,115 @@ export function StoreProvider({
     [commitCart, fail, markPending, queryClient, remove],
   );
 
+  const saveForLater = useCallback(
+    async (variantId: string) => {
+      if (pendingVariantIds.current.has(variantId)) return;
+      markPending(variantId, true);
+      try {
+        commitCart(await saveCartItemForLater(variantId));
+        trackCommerceEvent("save_for_later_clicked", { variantId });
+        toast(locale === "ar" ? "تم الحفظ لوقت لاحق" : "Saved for later");
+      } catch (error) {
+        fail(error);
+      } finally {
+        markPending(variantId, false);
+      }
+    },
+    [commitCart, fail, locale, markPending],
+  );
+
+  const withSavedPending = useCallback(
+    async (itemId: string, action: () => Promise<CommerceCartResponse>) => {
+      if (pendingSavedItems.includes(itemId)) return;
+      setPendingSavedItems((current) => [...current, itemId]);
+      try {
+        commitCart(await action());
+      } catch (error) {
+        fail(error);
+        throw error;
+      } finally {
+        setPendingSavedItems((current) => current.filter((id) => id !== itemId));
+      }
+    },
+    [commitCart, fail, pendingSavedItems],
+  );
+
+  const moveSavedToCart = useCallback(
+    async (itemId: string) => {
+      try {
+        await withSavedPending(itemId, () => moveSavedItemToCart(itemId));
+        trackCommerceEvent("saved_item_moved_to_cart", { metadata: { itemId } });
+        toast(locale === "ar" ? "تم النقل إلى حقيبتك" : "Moved to your bag");
+      } catch {
+        // withSavedPending already restores authoritative state and reports the error.
+      }
+    },
+    [locale, withSavedPending],
+  );
+
+  const removeSaved = useCallback(
+    async (itemId: string) => {
+      try {
+        await withSavedPending(itemId, () => removeSavedForLaterItem(itemId));
+        trackCommerceEvent("saved_item_removed", { metadata: { itemId } });
+        toast(locale === "ar" ? "تمت الإزالة من المحفوظات" : "Removed from saved items");
+      } catch {
+        // Error feedback is centralized in withSavedPending.
+      }
+    },
+    [locale, withSavedPending],
+  );
+
+  const moveAllSaved = useCallback(async () => {
+    if (pendingSavedItems.includes("bulk")) return;
+    setPendingSavedItems((current) => [...current, "bulk"]);
+    try {
+      const result = await moveAvailableSavedItemsToCart();
+      commitCart(result.cart as CommerceCartResponse);
+      trackCommerceEvent("move_all_saved_to_cart", {
+        metadata: { movedCount: result.movedCount },
+      });
+      const blocked = result.results.length - result.movedCount;
+      toast(
+        locale === "ar"
+          ? `تم نقل ${result.movedCount} إلى حقيبتك${blocked ? `، وبقي ${blocked}` : ""}`
+          : `${result.movedCount} moved to your bag${blocked ? `; ${blocked} remained saved` : ""}`,
+      );
+    } catch (error) {
+      fail(error);
+    } finally {
+      setPendingSavedItems((current) => current.filter((id) => id !== "bulk"));
+    }
+  }, [commitCart, fail, locale, pendingSavedItems]);
+
+  const breakBundle = useCallback(
+    async (instanceId: string) => {
+      try {
+        await withSavedPending(`bundle:${instanceId}`, () => breakCartBundle(instanceId));
+        toast(
+          locale === "ar"
+            ? "تم الاحتفاظ بالمنتجات دون المجموعة"
+            : "Products kept without bundle pricing",
+        );
+      } catch {
+        // The authoritative cart and error feedback are handled centrally.
+      }
+    },
+    [locale, withSavedPending],
+  );
+
+  const removeBundle = useCallback(
+    async (instanceId: string) => {
+      try {
+        await withSavedPending(`bundle:${instanceId}`, () => removeCartBundle(instanceId));
+        toast(locale === "ar" ? "تمت إزالة المجموعة" : "Bundle removed");
+      } catch {
+        // The authoritative cart and error feedback are handled centrally.
+      }
+    },
+    [locale, withSavedPending],
+  );
+
   const clear = useCallback(async () => {
     const previous = queryClient.getQueryData<CommerceCartResponse>(["cart"]);
     if (previous) commitCart(recalculateCart(previous, []));
@@ -500,10 +643,33 @@ export function StoreProvider({
       })),
     [cart, locale],
   );
+  const savedForLater = useMemo<SavedForLaterLine[]>(
+    () =>
+      (cart?.savedForLater ?? []).map((item) => ({
+        id: item.id,
+        productId: item.productId,
+        variantId: item.variantId,
+        slug: item.slug,
+        name: locale === "ar" ? item.productNameAr : item.productNameEn,
+        variant: locale === "ar" ? item.variantNameAr : item.variantNameEn,
+        brand: item.brandName,
+        image: item.imageUrl ?? "",
+        desiredQuantity: item.desiredQuantity,
+        priceWhenSaved: item.priceWhenSaved / 100,
+        currentPrice: item.currentPrice === null ? null : item.currentPrice / 100,
+        priceChange: item.priceChange,
+        available: item.available,
+        status: item.status,
+        savedAt: item.savedAt,
+      })),
+    [cart?.savedForLater, locale],
+  );
 
   const value = useMemo<StoreValue>(
     () => ({
       lines,
+      bundleInstances: cart?.bundleInstances ?? [],
+      savedForLater,
       wishlist,
       cartOpen,
       searchOpen,
@@ -520,12 +686,19 @@ export function StoreProvider({
       giftOptions: cart?.giftOptions ?? [],
       cartLoading: cartQuery.isLoading,
       pendingVariants,
+      pendingSavedItems,
       authHydrated,
       user,
       locale,
       add,
       acceptCart: commitCart,
       remove,
+      saveForLater,
+      moveSavedToCart,
+      removeSaved,
+      moveAllSaved,
+      breakBundle,
+      removeBundle,
       setQty,
       clear,
       applyCoupon,
@@ -548,9 +721,17 @@ export function StoreProvider({
       cartQuery.isLoading,
       clear,
       lines,
+      savedForLater,
       locale,
       pendingVariants,
+      pendingSavedItems,
       remove,
+      saveForLater,
+      moveSavedToCart,
+      removeSaved,
+      moveAllSaved,
+      breakBundle,
+      removeBundle,
       removeCoupon,
       searchOpen,
       searchTriggerRef,
