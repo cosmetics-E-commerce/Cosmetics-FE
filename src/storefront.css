@@ -7088,6 +7088,103 @@ html[data-motion-ready="true"] .sf-concern-list[data-motion-state="hidden"]::bef
   bottom: 0;
 }
 
+.sf-concern-list .sf-concern-list__skeleton {
+  display: grid;
+  min-height: clamp(76px, 5.4vw, 90px);
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(16px, 1.55vw, 25px);
+  padding-inline: 5px 2px;
+}
+
+.sf-concern-list .sf-concern-list__skeleton::before,
+.sf-concern-list .sf-concern-list__state::before {
+  display: none;
+}
+
+.sf-concern-list__skeleton > span:first-child {
+  width: 12px;
+  height: 12px;
+  justify-self: center;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.sf-concern-list__skeleton > span:last-child {
+  width: min(52%, 260px);
+  height: 18px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.13),
+    rgba(255, 255, 255, 0.06)
+  );
+  background-size: 220% 100%;
+  animation: concern-skeleton-pulse 1.8s ease-in-out infinite;
+}
+
+.sf-concern-list .sf-concern-list__state {
+  display: flex;
+  min-height: clamp(320px, 31vw, 470px);
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(34px, 5vw, 64px) clamp(4px, 2vw, 28px);
+}
+
+.sf-concern-list__state-kicker {
+  margin: 0 0 18px;
+  color: var(--sf-gold-soft);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.145em;
+  text-transform: uppercase;
+}
+
+.sf-concern-list__state h3 {
+  max-width: 19ch;
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.9rem, 3vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.sf-concern-list__state > p:not(.sf-concern-list__state-kicker) {
+  max-width: 48ch;
+  margin: 18px 0 28px;
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 0.82rem;
+  line-height: 1.7;
+}
+
+.sf-concern-list__state .premium-button {
+  min-width: 168px;
+}
+
+[dir="rtl"] .sf-concern-list__state h3 {
+  font-family: var(--font-arabic);
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+[dir="rtl"] .sf-concern-list__state .premium-button svg {
+  transform: scaleX(-1);
+}
+
+@keyframes concern-skeleton-pulse {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -120% 0;
+  }
+}
+
 .sf-concern-list a {
   position: relative;
   display: grid;
@@ -7118,6 +7215,19 @@ html[data-motion-ready="true"] .sf-concern-list[data-motion-state="hidden"]::bef
   transition:
     opacity 420ms var(--ease-premium),
     transform 620ms var(--ease-premium);
+}
+
+.sf-concern-list .sf-concern-list__state a.premium-button {
+  display: inline-flex;
+  min-height: 48px;
+  grid-template-columns: none;
+  gap: 8px;
+  overflow: visible;
+  padding-inline: 24px;
+}
+
+.sf-concern-list .sf-concern-list__state a.premium-button::before {
+  display: none;
 }
 
 .sf-concern-list a > span {
