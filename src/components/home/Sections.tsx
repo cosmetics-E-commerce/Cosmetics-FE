@@ -557,22 +557,63 @@ export function Concerns() {
           distance={18}
           className="sf-concern-list"
         >
-          {concernItems.map((concern, index) => (
-            <li
-              key={concern.id}
-              data-concern={concern.slug}
-              style={{ "--concern-color": concernColor(index) } as CSSProperties}
-            >
-              <Link to="/skin-concerns/$slug" params={{ slug: concern.slug }}>
-                <span className="sf-concern-list__dot" aria-hidden="true" />
-                <span className="sf-concern-list__label">{concern.name[locale]}</span>
-                <span className="sf-concern-list__arrow" aria-hidden="true">
-                  <ArrowRight className="sf-concern-list__arrow-primary" />
-                  <ArrowRight className="sf-concern-list__arrow-echo" />
-                </span>
-              </Link>
+          {concernQuery.isPending ? (
+            Array.from({ length: 6 }, (_, index) => (
+              <li className="sf-concern-list__skeleton" key={index} aria-hidden="true">
+                <span />
+                <span />
+              </li>
+            ))
+          ) : concernQuery.isError ? (
+            <li className="sf-concern-list__state" data-tone="error">
+              <p className="sf-concern-list__state-kicker">
+                {ar ? "تعذر تحميل الاحتياجات" : "Concern guides unavailable"}
+              </p>
+              <h3>{ar ? "لم نتمكن من تحميل هذه القائمة." : "We couldn't load this list."}</h3>
+              <p>{apiErrorMessage(concernQuery.error, locale)}</p>
+              <Button variant="solid" onClick={() => void concernQuery.refetch()}>
+                <RotateCcw aria-hidden="true" />
+                {ar ? "حاولي مرة أخرى" : "Try again"}
+              </Button>
             </li>
-          ))}
+          ) : concernItems.length === 0 ? (
+            <li className="sf-concern-list__state">
+              <p className="sf-concern-list__state-kicker">
+                {ar ? "أدلة جديدة قيد الإعداد" : "New guides in preparation"}
+              </p>
+              <h3>
+                {ar ? "تصفحي منتجات العناية الآن." : "Explore skincare while we prepare them."}
+              </h3>
+              <p>
+                {ar
+                  ? "ستظهر أدلة احتياجات البشرة المعتمدة هنا بمجرد نشرها."
+                  : "Approved concern guides will appear here as soon as they are published."}
+              </p>
+              <Button asChild variant="solid">
+                <Link to="/shop">
+                  {ar ? "تصفحي منتجات العناية" : "Shop skincare"}
+                  <ArrowRight aria-hidden="true" />
+                </Link>
+              </Button>
+            </li>
+          ) : (
+            concernItems.map((concern, index) => (
+              <li
+                key={concern.id}
+                data-concern={concern.slug}
+                style={{ "--concern-color": concernColor(index) } as CSSProperties}
+              >
+                <Link to="/skin-concerns/$slug" params={{ slug: concern.slug }}>
+                  <span className="sf-concern-list__dot" aria-hidden="true" />
+                  <span className="sf-concern-list__label">{concern.name[locale]}</span>
+                  <span className="sf-concern-list__arrow" aria-hidden="true">
+                    <ArrowRight className="sf-concern-list__arrow-primary" />
+                    <ArrowRight className="sf-concern-list__arrow-echo" />
+                  </span>
+                </Link>
+              </li>
+            ))
+          )}
         </Reveal>
       </div>
     </section>
