@@ -1,12 +1,16 @@
 import { Check, Tag } from "lucide-react";
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent } from "react";
 
 import { formatPrice } from "@/lib/products";
 import { useI18n } from "@/lib/i18n";
 import { useStore } from "@/lib/store";
+import { normalizeStoreApiError } from "@/lib/error-system";
 
 export function PromoCodeControl() {
   const { t, locale } = useI18n();
+  const instanceId = useId();
+  const inputId = `${instanceId}-promo-code`;
+  const errorId = `${instanceId}-promo-code-error`;
   const { couponCode, couponInvalidation, appliedPromotions, applyCoupon, removeCoupon } =
     useStore();
   const [code, setCode] = useState("");
@@ -27,6 +31,19 @@ export function PromoCodeControl() {
   const couponSavings = couponPromotion
     ? (couponPromotion.discountAmount + couponPromotion.shippingDiscount) / 100
     : 0;
+  const invalidationMessage = (() => {
+    if (!couponInvalidation) return "";
+    const minimum = couponInvalidation.details?.["minimumSubtotal"];
+    if (couponInvalidation.code === "PROMO_MIN_SPEND_NOT_MET" && typeof minimum === "number") {
+      return locale === "ar"
+        ? `لم يعد رمز الخصم صالحاً لأن حقيبتك أقل من الحد الأدنى ${formatPrice(minimum / 100)}.`
+        : `no longer applies because your cart is below the ${formatPrice(minimum / 100)} minimum.`;
+    }
+    if (couponInvalidation.code === "PROMO_NOT_APPLICABLE") {
+      return t("cart.promoNoLongerApplicable");
+    }
+    return normalizeStoreApiError(couponInvalidation, 409, locale).message;
+  })();
 
   const apply = async (nextCode: string) => {
     if (requestPending.current) return;
@@ -45,7 +62,13 @@ export function PromoCodeControl() {
           : `Promo code ${nextCode.toUpperCase()} applied.`,
       );
     } else {
-      setError(result.error);
+      setError(
+        result.code === "NETWORK_UNAVAILABLE" || result.code === "NETWORK_ERROR"
+          ? locale === "ar"
+            ? "تعذر تطبيق رمز الخصم. حاولي مرة أخرى."
+            : "Couldn't apply the promo code. Try again."
+          : result.error,
+      );
     }
     setPending(false);
     requestPending.current = false;
@@ -98,12 +121,12 @@ export function PromoCodeControl() {
         <span className="sf-promo-code__icon" aria-hidden="true">
           <Tag />
         </span>
-        <h3 id="promo-code-title">{t("cart.promo")}</h3>
+        <h3>{t("cart.promo")}</h3>
       </div>
 
       {couponInvalidation ? (
         <p className="sf-promo-code__notice" role="status">
-          <bdi>{couponInvalidation.promoCode}</bdi> {t("cart.promoNoLongerApplicable")}
+          <bdi>{couponInvalidation.promoCode}</bdi> {invalidationMessage}
         </p>
       ) : null}
 
@@ -131,10 +154,10 @@ export function PromoCodeControl() {
         </div>
       ) : (
         <form onSubmit={submit} aria-busy={pending || undefined} noValidate>
-          <label htmlFor="coupon">{t("cart.promo")}</label>
+          <label htmlFor={inputId}>{t("cart.promo")}</label>
           <div className="sf-promo-code__form-row">
             <input
-              id="coupon"
+              id={inputId}
               value={code}
               disabled={pending}
               onChange={(event) => {
@@ -147,7 +170,7 @@ export function PromoCodeControl() {
               autoCapitalize="characters"
               spellCheck={false}
               aria-invalid={Boolean(error)}
-              aria-describedby={error ? "coupon-error" : undefined}
+              aria-describedby={error ? errorId : undefined}
             />
             <button type="submit" disabled={pending || !code.trim()}>
               {pending ? t("cart.applyingPromo") : t("cart.applyPromo")}
@@ -170,7 +193,7 @@ export function PromoCodeControl() {
             </div>
           ) : null}
           {error ? (
-            <p id="coupon-error" role="alert" className="sf-promo-code__error">
+            <p id={errorId} role="alert" className="sf-promo-code__error">
               {error}
             </p>
           ) : null}

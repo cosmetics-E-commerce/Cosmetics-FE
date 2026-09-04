@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { PolishedImage } from "@/components/ui/polished-image";
 import { AddressForm } from "@/components/forms/AddressForm";
 import { StatePanel } from "@/components/feedback/StatePanel";
+import { PromoCodeControl } from "@/components/shop/PromoCodeControl";
 import {
   apiErrorCode,
   apiErrorMessage,
@@ -128,7 +129,6 @@ function Checkout() {
     appliedPromotions,
     giftOptions,
     locale,
-    removeCoupon,
   } = useStore();
   const navigate = useNavigate();
   const client = useQueryClient();
@@ -157,7 +157,6 @@ function Checkout() {
   const [activeStep, setActiveStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(() => new Set());
   const [purchaseBarDocked, setPurchaseBarDocked] = useState(false);
-  const [removingPromo, setRemovingPromo] = useState(false);
   const initialLineCount = useRef(lines.length);
   const checkoutIdempotencyKey = useRef<string | null>(null);
   const paymentIdempotencyKey = useRef<string | null>(null);
@@ -260,13 +259,6 @@ function Checkout() {
   const previewDiscount = shippingRate.data ? shippingRate.data.discount / 100 : discountTotal;
   const previewAfterPromotions = previewSubtotal - previewDiscount;
   const previewPromotions = shippingRate.data?.appliedPromotions ?? appliedPromotions;
-  const previewCouponCode = shippingRate.data?.couponCode ?? couponCode;
-  const previewCouponPromotion = previewPromotions.find(
-    (promotion) => promotion.couponCode === previewCouponCode,
-  );
-  const previewCouponDiscount = previewCouponPromotion
-    ? (previewCouponPromotion.discountAmount + previewCouponPromotion.shippingDiscount) / 100
-    : 0;
   const selectableGifts = giftOptions.filter((gift) => gift.customerChooses);
   const requiredGiftPromotions = new Set(selectableGifts.map((gift) => gift.promotionId));
   const selectedGiftPromotions = new Set(
@@ -379,14 +371,6 @@ function Checkout() {
       }
     },
   });
-  const removeCheckoutPromo = async () => {
-    if (removingPromo) return;
-    setRemovingPromo(true);
-    const removed = await removeCoupon();
-    setRemovingPromo(false);
-    if (!removed.ok) return;
-    void client.invalidateQueries({ queryKey: ["checkout", "preview"] });
-  };
   const submitOrder = () => {
     if (!canSubmitCurrentStep || placingOrder.current) return;
     placingOrder.current = true;
@@ -737,35 +721,9 @@ function Checkout() {
                       </p>
                     </div>
                   </div>
-                  {previewCouponCode && (
-                    <div className="sf-checkout-review-promo" aria-label={t("checkout.promo")}>
-                      <div>
-                        <span>{t("checkout.promo")}</span>
-                        <strong>
-                          <bdi>{previewCouponCode}</bdi>
-                        </strong>
-                      </div>
-                      <div>
-                        <span>{t("checkout.discount")}</span>
-                        <strong>-{formatPrice(previewCouponDiscount)}</strong>
-                      </div>
-                      <div className="sf-checkout-review-promo__actions">
-                        <Button
-                          type="button"
-                          variant="quiet"
-                          size="pill"
-                          disabled={removingPromo}
-                          loading={removingPromo}
-                          onClick={() => void removeCheckoutPromo()}
-                        >
-                          {t("checkout.removePromo")}
-                        </Button>
-                        <Button asChild variant="quiet" size="pill">
-                          <Link to="/cart">{t("checkout.changePromo")}</Link>
-                        </Button>
-                      </div>
-                    </div>
-                  )}
+                  <div className="sf-checkout-review-promo-control">
+                    <PromoCodeControl />
+                  </div>
                   {requiresGift && (
                     <div className="sf-checkout-review-gift">
                       <CheckoutCardHeader

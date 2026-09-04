@@ -138,8 +138,11 @@ exports.cartSchema = zod_1.z.object({
     couponCode: zod_1.z.string().nullable(),
     couponInvalidation: zod_1.z
         .object({
-        code: zod_1.z.literal("PROMO_NOT_APPLICABLE"),
+        code: zod_1.z.string().min(1),
         promoCode: zod_1.z.string(),
+        details: zod_1.z
+            .record(zod_1.z.string(), zod_1.z.union([zod_1.z.number(), zod_1.z.string()]))
+            .optional(),
     })
         .nullable()
         .default(null),
