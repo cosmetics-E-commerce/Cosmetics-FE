@@ -86,7 +86,9 @@ describe("PromoCodeControl", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "Add EGP 250 more to use this promo code.",
     );
-    expect(screen.getByLabelText("Promo code")).toHaveAttribute("aria-describedby", "coupon-error");
+    const input = screen.getByLabelText("Promo code");
+    const error = screen.getByRole("alert");
+    expect(input).toHaveAttribute("aria-describedby", error.id);
   });
 
   it("shows authoritative savings and confirms replacing the single supported code", async () => {
@@ -128,5 +130,21 @@ describe("PromoCodeControl", () => {
     expect(screen.getByLabelText("رمز الخصم")).toBeInTheDocument();
     expect(screen.getByRole("status")).toHaveTextContent("BIOREZA20");
     expect(screen.getByRole("button", { name: "تطبيق" })).toBeInTheDocument();
+  });
+
+  it("explains an authoritative minimum after a cart mutation", () => {
+    storeState = {
+      ...baseStore(),
+      couponInvalidation: {
+        code: "PROMO_MIN_SPEND_NOT_MET",
+        promoCode: "BIOREZA20",
+        details: { minimumSubtotal: 100_000, eligibleSubtotal: 90_000 },
+      },
+    };
+    render(<PromoCodeControl />);
+
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "BIOREZA20 no longer applies because your cart is below the EGP 1,000.00 minimum.",
+    );
   });
 });

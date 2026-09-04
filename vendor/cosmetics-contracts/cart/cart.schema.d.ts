@@ -452,14 +452,17 @@ export declare const cartSchema: z.ZodObject<{
     totalSavings: z.ZodNumber;
     couponCode: z.ZodNullable<z.ZodString>;
     couponInvalidation: z.ZodDefault<z.ZodNullable<z.ZodObject<{
-        code: z.ZodLiteral<"PROMO_NOT_APPLICABLE">;
+        code: z.ZodString;
         promoCode: z.ZodString;
+        details: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodNumber, z.ZodString]>>>;
     }, "strip", z.ZodTypeAny, {
-        code: "PROMO_NOT_APPLICABLE";
+        code: string;
         promoCode: string;
+        details?: Record<string, string | number> | undefined;
     }, {
-        code: "PROMO_NOT_APPLICABLE";
+        code: string;
         promoCode: string;
+        details?: Record<string, string | number> | undefined;
     }>>>;
     appliedPromotions: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -707,8 +710,9 @@ export declare const cartSchema: z.ZodObject<{
     owner: "GUEST" | "USER";
     estimatedTotal: number;
     couponInvalidation: {
-        code: "PROMO_NOT_APPLICABLE";
+        code: string;
         promoCode: string;
+        details?: Record<string, string | number> | undefined;
     } | null;
     promotionMessages: string[];
     giftOptions: {
@@ -825,8 +829,9 @@ export declare const cartSchema: z.ZodObject<{
     totalQuantity: number;
     hasIssues: boolean;
     couponInvalidation?: {
-        code: "PROMO_NOT_APPLICABLE";
+        code: string;
         promoCode: string;
+        details?: Record<string, string | number> | undefined;
     } | null | undefined;
     savedForLater?: {
         issues: string[];
@@ -990,14 +995,17 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
         totalSavings: z.ZodNumber;
         couponCode: z.ZodNullable<z.ZodString>;
         couponInvalidation: z.ZodDefault<z.ZodNullable<z.ZodObject<{
-            code: z.ZodLiteral<"PROMO_NOT_APPLICABLE">;
+            code: z.ZodString;
             promoCode: z.ZodString;
+            details: z.ZodOptional<z.ZodRecord<z.ZodString, z.ZodUnion<[z.ZodNumber, z.ZodString]>>>;
         }, "strip", z.ZodTypeAny, {
-            code: "PROMO_NOT_APPLICABLE";
+            code: string;
             promoCode: string;
+            details?: Record<string, string | number> | undefined;
         }, {
-            code: "PROMO_NOT_APPLICABLE";
+            code: string;
             promoCode: string;
+            details?: Record<string, string | number> | undefined;
         }>>>;
         appliedPromotions: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -1245,8 +1253,9 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
         owner: "GUEST" | "USER";
         estimatedTotal: number;
         couponInvalidation: {
-            code: "PROMO_NOT_APPLICABLE";
+            code: string;
             promoCode: string;
+            details?: Record<string, string | number> | undefined;
         } | null;
         promotionMessages: string[];
         giftOptions: {
@@ -1363,8 +1372,9 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
         totalQuantity: number;
         hasIssues: boolean;
         couponInvalidation?: {
-            code: "PROMO_NOT_APPLICABLE";
+            code: string;
             promoCode: string;
+            details?: Record<string, string | number> | undefined;
         } | null | undefined;
         savedForLater?: {
             issues: string[];
@@ -1482,8 +1492,9 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
         owner: "GUEST" | "USER";
         estimatedTotal: number;
         couponInvalidation: {
-            code: "PROMO_NOT_APPLICABLE";
+            code: string;
             promoCode: string;
+            details?: Record<string, string | number> | undefined;
         } | null;
         promotionMessages: string[];
         giftOptions: {
@@ -1609,8 +1620,9 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
         totalQuantity: number;
         hasIssues: boolean;
         couponInvalidation?: {
-            code: "PROMO_NOT_APPLICABLE";
+            code: string;
             promoCode: string;
+            details?: Record<string, string | number> | undefined;
         } | null | undefined;
         savedForLater?: {
             issues: string[];

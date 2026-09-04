@@ -10770,11 +10770,7 @@ body:has(.sf-checkout-page) .sf-checkout-page > .motion-reveal:first-child {
   line-height: 1.55;
 }
 
-.sf-checkout-review-promo {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
-  gap: 16px;
-  align-items: center;
+.sf-checkout-review-promo-control {
   margin-top: 16px;
   border: 1px solid var(--brand-border);
   border-radius: var(--radius-card);
@@ -10782,40 +10778,10 @@ body:has(.sf-checkout-page) .sf-checkout-page > .motion-reveal:first-child {
   padding: 16px;
 }
 
-.sf-checkout-review-promo span {
-  display: block;
-  color: var(--brand-text-muted);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.sf-checkout-review-promo strong {
-  display: block;
-  margin-top: 5px;
-  color: var(--brand-text);
-}
-
-.sf-checkout-review-promo__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: end;
-}
-
-@media (max-width: 479px) {
-  .sf-checkout-review-promo {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .sf-checkout-review-promo__actions {
-    grid-column: 1 / -1;
-    justify-content: stretch;
-  }
-
-  .sf-checkout-review-promo__actions > * {
-    flex: 1 1 8rem;
-  }
+.sf-checkout-review-promo-control .sf-promo-code {
+  margin-block: 0;
+  border-block: 0;
+  padding-block: 0;
 }
 
 .account-orders__promo {
