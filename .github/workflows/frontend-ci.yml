@@ -32,11 +32,18 @@ jobs:
         id: npm_audit
         continue-on-error: ${{ github.event_name == 'pull_request' }}
         run: pnpm audit --prod --audit-level high
-      - name: Review dependency changes when the npm audit service is unavailable
+      - name: Scan dependencies when the npm audit service is unavailable
         if: ${{ github.event_name == 'pull_request' && steps.npm_audit.outcome == 'failure' }}
-        uses: actions/dependency-review-action@v4
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
-          fail-on-severity: high
+          scan-type: fs
+          scan-ref: .
+          scanners: vuln
+          vuln-type: library
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          ignore-unfixed: false
+          skip-dirs: node_modules,vendor,.git,.output,dist
       - run: pnpm lint && pnpm typecheck && pnpm test
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
