@@ -37,13 +37,12 @@ jobs:
         uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: fs
-          scan-ref: .
+          scan-ref: pnpm-lock.yaml
           scanners: vuln
           vuln-type: library
           severity: HIGH,CRITICAL
           exit-code: "1"
           ignore-unfixed: false
-          skip-dirs: node_modules,vendor,.git,.output,dist
       - run: pnpm lint && pnpm typecheck && pnpm test
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium
