@@ -2,6 +2,7 @@ import type {
   AuthSession,
   AuthUser,
   CartResponse,
+  CheckoutPreviewResponse,
   BulkMoveSavedResponse,
   SavedForLaterItemResponse,
   CatalogFacetResponse,
@@ -36,6 +37,7 @@ export type {
   AuthSession,
   AuthUser,
   CartResponse,
+  CheckoutPreviewResponse,
   BulkMoveSavedResponse,
   SavedForLaterItemResponse,
   CatalogFacetResponse,
@@ -469,6 +471,14 @@ export type OrderSummary = {
   grandTotal: number;
   currency: string;
   placedAt: string;
+  discount: number;
+  appliedPromotions: Array<{
+    promotionId: string | null;
+    name: string;
+    couponCode: string | null;
+    discountAmount: number;
+    shippingDiscount: number;
+  }>;
 };
 
 export type ReorderAvailability =
@@ -1705,6 +1715,8 @@ export async function listOrders() {
     ...order,
     grandTotal: order.grandTotal ?? order.total ?? 0,
     placedAt: order.placedAt ?? order.createdAt ?? new Date(0).toISOString(),
+    discount: order.discount ?? 0,
+    appliedPromotions: order.appliedPromotions ?? [],
   }));
 }
 
@@ -1754,6 +1766,11 @@ export const listShippingAreas = (cityId: string) =>
   rawRequest<ShippingArea[]>(`/shipping/locations/areas?city=${encodeURIComponent(cityId)}`);
 export const getShippingRate = (addressId: string) =>
   rawRequest<ShippingRate>(`/shipping/rates?addressId=${encodeURIComponent(addressId)}`);
+export const getCheckoutPreview = (shippingAddressId: string, paymentMethod: string) =>
+  rawRequest<CheckoutPreviewResponse>("/orders/checkout/preview", {
+    method: "POST",
+    body: { shippingAddressId, paymentMethod },
+  });
 export const getOrderTracking = (orderId: string) =>
   rawRequest<OrderTracking>(`/orders/${orderId}/tracking`);
 export const refreshOrderTracking = (orderId: string) =>

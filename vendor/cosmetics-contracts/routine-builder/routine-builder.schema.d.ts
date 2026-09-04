@@ -1091,8 +1091,8 @@ export declare const routineRuleSchema: z.ZodObject<{
         en: string;
         ar: string;
     };
-    enabled: boolean;
     priority: number;
+    enabled: boolean;
     when: {
         conditions: {
             value: string | number | boolean | string[];
@@ -1178,8 +1178,8 @@ export declare const routineRuleSchema: z.ZodObject<{
         };
         type: "NO_RESULT";
     })[];
-    enabled?: boolean | undefined;
     priority?: number | undefined;
+    enabled?: boolean | undefined;
 }>;
 export declare const routineCompatibilityRuleSchema: z.ZodObject<{
     id: z.ZodString;
@@ -1244,8 +1244,8 @@ export declare const routineCompatibilityRuleSchema: z.ZodObject<{
         en: string;
         ar: string;
     };
-    enabled: boolean;
     priority: number;
+    enabled: boolean;
     effect: "BLOCK_SAME_ROUTINE" | "WARN" | "AM_ONLY" | "PM_ONLY" | "ALTERNATE" | "MAX_ONE_FROM_GROUP";
     left: {
         keys: string[];
@@ -1274,8 +1274,8 @@ export declare const routineCompatibilityRuleSchema: z.ZodObject<{
         keys?: string[] | undefined;
         ids?: string[] | undefined;
     };
-    enabled?: boolean | undefined;
     priority?: number | undefined;
+    enabled?: boolean | undefined;
     right?: {
         kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
         keys?: string[] | undefined;
@@ -1344,7 +1344,6 @@ export declare const routineTemplateStepSchema: z.ZodObject<{
     spendingWeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    order: number;
     conditions: {
         conditions: {
             value: string | number | boolean | string[] | null;
@@ -1354,6 +1353,7 @@ export declare const routineTemplateStepSchema: z.ZodObject<{
         }[];
         mode: "ALL" | "ANY";
     } | null;
+    order: number;
     required: boolean;
     target: {
         keys: string[];
@@ -1619,7 +1619,6 @@ export declare const routineStepPresetSchema: z.ZodObject<{
         spendingWeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
     }, "strip", z.ZodTypeAny, {
         id: string;
-        order: number;
         conditions: {
             conditions: {
                 value: string | number | boolean | string[] | null;
@@ -1629,6 +1628,7 @@ export declare const routineStepPresetSchema: z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null;
+        order: number;
         required: boolean;
         target: {
             keys: string[];
@@ -1686,7 +1686,6 @@ export declare const routineStepPresetSchema: z.ZodObject<{
     domain: string;
     steps: {
         id: string;
-        order: number;
         conditions: {
             conditions: {
                 value: string | number | boolean | string[] | null;
@@ -1696,6 +1695,7 @@ export declare const routineStepPresetSchema: z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null;
+        order: number;
         required: boolean;
         target: {
             keys: string[];
@@ -2192,7 +2192,6 @@ export declare const routineTemplateSchema: z.ZodObject<{
         spendingWeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
     }, "strip", z.ZodTypeAny, {
         id: string;
-        order: number;
         conditions: {
             conditions: {
                 value: string | number | boolean | string[] | null;
@@ -2202,6 +2201,7 @@ export declare const routineTemplateSchema: z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null;
+        order: number;
         required: boolean;
         target: {
             keys: string[];
@@ -2360,7 +2360,7 @@ export declare const routineTemplateSchema: z.ZodObject<{
     }>>;
     pinned: z.ZodDefault<z.ZodBoolean>;
 }, "strip", z.ZodTypeAny, {
-    status: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED";
+    status: "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "PUBLISHED";
     id: string;
     key: string;
     description: {
@@ -2371,8 +2371,6 @@ export declare const routineTemplateSchema: z.ZodObject<{
         en: string;
         ar: string;
     };
-    enabled: boolean;
-    tags: string[];
     priority: number;
     conditions: {
         conditions: {
@@ -2383,6 +2381,8 @@ export declare const routineTemplateSchema: z.ZodObject<{
         }[];
         mode: "ALL" | "ANY";
     } | null;
+    enabled: boolean;
+    tags: string[];
     version: number;
     presentation: {
         style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
@@ -2402,7 +2402,6 @@ export declare const routineTemplateSchema: z.ZodObject<{
     domain: string | null;
     steps: {
         id: string;
-        order: number;
         conditions: {
             conditions: {
                 value: string | number | boolean | string[] | null;
@@ -2412,6 +2411,7 @@ export declare const routineTemplateSchema: z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null;
+        order: number;
         required: boolean;
         target: {
             keys: string[];
@@ -2522,13 +2522,11 @@ export declare const routineTemplateSchema: z.ZodObject<{
         fallbackRoleKeys?: string[] | undefined;
         spendingWeight?: number | null | undefined;
     }[];
-    status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED" | undefined;
+    status?: "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "PUBLISHED" | undefined;
     description?: {
         en: string;
         ar: string;
     } | undefined;
-    enabled?: boolean | undefined;
-    tags?: string[] | undefined;
     priority?: number | undefined;
     conditions?: {
         conditions: {
@@ -2539,6 +2537,8 @@ export declare const routineTemplateSchema: z.ZodObject<{
         }[];
         mode: "ALL" | "ANY";
     } | null | undefined;
+    enabled?: boolean | undefined;
+    tags?: string[] | undefined;
     version?: number | undefined;
     presentation?: {
         style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
@@ -2843,7 +2843,6 @@ export declare const routineTemplateUniverseSchema: z.ZodObject<{
             spendingWeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         }, "strip", z.ZodTypeAny, {
             id: string;
-            order: number;
             conditions: {
                 conditions: {
                     value: string | number | boolean | string[] | null;
@@ -2853,6 +2852,7 @@ export declare const routineTemplateUniverseSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            order: number;
             required: boolean;
             target: {
                 keys: string[];
@@ -2910,7 +2910,6 @@ export declare const routineTemplateUniverseSchema: z.ZodObject<{
         domain: string;
         steps: {
             id: string;
-            order: number;
             conditions: {
                 conditions: {
                     value: string | number | boolean | string[] | null;
@@ -2920,6 +2919,7 @@ export declare const routineTemplateUniverseSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            order: number;
             required: boolean;
             target: {
                 keys: string[];
@@ -3034,7 +3034,6 @@ export declare const routineTemplateUniverseSchema: z.ZodObject<{
         domain: string;
         steps: {
             id: string;
-            order: number;
             conditions: {
                 conditions: {
                     value: string | number | boolean | string[] | null;
@@ -3044,6 +3043,7 @@ export declare const routineTemplateUniverseSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            order: number;
             required: boolean;
             target: {
                 keys: string[];
@@ -3197,8 +3197,8 @@ export declare const routineAnchorBoostRuleSchema: z.ZodObject<{
         en: string;
         ar: string;
     };
-    enabled: boolean;
     priority: number;
+    enabled: boolean;
     score: number;
     anchor: {
         keys: string[];
@@ -3229,8 +3229,8 @@ export declare const routineAnchorBoostRuleSchema: z.ZodObject<{
         ids?: string[] | undefined;
     };
     channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
-    enabled?: boolean | undefined;
     priority?: number | undefined;
+    enabled?: boolean | undefined;
 }>;
 export declare const routineContextualCompletionSchema: z.ZodObject<{
     enabled: z.ZodDefault<z.ZodBoolean>;
@@ -3290,8 +3290,8 @@ export declare const routineContextualCompletionSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        enabled: boolean;
         priority: number;
+        enabled: boolean;
         score: number;
         anchor: {
             keys: string[];
@@ -3322,8 +3322,8 @@ export declare const routineContextualCompletionSchema: z.ZodObject<{
             ids?: string[] | undefined;
         };
         channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
-        enabled?: boolean | undefined;
         priority?: number | undefined;
+        enabled?: boolean | undefined;
     }>, "many">>;
     title: z.ZodDefault<z.ZodObject<{
         en: z.ZodString;
@@ -3366,11 +3366,11 @@ export declare const routineContextualCompletionSchema: z.ZodObject<{
         ar: string;
     }>>;
 }, "strip", z.ZodTypeAny, {
-    enabled: boolean;
     title: {
         en: string;
         ar: string;
     };
+    enabled: boolean;
     enabledDomains: string[];
     eligibleAnchorRoles: string[];
     defaultTemplateKeys: Record<string, string>;
@@ -3384,8 +3384,8 @@ export declare const routineContextualCompletionSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        enabled: boolean;
         priority: number;
+        enabled: boolean;
         score: number;
         anchor: {
             keys: string[];
@@ -3411,11 +3411,11 @@ export declare const routineContextualCompletionSchema: z.ZodObject<{
         ar: string;
     };
 }, {
-    enabled?: boolean | undefined;
     title?: {
         en: string;
         ar: string;
     } | undefined;
+    enabled?: boolean | undefined;
     enabledDomains?: string[] | undefined;
     eligibleAnchorRoles?: string[] | undefined;
     defaultTemplateKeys?: Record<string, string> | undefined;
@@ -3440,8 +3440,8 @@ export declare const routineContextualCompletionSchema: z.ZodObject<{
             ids?: string[] | undefined;
         };
         channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
-        enabled?: boolean | undefined;
         priority?: number | undefined;
+        enabled?: boolean | undefined;
     }[] | undefined;
     introduction?: {
         en: string;
@@ -4272,8 +4272,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        enabled: boolean;
         priority: number;
+        enabled: boolean;
         when: {
             conditions: {
                 value: string | number | boolean | string[];
@@ -4359,8 +4359,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             };
             type: "NO_RESULT";
         })[];
-        enabled?: boolean | undefined;
         priority?: number | undefined;
+        enabled?: boolean | undefined;
     }>, "many">;
     compatibilityRules: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
@@ -4425,8 +4425,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        enabled: boolean;
         priority: number;
+        enabled: boolean;
         effect: "BLOCK_SAME_ROUTINE" | "WARN" | "AM_ONLY" | "PM_ONLY" | "ALTERNATE" | "MAX_ONE_FROM_GROUP";
         left: {
             keys: string[];
@@ -4455,8 +4455,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             keys?: string[] | undefined;
             ids?: string[] | undefined;
         };
-        enabled?: boolean | undefined;
         priority?: number | undefined;
+        enabled?: boolean | undefined;
         right?: {
             kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
             keys?: string[] | undefined;
@@ -4721,7 +4721,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             spendingWeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
         }, "strip", z.ZodTypeAny, {
             id: string;
-            order: number;
             conditions: {
                 conditions: {
                     value: string | number | boolean | string[] | null;
@@ -4731,6 +4730,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            order: number;
             required: boolean;
             target: {
                 keys: string[];
@@ -4889,7 +4889,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         }>>;
         pinned: z.ZodDefault<z.ZodBoolean>;
     }, "strip", z.ZodTypeAny, {
-        status: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED";
+        status: "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "PUBLISHED";
         id: string;
         key: string;
         description: {
@@ -4900,8 +4900,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        enabled: boolean;
-        tags: string[];
         priority: number;
         conditions: {
             conditions: {
@@ -4912,6 +4910,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null;
+        enabled: boolean;
+        tags: string[];
         version: number;
         presentation: {
             style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
@@ -4931,7 +4931,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         domain: string | null;
         steps: {
             id: string;
-            order: number;
             conditions: {
                 conditions: {
                     value: string | number | boolean | string[] | null;
@@ -4941,6 +4940,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            order: number;
             required: boolean;
             target: {
                 keys: string[];
@@ -5051,13 +5051,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             fallbackRoleKeys?: string[] | undefined;
             spendingWeight?: number | null | undefined;
         }[];
-        status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED" | undefined;
+        status?: "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "PUBLISHED" | undefined;
         description?: {
             en: string;
             ar: string;
         } | undefined;
-        enabled?: boolean | undefined;
-        tags?: string[] | undefined;
         priority?: number | undefined;
         conditions?: {
             conditions: {
@@ -5068,6 +5066,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null | undefined;
+        enabled?: boolean | undefined;
+        tags?: string[] | undefined;
         version?: number | undefined;
         presentation?: {
             style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
@@ -5372,7 +5372,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 spendingWeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
             }, "strip", z.ZodTypeAny, {
                 id: string;
-                order: number;
                 conditions: {
                     conditions: {
                         value: string | number | boolean | string[] | null;
@@ -5382,6 +5381,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                     }[];
                     mode: "ALL" | "ANY";
                 } | null;
+                order: number;
                 required: boolean;
                 target: {
                     keys: string[];
@@ -5439,7 +5439,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             domain: string;
             steps: {
                 id: string;
-                order: number;
                 conditions: {
                     conditions: {
                         value: string | number | boolean | string[] | null;
@@ -5449,6 +5448,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                     }[];
                     mode: "ALL" | "ANY";
                 } | null;
+                order: number;
                 required: boolean;
                 target: {
                     keys: string[];
@@ -5563,7 +5563,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             domain: string;
             steps: {
                 id: string;
-                order: number;
                 conditions: {
                     conditions: {
                         value: string | number | boolean | string[] | null;
@@ -5573,6 +5572,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                     }[];
                     mode: "ALL" | "ANY";
                 } | null;
+                order: number;
                 required: boolean;
                 target: {
                     keys: string[];
@@ -5733,8 +5733,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             priority: number;
+            enabled: boolean;
             score: number;
             anchor: {
                 keys: string[];
@@ -5765,8 +5765,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 ids?: string[] | undefined;
             };
             channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
-            enabled?: boolean | undefined;
             priority?: number | undefined;
+            enabled?: boolean | undefined;
         }>, "many">>;
         title: z.ZodDefault<z.ZodObject<{
             en: z.ZodString;
@@ -5809,11 +5809,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         }>>;
     }, "strip", z.ZodTypeAny, {
-        enabled: boolean;
         title: {
             en: string;
             ar: string;
         };
+        enabled: boolean;
         enabledDomains: string[];
         eligibleAnchorRoles: string[];
         defaultTemplateKeys: Record<string, string>;
@@ -5827,8 +5827,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             priority: number;
+            enabled: boolean;
             score: number;
             anchor: {
                 keys: string[];
@@ -5854,11 +5854,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             ar: string;
         };
     }, {
-        enabled?: boolean | undefined;
         title?: {
             en: string;
             ar: string;
         } | undefined;
+        enabled?: boolean | undefined;
         enabledDomains?: string[] | undefined;
         eligibleAnchorRoles?: string[] | undefined;
         defaultTemplateKeys?: Record<string, string> | undefined;
@@ -5883,8 +5883,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 ids?: string[] | undefined;
             };
             channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
-            enabled?: boolean | undefined;
             priority?: number | undefined;
+            enabled?: boolean | undefined;
         }[] | undefined;
         introduction?: {
             en: string;
@@ -5931,6 +5931,10 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         } | undefined;
     }>;
 }, "strip", z.ZodTypeAny, {
+    title: {
+        en: string;
+        ar: string;
+    };
     concerns: {
         id: string;
         key: string;
@@ -5945,10 +5949,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         order: number;
         enabled: boolean;
     }[];
-    title: {
-        en: string;
-        ar: string;
-    };
     schemaVersion: 1 | 2;
     estimatedMinutes: number;
     introduction: {
@@ -6056,8 +6056,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        enabled: boolean;
         priority: number;
+        enabled: boolean;
         when: {
             conditions: {
                 value: string | number | boolean | string[];
@@ -6109,8 +6109,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        enabled: boolean;
         priority: number;
+        enabled: boolean;
         effect: "BLOCK_SAME_ROUTINE" | "WARN" | "AM_ONLY" | "PM_ONLY" | "ALTERNATE" | "MAX_ONE_FROM_GROUP";
         left: {
             keys: string[];
@@ -6124,7 +6124,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         } | null;
     }[];
     templates: {
-        status: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED";
+        status: "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "PUBLISHED";
         id: string;
         key: string;
         description: {
@@ -6135,8 +6135,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        enabled: boolean;
-        tags: string[];
         priority: number;
         conditions: {
             conditions: {
@@ -6147,6 +6145,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null;
+        enabled: boolean;
+        tags: string[];
         version: number;
         presentation: {
             style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
@@ -6166,7 +6166,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         domain: string | null;
         steps: {
             id: string;
-            order: number;
             conditions: {
                 conditions: {
                     value: string | number | boolean | string[] | null;
@@ -6176,6 +6175,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            order: number;
             required: boolean;
             target: {
                 keys: string[];
@@ -6308,7 +6308,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             domain: string;
             steps: {
                 id: string;
-                order: number;
                 conditions: {
                     conditions: {
                         value: string | number | boolean | string[] | null;
@@ -6318,6 +6317,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                     }[];
                     mode: "ALL" | "ANY";
                 } | null;
+                order: number;
                 required: boolean;
                 target: {
                     keys: string[];
@@ -6338,11 +6338,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         customerChoiceFamilies: string[];
     };
     contextualCompletion: {
-        enabled: boolean;
         title: {
             en: string;
             ar: string;
         };
+        enabled: boolean;
         enabledDomains: string[];
         eligibleAnchorRoles: string[];
         defaultTemplateKeys: Record<string, string>;
@@ -6356,8 +6356,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             priority: number;
+            enabled: boolean;
             score: number;
             anchor: {
                 keys: string[];
@@ -6410,6 +6410,10 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         aggregation: "SUM" | "MAX" | "LAST";
     }[] | undefined;
 }, {
+    title: {
+        en: string;
+        ar: string;
+    };
     concerns: {
         id: string;
         key: string;
@@ -6424,10 +6428,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         } | undefined;
         enabled?: boolean | undefined;
     }[];
-    title: {
-        en: string;
-        ar: string;
-    };
     schemaVersion: 1 | 2;
     introduction: {
         en: string;
@@ -6573,8 +6573,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             };
             type: "NO_RESULT";
         })[];
-        enabled?: boolean | undefined;
         priority?: number | undefined;
+        enabled?: boolean | undefined;
     }[];
     compatibilityRules: {
         message: {
@@ -6593,8 +6593,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             keys?: string[] | undefined;
             ids?: string[] | undefined;
         };
-        enabled?: boolean | undefined;
         priority?: number | undefined;
+        enabled?: boolean | undefined;
         right?: {
             kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
             keys?: string[] | undefined;
@@ -6635,13 +6635,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             fallbackRoleKeys?: string[] | undefined;
             spendingWeight?: number | null | undefined;
         }[];
-        status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED" | undefined;
+        status?: "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "PUBLISHED" | undefined;
         description?: {
             en: string;
             ar: string;
         } | undefined;
-        enabled?: boolean | undefined;
-        tags?: string[] | undefined;
         priority?: number | undefined;
         conditions?: {
             conditions: {
@@ -6652,6 +6650,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null | undefined;
+        enabled?: boolean | undefined;
+        tags?: string[] | undefined;
         version?: number | undefined;
         presentation?: {
             style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
@@ -6843,11 +6843,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         customerChoiceFamilies?: string[] | undefined;
     } | undefined;
     contextualCompletion?: {
-        enabled?: boolean | undefined;
         title?: {
             en: string;
             ar: string;
         } | undefined;
+        enabled?: boolean | undefined;
         enabledDomains?: string[] | undefined;
         eligibleAnchorRoles?: string[] | undefined;
         defaultTemplateKeys?: Record<string, string> | undefined;
@@ -6872,8 +6872,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 ids?: string[] | undefined;
             };
             channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
-            enabled?: boolean | undefined;
             priority?: number | undefined;
+            enabled?: boolean | undefined;
         }[] | undefined;
         introduction?: {
             en: string;
@@ -6889,6 +6889,10 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         } | undefined;
     } | undefined;
 }>, {
+    title: {
+        en: string;
+        ar: string;
+    };
     concerns: {
         id: string;
         key: string;
@@ -6903,10 +6907,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         order: number;
         enabled: boolean;
     }[];
-    title: {
-        en: string;
-        ar: string;
-    };
     schemaVersion: 1 | 2;
     estimatedMinutes: number;
     introduction: {
@@ -7014,8 +7014,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        enabled: boolean;
         priority: number;
+        enabled: boolean;
         when: {
             conditions: {
                 value: string | number | boolean | string[];
@@ -7067,8 +7067,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        enabled: boolean;
         priority: number;
+        enabled: boolean;
         effect: "BLOCK_SAME_ROUTINE" | "WARN" | "AM_ONLY" | "PM_ONLY" | "ALTERNATE" | "MAX_ONE_FROM_GROUP";
         left: {
             keys: string[];
@@ -7082,7 +7082,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         } | null;
     }[];
     templates: {
-        status: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED";
+        status: "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "PUBLISHED";
         id: string;
         key: string;
         description: {
@@ -7093,8 +7093,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        enabled: boolean;
-        tags: string[];
         priority: number;
         conditions: {
             conditions: {
@@ -7105,6 +7103,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null;
+        enabled: boolean;
+        tags: string[];
         version: number;
         presentation: {
             style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
@@ -7124,7 +7124,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         domain: string | null;
         steps: {
             id: string;
-            order: number;
             conditions: {
                 conditions: {
                     value: string | number | boolean | string[] | null;
@@ -7134,6 +7133,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            order: number;
             required: boolean;
             target: {
                 keys: string[];
@@ -7266,7 +7266,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             domain: string;
             steps: {
                 id: string;
-                order: number;
                 conditions: {
                     conditions: {
                         value: string | number | boolean | string[] | null;
@@ -7276,6 +7275,7 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                     }[];
                     mode: "ALL" | "ANY";
                 } | null;
+                order: number;
                 required: boolean;
                 target: {
                     keys: string[];
@@ -7296,11 +7296,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         customerChoiceFamilies: string[];
     };
     contextualCompletion: {
-        enabled: boolean;
         title: {
             en: string;
             ar: string;
         };
+        enabled: boolean;
         enabledDomains: string[];
         eligibleAnchorRoles: string[];
         defaultTemplateKeys: Record<string, string>;
@@ -7314,8 +7314,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             priority: number;
+            enabled: boolean;
             score: number;
             anchor: {
                 keys: string[];
@@ -7368,6 +7368,10 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         aggregation: "SUM" | "MAX" | "LAST";
     }[] | undefined;
 }, {
+    title: {
+        en: string;
+        ar: string;
+    };
     concerns: {
         id: string;
         key: string;
@@ -7382,10 +7386,6 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         } | undefined;
         enabled?: boolean | undefined;
     }[];
-    title: {
-        en: string;
-        ar: string;
-    };
     schemaVersion: 1 | 2;
     introduction: {
         en: string;
@@ -7531,8 +7531,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             };
             type: "NO_RESULT";
         })[];
-        enabled?: boolean | undefined;
         priority?: number | undefined;
+        enabled?: boolean | undefined;
     }[];
     compatibilityRules: {
         message: {
@@ -7551,8 +7551,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             keys?: string[] | undefined;
             ids?: string[] | undefined;
         };
-        enabled?: boolean | undefined;
         priority?: number | undefined;
+        enabled?: boolean | undefined;
         right?: {
             kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
             keys?: string[] | undefined;
@@ -7593,13 +7593,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             fallbackRoleKeys?: string[] | undefined;
             spendingWeight?: number | null | undefined;
         }[];
-        status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED" | undefined;
+        status?: "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "PUBLISHED" | undefined;
         description?: {
             en: string;
             ar: string;
         } | undefined;
-        enabled?: boolean | undefined;
-        tags?: string[] | undefined;
         priority?: number | undefined;
         conditions?: {
             conditions: {
@@ -7610,6 +7608,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
             }[];
             mode: "ALL" | "ANY";
         } | null | undefined;
+        enabled?: boolean | undefined;
+        tags?: string[] | undefined;
         version?: number | undefined;
         presentation?: {
             style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
@@ -7801,11 +7801,11 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
         customerChoiceFamilies?: string[] | undefined;
     } | undefined;
     contextualCompletion?: {
-        enabled?: boolean | undefined;
         title?: {
             en: string;
             ar: string;
         } | undefined;
+        enabled?: boolean | undefined;
         enabledDomains?: string[] | undefined;
         eligibleAnchorRoles?: string[] | undefined;
         defaultTemplateKeys?: Record<string, string> | undefined;
@@ -7830,8 +7830,8 @@ export declare const routineBuilderConfigSchema: z.ZodEffects<z.ZodObject<{
                 ids?: string[] | undefined;
             };
             channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
-            enabled?: boolean | undefined;
             priority?: number | undefined;
+            enabled?: boolean | undefined;
         }[] | undefined;
         introduction?: {
             en: string;
@@ -8733,8 +8733,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             priority: number;
+            enabled: boolean;
             when: {
                 conditions: {
                     value: string | number | boolean | string[];
@@ -8820,8 +8820,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 };
                 type: "NO_RESULT";
             })[];
-            enabled?: boolean | undefined;
             priority?: number | undefined;
+            enabled?: boolean | undefined;
         }>, "many">;
         compatibilityRules: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
@@ -8886,8 +8886,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             priority: number;
+            enabled: boolean;
             effect: "BLOCK_SAME_ROUTINE" | "WARN" | "AM_ONLY" | "PM_ONLY" | "ALTERNATE" | "MAX_ONE_FROM_GROUP";
             left: {
                 keys: string[];
@@ -8916,8 +8916,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 keys?: string[] | undefined;
                 ids?: string[] | undefined;
             };
-            enabled?: boolean | undefined;
             priority?: number | undefined;
+            enabled?: boolean | undefined;
             right?: {
                 kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
                 keys?: string[] | undefined;
@@ -9182,7 +9182,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 spendingWeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
             }, "strip", z.ZodTypeAny, {
                 id: string;
-                order: number;
                 conditions: {
                     conditions: {
                         value: string | number | boolean | string[] | null;
@@ -9192,6 +9191,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     }[];
                     mode: "ALL" | "ANY";
                 } | null;
+                order: number;
                 required: boolean;
                 target: {
                     keys: string[];
@@ -9350,7 +9350,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             }>>;
             pinned: z.ZodDefault<z.ZodBoolean>;
         }, "strip", z.ZodTypeAny, {
-            status: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED";
+            status: "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "PUBLISHED";
             id: string;
             key: string;
             description: {
@@ -9361,8 +9361,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
-            tags: string[];
             priority: number;
             conditions: {
                 conditions: {
@@ -9373,6 +9371,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            enabled: boolean;
+            tags: string[];
             version: number;
             presentation: {
                 style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
@@ -9392,7 +9392,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             domain: string | null;
             steps: {
                 id: string;
-                order: number;
                 conditions: {
                     conditions: {
                         value: string | number | boolean | string[] | null;
@@ -9402,6 +9401,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     }[];
                     mode: "ALL" | "ANY";
                 } | null;
+                order: number;
                 required: boolean;
                 target: {
                     keys: string[];
@@ -9512,13 +9512,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 fallbackRoleKeys?: string[] | undefined;
                 spendingWeight?: number | null | undefined;
             }[];
-            status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED" | undefined;
+            status?: "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "PUBLISHED" | undefined;
             description?: {
                 en: string;
                 ar: string;
             } | undefined;
-            enabled?: boolean | undefined;
-            tags?: string[] | undefined;
             priority?: number | undefined;
             conditions?: {
                 conditions: {
@@ -9529,6 +9527,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null | undefined;
+            enabled?: boolean | undefined;
+            tags?: string[] | undefined;
             version?: number | undefined;
             presentation?: {
                 style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
@@ -9833,7 +9833,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     spendingWeight: z.ZodDefault<z.ZodNullable<z.ZodNumber>>;
                 }, "strip", z.ZodTypeAny, {
                     id: string;
-                    order: number;
                     conditions: {
                         conditions: {
                             value: string | number | boolean | string[] | null;
@@ -9843,6 +9842,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                         }[];
                         mode: "ALL" | "ANY";
                     } | null;
+                    order: number;
                     required: boolean;
                     target: {
                         keys: string[];
@@ -9900,7 +9900,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 domain: string;
                 steps: {
                     id: string;
-                    order: number;
                     conditions: {
                         conditions: {
                             value: string | number | boolean | string[] | null;
@@ -9910,6 +9909,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                         }[];
                         mode: "ALL" | "ANY";
                     } | null;
+                    order: number;
                     required: boolean;
                     target: {
                         keys: string[];
@@ -10024,7 +10024,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 domain: string;
                 steps: {
                     id: string;
-                    order: number;
                     conditions: {
                         conditions: {
                             value: string | number | boolean | string[] | null;
@@ -10034,6 +10033,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                         }[];
                         mode: "ALL" | "ANY";
                     } | null;
+                    order: number;
                     required: boolean;
                     target: {
                         keys: string[];
@@ -10194,8 +10194,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     en: string;
                     ar: string;
                 };
-                enabled: boolean;
                 priority: number;
+                enabled: boolean;
                 score: number;
                 anchor: {
                     keys: string[];
@@ -10226,8 +10226,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     ids?: string[] | undefined;
                 };
                 channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
-                enabled?: boolean | undefined;
                 priority?: number | undefined;
+                enabled?: boolean | undefined;
             }>, "many">>;
             title: z.ZodDefault<z.ZodObject<{
                 en: z.ZodString;
@@ -10270,11 +10270,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             }>>;
         }, "strip", z.ZodTypeAny, {
-            enabled: boolean;
             title: {
                 en: string;
                 ar: string;
             };
+            enabled: boolean;
             enabledDomains: string[];
             eligibleAnchorRoles: string[];
             defaultTemplateKeys: Record<string, string>;
@@ -10288,8 +10288,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     en: string;
                     ar: string;
                 };
-                enabled: boolean;
                 priority: number;
+                enabled: boolean;
                 score: number;
                 anchor: {
                     keys: string[];
@@ -10315,11 +10315,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 ar: string;
             };
         }, {
-            enabled?: boolean | undefined;
             title?: {
                 en: string;
                 ar: string;
             } | undefined;
+            enabled?: boolean | undefined;
             enabledDomains?: string[] | undefined;
             eligibleAnchorRoles?: string[] | undefined;
             defaultTemplateKeys?: Record<string, string> | undefined;
@@ -10344,8 +10344,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     ids?: string[] | undefined;
                 };
                 channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
-                enabled?: boolean | undefined;
                 priority?: number | undefined;
+                enabled?: boolean | undefined;
             }[] | undefined;
             introduction?: {
                 en: string;
@@ -10392,6 +10392,10 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             } | undefined;
         }>;
     }, "strip", z.ZodTypeAny, {
+        title: {
+            en: string;
+            ar: string;
+        };
         concerns: {
             id: string;
             key: string;
@@ -10406,10 +10410,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             order: number;
             enabled: boolean;
         }[];
-        title: {
-            en: string;
-            ar: string;
-        };
         schemaVersion: 1 | 2;
         estimatedMinutes: number;
         introduction: {
@@ -10517,8 +10517,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             priority: number;
+            enabled: boolean;
             when: {
                 conditions: {
                     value: string | number | boolean | string[];
@@ -10570,8 +10570,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             priority: number;
+            enabled: boolean;
             effect: "BLOCK_SAME_ROUTINE" | "WARN" | "AM_ONLY" | "PM_ONLY" | "ALTERNATE" | "MAX_ONE_FROM_GROUP";
             left: {
                 keys: string[];
@@ -10585,7 +10585,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             } | null;
         }[];
         templates: {
-            status: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED";
+            status: "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "PUBLISHED";
             id: string;
             key: string;
             description: {
@@ -10596,8 +10596,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
-            tags: string[];
             priority: number;
             conditions: {
                 conditions: {
@@ -10608,6 +10606,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            enabled: boolean;
+            tags: string[];
             version: number;
             presentation: {
                 style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
@@ -10627,7 +10627,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             domain: string | null;
             steps: {
                 id: string;
-                order: number;
                 conditions: {
                     conditions: {
                         value: string | number | boolean | string[] | null;
@@ -10637,6 +10636,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     }[];
                     mode: "ALL" | "ANY";
                 } | null;
+                order: number;
                 required: boolean;
                 target: {
                     keys: string[];
@@ -10769,7 +10769,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 domain: string;
                 steps: {
                     id: string;
-                    order: number;
                     conditions: {
                         conditions: {
                             value: string | number | boolean | string[] | null;
@@ -10779,6 +10778,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                         }[];
                         mode: "ALL" | "ANY";
                     } | null;
+                    order: number;
                     required: boolean;
                     target: {
                         keys: string[];
@@ -10799,11 +10799,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             customerChoiceFamilies: string[];
         };
         contextualCompletion: {
-            enabled: boolean;
             title: {
                 en: string;
                 ar: string;
             };
+            enabled: boolean;
             enabledDomains: string[];
             eligibleAnchorRoles: string[];
             defaultTemplateKeys: Record<string, string>;
@@ -10817,8 +10817,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     en: string;
                     ar: string;
                 };
-                enabled: boolean;
                 priority: number;
+                enabled: boolean;
                 score: number;
                 anchor: {
                     keys: string[];
@@ -10871,6 +10871,10 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             aggregation: "SUM" | "MAX" | "LAST";
         }[] | undefined;
     }, {
+        title: {
+            en: string;
+            ar: string;
+        };
         concerns: {
             id: string;
             key: string;
@@ -10885,10 +10889,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             } | undefined;
             enabled?: boolean | undefined;
         }[];
-        title: {
-            en: string;
-            ar: string;
-        };
         schemaVersion: 1 | 2;
         introduction: {
             en: string;
@@ -11034,8 +11034,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 };
                 type: "NO_RESULT";
             })[];
-            enabled?: boolean | undefined;
             priority?: number | undefined;
+            enabled?: boolean | undefined;
         }[];
         compatibilityRules: {
             message: {
@@ -11054,8 +11054,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 keys?: string[] | undefined;
                 ids?: string[] | undefined;
             };
-            enabled?: boolean | undefined;
             priority?: number | undefined;
+            enabled?: boolean | undefined;
             right?: {
                 kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
                 keys?: string[] | undefined;
@@ -11096,13 +11096,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 fallbackRoleKeys?: string[] | undefined;
                 spendingWeight?: number | null | undefined;
             }[];
-            status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED" | undefined;
+            status?: "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "PUBLISHED" | undefined;
             description?: {
                 en: string;
                 ar: string;
             } | undefined;
-            enabled?: boolean | undefined;
-            tags?: string[] | undefined;
             priority?: number | undefined;
             conditions?: {
                 conditions: {
@@ -11113,6 +11111,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null | undefined;
+            enabled?: boolean | undefined;
+            tags?: string[] | undefined;
             version?: number | undefined;
             presentation?: {
                 style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
@@ -11304,11 +11304,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             customerChoiceFamilies?: string[] | undefined;
         } | undefined;
         contextualCompletion?: {
-            enabled?: boolean | undefined;
             title?: {
                 en: string;
                 ar: string;
             } | undefined;
+            enabled?: boolean | undefined;
             enabledDomains?: string[] | undefined;
             eligibleAnchorRoles?: string[] | undefined;
             defaultTemplateKeys?: Record<string, string> | undefined;
@@ -11333,8 +11333,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     ids?: string[] | undefined;
                 };
                 channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
-                enabled?: boolean | undefined;
                 priority?: number | undefined;
+                enabled?: boolean | undefined;
             }[] | undefined;
             introduction?: {
                 en: string;
@@ -11350,6 +11350,10 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             } | undefined;
         } | undefined;
     }>, {
+        title: {
+            en: string;
+            ar: string;
+        };
         concerns: {
             id: string;
             key: string;
@@ -11364,10 +11368,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             order: number;
             enabled: boolean;
         }[];
-        title: {
-            en: string;
-            ar: string;
-        };
         schemaVersion: 1 | 2;
         estimatedMinutes: number;
         introduction: {
@@ -11475,8 +11475,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             priority: number;
+            enabled: boolean;
             when: {
                 conditions: {
                     value: string | number | boolean | string[];
@@ -11528,8 +11528,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             priority: number;
+            enabled: boolean;
             effect: "BLOCK_SAME_ROUTINE" | "WARN" | "AM_ONLY" | "PM_ONLY" | "ALTERNATE" | "MAX_ONE_FROM_GROUP";
             left: {
                 keys: string[];
@@ -11543,7 +11543,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             } | null;
         }[];
         templates: {
-            status: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED";
+            status: "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "PUBLISHED";
             id: string;
             key: string;
             description: {
@@ -11554,8 +11554,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
-            tags: string[];
             priority: number;
             conditions: {
                 conditions: {
@@ -11566,6 +11564,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            enabled: boolean;
+            tags: string[];
             version: number;
             presentation: {
                 style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
@@ -11585,7 +11585,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             domain: string | null;
             steps: {
                 id: string;
-                order: number;
                 conditions: {
                     conditions: {
                         value: string | number | boolean | string[] | null;
@@ -11595,6 +11594,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     }[];
                     mode: "ALL" | "ANY";
                 } | null;
+                order: number;
                 required: boolean;
                 target: {
                     keys: string[];
@@ -11727,7 +11727,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 domain: string;
                 steps: {
                     id: string;
-                    order: number;
                     conditions: {
                         conditions: {
                             value: string | number | boolean | string[] | null;
@@ -11737,6 +11736,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                         }[];
                         mode: "ALL" | "ANY";
                     } | null;
+                    order: number;
                     required: boolean;
                     target: {
                         keys: string[];
@@ -11757,11 +11757,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             customerChoiceFamilies: string[];
         };
         contextualCompletion: {
-            enabled: boolean;
             title: {
                 en: string;
                 ar: string;
             };
+            enabled: boolean;
             enabledDomains: string[];
             eligibleAnchorRoles: string[];
             defaultTemplateKeys: Record<string, string>;
@@ -11775,8 +11775,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     en: string;
                     ar: string;
                 };
-                enabled: boolean;
                 priority: number;
+                enabled: boolean;
                 score: number;
                 anchor: {
                     keys: string[];
@@ -11829,6 +11829,10 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             aggregation: "SUM" | "MAX" | "LAST";
         }[] | undefined;
     }, {
+        title: {
+            en: string;
+            ar: string;
+        };
         concerns: {
             id: string;
             key: string;
@@ -11843,10 +11847,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             } | undefined;
             enabled?: boolean | undefined;
         }[];
-        title: {
-            en: string;
-            ar: string;
-        };
         schemaVersion: 1 | 2;
         introduction: {
             en: string;
@@ -11992,8 +11992,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 };
                 type: "NO_RESULT";
             })[];
-            enabled?: boolean | undefined;
             priority?: number | undefined;
+            enabled?: boolean | undefined;
         }[];
         compatibilityRules: {
             message: {
@@ -12012,8 +12012,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 keys?: string[] | undefined;
                 ids?: string[] | undefined;
             };
-            enabled?: boolean | undefined;
             priority?: number | undefined;
+            enabled?: boolean | undefined;
             right?: {
                 kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
                 keys?: string[] | undefined;
@@ -12054,13 +12054,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 fallbackRoleKeys?: string[] | undefined;
                 spendingWeight?: number | null | undefined;
             }[];
-            status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED" | undefined;
+            status?: "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "PUBLISHED" | undefined;
             description?: {
                 en: string;
                 ar: string;
             } | undefined;
-            enabled?: boolean | undefined;
-            tags?: string[] | undefined;
             priority?: number | undefined;
             conditions?: {
                 conditions: {
@@ -12071,6 +12069,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null | undefined;
+            enabled?: boolean | undefined;
+            tags?: string[] | undefined;
             version?: number | undefined;
             presentation?: {
                 style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
@@ -12262,11 +12262,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             customerChoiceFamilies?: string[] | undefined;
         } | undefined;
         contextualCompletion?: {
-            enabled?: boolean | undefined;
             title?: {
                 en: string;
                 ar: string;
             } | undefined;
+            enabled?: boolean | undefined;
             enabledDomains?: string[] | undefined;
             eligibleAnchorRoles?: string[] | undefined;
             defaultTemplateKeys?: Record<string, string> | undefined;
@@ -12291,8 +12291,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     ids?: string[] | undefined;
                 };
                 channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
-                enabled?: boolean | undefined;
                 priority?: number | undefined;
+                enabled?: boolean | undefined;
             }[] | undefined;
             introduction?: {
                 en: string;
@@ -12311,6 +12311,10 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     expectedRevision: number;
     config: {
+        title: {
+            en: string;
+            ar: string;
+        };
         concerns: {
             id: string;
             key: string;
@@ -12325,10 +12329,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             order: number;
             enabled: boolean;
         }[];
-        title: {
-            en: string;
-            ar: string;
-        };
         schemaVersion: 1 | 2;
         estimatedMinutes: number;
         introduction: {
@@ -12436,8 +12436,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             priority: number;
+            enabled: boolean;
             when: {
                 conditions: {
                     value: string | number | boolean | string[];
@@ -12489,8 +12489,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             priority: number;
+            enabled: boolean;
             effect: "BLOCK_SAME_ROUTINE" | "WARN" | "AM_ONLY" | "PM_ONLY" | "ALTERNATE" | "MAX_ONE_FROM_GROUP";
             left: {
                 keys: string[];
@@ -12504,7 +12504,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             } | null;
         }[];
         templates: {
-            status: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED";
+            status: "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "PUBLISHED";
             id: string;
             key: string;
             description: {
@@ -12515,8 +12515,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
-            tags: string[];
             priority: number;
             conditions: {
                 conditions: {
@@ -12527,6 +12525,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null;
+            enabled: boolean;
+            tags: string[];
             version: number;
             presentation: {
                 style: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED";
@@ -12546,7 +12546,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             domain: string | null;
             steps: {
                 id: string;
-                order: number;
                 conditions: {
                     conditions: {
                         value: string | number | boolean | string[] | null;
@@ -12556,6 +12555,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     }[];
                     mode: "ALL" | "ANY";
                 } | null;
+                order: number;
                 required: boolean;
                 target: {
                     keys: string[];
@@ -12688,7 +12688,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 domain: string;
                 steps: {
                     id: string;
-                    order: number;
                     conditions: {
                         conditions: {
                             value: string | number | boolean | string[] | null;
@@ -12698,6 +12697,7 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                         }[];
                         mode: "ALL" | "ANY";
                     } | null;
+                    order: number;
                     required: boolean;
                     target: {
                         keys: string[];
@@ -12718,11 +12718,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             customerChoiceFamilies: string[];
         };
         contextualCompletion: {
-            enabled: boolean;
             title: {
                 en: string;
                 ar: string;
             };
+            enabled: boolean;
             enabledDomains: string[];
             eligibleAnchorRoles: string[];
             defaultTemplateKeys: Record<string, string>;
@@ -12736,8 +12736,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     en: string;
                     ar: string;
                 };
-                enabled: boolean;
                 priority: number;
+                enabled: boolean;
                 score: number;
                 anchor: {
                     keys: string[];
@@ -12793,6 +12793,10 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
 }, {
     expectedRevision: number;
     config: {
+        title: {
+            en: string;
+            ar: string;
+        };
         concerns: {
             id: string;
             key: string;
@@ -12807,10 +12811,6 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             } | undefined;
             enabled?: boolean | undefined;
         }[];
-        title: {
-            en: string;
-            ar: string;
-        };
         schemaVersion: 1 | 2;
         introduction: {
             en: string;
@@ -12956,8 +12956,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 };
                 type: "NO_RESULT";
             })[];
-            enabled?: boolean | undefined;
             priority?: number | undefined;
+            enabled?: boolean | undefined;
         }[];
         compatibilityRules: {
             message: {
@@ -12976,8 +12976,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 keys?: string[] | undefined;
                 ids?: string[] | undefined;
             };
-            enabled?: boolean | undefined;
             priority?: number | undefined;
+            enabled?: boolean | undefined;
             right?: {
                 kind: "ALL" | "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "VARIANT" | "INGREDIENT" | "ROLE";
                 keys?: string[] | undefined;
@@ -13018,13 +13018,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 fallbackRoleKeys?: string[] | undefined;
                 spendingWeight?: number | null | undefined;
             }[];
-            status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "PAUSED" | "SCHEDULED" | undefined;
+            status?: "ARCHIVED" | "DRAFT" | "PAUSED" | "SCHEDULED" | "PUBLISHED" | undefined;
             description?: {
                 en: string;
                 ar: string;
             } | undefined;
-            enabled?: boolean | undefined;
-            tags?: string[] | undefined;
             priority?: number | undefined;
             conditions?: {
                 conditions: {
@@ -13035,6 +13033,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                 }[];
                 mode: "ALL" | "ANY";
             } | null | undefined;
+            enabled?: boolean | undefined;
+            tags?: string[] | undefined;
             version?: number | undefined;
             presentation?: {
                 style?: "COMPACT" | "MINIMAL" | "EDITORIAL" | "STEP_BY_STEP" | "DETAILED" | undefined;
@@ -13226,11 +13226,11 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
             customerChoiceFamilies?: string[] | undefined;
         } | undefined;
         contextualCompletion?: {
-            enabled?: boolean | undefined;
             title?: {
                 en: string;
                 ar: string;
             } | undefined;
+            enabled?: boolean | undefined;
             enabledDomains?: string[] | undefined;
             eligibleAnchorRoles?: string[] | undefined;
             defaultTemplateKeys?: Record<string, string> | undefined;
@@ -13255,8 +13255,8 @@ export declare const routineDraftSaveSchema: z.ZodObject<{
                     ids?: string[] | undefined;
                 };
                 channel?: "RECOMMENDATION" | "MERCHANDISING" | undefined;
-                enabled?: boolean | undefined;
                 priority?: number | undefined;
+                enabled?: boolean | undefined;
             }[] | undefined;
             introduction?: {
                 en: string;

@@ -19,20 +19,20 @@ export declare const updateReviewSchema: z.ZodEffects<z.ZodObject<{
     title: z.ZodOptional<z.ZodOptional<z.ZodString>>;
     body: z.ZodOptional<z.ZodOptional<z.ZodString>>;
 }, "strip", z.ZodTypeAny, {
-    rating?: number | undefined;
     title?: string | undefined;
+    rating?: number | undefined;
     body?: string | undefined;
 }, {
-    rating?: number | undefined;
     title?: string | undefined;
+    rating?: number | undefined;
     body?: string | undefined;
 }>, {
-    rating?: number | undefined;
     title?: string | undefined;
+    rating?: number | undefined;
     body?: string | undefined;
 }, {
-    rating?: number | undefined;
     title?: string | undefined;
+    rating?: number | undefined;
     body?: string | undefined;
 }>;
 export type UpdateReviewInput = z.infer<typeof updateReviewSchema>;
@@ -115,8 +115,8 @@ export declare const reviewResponseSchema: z.ZodObject<{
     updatedAt: string;
     orderId: string | null;
     productId: string;
-    rating: number;
     title: string | null;
+    rating: number;
     body: string | null;
     moderatedAt: string | null;
     author: {
@@ -137,8 +137,8 @@ export declare const reviewResponseSchema: z.ZodObject<{
     updatedAt: string;
     orderId: string | null;
     productId: string;
-    rating: number;
     title: string | null;
+    rating: number;
     body: string | null;
     moderatedAt: string | null;
     author: {
@@ -231,8 +231,8 @@ export declare const reviewEligibilitySchema: z.ZodObject<{
         updatedAt: string;
         orderId: string | null;
         productId: string;
-        rating: number;
         title: string | null;
+        rating: number;
         body: string | null;
         moderatedAt: string | null;
         author: {
@@ -253,8 +253,8 @@ export declare const reviewEligibilitySchema: z.ZodObject<{
         updatedAt: string;
         orderId: string | null;
         productId: string;
-        rating: number;
         title: string | null;
+        rating: number;
         body: string | null;
         moderatedAt: string | null;
         author: {
@@ -284,8 +284,8 @@ export declare const reviewEligibilitySchema: z.ZodObject<{
         updatedAt: string;
         orderId: string | null;
         productId: string;
-        rating: number;
         title: string | null;
+        rating: number;
         body: string | null;
         moderatedAt: string | null;
         author: {
@@ -315,8 +315,8 @@ export declare const reviewEligibilitySchema: z.ZodObject<{
         updatedAt: string;
         orderId: string | null;
         productId: string;
-        rating: number;
         title: string | null;
+        rating: number;
         body: string | null;
         moderatedAt: string | null;
         author: {
@@ -381,8 +381,8 @@ export declare const customerReviewLibrarySchema: z.ZodObject<{
         updatedAt: string;
         orderId: string | null;
         productId: string;
-        rating: number;
         title: string | null;
+        rating: number;
         body: string | null;
         moderatedAt: string | null;
         author: {
@@ -403,8 +403,8 @@ export declare const customerReviewLibrarySchema: z.ZodObject<{
         updatedAt: string;
         orderId: string | null;
         productId: string;
-        rating: number;
         title: string | null;
+        rating: number;
         body: string | null;
         moderatedAt: string | null;
         author: {
@@ -429,8 +429,8 @@ export declare const customerReviewLibrarySchema: z.ZodObject<{
         updatedAt: string;
         orderId: string | null;
         productId: string;
-        rating: number;
         title: string | null;
+        rating: number;
         body: string | null;
         moderatedAt: string | null;
         author: {
@@ -454,8 +454,8 @@ export declare const customerReviewLibrarySchema: z.ZodObject<{
         updatedAt: string;
         orderId: string | null;
         productId: string;
-        rating: number;
         title: string | null;
+        rating: number;
         body: string | null;
         moderatedAt: string | null;
         author: {

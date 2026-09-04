@@ -425,9 +425,9 @@ export declare const paymentResponseSchema: z.ZodObject<{
     updatedAt: string;
     currency: string;
     orderId: string;
+    customerId: string | null;
     reviewedById: string | null;
     reviewedAt: string | null;
-    customerId: string | null;
     method: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
     referenceNumber: string | null;
     amount: number;
@@ -486,9 +486,9 @@ export declare const paymentResponseSchema: z.ZodObject<{
     updatedAt: string;
     currency: string;
     orderId: string;
+    customerId: string | null;
     reviewedById: string | null;
     reviewedAt: string | null;
-    customerId: string | null;
     method: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
     referenceNumber: string | null;
     amount: number;
@@ -761,9 +761,9 @@ export declare const paginatedPaymentsSchema: z.ZodObject<{
         updatedAt: string;
         currency: string;
         orderId: string;
+        customerId: string | null;
         reviewedById: string | null;
         reviewedAt: string | null;
-        customerId: string | null;
         method: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
         referenceNumber: string | null;
         amount: number;
@@ -822,9 +822,9 @@ export declare const paginatedPaymentsSchema: z.ZodObject<{
         updatedAt: string;
         currency: string;
         orderId: string;
+        customerId: string | null;
         reviewedById: string | null;
         reviewedAt: string | null;
-        customerId: string | null;
         method: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
         referenceNumber: string | null;
         amount: number;
@@ -907,9 +907,9 @@ export declare const paginatedPaymentsSchema: z.ZodObject<{
         updatedAt: string;
         currency: string;
         orderId: string;
+        customerId: string | null;
         reviewedById: string | null;
         reviewedAt: string | null;
-        customerId: string | null;
         method: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
         referenceNumber: string | null;
         amount: number;
@@ -978,9 +978,9 @@ export declare const paginatedPaymentsSchema: z.ZodObject<{
         updatedAt: string;
         currency: string;
         orderId: string;
+        customerId: string | null;
         reviewedById: string | null;
         reviewedAt: string | null;
-        customerId: string | null;
         method: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
         referenceNumber: string | null;
         amount: number;

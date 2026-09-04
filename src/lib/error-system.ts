@@ -157,6 +157,64 @@ const registry: Record<string, Copy> = {
     },
     action: ["Review the new total before continuing.", "راجعي الإجمالي الجديد قبل المتابعة."],
   },
+  PROMO_CODE_NOT_FOUND: {
+    title: ["This promo code isn’t valid", "رمز الخصم غير صالح"],
+    message: ["Check the code and try again.", "راجعي الرمز ثم حاولي مرة أخرى."],
+  },
+  PROMO_CODE_EXPIRED: {
+    title: ["This promo code has expired", "انتهت صلاحية رمز الخصم"],
+    message: ["The offer has ended.", "انتهت مدة هذا العرض."],
+    action: ["Try another promo code.", "جرّبي رمز خصم آخر."],
+  },
+  PROMO_CODE_NOT_STARTED: {
+    title: ["This promo code isn’t active yet", "رمز الخصم غير نشط بعد"],
+    message: ["The offer starts later.", "يبدأ هذا العرض في وقت لاحق."],
+    action: ["Try again when the offer begins.", "حاولي مرة أخرى عند بدء العرض."],
+  },
+  PROMO_CODE_INACTIVE: {
+    title: ["This promo code isn’t active", "رمز الخصم غير نشط"],
+    message: ["This offer is currently unavailable.", "هذا العرض غير متاح حالياً."],
+    action: ["Try another promo code.", "جرّبي رمز خصم آخر."],
+  },
+  PROMO_CODE_EXHAUSTED: promoExhaustedCopy(),
+  PROMO_CUSTOMER_LIMIT_REACHED: promoCustomerLimitCopy(),
+  PROMO_UNIQUE_CUSTOMER_LIMIT_REACHED: {
+    title: ["This promo code has reached its customer limit", "وصل رمز الخصم إلى حد العملاء"],
+    message: [
+      "The maximum number of customers have already used this promo code.",
+      "استخدم الحد الأقصى من العملاء رمز الخصم هذا بالفعل.",
+    ],
+    action: ["Try another promo code.", "جرّبي رمز خصم آخر."],
+  },
+  PROMO_LOGIN_REQUIRED: {
+    title: ["Sign in to use this promo code", "سجّلي الدخول لاستخدام رمز الخصم"],
+    message: [
+      "This offer has a verified customer usage limit.",
+      "يتطلب هذا العرض التحقق من حد الاستخدام لكل عميل.",
+    ],
+    action: ["Sign in, then apply the code again.", "سجّلي الدخول ثم طبّقي الرمز مرة أخرى."],
+  },
+  PROMO_MIN_SPEND_NOT_MET: {
+    title: ["Add more to use this promo code", "أضيفي المزيد لاستخدام رمز الخصم"],
+    message: (details, locale) => {
+      const remaining = piastresMoney(details["amountRemaining"], locale);
+      return locale === "ar"
+        ? `أضيفي${remaining ? ` ${remaining}` : " منتجات إضافية"} لاستخدام رمز الخصم.`
+        : `Add${remaining ? ` ${remaining}` : " more"} to use this promo code.`;
+    },
+  },
+  PROMO_NOT_APPLICABLE: couponEligibilityCopy(),
+  PROMO_NOT_COMBINABLE: {
+    title: ["This promo code can’t be combined", "لا يمكن جمع رمز الخصم مع العرض الحالي"],
+    message: [
+      "This promo code can’t be combined with your current offer.",
+      "لا يمكن جمع رمز الخصم هذا مع العرض المطبق حالياً.",
+    ],
+    action: [
+      "Remove the current offer or try another code.",
+      "أزيلي العرض الحالي أو جرّبي رمزاً آخر.",
+    ],
+  },
   COUPON_NOT_APPLICABLE: couponEligibilityCopy(),
   PROMOTION_COUPON_INVALID: {
     title: ["This code can’t be applied", "لا يمكن تطبيق هذا الرمز"],
@@ -452,6 +510,28 @@ function couponEligibilityCopy(): Copy {
   };
 }
 
+function promoExhaustedCopy(): Copy {
+  return {
+    title: ["This promo code has reached its usage limit", "وصل رمز الخصم إلى حد الاستخدام"],
+    message: [
+      "No more redemptions are available for this promo code.",
+      "لم تعد هناك مرات استخدام متاحة لرمز الخصم هذا.",
+    ],
+    action: ["Try another promo code.", "جرّبي رمز خصم آخر."],
+  };
+}
+
+function promoCustomerLimitCopy(): Copy {
+  return {
+    title: ["You’ve reached this promo code’s usage limit", "وصلتِ إلى حد استخدام رمز الخصم"],
+    message: [
+      "You’ve already used this promo code the maximum number of times.",
+      "لقد استخدمتِ رمز الخصم هذا الحد الأقصى المسموح به من المرات.",
+    ],
+    action: ["Try another promo code.", "جرّبي رمز خصم آخر."],
+  };
+}
+
 function addressCopy(): Copy {
   return {
     title: ["This delivery location doesn’t match", "بيانات موقع التوصيل غير متطابقة"],
@@ -623,6 +703,15 @@ function money(value: unknown): string | null {
   const amount = number(value);
   if (amount === null) return null;
   return `EGP ${new Intl.NumberFormat("en-EG", { maximumFractionDigits: 2 }).format(amount)}`;
+}
+
+function piastresMoney(value: unknown, locale: StoreLocale): string | null {
+  const amount = number(value);
+  if (amount === null) return null;
+  const formatted = new Intl.NumberFormat(locale === "ar" ? "ar-EG" : "en-EG", {
+    maximumFractionDigits: 2,
+  }).format(amount / 100);
+  return locale === "ar" ? `${formatted} ج.م` : `EGP ${formatted}`;
 }
 
 function byteSize(value: unknown): string | null {

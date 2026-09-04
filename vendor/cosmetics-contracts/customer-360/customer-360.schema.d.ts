@@ -312,12 +312,12 @@ export declare const customerSegmentDeleteInputSchema: z.ZodObject<{
     confirmation: z.ZodLiteral<"DELETE">;
     reason: z.ZodString;
 }, "strict", z.ZodTypeAny, {
-    reason: string;
     confirmation: "DELETE";
+    reason: string;
     expectedRevisionToken: number;
 }, {
-    reason: string;
     confirmation: "DELETE";
+    reason: string;
     expectedRevisionToken: number;
 }>;
 export type CustomerSegmentDeleteInput = z.infer<typeof customerSegmentDeleteInputSchema>;
@@ -369,15 +369,15 @@ export declare const customerInsightRuleInputSchema: z.ZodObject<{
     priority: z.ZodNumber;
     rules: z.ZodType<CustomerSegmentRuleGroup, z.ZodTypeDef, CustomerSegmentRuleGroup>;
 }, "strict", z.ZodTypeAny, {
-    enabled: boolean;
     priority: number;
+    enabled: boolean;
     tone: "WARNING" | "INFO" | "POSITIVE";
     rules: CustomerSegmentRuleGroup;
     labelEn: string;
     labelAr: string;
 }, {
-    enabled: boolean;
     priority: number;
+    enabled: boolean;
     tone: "WARNING" | "INFO" | "POSITIVE";
     rules: CustomerSegmentRuleGroup;
     labelEn: string;
@@ -507,8 +507,8 @@ export declare const customerMergeExecuteInputSchema: z.ZodObject<{
         duplicateReviews: "KEEP_SOURCE" | "KEEP_TARGET";
     }>;
 }, "strict", z.ZodTypeAny, {
-    reason: string;
     confirmation: "MERGE";
+    reason: string;
     previewHash: string;
     expectedVersion: number;
     resolutions: {
@@ -523,8 +523,8 @@ export declare const customerMergeExecuteInputSchema: z.ZodObject<{
         duplicateReviews: "KEEP_SOURCE" | "KEEP_TARGET";
     };
 }, {
-    reason: string;
     confirmation: "MERGE";
+    reason: string;
     previewHash: string;
     expectedVersion: number;
     resolutions: {
@@ -545,12 +545,12 @@ export declare const customerMergeReverseInputSchema: z.ZodObject<{
     reason: z.ZodString;
     confirmation: z.ZodLiteral<"REVERSE">;
 }, "strict", z.ZodTypeAny, {
-    reason: string;
     confirmation: "REVERSE";
+    reason: string;
     expectedVersion: number;
 }, {
-    reason: string;
     confirmation: "REVERSE";
+    reason: string;
     expectedVersion: number;
 }>;
 export type CustomerMergeReverseInput = z.infer<typeof customerMergeReverseInputSchema>;
@@ -649,10 +649,10 @@ export declare const customer360TimelineEventSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     type: string;
     id: string;
+    title: string;
     amount: number | null;
     source: string;
     metadata: Record<string, unknown>;
-    title: string;
     entityId: string | null;
     occurredAt: string;
     group: "ADMIN" | "ACCOUNT" | "ORDERS" | "SHOPPING" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS";
@@ -665,10 +665,10 @@ export declare const customer360TimelineEventSchema: z.ZodObject<{
 }, {
     type: string;
     id: string;
+    title: string;
     amount: number | null;
     source: string;
     metadata: Record<string, unknown>;
-    title: string;
     entityId: string | null;
     occurredAt: string;
     group: "ADMIN" | "ACCOUNT" | "ORDERS" | "SHOPPING" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS";
@@ -700,10 +700,10 @@ export declare const customer360TimelineResponseSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         type: string;
         id: string;
+        title: string;
         amount: number | null;
         source: string;
         metadata: Record<string, unknown>;
-        title: string;
         entityId: string | null;
         occurredAt: string;
         group: "ADMIN" | "ACCOUNT" | "ORDERS" | "SHOPPING" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS";
@@ -716,10 +716,10 @@ export declare const customer360TimelineResponseSchema: z.ZodObject<{
     }, {
         type: string;
         id: string;
+        title: string;
         amount: number | null;
         source: string;
         metadata: Record<string, unknown>;
-        title: string;
         entityId: string | null;
         occurredAt: string;
         group: "ADMIN" | "ACCOUNT" | "ORDERS" | "SHOPPING" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS";
@@ -736,10 +736,10 @@ export declare const customer360TimelineResponseSchema: z.ZodObject<{
     data: {
         type: string;
         id: string;
+        title: string;
         amount: number | null;
         source: string;
         metadata: Record<string, unknown>;
-        title: string;
         entityId: string | null;
         occurredAt: string;
         group: "ADMIN" | "ACCOUNT" | "ORDERS" | "SHOPPING" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS";
@@ -756,10 +756,10 @@ export declare const customer360TimelineResponseSchema: z.ZodObject<{
     data: {
         type: string;
         id: string;
+        title: string;
         amount: number | null;
         source: string;
         metadata: Record<string, unknown>;
-        title: string;
         entityId: string | null;
         occurredAt: string;
         group: "ADMIN" | "ACCOUNT" | "ORDERS" | "SHOPPING" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS";
@@ -971,21 +971,21 @@ export declare const customer360OverviewSchema: z.ZodObject<{
             currentValue: z.ZodNumber;
         }, "strip", z.ZodTypeAny, {
             name: string;
-            variantId: string | null;
             quantity: number;
+            variantId: string | null;
             productId: string;
+            unitPrice: number;
             imageUrl: string | null;
             slug: string;
-            unitPrice: number;
             currentValue: number;
         }, {
             name: string;
-            variantId: string | null;
             quantity: number;
+            variantId: string | null;
             productId: string;
+            unitPrice: number;
             imageUrl: string | null;
             slug: string;
-            unitPrice: number;
             currentValue: number;
         }>, "many">;
     }, "strip", z.ZodTypeAny, {
@@ -994,12 +994,12 @@ export declare const customer360OverviewSchema: z.ZodObject<{
         quantity: number;
         items: {
             name: string;
-            variantId: string | null;
             quantity: number;
+            variantId: string | null;
             productId: string;
+            unitPrice: number;
             imageUrl: string | null;
             slug: string;
-            unitPrice: number;
             currentValue: number;
         }[];
         couponCode: string | null;
@@ -1011,12 +1011,12 @@ export declare const customer360OverviewSchema: z.ZodObject<{
         quantity: number;
         items: {
             name: string;
-            variantId: string | null;
             quantity: number;
+            variantId: string | null;
             productId: string;
+            unitPrice: number;
             imageUrl: string | null;
             slug: string;
-            unitPrice: number;
             currentValue: number;
         }[];
         couponCode: string | null;
@@ -1038,33 +1038,33 @@ export declare const customer360OverviewSchema: z.ZodObject<{
             currentValue: z.ZodNumber;
         }, "strip", z.ZodTypeAny, {
             name: string;
-            variantId: string | null;
             quantity: number;
+            variantId: string | null;
             productId: string;
+            unitPrice: number;
             imageUrl: string | null;
             slug: string;
-            unitPrice: number;
             currentValue: number;
         }, {
             name: string;
-            variantId: string | null;
             quantity: number;
+            variantId: string | null;
             productId: string;
+            unitPrice: number;
             imageUrl: string | null;
             slug: string;
-            unitPrice: number;
             currentValue: number;
         }>, "many">;
     }, "strip", z.ZodTypeAny, {
         updatedAt: string | null;
         items: {
             name: string;
-            variantId: string | null;
             quantity: number;
+            variantId: string | null;
             productId: string;
+            unitPrice: number;
             imageUrl: string | null;
             slug: string;
-            unitPrice: number;
             currentValue: number;
         }[];
         count: number;
@@ -1073,12 +1073,12 @@ export declare const customer360OverviewSchema: z.ZodObject<{
         updatedAt: string | null;
         items: {
             name: string;
-            variantId: string | null;
             quantity: number;
+            variantId: string | null;
             productId: string;
+            unitPrice: number;
             imageUrl: string | null;
             slug: string;
-            unitPrice: number;
             currentValue: number;
         }[];
         count: number;
@@ -1511,10 +1511,10 @@ export declare const customer360OverviewSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         type: string;
         id: string;
+        title: string;
         amount: number | null;
         source: string;
         metadata: Record<string, unknown>;
-        title: string;
         entityId: string | null;
         occurredAt: string;
         group: "ADMIN" | "ACCOUNT" | "ORDERS" | "SHOPPING" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS";
@@ -1527,10 +1527,10 @@ export declare const customer360OverviewSchema: z.ZodObject<{
     }, {
         type: string;
         id: string;
+        title: string;
         amount: number | null;
         source: string;
         metadata: Record<string, unknown>;
-        title: string;
         entityId: string | null;
         occurredAt: string;
         group: "ADMIN" | "ACCOUNT" | "ORDERS" | "SHOPPING" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS";
@@ -1645,12 +1645,12 @@ export declare const customer360OverviewSchema: z.ZodObject<{
         quantity: number;
         items: {
             name: string;
-            variantId: string | null;
             quantity: number;
+            variantId: string | null;
             productId: string;
+            unitPrice: number;
             imageUrl: string | null;
             slug: string;
-            unitPrice: number;
             currentValue: number;
         }[];
         couponCode: string | null;
@@ -1712,12 +1712,12 @@ export declare const customer360OverviewSchema: z.ZodObject<{
         updatedAt: string | null;
         items: {
             name: string;
-            variantId: string | null;
             quantity: number;
+            variantId: string | null;
             productId: string;
+            unitPrice: number;
             imageUrl: string | null;
             slug: string;
-            unitPrice: number;
             currentValue: number;
         }[];
         count: number;
@@ -1810,10 +1810,10 @@ export declare const customer360OverviewSchema: z.ZodObject<{
     recentTimeline: {
         type: string;
         id: string;
+        title: string;
         amount: number | null;
         source: string;
         metadata: Record<string, unknown>;
-        title: string;
         entityId: string | null;
         occurredAt: string;
         group: "ADMIN" | "ACCOUNT" | "ORDERS" | "SHOPPING" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS";
@@ -1888,12 +1888,12 @@ export declare const customer360OverviewSchema: z.ZodObject<{
         quantity: number;
         items: {
             name: string;
-            variantId: string | null;
             quantity: number;
+            variantId: string | null;
             productId: string;
+            unitPrice: number;
             imageUrl: string | null;
             slug: string;
-            unitPrice: number;
             currentValue: number;
         }[];
         couponCode: string | null;
@@ -1955,12 +1955,12 @@ export declare const customer360OverviewSchema: z.ZodObject<{
         updatedAt: string | null;
         items: {
             name: string;
-            variantId: string | null;
             quantity: number;
+            variantId: string | null;
             productId: string;
+            unitPrice: number;
             imageUrl: string | null;
             slug: string;
-            unitPrice: number;
             currentValue: number;
         }[];
         count: number;
@@ -2053,10 +2053,10 @@ export declare const customer360OverviewSchema: z.ZodObject<{
     recentTimeline: {
         type: string;
         id: string;
+        title: string;
         amount: number | null;
         source: string;
         metadata: Record<string, unknown>;
-        title: string;
         entityId: string | null;
         occurredAt: string;
         group: "ADMIN" | "ACCOUNT" | "ORDERS" | "SHOPPING" | "WISHLIST" | "PROMOTIONS" | "ROUTINE" | "SUPPORT" | "REVIEWS" | "PAYMENTS";

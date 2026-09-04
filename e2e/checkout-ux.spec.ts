@@ -37,6 +37,7 @@ const cart = (empty = false) => ({
   estimatedTotal: empty ? 0 : 125000,
   totalSavings: 0,
   couponCode: null,
+  couponInvalidation: null,
   appliedPromotions: [],
   promotionMessages: [],
   giftOptions: [],
@@ -95,12 +96,24 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
       expect(new URL(request.url()).searchParams.get("city")).toBe(cityId);
       return fulfill([{ id: areaId, name: "El-Tawfiq", nameAr: "التوفيق" }]);
     }
-    if (path.endsWith("/shipping/rates")) {
-      expect(new URL(request.url()).searchParams.get("addressId")).toBe(addressId);
+    if (path.endsWith("/orders/checkout/preview")) {
+      expect(request.postDataJSON()).toMatchObject({
+        shippingAddressId: addressId,
+        paymentMethod: "CASH_ON_DELIVERY",
+      });
       return fulfill({
+        subtotal: 125000,
+        discount: 0,
+        shippingDiscount: 0,
+        codFee: 0,
+        total: 125000,
+        totalSavings: 0,
+        couponCode: null,
+        appliedPromotions: [],
         provider: "MOCK",
         shippingCost: 0,
         estimatedDays: 3,
+        estimatedDeliveryDate: new Date(Date.now() + 3 * 86_400_000).toISOString(),
       });
     }
     if (path.endsWith("/users/addresses") && request.method() === "POST") {
@@ -265,7 +278,7 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
     await expect(page.locator(".sf-checkout-place-order--inline")).toBeHidden();
     const mobileBar = page.locator(".sf-checkout-mobile-purchase");
     await expect(page.locator(".sf-checkout-place-order--sticky")).toBeVisible();
-    await expect(page.getByText("Final total", { exact: true })).toBeVisible();
+    await expect(page.getByText("Final total", { exact: true }).last()).toBeVisible();
     const originalViewport = page.viewportSize()!;
     for (const width of [320, 360, 375, 390, 414, 430]) {
       await page.setViewportSize({ width, height: width === 320 ? 568 : 844 });

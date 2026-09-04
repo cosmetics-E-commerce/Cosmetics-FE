@@ -24,7 +24,7 @@ import {
   checkout,
   createAddress,
   createPayment,
-  getShippingRate,
+  getCheckoutPreview,
   listAddresses,
   listPaymentInstructions,
   type AddressResponse,
@@ -124,9 +124,11 @@ function Checkout() {
     subtotal,
     discountTotal,
     estimatedTotal,
+    couponCode,
     appliedPromotions,
     giftOptions,
     locale,
+    removeCoupon,
   } = useStore();
   const navigate = useNavigate();
   const client = useQueryClient();
@@ -155,6 +157,7 @@ function Checkout() {
   const [activeStep, setActiveStep] = useState(1);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(() => new Set());
   const [purchaseBarDocked, setPurchaseBarDocked] = useState(false);
+  const [removingPromo, setRemovingPromo] = useState(false);
   const initialLineCount = useRef(lines.length);
   const checkoutIdempotencyKey = useRef<string | null>(null);
   const paymentIdempotencyKey = useRef<string | null>(null);
@@ -239,16 +242,31 @@ function Checkout() {
     addresses.data &&
     !addresses.data.some((address) => address.id === addressId && isAddressDeliveryReady(address)),
   );
-  const cartSignature = lines.map((line) => `${line.variantId}:${line.qty}`).join("|");
+  const cartSignature = lines
+    .map((line) => `${line.variantId}:${line.qty}:${line.price}:${line.discount}`)
+    .join("|");
   const shippingRate = useQuery({
-    queryKey: ["shipping", "rate", selectedAddress, cartSignature],
-    queryFn: () => getShippingRate(selectedAddress),
+    queryKey: ["checkout", "preview", selectedAddress, method, cartSignature, couponCode],
+    queryFn: () => getCheckoutPreview(selectedAddress, method),
     enabled: Boolean(user && selectedAddress && lines.length && !result),
     retry: 1,
-    staleTime: 2 * 60 * 1000,
+    staleTime: 0,
   });
   const shippingFee = shippingRate.data ? shippingRate.data.shippingCost / 100 : 0;
-  const checkoutPreviewTotal = estimatedTotal + shippingFee;
+  const checkoutPreviewTotal = shippingRate.data
+    ? shippingRate.data.total / 100
+    : estimatedTotal + shippingFee;
+  const previewSubtotal = shippingRate.data ? shippingRate.data.subtotal / 100 : subtotal;
+  const previewDiscount = shippingRate.data ? shippingRate.data.discount / 100 : discountTotal;
+  const previewAfterPromotions = previewSubtotal - previewDiscount;
+  const previewPromotions = shippingRate.data?.appliedPromotions ?? appliedPromotions;
+  const previewCouponCode = shippingRate.data?.couponCode ?? couponCode;
+  const previewCouponPromotion = previewPromotions.find(
+    (promotion) => promotion.couponCode === previewCouponCode,
+  );
+  const previewCouponDiscount = previewCouponPromotion
+    ? (previewCouponPromotion.discountAmount + previewCouponPromotion.shippingDiscount) / 100
+    : 0;
   const selectableGifts = giftOptions.filter((gift) => gift.customerChooses);
   const requiredGiftPromotions = new Set(selectableGifts.map((gift) => gift.promotionId));
   const selectedGiftPromotions = new Set(
@@ -267,6 +285,9 @@ function Checkout() {
       next.add(step);
       return next;
     });
+    if (nextStep === 2 || nextStep === 3) {
+      void shippingRate.refetch();
+    }
     setActiveStep(nextStep);
   };
   const openCheckoutStep = (step: number) => {
@@ -303,6 +324,12 @@ function Checkout() {
   }, [activeStep, addresses.isSuccess, locale, selectedAddress]);
   useEffect(() => {
     if (activeStep === 1 || !shippingRate.isError) return;
+    const code = apiErrorCode(shippingRate.error);
+    if (code.startsWith("PROMO_") || code.startsWith("COUPON_")) {
+      void client.invalidateQueries({ queryKey: ["cart"] });
+      setActiveStep(2);
+      return;
+    }
     setActiveStep(1);
     setCompletedSteps(new Set());
     setAddressRecoveryMessage(
@@ -310,7 +337,7 @@ function Checkout() {
         ? "تعذر التحقق من عنوان التوصيل. راجعي العنوان وحاولي مرة أخرى."
         : "We could not verify that delivery address. Review it and try again.",
     );
-  }, [activeStep, locale, shippingRate.isError]);
+  }, [activeStep, client, locale, shippingRate.error, shippingRate.isError]);
   const place = useMutation({
     mutationFn: () =>
       checkout(
@@ -345,8 +372,21 @@ function Checkout() {
       if (code === "CHECKOUT_CART_HAS_ISSUES" || code === "CHECKOUT_CART_EMPTY") {
         void client.invalidateQueries({ queryKey: ["cart"] });
       }
+      if (code.startsWith("PROMO_") || code.startsWith("COUPON_")) {
+        void client.invalidateQueries({ queryKey: ["cart"] });
+        void client.invalidateQueries({ queryKey: ["checkout", "preview"] });
+        setActiveStep(2);
+      }
     },
   });
+  const removeCheckoutPromo = async () => {
+    if (removingPromo) return;
+    setRemovingPromo(true);
+    const removed = await removeCoupon();
+    setRemovingPromo(false);
+    if (!removed.ok) return;
+    void client.invalidateQueries({ queryKey: ["checkout", "preview"] });
+  };
   const submitOrder = () => {
     if (!canSubmitCurrentStep || placingOrder.current) return;
     placingOrder.current = true;
@@ -697,6 +737,35 @@ function Checkout() {
                       </p>
                     </div>
                   </div>
+                  {previewCouponCode && (
+                    <div className="sf-checkout-review-promo" aria-label={t("checkout.promo")}>
+                      <div>
+                        <span>{t("checkout.promo")}</span>
+                        <strong>
+                          <bdi>{previewCouponCode}</bdi>
+                        </strong>
+                      </div>
+                      <div>
+                        <span>{t("checkout.discount")}</span>
+                        <strong>-{formatPrice(previewCouponDiscount)}</strong>
+                      </div>
+                      <div className="sf-checkout-review-promo__actions">
+                        <Button
+                          type="button"
+                          variant="quiet"
+                          size="pill"
+                          disabled={removingPromo}
+                          loading={removingPromo}
+                          onClick={() => void removeCheckoutPromo()}
+                        >
+                          {t("checkout.removePromo")}
+                        </Button>
+                        <Button asChild variant="quiet" size="pill">
+                          <Link to="/cart">{t("checkout.changePromo")}</Link>
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                   {requiresGift && (
                     <div className="sf-checkout-review-gift">
                       <CheckoutCardHeader
@@ -859,23 +928,31 @@ function Checkout() {
               </div>
             </div>
             <div className="sf-checkout-summary-row">
-              <span>Subtotal</span>
-              <strong>{formatPrice(subtotal)}</strong>
+              <span>{t("checkout.subtotal")}</span>
+              <strong>{formatPrice(previewSubtotal)}</strong>
             </div>
-            {appliedPromotions.map((promotion) => (
+            {previewPromotions.map((promotion) => (
               <div key={promotion.id} className="sf-checkout-summary-row text-gold">
-                <span>{promotion.title}</span>
-                <span>-{formatPrice(promotion.discountAmount / 100)}</span>
+                <span>
+                  {promotion.couponCode ? (
+                    <bdi>{promotion.couponCode}</bdi>
+                  ) : (
+                    `${t("checkout.automaticOffer")}: ${promotion.title}`
+                  )}
+                </span>
+                <span>
+                  -{formatPrice((promotion.discountAmount + promotion.shippingDiscount) / 100)}
+                </span>
               </div>
             ))}
-            {discountTotal > 0 && (
+            {previewDiscount > 0 && (
               <div className="sf-checkout-summary-row">
-                <span>After promotions</span>
-                <strong>{formatPrice(estimatedTotal)}</strong>
+                <span>{t("checkout.afterPromotions")}</span>
+                <strong>{formatPrice(previewAfterPromotions)}</strong>
               </div>
             )}
             <div className="sf-checkout-summary-row">
-              <span>Shipping</span>
+              <span>{t("checkout.shipping")}</span>
               <strong>
                 {shippingRate.isLoading || shippingRate.isFetching
                   ? "Calculating..."
@@ -884,6 +961,12 @@ function Checkout() {
                     : "—"}
               </strong>
             </div>
+            {shippingRate.data && shippingRate.data.codFee > 0 && (
+              <div className="sf-checkout-summary-row">
+                <span>{t("checkout.codFee")}</span>
+                <strong>{formatPrice(shippingRate.data.codFee / 100)}</strong>
+              </div>
+            )}
             {shippingRate.data && (
               <p className="sf-checkout-summary__hint">
                 {shippingRate.data.provider} · estimated {shippingRate.data.estimatedDays} day
@@ -898,12 +981,12 @@ function Checkout() {
                   className="ms-2 underline underline-offset-4"
                   onClick={() => void shippingRate.refetch()}
                 >
-                  Try again
+                  {locale === "ar" ? "حاولي مرة أخرى" : "Try again"}
                 </button>
               </div>
             )}
             <div className="sf-checkout-summary-total">
-              <span>Total</span>
+              <span>{t("checkout.total")}</span>
               <strong>{formatPrice(checkoutPreviewTotal)}</strong>
             </div>
             <p className="sf-checkout-summary__hint">

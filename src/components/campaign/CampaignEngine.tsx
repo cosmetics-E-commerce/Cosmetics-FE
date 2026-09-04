@@ -424,8 +424,8 @@ export default function CampaignEngine() {
         }
       } else if (config.type === "APPLY_COUPON" && campaign.coupon) {
         const applied = await store.applyCoupon(campaign.coupon.code);
-        succeeded = applied;
-        if (applied) {
+        succeeded = applied.ok;
+        if (applied.ok) {
           recordAttribution(campaign);
           track("SUCCESS", campaign, context);
         }

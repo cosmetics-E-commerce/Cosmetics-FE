@@ -80,6 +80,7 @@ export type SavedForLaterLine = {
 };
 
 type Locale = "ar" | "en";
+export type CouponMutationResult = { ok: true } | { ok: false; error: string };
 export type AddLine = {
   variantId?: string | undefined;
   productId?: string | undefined;
@@ -108,6 +109,7 @@ type StoreValue = {
   estimatedTotal: number;
   totalSavings: number;
   couponCode: string | null;
+  couponInvalidation: CommerceCartResponse["couponInvalidation"];
   appliedPromotions: AppliedPromotion[];
   promotionMessages: string[];
   giftOptions: Array<{
@@ -133,8 +135,8 @@ type StoreValue = {
   removeBundle: (instanceId: string) => Promise<void>;
   setQty: (variantId: string, sizeOrQty: string | number, qty?: number) => Promise<void>;
   clear: () => Promise<void>;
-  applyCoupon: (code: string) => Promise<boolean>;
-  removeCoupon: () => Promise<void>;
+  applyCoupon: (code: string) => Promise<CouponMutationResult>;
+  removeCoupon: () => Promise<CouponMutationResult>;
   toggleWish: (productId: string, slug: string) => Promise<void>;
   setCartOpen: (value: boolean) => void;
   setSearchOpen: (value: boolean) => void;
@@ -504,22 +506,23 @@ export function StoreProvider({
     async (code: string) => {
       try {
         commitCart(await applyCartCoupon(code));
-        return true;
+        return { ok: true } as const;
       } catch (error) {
-        fail(error);
-        return false;
+        return { ok: false, error: apiErrorMessage(error, locale) } as const;
       }
     },
-    [commitCart, fail],
+    [commitCart, locale],
   );
 
   const removeCoupon = useCallback(async () => {
     try {
       commitCart(await removeCartCoupon());
+      return { ok: true } as const;
     } catch (error) {
       fail(error);
+      return { ok: false, error: apiErrorMessage(error, locale) } as const;
     }
-  }, [commitCart, fail]);
+  }, [commitCart, fail, locale]);
 
   const baseWishlist = useMemo(
     () => (wishlistData?.items ?? []).map((item) => item.product.slug),
@@ -681,6 +684,7 @@ export function StoreProvider({
       estimatedTotal: (cart?.estimatedTotal ?? cart?.subtotal ?? 0) / 100,
       totalSavings: (cart?.totalSavings ?? 0) / 100,
       couponCode: cart?.couponCode ?? null,
+      couponInvalidation: cart?.couponInvalidation ?? null,
       appliedPromotions: cart?.appliedPromotions ?? [],
       promotionMessages: cart?.promotionMessages ?? [],
       giftOptions: cart?.giftOptions ?? [],

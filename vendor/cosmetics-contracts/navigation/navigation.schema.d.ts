@@ -761,11 +761,11 @@ export declare const navigationBlockSchema: z.ZodDiscriminatedUnion<"type", [z.Z
             en: string;
             ar: string;
         };
-        enabled: boolean;
         title: {
             en: string;
             ar: string;
         };
+        enabled: boolean;
         eyebrow: {
             en: string;
             ar: string;
@@ -976,11 +976,11 @@ export declare const navigationBlockSchema: z.ZodDiscriminatedUnion<"type", [z.Z
             en: string;
             ar: string;
         };
-        enabled: boolean;
         title: {
             en: string;
             ar: string;
         };
+        enabled: boolean;
         eyebrow: {
             en: string;
             ar: string;
@@ -1448,9 +1448,9 @@ export declare const navigationBlockSchema: z.ZodDiscriminatedUnion<"type", [z.Z
 }, "strip", z.ZodTypeAny, {
     type: "CATEGORY_LIST";
     id: string;
+    categoryIds: string[];
     order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
     enabled: boolean;
-    categoryIds: string[];
     parentCategoryId: string | null;
     showViewAll: boolean;
     viewAllLabel: {
@@ -1530,9 +1530,9 @@ export declare const navigationBlockSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         en?: string | undefined;
         ar?: string | undefined;
     };
+    categoryIds?: string[] | undefined;
     order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
     enabled?: boolean | undefined;
-    categoryIds?: string[] | undefined;
     parentCategoryId?: string | null | undefined;
     showViewAll?: boolean | undefined;
     mobileOrder?: number | null | undefined;
@@ -1754,9 +1754,9 @@ export declare const navigationBlockSchema: z.ZodDiscriminatedUnion<"type", [z.Z
 }, "strip", z.ZodTypeAny, {
     type: "BRAND_LIST";
     id: string;
+    brandIds: string[];
     order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
     enabled: boolean;
-    brandIds: string[];
     showViewAll: boolean;
     viewAllLabel: {
         en: string;
@@ -1832,9 +1832,9 @@ export declare const navigationBlockSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         en?: string | undefined;
         ar?: string | undefined;
     };
+    brandIds?: string[] | undefined;
     order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
     enabled?: boolean | undefined;
-    brandIds?: string[] | undefined;
     showViewAll?: boolean | undefined;
     mobileOrder?: number | null | undefined;
     viewAllDestination?: {
@@ -2054,8 +2054,8 @@ export declare const navigationBlockSchema: z.ZodDiscriminatedUnion<"type", [z.Z
 }, "strip", z.ZodTypeAny, {
     type: "PRODUCT_LIST";
     id: string;
-    enabled: boolean;
     productIds: string[];
+    enabled: boolean;
     showViewAll: boolean;
     viewAllLabel: {
         en: string;
@@ -2134,8 +2134,8 @@ export declare const navigationBlockSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         en?: string | undefined;
         ar?: string | undefined;
     };
-    enabled?: boolean | undefined;
     productIds?: string[] | undefined;
+    enabled?: boolean | undefined;
     showViewAll?: boolean | undefined;
     mobileOrder?: number | null | undefined;
     viewAllDestination?: {
@@ -2684,11 +2684,11 @@ export declare const navigationBlockSchema: z.ZodDiscriminatedUnion<"type", [z.Z
         en: string;
         ar: string;
     };
-    enabled: boolean;
     title: {
         en: string;
         ar: string;
     };
+    enabled: boolean;
     alignment: "START" | "CENTER";
     visibility: {
         startsAt: string | null;
@@ -4794,11 +4794,11 @@ export declare const navigationColumnSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             title: {
                 en: string;
                 ar: string;
             };
+            enabled: boolean;
             eyebrow: {
                 en: string;
                 ar: string;
@@ -5009,11 +5009,11 @@ export declare const navigationColumnSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             title: {
                 en: string;
                 ar: string;
             };
+            enabled: boolean;
             eyebrow: {
                 en: string;
                 ar: string;
@@ -5481,9 +5481,9 @@ export declare const navigationColumnSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         type: "CATEGORY_LIST";
         id: string;
+        categoryIds: string[];
         order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
         enabled: boolean;
-        categoryIds: string[];
         parentCategoryId: string | null;
         showViewAll: boolean;
         viewAllLabel: {
@@ -5563,9 +5563,9 @@ export declare const navigationColumnSchema: z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
+        categoryIds?: string[] | undefined;
         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
         enabled?: boolean | undefined;
-        categoryIds?: string[] | undefined;
         parentCategoryId?: string | null | undefined;
         showViewAll?: boolean | undefined;
         mobileOrder?: number | null | undefined;
@@ -5787,9 +5787,9 @@ export declare const navigationColumnSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         type: "BRAND_LIST";
         id: string;
+        brandIds: string[];
         order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
         enabled: boolean;
-        brandIds: string[];
         showViewAll: boolean;
         viewAllLabel: {
             en: string;
@@ -5865,9 +5865,9 @@ export declare const navigationColumnSchema: z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
+        brandIds?: string[] | undefined;
         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
         enabled?: boolean | undefined;
-        brandIds?: string[] | undefined;
         showViewAll?: boolean | undefined;
         mobileOrder?: number | null | undefined;
         viewAllDestination?: {
@@ -6087,8 +6087,8 @@ export declare const navigationColumnSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         type: "PRODUCT_LIST";
         id: string;
-        enabled: boolean;
         productIds: string[];
+        enabled: boolean;
         showViewAll: boolean;
         viewAllLabel: {
             en: string;
@@ -6167,8 +6167,8 @@ export declare const navigationColumnSchema: z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
-        enabled?: boolean | undefined;
         productIds?: string[] | undefined;
+        enabled?: boolean | undefined;
         showViewAll?: boolean | undefined;
         mobileOrder?: number | null | undefined;
         viewAllDestination?: {
@@ -6717,11 +6717,11 @@ export declare const navigationColumnSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        enabled: boolean;
         title: {
             en: string;
             ar: string;
         };
+        enabled: boolean;
         alignment: "START" | "CENTER";
         visibility: {
             startsAt: string | null;
@@ -8413,11 +8413,11 @@ export declare const navigationColumnSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             title: {
                 en: string;
                 ar: string;
             };
+            enabled: boolean;
             eyebrow: {
                 en: string;
                 ar: string;
@@ -8499,9 +8499,9 @@ export declare const navigationColumnSchema: z.ZodObject<{
     } | {
         type: "CATEGORY_LIST";
         id: string;
+        categoryIds: string[];
         order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
         enabled: boolean;
-        categoryIds: string[];
         parentCategoryId: string | null;
         showViewAll: boolean;
         viewAllLabel: {
@@ -8567,9 +8567,9 @@ export declare const navigationColumnSchema: z.ZodObject<{
     } | {
         type: "BRAND_LIST";
         id: string;
+        brandIds: string[];
         order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
         enabled: boolean;
-        brandIds: string[];
         showViewAll: boolean;
         viewAllLabel: {
             en: string;
@@ -8631,8 +8631,8 @@ export declare const navigationColumnSchema: z.ZodObject<{
     } | {
         type: "PRODUCT_LIST";
         id: string;
-        enabled: boolean;
         productIds: string[];
+        enabled: boolean;
         showViewAll: boolean;
         viewAllLabel: {
             en: string;
@@ -8764,11 +8764,11 @@ export declare const navigationColumnSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        enabled: boolean;
         title: {
             en: string;
             ar: string;
         };
+        enabled: boolean;
         alignment: "START" | "CENTER";
         visibility: {
             startsAt: string | null;
@@ -9331,9 +9331,9 @@ export declare const navigationColumnSchema: z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
+        categoryIds?: string[] | undefined;
         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
         enabled?: boolean | undefined;
-        categoryIds?: string[] | undefined;
         parentCategoryId?: string | null | undefined;
         showViewAll?: boolean | undefined;
         mobileOrder?: number | null | undefined;
@@ -9399,9 +9399,9 @@ export declare const navigationColumnSchema: z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
+        brandIds?: string[] | undefined;
         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
         enabled?: boolean | undefined;
-        brandIds?: string[] | undefined;
         showViewAll?: boolean | undefined;
         mobileOrder?: number | null | undefined;
         viewAllDestination?: {
@@ -9463,8 +9463,8 @@ export declare const navigationColumnSchema: z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
-        enabled?: boolean | undefined;
         productIds?: string[] | undefined;
+        enabled?: boolean | undefined;
         showViewAll?: boolean | undefined;
         mobileOrder?: number | null | undefined;
         viewAllDestination?: {
@@ -10494,11 +10494,11 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                     en: string;
                     ar: string;
                 };
-                enabled: boolean;
                 title: {
                     en: string;
                     ar: string;
                 };
+                enabled: boolean;
                 eyebrow: {
                     en: string;
                     ar: string;
@@ -10709,11 +10709,11 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                     en: string;
                     ar: string;
                 };
-                enabled: boolean;
                 title: {
                     en: string;
                     ar: string;
                 };
+                enabled: boolean;
                 eyebrow: {
                     en: string;
                     ar: string;
@@ -11181,9 +11181,9 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             type: "CATEGORY_LIST";
             id: string;
+            categoryIds: string[];
             order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
             enabled: boolean;
-            categoryIds: string[];
             parentCategoryId: string | null;
             showViewAll: boolean;
             viewAllLabel: {
@@ -11263,9 +11263,9 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
+            categoryIds?: string[] | undefined;
             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
             enabled?: boolean | undefined;
-            categoryIds?: string[] | undefined;
             parentCategoryId?: string | null | undefined;
             showViewAll?: boolean | undefined;
             mobileOrder?: number | null | undefined;
@@ -11487,9 +11487,9 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             type: "BRAND_LIST";
             id: string;
+            brandIds: string[];
             order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
             enabled: boolean;
-            brandIds: string[];
             showViewAll: boolean;
             viewAllLabel: {
                 en: string;
@@ -11565,9 +11565,9 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
+            brandIds?: string[] | undefined;
             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
             enabled?: boolean | undefined;
-            brandIds?: string[] | undefined;
             showViewAll?: boolean | undefined;
             mobileOrder?: number | null | undefined;
             viewAllDestination?: {
@@ -11787,8 +11787,8 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             type: "PRODUCT_LIST";
             id: string;
-            enabled: boolean;
             productIds: string[];
+            enabled: boolean;
             showViewAll: boolean;
             viewAllLabel: {
                 en: string;
@@ -11867,8 +11867,8 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
-            enabled?: boolean | undefined;
             productIds?: string[] | undefined;
+            enabled?: boolean | undefined;
             showViewAll?: boolean | undefined;
             mobileOrder?: number | null | undefined;
             viewAllDestination?: {
@@ -12417,11 +12417,11 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             title: {
                 en: string;
                 ar: string;
             };
+            enabled: boolean;
             alignment: "START" | "CENTER";
             visibility: {
                 startsAt: string | null;
@@ -14113,11 +14113,11 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                     en: string;
                     ar: string;
                 };
-                enabled: boolean;
                 title: {
                     en: string;
                     ar: string;
                 };
+                enabled: boolean;
                 eyebrow: {
                     en: string;
                     ar: string;
@@ -14199,9 +14199,9 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
         } | {
             type: "CATEGORY_LIST";
             id: string;
+            categoryIds: string[];
             order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
             enabled: boolean;
-            categoryIds: string[];
             parentCategoryId: string | null;
             showViewAll: boolean;
             viewAllLabel: {
@@ -14267,9 +14267,9 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
         } | {
             type: "BRAND_LIST";
             id: string;
+            brandIds: string[];
             order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
             enabled: boolean;
-            brandIds: string[];
             showViewAll: boolean;
             viewAllLabel: {
                 en: string;
@@ -14331,8 +14331,8 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
         } | {
             type: "PRODUCT_LIST";
             id: string;
-            enabled: boolean;
             productIds: string[];
+            enabled: boolean;
             showViewAll: boolean;
             viewAllLabel: {
                 en: string;
@@ -14464,11 +14464,11 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             title: {
                 en: string;
                 ar: string;
             };
+            enabled: boolean;
             alignment: "START" | "CENTER";
             visibility: {
                 startsAt: string | null;
@@ -15031,9 +15031,9 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
+            categoryIds?: string[] | undefined;
             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
             enabled?: boolean | undefined;
-            categoryIds?: string[] | undefined;
             parentCategoryId?: string | null | undefined;
             showViewAll?: boolean | undefined;
             mobileOrder?: number | null | undefined;
@@ -15099,9 +15099,9 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
+            brandIds?: string[] | undefined;
             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
             enabled?: boolean | undefined;
-            brandIds?: string[] | undefined;
             showViewAll?: boolean | undefined;
             mobileOrder?: number | null | undefined;
             viewAllDestination?: {
@@ -15163,8 +15163,8 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
-            enabled?: boolean | undefined;
             productIds?: string[] | undefined;
+            enabled?: boolean | undefined;
             showViewAll?: boolean | undefined;
             mobileOrder?: number | null | undefined;
             viewAllDestination?: {
@@ -15753,11 +15753,11 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                     en: string;
                     ar: string;
                 };
-                enabled: boolean;
                 title: {
                     en: string;
                     ar: string;
                 };
+                enabled: boolean;
                 eyebrow: {
                     en: string;
                     ar: string;
@@ -15839,9 +15839,9 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
         } | {
             type: "CATEGORY_LIST";
             id: string;
+            categoryIds: string[];
             order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
             enabled: boolean;
-            categoryIds: string[];
             parentCategoryId: string | null;
             showViewAll: boolean;
             viewAllLabel: {
@@ -15907,9 +15907,9 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
         } | {
             type: "BRAND_LIST";
             id: string;
+            brandIds: string[];
             order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
             enabled: boolean;
-            brandIds: string[];
             showViewAll: boolean;
             viewAllLabel: {
                 en: string;
@@ -15971,8 +15971,8 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
         } | {
             type: "PRODUCT_LIST";
             id: string;
-            enabled: boolean;
             productIds: string[];
+            enabled: boolean;
             showViewAll: boolean;
             viewAllLabel: {
                 en: string;
@@ -16104,11 +16104,11 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             title: {
                 en: string;
                 ar: string;
             };
+            enabled: boolean;
             alignment: "START" | "CENTER";
             visibility: {
                 startsAt: string | null;
@@ -16683,9 +16683,9 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
+            categoryIds?: string[] | undefined;
             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
             enabled?: boolean | undefined;
-            categoryIds?: string[] | undefined;
             parentCategoryId?: string | null | undefined;
             showViewAll?: boolean | undefined;
             mobileOrder?: number | null | undefined;
@@ -16751,9 +16751,9 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
+            brandIds?: string[] | undefined;
             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
             enabled?: boolean | undefined;
-            brandIds?: string[] | undefined;
             showViewAll?: boolean | undefined;
             mobileOrder?: number | null | undefined;
             viewAllDestination?: {
@@ -16815,8 +16815,8 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
-            enabled?: boolean | undefined;
             productIds?: string[] | undefined;
+            enabled?: boolean | undefined;
             showViewAll?: boolean | undefined;
             mobileOrder?: number | null | undefined;
             viewAllDestination?: {
@@ -17415,11 +17415,11 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                     en: string;
                     ar: string;
                 };
-                enabled: boolean;
                 title: {
                     en: string;
                     ar: string;
                 };
+                enabled: boolean;
                 eyebrow: {
                     en: string;
                     ar: string;
@@ -17501,9 +17501,9 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
         } | {
             type: "CATEGORY_LIST";
             id: string;
+            categoryIds: string[];
             order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
             enabled: boolean;
-            categoryIds: string[];
             parentCategoryId: string | null;
             showViewAll: boolean;
             viewAllLabel: {
@@ -17569,9 +17569,9 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
         } | {
             type: "BRAND_LIST";
             id: string;
+            brandIds: string[];
             order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
             enabled: boolean;
-            brandIds: string[];
             showViewAll: boolean;
             viewAllLabel: {
                 en: string;
@@ -17633,8 +17633,8 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
         } | {
             type: "PRODUCT_LIST";
             id: string;
-            enabled: boolean;
             productIds: string[];
+            enabled: boolean;
             showViewAll: boolean;
             viewAllLabel: {
                 en: string;
@@ -17766,11 +17766,11 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            enabled: boolean;
             title: {
                 en: string;
                 ar: string;
             };
+            enabled: boolean;
             alignment: "START" | "CENTER";
             visibility: {
                 startsAt: string | null;
@@ -18345,9 +18345,9 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
+            categoryIds?: string[] | undefined;
             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
             enabled?: boolean | undefined;
-            categoryIds?: string[] | undefined;
             parentCategoryId?: string | null | undefined;
             showViewAll?: boolean | undefined;
             mobileOrder?: number | null | undefined;
@@ -18413,9 +18413,9 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
+            brandIds?: string[] | undefined;
             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
             enabled?: boolean | undefined;
-            brandIds?: string[] | undefined;
             showViewAll?: boolean | undefined;
             mobileOrder?: number | null | undefined;
             viewAllDestination?: {
@@ -18477,8 +18477,8 @@ export declare const navigationRowSchema: z.ZodEffects<z.ZodObject<{
                 en?: string | undefined;
                 ar?: string | undefined;
             };
-            enabled?: boolean | undefined;
             productIds?: string[] | undefined;
+            enabled?: boolean | undefined;
             showViewAll?: boolean | undefined;
             mobileOrder?: number | null | undefined;
             viewAllDestination?: {
@@ -19524,11 +19524,11 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                         en: string;
                         ar: string;
                     };
-                    enabled: boolean;
                     title: {
                         en: string;
                         ar: string;
                     };
+                    enabled: boolean;
                     eyebrow: {
                         en: string;
                         ar: string;
@@ -19739,11 +19739,11 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                         en: string;
                         ar: string;
                     };
-                    enabled: boolean;
                     title: {
                         en: string;
                         ar: string;
                     };
+                    enabled: boolean;
                     eyebrow: {
                         en: string;
                         ar: string;
@@ -20211,9 +20211,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
             }, "strip", z.ZodTypeAny, {
                 type: "CATEGORY_LIST";
                 id: string;
+                categoryIds: string[];
                 order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                 enabled: boolean;
-                categoryIds: string[];
                 parentCategoryId: string | null;
                 showViewAll: boolean;
                 viewAllLabel: {
@@ -20293,9 +20293,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
+                categoryIds?: string[] | undefined;
                 order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                 enabled?: boolean | undefined;
-                categoryIds?: string[] | undefined;
                 parentCategoryId?: string | null | undefined;
                 showViewAll?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
@@ -20517,9 +20517,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
             }, "strip", z.ZodTypeAny, {
                 type: "BRAND_LIST";
                 id: string;
+                brandIds: string[];
                 order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                 enabled: boolean;
-                brandIds: string[];
                 showViewAll: boolean;
                 viewAllLabel: {
                     en: string;
@@ -20595,9 +20595,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
+                brandIds?: string[] | undefined;
                 order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                 enabled?: boolean | undefined;
-                brandIds?: string[] | undefined;
                 showViewAll?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
                 viewAllDestination?: {
@@ -20817,8 +20817,8 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
             }, "strip", z.ZodTypeAny, {
                 type: "PRODUCT_LIST";
                 id: string;
-                enabled: boolean;
                 productIds: string[];
+                enabled: boolean;
                 showViewAll: boolean;
                 viewAllLabel: {
                     en: string;
@@ -20897,8 +20897,8 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
-                enabled?: boolean | undefined;
                 productIds?: string[] | undefined;
+                enabled?: boolean | undefined;
                 showViewAll?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
                 viewAllDestination?: {
@@ -21447,11 +21447,11 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en: string;
                     ar: string;
                 };
-                enabled: boolean;
                 title: {
                     en: string;
                     ar: string;
                 };
+                enabled: boolean;
                 alignment: "START" | "CENTER";
                 visibility: {
                     startsAt: string | null;
@@ -23143,11 +23143,11 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                         en: string;
                         ar: string;
                     };
-                    enabled: boolean;
                     title: {
                         en: string;
                         ar: string;
                     };
+                    enabled: boolean;
                     eyebrow: {
                         en: string;
                         ar: string;
@@ -23229,9 +23229,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
             } | {
                 type: "CATEGORY_LIST";
                 id: string;
+                categoryIds: string[];
                 order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                 enabled: boolean;
-                categoryIds: string[];
                 parentCategoryId: string | null;
                 showViewAll: boolean;
                 viewAllLabel: {
@@ -23297,9 +23297,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
             } | {
                 type: "BRAND_LIST";
                 id: string;
+                brandIds: string[];
                 order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                 enabled: boolean;
-                brandIds: string[];
                 showViewAll: boolean;
                 viewAllLabel: {
                     en: string;
@@ -23361,8 +23361,8 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
             } | {
                 type: "PRODUCT_LIST";
                 id: string;
-                enabled: boolean;
                 productIds: string[];
+                enabled: boolean;
                 showViewAll: boolean;
                 viewAllLabel: {
                     en: string;
@@ -23494,11 +23494,11 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en: string;
                     ar: string;
                 };
-                enabled: boolean;
                 title: {
                     en: string;
                     ar: string;
                 };
+                enabled: boolean;
                 alignment: "START" | "CENTER";
                 visibility: {
                     startsAt: string | null;
@@ -24061,9 +24061,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
+                categoryIds?: string[] | undefined;
                 order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                 enabled?: boolean | undefined;
-                categoryIds?: string[] | undefined;
                 parentCategoryId?: string | null | undefined;
                 showViewAll?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
@@ -24129,9 +24129,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
+                brandIds?: string[] | undefined;
                 order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                 enabled?: boolean | undefined;
-                brandIds?: string[] | undefined;
                 showViewAll?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
                 viewAllDestination?: {
@@ -24193,8 +24193,8 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
-                enabled?: boolean | undefined;
                 productIds?: string[] | undefined;
+                enabled?: boolean | undefined;
                 showViewAll?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
                 viewAllDestination?: {
@@ -24783,11 +24783,11 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                         en: string;
                         ar: string;
                     };
-                    enabled: boolean;
                     title: {
                         en: string;
                         ar: string;
                     };
+                    enabled: boolean;
                     eyebrow: {
                         en: string;
                         ar: string;
@@ -24869,9 +24869,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
             } | {
                 type: "CATEGORY_LIST";
                 id: string;
+                categoryIds: string[];
                 order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                 enabled: boolean;
-                categoryIds: string[];
                 parentCategoryId: string | null;
                 showViewAll: boolean;
                 viewAllLabel: {
@@ -24937,9 +24937,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
             } | {
                 type: "BRAND_LIST";
                 id: string;
+                brandIds: string[];
                 order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                 enabled: boolean;
-                brandIds: string[];
                 showViewAll: boolean;
                 viewAllLabel: {
                     en: string;
@@ -25001,8 +25001,8 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
             } | {
                 type: "PRODUCT_LIST";
                 id: string;
-                enabled: boolean;
                 productIds: string[];
+                enabled: boolean;
                 showViewAll: boolean;
                 viewAllLabel: {
                     en: string;
@@ -25134,11 +25134,11 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en: string;
                     ar: string;
                 };
-                enabled: boolean;
                 title: {
                     en: string;
                     ar: string;
                 };
+                enabled: boolean;
                 alignment: "START" | "CENTER";
                 visibility: {
                     startsAt: string | null;
@@ -25713,9 +25713,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
+                categoryIds?: string[] | undefined;
                 order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                 enabled?: boolean | undefined;
-                categoryIds?: string[] | undefined;
                 parentCategoryId?: string | null | undefined;
                 showViewAll?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
@@ -25781,9 +25781,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
+                brandIds?: string[] | undefined;
                 order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                 enabled?: boolean | undefined;
-                brandIds?: string[] | undefined;
                 showViewAll?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
                 viewAllDestination?: {
@@ -25845,8 +25845,8 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
-                enabled?: boolean | undefined;
                 productIds?: string[] | undefined;
+                enabled?: boolean | undefined;
                 showViewAll?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
                 viewAllDestination?: {
@@ -26445,11 +26445,11 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                         en: string;
                         ar: string;
                     };
-                    enabled: boolean;
                     title: {
                         en: string;
                         ar: string;
                     };
+                    enabled: boolean;
                     eyebrow: {
                         en: string;
                         ar: string;
@@ -26531,9 +26531,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
             } | {
                 type: "CATEGORY_LIST";
                 id: string;
+                categoryIds: string[];
                 order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                 enabled: boolean;
-                categoryIds: string[];
                 parentCategoryId: string | null;
                 showViewAll: boolean;
                 viewAllLabel: {
@@ -26599,9 +26599,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
             } | {
                 type: "BRAND_LIST";
                 id: string;
+                brandIds: string[];
                 order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                 enabled: boolean;
-                brandIds: string[];
                 showViewAll: boolean;
                 viewAllLabel: {
                     en: string;
@@ -26663,8 +26663,8 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
             } | {
                 type: "PRODUCT_LIST";
                 id: string;
-                enabled: boolean;
                 productIds: string[];
+                enabled: boolean;
                 showViewAll: boolean;
                 viewAllLabel: {
                     en: string;
@@ -26796,11 +26796,11 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en: string;
                     ar: string;
                 };
-                enabled: boolean;
                 title: {
                     en: string;
                     ar: string;
                 };
+                enabled: boolean;
                 alignment: "START" | "CENTER";
                 visibility: {
                     startsAt: string | null;
@@ -27375,9 +27375,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
+                categoryIds?: string[] | undefined;
                 order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                 enabled?: boolean | undefined;
-                categoryIds?: string[] | undefined;
                 parentCategoryId?: string | null | undefined;
                 showViewAll?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
@@ -27443,9 +27443,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
+                brandIds?: string[] | undefined;
                 order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                 enabled?: boolean | undefined;
-                brandIds?: string[] | undefined;
                 showViewAll?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
                 viewAllDestination?: {
@@ -27507,8 +27507,8 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
-                enabled?: boolean | undefined;
                 productIds?: string[] | undefined;
+                enabled?: boolean | undefined;
                 showViewAll?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
                 viewAllDestination?: {
@@ -28113,11 +28113,11 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                         en: string;
                         ar: string;
                     };
-                    enabled: boolean;
                     title: {
                         en: string;
                         ar: string;
                     };
+                    enabled: boolean;
                     eyebrow: {
                         en: string;
                         ar: string;
@@ -28199,9 +28199,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
             } | {
                 type: "CATEGORY_LIST";
                 id: string;
+                categoryIds: string[];
                 order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                 enabled: boolean;
-                categoryIds: string[];
                 parentCategoryId: string | null;
                 showViewAll: boolean;
                 viewAllLabel: {
@@ -28267,9 +28267,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
             } | {
                 type: "BRAND_LIST";
                 id: string;
+                brandIds: string[];
                 order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                 enabled: boolean;
-                brandIds: string[];
                 showViewAll: boolean;
                 viewAllLabel: {
                     en: string;
@@ -28331,8 +28331,8 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
             } | {
                 type: "PRODUCT_LIST";
                 id: string;
-                enabled: boolean;
                 productIds: string[];
+                enabled: boolean;
                 showViewAll: boolean;
                 viewAllLabel: {
                     en: string;
@@ -28464,11 +28464,11 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en: string;
                     ar: string;
                 };
-                enabled: boolean;
                 title: {
                     en: string;
                     ar: string;
                 };
+                enabled: boolean;
                 alignment: "START" | "CENTER";
                 visibility: {
                     startsAt: string | null;
@@ -29045,9 +29045,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
+                categoryIds?: string[] | undefined;
                 order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                 enabled?: boolean | undefined;
-                categoryIds?: string[] | undefined;
                 parentCategoryId?: string | null | undefined;
                 showViewAll?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
@@ -29113,9 +29113,9 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
+                brandIds?: string[] | undefined;
                 order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                 enabled?: boolean | undefined;
-                brandIds?: string[] | undefined;
                 showViewAll?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
                 viewAllDestination?: {
@@ -29177,8 +29177,8 @@ export declare const navigationMegaMenuSchema: z.ZodObject<{
                     en?: string | undefined;
                     ar?: string | undefined;
                 };
-                enabled?: boolean | undefined;
                 productIds?: string[] | undefined;
+                enabled?: boolean | undefined;
                 showViewAll?: boolean | undefined;
                 mobileOrder?: number | null | undefined;
                 viewAllDestination?: {
@@ -30381,11 +30381,11 @@ export declare const navigationItemSchema: z.ZodObject<{
                             en: string;
                             ar: string;
                         };
-                        enabled: boolean;
                         title: {
                             en: string;
                             ar: string;
                         };
+                        enabled: boolean;
                         eyebrow: {
                             en: string;
                             ar: string;
@@ -30596,11 +30596,11 @@ export declare const navigationItemSchema: z.ZodObject<{
                             en: string;
                             ar: string;
                         };
-                        enabled: boolean;
                         title: {
                             en: string;
                             ar: string;
                         };
+                        enabled: boolean;
                         eyebrow: {
                             en: string;
                             ar: string;
@@ -31068,9 +31068,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                 }, "strip", z.ZodTypeAny, {
                     type: "CATEGORY_LIST";
                     id: string;
+                    categoryIds: string[];
                     order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                     enabled: boolean;
-                    categoryIds: string[];
                     parentCategoryId: string | null;
                     showViewAll: boolean;
                     viewAllLabel: {
@@ -31150,9 +31150,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
+                    categoryIds?: string[] | undefined;
                     order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                     enabled?: boolean | undefined;
-                    categoryIds?: string[] | undefined;
                     parentCategoryId?: string | null | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
@@ -31374,9 +31374,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                 }, "strip", z.ZodTypeAny, {
                     type: "BRAND_LIST";
                     id: string;
+                    brandIds: string[];
                     order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                     enabled: boolean;
-                    brandIds: string[];
                     showViewAll: boolean;
                     viewAllLabel: {
                         en: string;
@@ -31452,9 +31452,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
+                    brandIds?: string[] | undefined;
                     order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                     enabled?: boolean | undefined;
-                    brandIds?: string[] | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
                     viewAllDestination?: {
@@ -31674,8 +31674,8 @@ export declare const navigationItemSchema: z.ZodObject<{
                 }, "strip", z.ZodTypeAny, {
                     type: "PRODUCT_LIST";
                     id: string;
-                    enabled: boolean;
                     productIds: string[];
+                    enabled: boolean;
                     showViewAll: boolean;
                     viewAllLabel: {
                         en: string;
@@ -31754,8 +31754,8 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
-                    enabled?: boolean | undefined;
                     productIds?: string[] | undefined;
+                    enabled?: boolean | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
                     viewAllDestination?: {
@@ -32304,11 +32304,11 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en: string;
                         ar: string;
                     };
-                    enabled: boolean;
                     title: {
                         en: string;
                         ar: string;
                     };
+                    enabled: boolean;
                     alignment: "START" | "CENTER";
                     visibility: {
                         startsAt: string | null;
@@ -34000,11 +34000,11 @@ export declare const navigationItemSchema: z.ZodObject<{
                             en: string;
                             ar: string;
                         };
-                        enabled: boolean;
                         title: {
                             en: string;
                             ar: string;
                         };
+                        enabled: boolean;
                         eyebrow: {
                             en: string;
                             ar: string;
@@ -34086,9 +34086,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                 } | {
                     type: "CATEGORY_LIST";
                     id: string;
+                    categoryIds: string[];
                     order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                     enabled: boolean;
-                    categoryIds: string[];
                     parentCategoryId: string | null;
                     showViewAll: boolean;
                     viewAllLabel: {
@@ -34154,9 +34154,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                 } | {
                     type: "BRAND_LIST";
                     id: string;
+                    brandIds: string[];
                     order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                     enabled: boolean;
-                    brandIds: string[];
                     showViewAll: boolean;
                     viewAllLabel: {
                         en: string;
@@ -34218,8 +34218,8 @@ export declare const navigationItemSchema: z.ZodObject<{
                 } | {
                     type: "PRODUCT_LIST";
                     id: string;
-                    enabled: boolean;
                     productIds: string[];
+                    enabled: boolean;
                     showViewAll: boolean;
                     viewAllLabel: {
                         en: string;
@@ -34351,11 +34351,11 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en: string;
                         ar: string;
                     };
-                    enabled: boolean;
                     title: {
                         en: string;
                         ar: string;
                     };
+                    enabled: boolean;
                     alignment: "START" | "CENTER";
                     visibility: {
                         startsAt: string | null;
@@ -34918,9 +34918,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
+                    categoryIds?: string[] | undefined;
                     order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                     enabled?: boolean | undefined;
-                    categoryIds?: string[] | undefined;
                     parentCategoryId?: string | null | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
@@ -34986,9 +34986,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
+                    brandIds?: string[] | undefined;
                     order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                     enabled?: boolean | undefined;
-                    brandIds?: string[] | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
                     viewAllDestination?: {
@@ -35050,8 +35050,8 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
-                    enabled?: boolean | undefined;
                     productIds?: string[] | undefined;
+                    enabled?: boolean | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
                     viewAllDestination?: {
@@ -35640,11 +35640,11 @@ export declare const navigationItemSchema: z.ZodObject<{
                             en: string;
                             ar: string;
                         };
-                        enabled: boolean;
                         title: {
                             en: string;
                             ar: string;
                         };
+                        enabled: boolean;
                         eyebrow: {
                             en: string;
                             ar: string;
@@ -35726,9 +35726,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                 } | {
                     type: "CATEGORY_LIST";
                     id: string;
+                    categoryIds: string[];
                     order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                     enabled: boolean;
-                    categoryIds: string[];
                     parentCategoryId: string | null;
                     showViewAll: boolean;
                     viewAllLabel: {
@@ -35794,9 +35794,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                 } | {
                     type: "BRAND_LIST";
                     id: string;
+                    brandIds: string[];
                     order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                     enabled: boolean;
-                    brandIds: string[];
                     showViewAll: boolean;
                     viewAllLabel: {
                         en: string;
@@ -35858,8 +35858,8 @@ export declare const navigationItemSchema: z.ZodObject<{
                 } | {
                     type: "PRODUCT_LIST";
                     id: string;
-                    enabled: boolean;
                     productIds: string[];
+                    enabled: boolean;
                     showViewAll: boolean;
                     viewAllLabel: {
                         en: string;
@@ -35991,11 +35991,11 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en: string;
                         ar: string;
                     };
-                    enabled: boolean;
                     title: {
                         en: string;
                         ar: string;
                     };
+                    enabled: boolean;
                     alignment: "START" | "CENTER";
                     visibility: {
                         startsAt: string | null;
@@ -36570,9 +36570,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
+                    categoryIds?: string[] | undefined;
                     order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                     enabled?: boolean | undefined;
-                    categoryIds?: string[] | undefined;
                     parentCategoryId?: string | null | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
@@ -36638,9 +36638,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
+                    brandIds?: string[] | undefined;
                     order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                     enabled?: boolean | undefined;
-                    brandIds?: string[] | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
                     viewAllDestination?: {
@@ -36702,8 +36702,8 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
-                    enabled?: boolean | undefined;
                     productIds?: string[] | undefined;
+                    enabled?: boolean | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
                     viewAllDestination?: {
@@ -37302,11 +37302,11 @@ export declare const navigationItemSchema: z.ZodObject<{
                             en: string;
                             ar: string;
                         };
-                        enabled: boolean;
                         title: {
                             en: string;
                             ar: string;
                         };
+                        enabled: boolean;
                         eyebrow: {
                             en: string;
                             ar: string;
@@ -37388,9 +37388,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                 } | {
                     type: "CATEGORY_LIST";
                     id: string;
+                    categoryIds: string[];
                     order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                     enabled: boolean;
-                    categoryIds: string[];
                     parentCategoryId: string | null;
                     showViewAll: boolean;
                     viewAllLabel: {
@@ -37456,9 +37456,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                 } | {
                     type: "BRAND_LIST";
                     id: string;
+                    brandIds: string[];
                     order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                     enabled: boolean;
-                    brandIds: string[];
                     showViewAll: boolean;
                     viewAllLabel: {
                         en: string;
@@ -37520,8 +37520,8 @@ export declare const navigationItemSchema: z.ZodObject<{
                 } | {
                     type: "PRODUCT_LIST";
                     id: string;
-                    enabled: boolean;
                     productIds: string[];
+                    enabled: boolean;
                     showViewAll: boolean;
                     viewAllLabel: {
                         en: string;
@@ -37653,11 +37653,11 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en: string;
                         ar: string;
                     };
-                    enabled: boolean;
                     title: {
                         en: string;
                         ar: string;
                     };
+                    enabled: boolean;
                     alignment: "START" | "CENTER";
                     visibility: {
                         startsAt: string | null;
@@ -38232,9 +38232,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
+                    categoryIds?: string[] | undefined;
                     order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                     enabled?: boolean | undefined;
-                    categoryIds?: string[] | undefined;
                     parentCategoryId?: string | null | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
@@ -38300,9 +38300,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
+                    brandIds?: string[] | undefined;
                     order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                     enabled?: boolean | undefined;
-                    brandIds?: string[] | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
                     viewAllDestination?: {
@@ -38364,8 +38364,8 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
-                    enabled?: boolean | undefined;
                     productIds?: string[] | undefined;
+                    enabled?: boolean | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
                     viewAllDestination?: {
@@ -38970,11 +38970,11 @@ export declare const navigationItemSchema: z.ZodObject<{
                             en: string;
                             ar: string;
                         };
-                        enabled: boolean;
                         title: {
                             en: string;
                             ar: string;
                         };
+                        enabled: boolean;
                         eyebrow: {
                             en: string;
                             ar: string;
@@ -39056,9 +39056,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                 } | {
                     type: "CATEGORY_LIST";
                     id: string;
+                    categoryIds: string[];
                     order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                     enabled: boolean;
-                    categoryIds: string[];
                     parentCategoryId: string | null;
                     showViewAll: boolean;
                     viewAllLabel: {
@@ -39124,9 +39124,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                 } | {
                     type: "BRAND_LIST";
                     id: string;
+                    brandIds: string[];
                     order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                     enabled: boolean;
-                    brandIds: string[];
                     showViewAll: boolean;
                     viewAllLabel: {
                         en: string;
@@ -39188,8 +39188,8 @@ export declare const navigationItemSchema: z.ZodObject<{
                 } | {
                     type: "PRODUCT_LIST";
                     id: string;
-                    enabled: boolean;
                     productIds: string[];
+                    enabled: boolean;
                     showViewAll: boolean;
                     viewAllLabel: {
                         en: string;
@@ -39321,11 +39321,11 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en: string;
                         ar: string;
                     };
-                    enabled: boolean;
                     title: {
                         en: string;
                         ar: string;
                     };
+                    enabled: boolean;
                     alignment: "START" | "CENTER";
                     visibility: {
                         startsAt: string | null;
@@ -39902,9 +39902,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
+                    categoryIds?: string[] | undefined;
                     order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                     enabled?: boolean | undefined;
-                    categoryIds?: string[] | undefined;
                     parentCategoryId?: string | null | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
@@ -39970,9 +39970,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
+                    brandIds?: string[] | undefined;
                     order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                     enabled?: boolean | undefined;
-                    brandIds?: string[] | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
                     viewAllDestination?: {
@@ -40034,8 +40034,8 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
-                    enabled?: boolean | undefined;
                     productIds?: string[] | undefined;
+                    enabled?: boolean | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
                     viewAllDestination?: {
@@ -40698,11 +40698,11 @@ export declare const navigationItemSchema: z.ZodObject<{
                             en: string;
                             ar: string;
                         };
-                        enabled: boolean;
                         title: {
                             en: string;
                             ar: string;
                         };
+                        enabled: boolean;
                         eyebrow: {
                             en: string;
                             ar: string;
@@ -40784,9 +40784,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                 } | {
                     type: "CATEGORY_LIST";
                     id: string;
+                    categoryIds: string[];
                     order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                     enabled: boolean;
-                    categoryIds: string[];
                     parentCategoryId: string | null;
                     showViewAll: boolean;
                     viewAllLabel: {
@@ -40852,9 +40852,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                 } | {
                     type: "BRAND_LIST";
                     id: string;
+                    brandIds: string[];
                     order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                     enabled: boolean;
-                    brandIds: string[];
                     showViewAll: boolean;
                     viewAllLabel: {
                         en: string;
@@ -40916,8 +40916,8 @@ export declare const navigationItemSchema: z.ZodObject<{
                 } | {
                     type: "PRODUCT_LIST";
                     id: string;
-                    enabled: boolean;
                     productIds: string[];
+                    enabled: boolean;
                     showViewAll: boolean;
                     viewAllLabel: {
                         en: string;
@@ -41049,11 +41049,11 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en: string;
                         ar: string;
                     };
-                    enabled: boolean;
                     title: {
                         en: string;
                         ar: string;
                     };
+                    enabled: boolean;
                     alignment: "START" | "CENTER";
                     visibility: {
                         startsAt: string | null;
@@ -41684,9 +41684,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
+                    categoryIds?: string[] | undefined;
                     order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                     enabled?: boolean | undefined;
-                    categoryIds?: string[] | undefined;
                     parentCategoryId?: string | null | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
@@ -41752,9 +41752,9 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
+                    brandIds?: string[] | undefined;
                     order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                     enabled?: boolean | undefined;
-                    brandIds?: string[] | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
                     viewAllDestination?: {
@@ -41816,8 +41816,8 @@ export declare const navigationItemSchema: z.ZodObject<{
                         en?: string | undefined;
                         ar?: string | undefined;
                     };
-                    enabled?: boolean | undefined;
                     productIds?: string[] | undefined;
+                    enabled?: boolean | undefined;
                     showViewAll?: boolean | undefined;
                     mobileOrder?: number | null | undefined;
                     viewAllDestination?: {
@@ -43029,11 +43029,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             eyebrow: {
                                 en: string;
                                 ar: string;
@@ -43244,11 +43244,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             eyebrow: {
                                 en: string;
                                 ar: string;
@@ -43716,9 +43716,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     }, "strip", z.ZodTypeAny, {
                         type: "CATEGORY_LIST";
                         id: string;
+                        categoryIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                         enabled: boolean;
-                        categoryIds: string[];
                         parentCategoryId: string | null;
                         showViewAll: boolean;
                         viewAllLabel: {
@@ -43798,9 +43798,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
+                        categoryIds?: string[] | undefined;
                         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                         enabled?: boolean | undefined;
-                        categoryIds?: string[] | undefined;
                         parentCategoryId?: string | null | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
@@ -44022,9 +44022,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     }, "strip", z.ZodTypeAny, {
                         type: "BRAND_LIST";
                         id: string;
+                        brandIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                         enabled: boolean;
-                        brandIds: string[];
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -44100,9 +44100,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
+                        brandIds?: string[] | undefined;
                         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                         enabled?: boolean | undefined;
-                        brandIds?: string[] | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
                         viewAllDestination?: {
@@ -44322,8 +44322,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     }, "strip", z.ZodTypeAny, {
                         type: "PRODUCT_LIST";
                         id: string;
-                        enabled: boolean;
                         productIds: string[];
+                        enabled: boolean;
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -44402,8 +44402,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
-                        enabled?: boolean | undefined;
                         productIds?: string[] | undefined;
+                        enabled?: boolean | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
                         viewAllDestination?: {
@@ -44952,11 +44952,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en: string;
                             ar: string;
                         };
-                        enabled: boolean;
                         title: {
                             en: string;
                             ar: string;
                         };
+                        enabled: boolean;
                         alignment: "START" | "CENTER";
                         visibility: {
                             startsAt: string | null;
@@ -46648,11 +46648,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             eyebrow: {
                                 en: string;
                                 ar: string;
@@ -46734,9 +46734,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "CATEGORY_LIST";
                         id: string;
+                        categoryIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                         enabled: boolean;
-                        categoryIds: string[];
                         parentCategoryId: string | null;
                         showViewAll: boolean;
                         viewAllLabel: {
@@ -46802,9 +46802,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "BRAND_LIST";
                         id: string;
+                        brandIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                         enabled: boolean;
-                        brandIds: string[];
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -46866,8 +46866,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "PRODUCT_LIST";
                         id: string;
-                        enabled: boolean;
                         productIds: string[];
+                        enabled: boolean;
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -46999,11 +46999,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en: string;
                             ar: string;
                         };
-                        enabled: boolean;
                         title: {
                             en: string;
                             ar: string;
                         };
+                        enabled: boolean;
                         alignment: "START" | "CENTER";
                         visibility: {
                             startsAt: string | null;
@@ -47566,9 +47566,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
+                        categoryIds?: string[] | undefined;
                         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                         enabled?: boolean | undefined;
-                        categoryIds?: string[] | undefined;
                         parentCategoryId?: string | null | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
@@ -47634,9 +47634,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
+                        brandIds?: string[] | undefined;
                         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                         enabled?: boolean | undefined;
-                        brandIds?: string[] | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
                         viewAllDestination?: {
@@ -47698,8 +47698,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
-                        enabled?: boolean | undefined;
                         productIds?: string[] | undefined;
+                        enabled?: boolean | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
                         viewAllDestination?: {
@@ -48288,11 +48288,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             eyebrow: {
                                 en: string;
                                 ar: string;
@@ -48374,9 +48374,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "CATEGORY_LIST";
                         id: string;
+                        categoryIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                         enabled: boolean;
-                        categoryIds: string[];
                         parentCategoryId: string | null;
                         showViewAll: boolean;
                         viewAllLabel: {
@@ -48442,9 +48442,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "BRAND_LIST";
                         id: string;
+                        brandIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                         enabled: boolean;
-                        brandIds: string[];
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -48506,8 +48506,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "PRODUCT_LIST";
                         id: string;
-                        enabled: boolean;
                         productIds: string[];
+                        enabled: boolean;
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -48639,11 +48639,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en: string;
                             ar: string;
                         };
-                        enabled: boolean;
                         title: {
                             en: string;
                             ar: string;
                         };
+                        enabled: boolean;
                         alignment: "START" | "CENTER";
                         visibility: {
                             startsAt: string | null;
@@ -49218,9 +49218,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
+                        categoryIds?: string[] | undefined;
                         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                         enabled?: boolean | undefined;
-                        categoryIds?: string[] | undefined;
                         parentCategoryId?: string | null | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
@@ -49286,9 +49286,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
+                        brandIds?: string[] | undefined;
                         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                         enabled?: boolean | undefined;
-                        brandIds?: string[] | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
                         viewAllDestination?: {
@@ -49350,8 +49350,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
-                        enabled?: boolean | undefined;
                         productIds?: string[] | undefined;
+                        enabled?: boolean | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
                         viewAllDestination?: {
@@ -49950,11 +49950,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             eyebrow: {
                                 en: string;
                                 ar: string;
@@ -50036,9 +50036,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "CATEGORY_LIST";
                         id: string;
+                        categoryIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                         enabled: boolean;
-                        categoryIds: string[];
                         parentCategoryId: string | null;
                         showViewAll: boolean;
                         viewAllLabel: {
@@ -50104,9 +50104,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "BRAND_LIST";
                         id: string;
+                        brandIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                         enabled: boolean;
-                        brandIds: string[];
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -50168,8 +50168,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "PRODUCT_LIST";
                         id: string;
-                        enabled: boolean;
                         productIds: string[];
+                        enabled: boolean;
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -50301,11 +50301,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en: string;
                             ar: string;
                         };
-                        enabled: boolean;
                         title: {
                             en: string;
                             ar: string;
                         };
+                        enabled: boolean;
                         alignment: "START" | "CENTER";
                         visibility: {
                             startsAt: string | null;
@@ -50880,9 +50880,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
+                        categoryIds?: string[] | undefined;
                         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                         enabled?: boolean | undefined;
-                        categoryIds?: string[] | undefined;
                         parentCategoryId?: string | null | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
@@ -50948,9 +50948,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
+                        brandIds?: string[] | undefined;
                         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                         enabled?: boolean | undefined;
-                        brandIds?: string[] | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
                         viewAllDestination?: {
@@ -51012,8 +51012,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
-                        enabled?: boolean | undefined;
                         productIds?: string[] | undefined;
+                        enabled?: boolean | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
                         viewAllDestination?: {
@@ -51618,11 +51618,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             eyebrow: {
                                 en: string;
                                 ar: string;
@@ -51704,9 +51704,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "CATEGORY_LIST";
                         id: string;
+                        categoryIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                         enabled: boolean;
-                        categoryIds: string[];
                         parentCategoryId: string | null;
                         showViewAll: boolean;
                         viewAllLabel: {
@@ -51772,9 +51772,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "BRAND_LIST";
                         id: string;
+                        brandIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                         enabled: boolean;
-                        brandIds: string[];
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -51836,8 +51836,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "PRODUCT_LIST";
                         id: string;
-                        enabled: boolean;
                         productIds: string[];
+                        enabled: boolean;
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -51969,11 +51969,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en: string;
                             ar: string;
                         };
-                        enabled: boolean;
                         title: {
                             en: string;
                             ar: string;
                         };
+                        enabled: boolean;
                         alignment: "START" | "CENTER";
                         visibility: {
                             startsAt: string | null;
@@ -52550,9 +52550,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
+                        categoryIds?: string[] | undefined;
                         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                         enabled?: boolean | undefined;
-                        categoryIds?: string[] | undefined;
                         parentCategoryId?: string | null | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
@@ -52618,9 +52618,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
+                        brandIds?: string[] | undefined;
                         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                         enabled?: boolean | undefined;
-                        brandIds?: string[] | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
                         viewAllDestination?: {
@@ -52682,8 +52682,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
-                        enabled?: boolean | undefined;
                         productIds?: string[] | undefined;
+                        enabled?: boolean | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
                         viewAllDestination?: {
@@ -53346,11 +53346,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             eyebrow: {
                                 en: string;
                                 ar: string;
@@ -53432,9 +53432,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "CATEGORY_LIST";
                         id: string;
+                        categoryIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                         enabled: boolean;
-                        categoryIds: string[];
                         parentCategoryId: string | null;
                         showViewAll: boolean;
                         viewAllLabel: {
@@ -53500,9 +53500,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "BRAND_LIST";
                         id: string;
+                        brandIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                         enabled: boolean;
-                        brandIds: string[];
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -53564,8 +53564,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "PRODUCT_LIST";
                         id: string;
-                        enabled: boolean;
                         productIds: string[];
+                        enabled: boolean;
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -53697,11 +53697,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en: string;
                             ar: string;
                         };
-                        enabled: boolean;
                         title: {
                             en: string;
                             ar: string;
                         };
+                        enabled: boolean;
                         alignment: "START" | "CENTER";
                         visibility: {
                             startsAt: string | null;
@@ -54332,9 +54332,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
+                        categoryIds?: string[] | undefined;
                         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                         enabled?: boolean | undefined;
-                        categoryIds?: string[] | undefined;
                         parentCategoryId?: string | null | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
@@ -54400,9 +54400,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
+                        brandIds?: string[] | undefined;
                         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                         enabled?: boolean | undefined;
-                        brandIds?: string[] | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
                         viewAllDestination?: {
@@ -54464,8 +54464,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
-                        enabled?: boolean | undefined;
                         productIds?: string[] | undefined;
+                        enabled?: boolean | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
                         viewAllDestination?: {
@@ -55130,11 +55130,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             eyebrow: {
                                 en: string;
                                 ar: string;
@@ -55216,9 +55216,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "CATEGORY_LIST";
                         id: string;
+                        categoryIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                         enabled: boolean;
-                        categoryIds: string[];
                         parentCategoryId: string | null;
                         showViewAll: boolean;
                         viewAllLabel: {
@@ -55284,9 +55284,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "BRAND_LIST";
                         id: string;
+                        brandIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                         enabled: boolean;
-                        brandIds: string[];
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -55348,8 +55348,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "PRODUCT_LIST";
                         id: string;
-                        enabled: boolean;
                         productIds: string[];
+                        enabled: boolean;
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -55481,11 +55481,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en: string;
                             ar: string;
                         };
-                        enabled: boolean;
                         title: {
                             en: string;
                             ar: string;
                         };
+                        enabled: boolean;
                         alignment: "START" | "CENTER";
                         visibility: {
                             startsAt: string | null;
@@ -56119,9 +56119,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
+                        categoryIds?: string[] | undefined;
                         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                         enabled?: boolean | undefined;
-                        categoryIds?: string[] | undefined;
                         parentCategoryId?: string | null | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
@@ -56187,9 +56187,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
+                        brandIds?: string[] | undefined;
                         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                         enabled?: boolean | undefined;
-                        brandIds?: string[] | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
                         viewAllDestination?: {
@@ -56251,8 +56251,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
-                        enabled?: boolean | undefined;
                         productIds?: string[] | undefined;
+                        enabled?: boolean | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
                         viewAllDestination?: {
@@ -56918,11 +56918,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             eyebrow: {
                                 en: string;
                                 ar: string;
@@ -57004,9 +57004,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "CATEGORY_LIST";
                         id: string;
+                        categoryIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                         enabled: boolean;
-                        categoryIds: string[];
                         parentCategoryId: string | null;
                         showViewAll: boolean;
                         viewAllLabel: {
@@ -57072,9 +57072,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "BRAND_LIST";
                         id: string;
+                        brandIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                         enabled: boolean;
-                        brandIds: string[];
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -57136,8 +57136,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "PRODUCT_LIST";
                         id: string;
-                        enabled: boolean;
                         productIds: string[];
+                        enabled: boolean;
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -57269,11 +57269,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en: string;
                             ar: string;
                         };
-                        enabled: boolean;
                         title: {
                             en: string;
                             ar: string;
                         };
+                        enabled: boolean;
                         alignment: "START" | "CENTER";
                         visibility: {
                             startsAt: string | null;
@@ -57907,9 +57907,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
+                        categoryIds?: string[] | undefined;
                         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                         enabled?: boolean | undefined;
-                        categoryIds?: string[] | undefined;
                         parentCategoryId?: string | null | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
@@ -57975,9 +57975,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
+                        brandIds?: string[] | undefined;
                         order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                         enabled?: boolean | undefined;
-                        brandIds?: string[] | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
                         viewAllDestination?: {
@@ -58039,8 +58039,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en?: string | undefined;
                             ar?: string | undefined;
                         };
-                        enabled?: boolean | undefined;
                         productIds?: string[] | undefined;
+                        enabled?: boolean | undefined;
                         showViewAll?: boolean | undefined;
                         mobileOrder?: number | null | undefined;
                         viewAllDestination?: {
@@ -58706,11 +58706,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             eyebrow: {
                                 en: string;
                                 ar: string;
@@ -58792,9 +58792,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "CATEGORY_LIST";
                         id: string;
+                        categoryIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                         enabled: boolean;
-                        categoryIds: string[];
                         parentCategoryId: string | null;
                         showViewAll: boolean;
                         viewAllLabel: {
@@ -58860,9 +58860,9 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "BRAND_LIST";
                         id: string;
+                        brandIds: string[];
                         order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                         enabled: boolean;
-                        brandIds: string[];
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -58924,8 +58924,8 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                     } | {
                         type: "PRODUCT_LIST";
                         id: string;
-                        enabled: boolean;
                         productIds: string[];
+                        enabled: boolean;
                         showViewAll: boolean;
                         viewAllLabel: {
                             en: string;
@@ -59057,11 +59057,11 @@ export declare const navigationConfigSchema: z.ZodEffects<z.ZodEffects<z.ZodObje
                             en: string;
                             ar: string;
                         };
-                        enabled: boolean;
                         title: {
                             en: string;
                             ar: string;
                         };
+                        enabled: boolean;
                         alignment: "START" | "CENTER";
                         visibility: {
                             startsAt: string | null;
@@ -60145,11 +60145,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                     en: string;
                                     ar: string;
                                 };
-                                enabled: boolean;
                                 title: {
                                     en: string;
                                     ar: string;
                                 };
+                                enabled: boolean;
                                 eyebrow: {
                                     en: string;
                                     ar: string;
@@ -60360,11 +60360,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                     en: string;
                                     ar: string;
                                 };
-                                enabled: boolean;
                                 title: {
                                     en: string;
                                     ar: string;
                                 };
+                                enabled: boolean;
                                 eyebrow: {
                                     en: string;
                                     ar: string;
@@ -60832,9 +60832,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         }, "strip", z.ZodTypeAny, {
                             type: "CATEGORY_LIST";
                             id: string;
+                            categoryIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                             enabled: boolean;
-                            categoryIds: string[];
                             parentCategoryId: string | null;
                             showViewAll: boolean;
                             viewAllLabel: {
@@ -60914,9 +60914,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
+                            categoryIds?: string[] | undefined;
                             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                             enabled?: boolean | undefined;
-                            categoryIds?: string[] | undefined;
                             parentCategoryId?: string | null | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
@@ -61138,9 +61138,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         }, "strip", z.ZodTypeAny, {
                             type: "BRAND_LIST";
                             id: string;
+                            brandIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                             enabled: boolean;
-                            brandIds: string[];
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -61216,9 +61216,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
+                            brandIds?: string[] | undefined;
                             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                             enabled?: boolean | undefined;
-                            brandIds?: string[] | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
                             viewAllDestination?: {
@@ -61438,8 +61438,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         }, "strip", z.ZodTypeAny, {
                             type: "PRODUCT_LIST";
                             id: string;
-                            enabled: boolean;
                             productIds: string[];
+                            enabled: boolean;
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -61518,8 +61518,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
-                            enabled?: boolean | undefined;
                             productIds?: string[] | undefined;
+                            enabled?: boolean | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
                             viewAllDestination?: {
@@ -62068,11 +62068,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             alignment: "START" | "CENTER";
                             visibility: {
                                 startsAt: string | null;
@@ -63764,11 +63764,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                     en: string;
                                     ar: string;
                                 };
-                                enabled: boolean;
                                 title: {
                                     en: string;
                                     ar: string;
                                 };
+                                enabled: boolean;
                                 eyebrow: {
                                     en: string;
                                     ar: string;
@@ -63850,9 +63850,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "CATEGORY_LIST";
                             id: string;
+                            categoryIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                             enabled: boolean;
-                            categoryIds: string[];
                             parentCategoryId: string | null;
                             showViewAll: boolean;
                             viewAllLabel: {
@@ -63918,9 +63918,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "BRAND_LIST";
                             id: string;
+                            brandIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                             enabled: boolean;
-                            brandIds: string[];
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -63982,8 +63982,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "PRODUCT_LIST";
                             id: string;
-                            enabled: boolean;
                             productIds: string[];
+                            enabled: boolean;
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -64115,11 +64115,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             alignment: "START" | "CENTER";
                             visibility: {
                                 startsAt: string | null;
@@ -64682,9 +64682,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
+                            categoryIds?: string[] | undefined;
                             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                             enabled?: boolean | undefined;
-                            categoryIds?: string[] | undefined;
                             parentCategoryId?: string | null | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
@@ -64750,9 +64750,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
+                            brandIds?: string[] | undefined;
                             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                             enabled?: boolean | undefined;
-                            brandIds?: string[] | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
                             viewAllDestination?: {
@@ -64814,8 +64814,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
-                            enabled?: boolean | undefined;
                             productIds?: string[] | undefined;
+                            enabled?: boolean | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
                             viewAllDestination?: {
@@ -65404,11 +65404,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                     en: string;
                                     ar: string;
                                 };
-                                enabled: boolean;
                                 title: {
                                     en: string;
                                     ar: string;
                                 };
+                                enabled: boolean;
                                 eyebrow: {
                                     en: string;
                                     ar: string;
@@ -65490,9 +65490,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "CATEGORY_LIST";
                             id: string;
+                            categoryIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                             enabled: boolean;
-                            categoryIds: string[];
                             parentCategoryId: string | null;
                             showViewAll: boolean;
                             viewAllLabel: {
@@ -65558,9 +65558,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "BRAND_LIST";
                             id: string;
+                            brandIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                             enabled: boolean;
-                            brandIds: string[];
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -65622,8 +65622,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "PRODUCT_LIST";
                             id: string;
-                            enabled: boolean;
                             productIds: string[];
+                            enabled: boolean;
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -65755,11 +65755,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             alignment: "START" | "CENTER";
                             visibility: {
                                 startsAt: string | null;
@@ -66334,9 +66334,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
+                            categoryIds?: string[] | undefined;
                             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                             enabled?: boolean | undefined;
-                            categoryIds?: string[] | undefined;
                             parentCategoryId?: string | null | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
@@ -66402,9 +66402,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
+                            brandIds?: string[] | undefined;
                             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                             enabled?: boolean | undefined;
-                            brandIds?: string[] | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
                             viewAllDestination?: {
@@ -66466,8 +66466,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
-                            enabled?: boolean | undefined;
                             productIds?: string[] | undefined;
+                            enabled?: boolean | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
                             viewAllDestination?: {
@@ -67066,11 +67066,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                     en: string;
                                     ar: string;
                                 };
-                                enabled: boolean;
                                 title: {
                                     en: string;
                                     ar: string;
                                 };
+                                enabled: boolean;
                                 eyebrow: {
                                     en: string;
                                     ar: string;
@@ -67152,9 +67152,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "CATEGORY_LIST";
                             id: string;
+                            categoryIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                             enabled: boolean;
-                            categoryIds: string[];
                             parentCategoryId: string | null;
                             showViewAll: boolean;
                             viewAllLabel: {
@@ -67220,9 +67220,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "BRAND_LIST";
                             id: string;
+                            brandIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                             enabled: boolean;
-                            brandIds: string[];
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -67284,8 +67284,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "PRODUCT_LIST";
                             id: string;
-                            enabled: boolean;
                             productIds: string[];
+                            enabled: boolean;
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -67417,11 +67417,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             alignment: "START" | "CENTER";
                             visibility: {
                                 startsAt: string | null;
@@ -67996,9 +67996,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
+                            categoryIds?: string[] | undefined;
                             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                             enabled?: boolean | undefined;
-                            categoryIds?: string[] | undefined;
                             parentCategoryId?: string | null | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
@@ -68064,9 +68064,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
+                            brandIds?: string[] | undefined;
                             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                             enabled?: boolean | undefined;
-                            brandIds?: string[] | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
                             viewAllDestination?: {
@@ -68128,8 +68128,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
-                            enabled?: boolean | undefined;
                             productIds?: string[] | undefined;
+                            enabled?: boolean | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
                             viewAllDestination?: {
@@ -68734,11 +68734,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                     en: string;
                                     ar: string;
                                 };
-                                enabled: boolean;
                                 title: {
                                     en: string;
                                     ar: string;
                                 };
+                                enabled: boolean;
                                 eyebrow: {
                                     en: string;
                                     ar: string;
@@ -68820,9 +68820,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "CATEGORY_LIST";
                             id: string;
+                            categoryIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                             enabled: boolean;
-                            categoryIds: string[];
                             parentCategoryId: string | null;
                             showViewAll: boolean;
                             viewAllLabel: {
@@ -68888,9 +68888,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "BRAND_LIST";
                             id: string;
+                            brandIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                             enabled: boolean;
-                            brandIds: string[];
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -68952,8 +68952,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "PRODUCT_LIST";
                             id: string;
-                            enabled: boolean;
                             productIds: string[];
+                            enabled: boolean;
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -69085,11 +69085,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             alignment: "START" | "CENTER";
                             visibility: {
                                 startsAt: string | null;
@@ -69666,9 +69666,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
+                            categoryIds?: string[] | undefined;
                             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                             enabled?: boolean | undefined;
-                            categoryIds?: string[] | undefined;
                             parentCategoryId?: string | null | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
@@ -69734,9 +69734,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
+                            brandIds?: string[] | undefined;
                             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                             enabled?: boolean | undefined;
-                            brandIds?: string[] | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
                             viewAllDestination?: {
@@ -69798,8 +69798,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
-                            enabled?: boolean | undefined;
                             productIds?: string[] | undefined;
+                            enabled?: boolean | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
                             viewAllDestination?: {
@@ -70462,11 +70462,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                     en: string;
                                     ar: string;
                                 };
-                                enabled: boolean;
                                 title: {
                                     en: string;
                                     ar: string;
                                 };
+                                enabled: boolean;
                                 eyebrow: {
                                     en: string;
                                     ar: string;
@@ -70548,9 +70548,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "CATEGORY_LIST";
                             id: string;
+                            categoryIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                             enabled: boolean;
-                            categoryIds: string[];
                             parentCategoryId: string | null;
                             showViewAll: boolean;
                             viewAllLabel: {
@@ -70616,9 +70616,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "BRAND_LIST";
                             id: string;
+                            brandIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                             enabled: boolean;
-                            brandIds: string[];
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -70680,8 +70680,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "PRODUCT_LIST";
                             id: string;
-                            enabled: boolean;
                             productIds: string[];
+                            enabled: boolean;
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -70813,11 +70813,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             alignment: "START" | "CENTER";
                             visibility: {
                                 startsAt: string | null;
@@ -71448,9 +71448,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
+                            categoryIds?: string[] | undefined;
                             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                             enabled?: boolean | undefined;
-                            categoryIds?: string[] | undefined;
                             parentCategoryId?: string | null | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
@@ -71516,9 +71516,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
+                            brandIds?: string[] | undefined;
                             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                             enabled?: boolean | undefined;
-                            brandIds?: string[] | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
                             viewAllDestination?: {
@@ -71580,8 +71580,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
-                            enabled?: boolean | undefined;
                             productIds?: string[] | undefined;
+                            enabled?: boolean | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
                             viewAllDestination?: {
@@ -72246,11 +72246,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                     en: string;
                                     ar: string;
                                 };
-                                enabled: boolean;
                                 title: {
                                     en: string;
                                     ar: string;
                                 };
+                                enabled: boolean;
                                 eyebrow: {
                                     en: string;
                                     ar: string;
@@ -72332,9 +72332,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "CATEGORY_LIST";
                             id: string;
+                            categoryIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                             enabled: boolean;
-                            categoryIds: string[];
                             parentCategoryId: string | null;
                             showViewAll: boolean;
                             viewAllLabel: {
@@ -72400,9 +72400,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "BRAND_LIST";
                             id: string;
+                            brandIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                             enabled: boolean;
-                            brandIds: string[];
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -72464,8 +72464,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "PRODUCT_LIST";
                             id: string;
-                            enabled: boolean;
                             productIds: string[];
+                            enabled: boolean;
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -72597,11 +72597,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             alignment: "START" | "CENTER";
                             visibility: {
                                 startsAt: string | null;
@@ -73235,9 +73235,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
+                            categoryIds?: string[] | undefined;
                             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                             enabled?: boolean | undefined;
-                            categoryIds?: string[] | undefined;
                             parentCategoryId?: string | null | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
@@ -73303,9 +73303,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
+                            brandIds?: string[] | undefined;
                             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                             enabled?: boolean | undefined;
-                            brandIds?: string[] | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
                             viewAllDestination?: {
@@ -73367,8 +73367,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
-                            enabled?: boolean | undefined;
                             productIds?: string[] | undefined;
+                            enabled?: boolean | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
                             viewAllDestination?: {
@@ -74034,11 +74034,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                     en: string;
                                     ar: string;
                                 };
-                                enabled: boolean;
                                 title: {
                                     en: string;
                                     ar: string;
                                 };
+                                enabled: boolean;
                                 eyebrow: {
                                     en: string;
                                     ar: string;
@@ -74120,9 +74120,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "CATEGORY_LIST";
                             id: string;
+                            categoryIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                             enabled: boolean;
-                            categoryIds: string[];
                             parentCategoryId: string | null;
                             showViewAll: boolean;
                             viewAllLabel: {
@@ -74188,9 +74188,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "BRAND_LIST";
                             id: string;
+                            brandIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                             enabled: boolean;
-                            brandIds: string[];
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -74252,8 +74252,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "PRODUCT_LIST";
                             id: string;
-                            enabled: boolean;
                             productIds: string[];
+                            enabled: boolean;
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -74385,11 +74385,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             alignment: "START" | "CENTER";
                             visibility: {
                                 startsAt: string | null;
@@ -75023,9 +75023,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
+                            categoryIds?: string[] | undefined;
                             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER" | undefined;
                             enabled?: boolean | undefined;
-                            categoryIds?: string[] | undefined;
                             parentCategoryId?: string | null | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
@@ -75091,9 +75091,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
+                            brandIds?: string[] | undefined;
                             order?: "MANUAL" | "NAME_ASC" | "NAME_DESC" | undefined;
                             enabled?: boolean | undefined;
-                            brandIds?: string[] | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
                             viewAllDestination?: {
@@ -75155,8 +75155,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en?: string | undefined;
                                 ar?: string | undefined;
                             };
-                            enabled?: boolean | undefined;
                             productIds?: string[] | undefined;
+                            enabled?: boolean | undefined;
                             showViewAll?: boolean | undefined;
                             mobileOrder?: number | null | undefined;
                             viewAllDestination?: {
@@ -75822,11 +75822,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                     en: string;
                                     ar: string;
                                 };
-                                enabled: boolean;
                                 title: {
                                     en: string;
                                     ar: string;
                                 };
+                                enabled: boolean;
                                 eyebrow: {
                                     en: string;
                                     ar: string;
@@ -75908,9 +75908,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "CATEGORY_LIST";
                             id: string;
+                            categoryIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                             enabled: boolean;
-                            categoryIds: string[];
                             parentCategoryId: string | null;
                             showViewAll: boolean;
                             viewAllLabel: {
@@ -75976,9 +75976,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "BRAND_LIST";
                             id: string;
+                            brandIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                             enabled: boolean;
-                            brandIds: string[];
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -76040,8 +76040,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "PRODUCT_LIST";
                             id: string;
-                            enabled: boolean;
                             productIds: string[];
+                            enabled: boolean;
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -76173,11 +76173,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             alignment: "START" | "CENTER";
                             visibility: {
                                 startsAt: string | null;
@@ -76719,11 +76719,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                     en: string;
                                     ar: string;
                                 };
-                                enabled: boolean;
                                 title: {
                                     en: string;
                                     ar: string;
                                 };
+                                enabled: boolean;
                                 eyebrow: {
                                     en: string;
                                     ar: string;
@@ -76805,9 +76805,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "CATEGORY_LIST";
                             id: string;
+                            categoryIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC" | "SORT_ORDER";
                             enabled: boolean;
-                            categoryIds: string[];
                             parentCategoryId: string | null;
                             showViewAll: boolean;
                             viewAllLabel: {
@@ -76873,9 +76873,9 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "BRAND_LIST";
                             id: string;
+                            brandIds: string[];
                             order: "MANUAL" | "NAME_ASC" | "NAME_DESC";
                             enabled: boolean;
-                            brandIds: string[];
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -76937,8 +76937,8 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                         } | {
                             type: "PRODUCT_LIST";
                             id: string;
-                            enabled: boolean;
                             productIds: string[];
+                            enabled: boolean;
                             showViewAll: boolean;
                             viewAllLabel: {
                                 en: string;
@@ -77070,11 +77070,11 @@ export declare const navigationDraftSaveSchema: z.ZodObject<{
                                 en: string;
                                 ar: string;
                             };
-                            enabled: boolean;
                             title: {
                                 en: string;
                                 ar: string;
                             };
+                            enabled: boolean;
                             alignment: "START" | "CENTER";
                             visibility: {
                                 startsAt: string | null;

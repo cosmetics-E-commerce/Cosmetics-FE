@@ -143,8 +143,8 @@ export declare const popupActionSchema: z.ZodDefault<z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
     productId: string | null;
-    url: string | null;
     categoryId: string | null;
+    url: string | null;
     destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
     openInNewTab: boolean;
     couponId: string | null;
@@ -152,8 +152,8 @@ export declare const popupActionSchema: z.ZodDefault<z.ZodObject<{
 }, {
     type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
     productId?: string | null | undefined;
-    url?: string | null | undefined;
     categoryId?: string | null | undefined;
+    url?: string | null | undefined;
     destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
     openInNewTab?: boolean | undefined;
     couponId?: string | null | undefined;
@@ -294,8 +294,8 @@ export declare const popupTriggerSchema: z.ZodDefault<z.ZodObject<{
     mobileExitFallbackValue: z.ZodDefault<z.ZodNumber>;
 }, "strip", z.ZodTypeAny, {
     type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-    categoryIds: string[];
     productIds: string[];
+    categoryIds: string[];
     delaySeconds: number;
     scrollPercent: number;
     inactivitySeconds: number;
@@ -308,8 +308,8 @@ export declare const popupTriggerSchema: z.ZodDefault<z.ZodObject<{
     mobileExitFallbackValue: number;
 }, {
     type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-    categoryIds?: string[] | undefined;
     productIds?: string[] | undefined;
+    categoryIds?: string[] | undefined;
     delaySeconds?: number | undefined;
     scrollPercent?: number | undefined;
     inactivitySeconds?: number | undefined;
@@ -741,8 +741,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         mobileExitFallbackValue: z.ZodDefault<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
         type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-        categoryIds: string[];
         productIds: string[];
+        categoryIds: string[];
         delaySeconds: number;
         scrollPercent: number;
         inactivitySeconds: number;
@@ -755,8 +755,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         mobileExitFallbackValue: number;
     }, {
         type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
+        categoryIds?: string[] | undefined;
         delaySeconds?: number | undefined;
         scrollPercent?: number | undefined;
         inactivitySeconds?: number | undefined;
@@ -821,8 +821,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
         productId: string | null;
-        url: string | null;
         categoryId: string | null;
+        url: string | null;
         destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
         openInNewTab: boolean;
         couponId: string | null;
@@ -830,8 +830,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     }, {
         type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
         productId?: string | null | undefined;
-        url?: string | null | undefined;
         categoryId?: string | null | undefined;
+        url?: string | null | undefined;
         destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
         openInNewTab?: boolean | undefined;
         couponId?: string | null | undefined;
@@ -849,8 +849,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
         productId: string | null;
-        url: string | null;
         categoryId: string | null;
+        url: string | null;
         destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
         openInNewTab: boolean;
         couponId: string | null;
@@ -858,8 +858,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     }, {
         type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
         productId?: string | null | undefined;
-        url?: string | null | undefined;
         categoryId?: string | null | undefined;
+        url?: string | null | undefined;
         destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
         openInNewTab?: boolean | undefined;
         couponId?: string | null | undefined;
@@ -1095,8 +1095,28 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     type: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
     productId: string | null;
-    promotionId: string | null;
+    trigger: {
+        type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
+        productIds: string[];
+        categoryIds: string[];
+        delaySeconds: number;
+        scrollPercent: number;
+        inactivitySeconds: number;
+        pageViewCount: number;
+        sessionDurationSeconds: number;
+        productViewCount: number;
+        cartThreshold: number;
+        eventName: string | null;
+        mobileExitFallback: "NONE" | "SCROLL_DEPTH" | "INACTIVITY";
+        mobileExitFallbackValue: number;
+    };
+    state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
+    priority: number;
+    startsAt: string | null;
+    endsAt: string | null;
+    timezone: string;
     categoryId: string | null;
+    promotionId: string | null;
     variants: {
         name: string;
         weight: number;
@@ -1138,26 +1158,6 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         };
         id?: string | undefined;
     }[];
-    trigger: {
-        type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-        categoryIds: string[];
-        productIds: string[];
-        delaySeconds: number;
-        scrollPercent: number;
-        inactivitySeconds: number;
-        pageViewCount: number;
-        sessionDurationSeconds: number;
-        productViewCount: number;
-        cartThreshold: number;
-        eventName: string | null;
-        mobileExitFallback: "NONE" | "SCROLL_DEPTH" | "INACTIVITY";
-        mobileExitFallbackValue: number;
-    };
-    state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
-    priority: number;
-    startsAt: string | null;
-    endsAt: string | null;
-    timezone: string;
     mediaAssetId: string | null;
     presentation: {
         tablet: "CENTER_MODAL" | "BOTTOM_SHEET" | "FLOATING_RIGHT" | "FLOATING_LEFT" | "TOP_BANNER" | "BOTTOM_BANNER" | "FULLSCREEN" | "SIDE_PANEL_RIGHT" | "SIDE_PANEL_LEFT" | "SLIDE_IN_RIGHT" | "SLIDE_IN_LEFT" | "PROMO_TOAST" | "ANNOUNCEMENT_BAR";
@@ -1224,8 +1224,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     primaryAction: {
         type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
         productId: string | null;
-        url: string | null;
         categoryId: string | null;
+        url: string | null;
         destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
         openInNewTab: boolean;
         couponId: string | null;
@@ -1234,8 +1234,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     secondaryAction: {
         type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
         productId: string | null;
-        url: string | null;
         categoryId: string | null;
+        url: string | null;
         destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
         openInNewTab: boolean;
         couponId: string | null;
@@ -1299,12 +1299,10 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     internalName: string;
     type?: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE" | undefined;
     productId?: string | null | undefined;
-    promotionId?: string | null | undefined;
-    categoryId?: string | null | undefined;
     trigger?: {
         type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
+        categoryIds?: string[] | undefined;
         delaySeconds?: number | undefined;
         scrollPercent?: number | undefined;
         inactivitySeconds?: number | undefined;
@@ -1321,6 +1319,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     startsAt?: string | null | undefined;
     endsAt?: string | null | undefined;
     timezone?: string | undefined;
+    categoryId?: string | null | undefined;
+    promotionId?: string | null | undefined;
     mediaAssetId?: string | null | undefined;
     presentation?: {
         tablet?: "CENTER_MODAL" | "BOTTOM_SHEET" | "FLOATING_RIGHT" | "FLOATING_LEFT" | "TOP_BANNER" | "BOTTOM_BANNER" | "FULLSCREEN" | "SIDE_PANEL_RIGHT" | "SIDE_PANEL_LEFT" | "SLIDE_IN_RIGHT" | "SLIDE_IN_LEFT" | "PROMO_TOAST" | "ANNOUNCEMENT_BAR" | undefined;
@@ -1386,8 +1386,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     primaryAction?: {
         type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
         productId?: string | null | undefined;
-        url?: string | null | undefined;
         categoryId?: string | null | undefined;
+        url?: string | null | undefined;
         destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
         openInNewTab?: boolean | undefined;
         couponId?: string | null | undefined;
@@ -1396,8 +1396,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     secondaryAction?: {
         type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
         productId?: string | null | undefined;
-        url?: string | null | undefined;
         categoryId?: string | null | undefined;
+        url?: string | null | undefined;
         destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
         openInNewTab?: boolean | undefined;
         couponId?: string | null | undefined;
@@ -1419,8 +1419,28 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
 }>, {
     type: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
     productId: string | null;
-    promotionId: string | null;
+    trigger: {
+        type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
+        productIds: string[];
+        categoryIds: string[];
+        delaySeconds: number;
+        scrollPercent: number;
+        inactivitySeconds: number;
+        pageViewCount: number;
+        sessionDurationSeconds: number;
+        productViewCount: number;
+        cartThreshold: number;
+        eventName: string | null;
+        mobileExitFallback: "NONE" | "SCROLL_DEPTH" | "INACTIVITY";
+        mobileExitFallbackValue: number;
+    };
+    state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
+    priority: number;
+    startsAt: string | null;
+    endsAt: string | null;
+    timezone: string;
     categoryId: string | null;
+    promotionId: string | null;
     variants: {
         name: string;
         weight: number;
@@ -1462,26 +1482,6 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
         };
         id?: string | undefined;
     }[];
-    trigger: {
-        type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-        categoryIds: string[];
-        productIds: string[];
-        delaySeconds: number;
-        scrollPercent: number;
-        inactivitySeconds: number;
-        pageViewCount: number;
-        sessionDurationSeconds: number;
-        productViewCount: number;
-        cartThreshold: number;
-        eventName: string | null;
-        mobileExitFallback: "NONE" | "SCROLL_DEPTH" | "INACTIVITY";
-        mobileExitFallbackValue: number;
-    };
-    state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
-    priority: number;
-    startsAt: string | null;
-    endsAt: string | null;
-    timezone: string;
     mediaAssetId: string | null;
     presentation: {
         tablet: "CENTER_MODAL" | "BOTTOM_SHEET" | "FLOATING_RIGHT" | "FLOATING_LEFT" | "TOP_BANNER" | "BOTTOM_BANNER" | "FULLSCREEN" | "SIDE_PANEL_RIGHT" | "SIDE_PANEL_LEFT" | "SLIDE_IN_RIGHT" | "SLIDE_IN_LEFT" | "PROMO_TOAST" | "ANNOUNCEMENT_BAR";
@@ -1548,8 +1548,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     primaryAction: {
         type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
         productId: string | null;
-        url: string | null;
         categoryId: string | null;
+        url: string | null;
         destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
         openInNewTab: boolean;
         couponId: string | null;
@@ -1558,8 +1558,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     secondaryAction: {
         type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
         productId: string | null;
-        url: string | null;
         categoryId: string | null;
+        url: string | null;
         destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
         openInNewTab: boolean;
         couponId: string | null;
@@ -1623,12 +1623,10 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     internalName: string;
     type?: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE" | undefined;
     productId?: string | null | undefined;
-    promotionId?: string | null | undefined;
-    categoryId?: string | null | undefined;
     trigger?: {
         type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
+        categoryIds?: string[] | undefined;
         delaySeconds?: number | undefined;
         scrollPercent?: number | undefined;
         inactivitySeconds?: number | undefined;
@@ -1645,6 +1643,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     startsAt?: string | null | undefined;
     endsAt?: string | null | undefined;
     timezone?: string | undefined;
+    categoryId?: string | null | undefined;
+    promotionId?: string | null | undefined;
     mediaAssetId?: string | null | undefined;
     presentation?: {
         tablet?: "CENTER_MODAL" | "BOTTOM_SHEET" | "FLOATING_RIGHT" | "FLOATING_LEFT" | "TOP_BANNER" | "BOTTOM_BANNER" | "FULLSCREEN" | "SIDE_PANEL_RIGHT" | "SIDE_PANEL_LEFT" | "SLIDE_IN_RIGHT" | "SLIDE_IN_LEFT" | "PROMO_TOAST" | "ANNOUNCEMENT_BAR" | undefined;
@@ -1710,8 +1710,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     primaryAction?: {
         type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
         productId?: string | null | undefined;
-        url?: string | null | undefined;
         categoryId?: string | null | undefined;
+        url?: string | null | undefined;
         destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
         openInNewTab?: boolean | undefined;
         couponId?: string | null | undefined;
@@ -1720,8 +1720,8 @@ export declare const createPopupCampaignSchema: z.ZodEffects<z.ZodObject<{
     secondaryAction?: {
         type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
         productId?: string | null | undefined;
-        url?: string | null | undefined;
         categoryId?: string | null | undefined;
+        url?: string | null | undefined;
         destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
         openInNewTab?: boolean | undefined;
         couponId?: string | null | undefined;
@@ -1813,8 +1813,8 @@ export declare const popupStorefrontContextSchema: z.ZodObject<{
         path: string;
         type: "HOME" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "PRODUCTS" | "CART" | "CHECKOUT" | "ACCOUNT" | "SEARCH" | "ORDER_TRACKING" | "LANDING";
         productId: string | null;
-        productName: string | null;
         categoryId: string | null;
+        productName: string | null;
         categorySlug: string | null;
         productSlug: string | null;
         categoryName: string | null;
@@ -1822,8 +1822,8 @@ export declare const popupStorefrontContextSchema: z.ZodObject<{
         path: string;
         type?: "HOME" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "PRODUCTS" | "CART" | "CHECKOUT" | "ACCOUNT" | "SEARCH" | "ORDER_TRACKING" | "LANDING" | undefined;
         productId?: string | null | undefined;
-        productName?: string | null | undefined;
         categoryId?: string | null | undefined;
+        productName?: string | null | undefined;
         categorySlug?: string | null | undefined;
         productSlug?: string | null | undefined;
         categoryName?: string | null | undefined;
@@ -1867,15 +1867,15 @@ export declare const popupStorefrontContextSchema: z.ZodObject<{
         couponCode: z.ZodDefault<z.ZodNullable<z.ZodString>>;
     }, "strip", z.ZodTypeAny, {
         total: number;
-        couponCode: string | null;
-        categoryIds: string[];
         productIds: string[];
+        categoryIds: string[];
+        couponCode: string | null;
         itemCount: number;
     }, {
         total?: number | undefined;
-        couponCode?: string | null | undefined;
-        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
+        categoryIds?: string[] | undefined;
+        couponCode?: string | null | undefined;
         itemCount?: number | undefined;
     }>>;
     behavior: z.ZodDefault<z.ZodObject<{
@@ -1921,17 +1921,17 @@ export declare const popupStorefrontContextSchema: z.ZodObject<{
         path: string;
         type: "HOME" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "PRODUCTS" | "CART" | "CHECKOUT" | "ACCOUNT" | "SEARCH" | "ORDER_TRACKING" | "LANDING";
         productId: string | null;
-        productName: string | null;
         categoryId: string | null;
+        productName: string | null;
         categorySlug: string | null;
         productSlug: string | null;
         categoryName: string | null;
     };
     cart: {
         total: number;
-        couponCode: string | null;
-        categoryIds: string[];
         productIds: string[];
+        categoryIds: string[];
+        couponCode: string | null;
         itemCount: number;
     };
     locale: "en" | "ar";
@@ -1962,8 +1962,8 @@ export declare const popupStorefrontContextSchema: z.ZodObject<{
         path: string;
         type?: "HOME" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "PRODUCTS" | "CART" | "CHECKOUT" | "ACCOUNT" | "SEARCH" | "ORDER_TRACKING" | "LANDING" | undefined;
         productId?: string | null | undefined;
-        productName?: string | null | undefined;
         categoryId?: string | null | undefined;
+        productName?: string | null | undefined;
         categorySlug?: string | null | undefined;
         productSlug?: string | null | undefined;
         categoryName?: string | null | undefined;
@@ -1981,9 +1981,9 @@ export declare const popupStorefrontContextSchema: z.ZodObject<{
     };
     cart?: {
         total?: number | undefined;
-        couponCode?: string | null | undefined;
-        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
+        categoryIds?: string[] | undefined;
+        couponCode?: string | null | undefined;
         itemCount?: number | undefined;
     } | undefined;
     locale?: "en" | "ar" | undefined;
@@ -2172,8 +2172,8 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
         mobileExitFallbackValue: z.ZodDefault<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
         type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-        categoryIds: string[];
         productIds: string[];
+        categoryIds: string[];
         delaySeconds: number;
         scrollPercent: number;
         inactivitySeconds: number;
@@ -2186,8 +2186,8 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
         mobileExitFallbackValue: number;
     }, {
         type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
+        categoryIds?: string[] | undefined;
         delaySeconds?: number | undefined;
         scrollPercent?: number | undefined;
         inactivitySeconds?: number | undefined;
@@ -2252,8 +2252,8 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
         productId: string | null;
-        url: string | null;
         categoryId: string | null;
+        url: string | null;
         destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
         openInNewTab: boolean;
         couponId: string | null;
@@ -2261,8 +2261,8 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
     }, {
         type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
         productId?: string | null | undefined;
-        url?: string | null | undefined;
         categoryId?: string | null | undefined;
+        url?: string | null | undefined;
         destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
         openInNewTab?: boolean | undefined;
         couponId?: string | null | undefined;
@@ -2280,8 +2280,8 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
         productId: string | null;
-        url: string | null;
         categoryId: string | null;
+        url: string | null;
         destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
         openInNewTab: boolean;
         couponId: string | null;
@@ -2289,8 +2289,8 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
     }, {
         type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
         productId?: string | null | undefined;
-        url?: string | null | undefined;
         categoryId?: string | null | undefined;
+        url?: string | null | undefined;
         destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
         openInNewTab?: boolean | undefined;
         couponId?: string | null | undefined;
@@ -2443,15 +2443,10 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
     type: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
     id: string;
     variantId: string;
-    category: {
-        id: string;
-        name: string;
-        slug: string;
-    } | null;
     trigger: {
         type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-        categoryIds: string[];
         productIds: string[];
+        categoryIds: string[];
         delaySeconds: number;
         scrollPercent: number;
         inactivitySeconds: number;
@@ -2470,6 +2465,11 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
     coupon: {
         code: string;
         id: string;
+    } | null;
+    category: {
+        id: string;
+        name: string;
+        slug: string;
     } | null;
     version: number;
     product: {
@@ -2560,8 +2560,8 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
     primaryAction: {
         type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
         productId: string | null;
-        url: string | null;
         categoryId: string | null;
+        url: string | null;
         destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
         openInNewTab: boolean;
         couponId: string | null;
@@ -2570,8 +2570,8 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
     secondaryAction: {
         type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
         productId: string | null;
-        url: string | null;
         categoryId: string | null;
+        url: string | null;
         destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
         openInNewTab: boolean;
         couponId: string | null;
@@ -2623,15 +2623,10 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
         submitLabel?: string | null | undefined;
         consentLabel?: string | null | undefined;
     };
-    category?: {
-        id: string;
-        name: string;
-        slug: string;
-    } | null | undefined;
     trigger?: {
         type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
+        categoryIds?: string[] | undefined;
         delaySeconds?: number | undefined;
         scrollPercent?: number | undefined;
         inactivitySeconds?: number | undefined;
@@ -2648,6 +2643,11 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
     coupon?: {
         code: string;
         id: string;
+    } | null | undefined;
+    category?: {
+        id: string;
+        name: string;
+        slug: string;
     } | null | undefined;
     product?: {
         id: string;
@@ -2717,8 +2717,8 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
     primaryAction?: {
         type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
         productId?: string | null | undefined;
-        url?: string | null | undefined;
         categoryId?: string | null | undefined;
+        url?: string | null | undefined;
         destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
         openInNewTab?: boolean | undefined;
         couponId?: string | null | undefined;
@@ -2727,8 +2727,8 @@ export declare const popupPublishedCampaignSchema: z.ZodObject<{
     secondaryAction?: {
         type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
         productId?: string | null | undefined;
-        url?: string | null | undefined;
         categoryId?: string | null | undefined;
+        url?: string | null | undefined;
         destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
         openInNewTab?: boolean | undefined;
         couponId?: string | null | undefined;
@@ -2928,8 +2928,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             mobileExitFallbackValue: z.ZodDefault<z.ZodNumber>;
         }, "strip", z.ZodTypeAny, {
             type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-            categoryIds: string[];
             productIds: string[];
+            categoryIds: string[];
             delaySeconds: number;
             scrollPercent: number;
             inactivitySeconds: number;
@@ -2942,8 +2942,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             mobileExitFallbackValue: number;
         }, {
             type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
+            categoryIds?: string[] | undefined;
             delaySeconds?: number | undefined;
             scrollPercent?: number | undefined;
             inactivitySeconds?: number | undefined;
@@ -3008,8 +3008,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
             productId: string | null;
-            url: string | null;
             categoryId: string | null;
+            url: string | null;
             destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
             openInNewTab: boolean;
             couponId: string | null;
@@ -3017,8 +3017,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         }, {
             type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
             productId?: string | null | undefined;
-            url?: string | null | undefined;
             categoryId?: string | null | undefined;
+            url?: string | null | undefined;
             destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
             openInNewTab?: boolean | undefined;
             couponId?: string | null | undefined;
@@ -3036,8 +3036,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
             productId: string | null;
-            url: string | null;
             categoryId: string | null;
+            url: string | null;
             destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
             openInNewTab: boolean;
             couponId: string | null;
@@ -3045,8 +3045,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         }, {
             type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
             productId?: string | null | undefined;
-            url?: string | null | undefined;
             categoryId?: string | null | undefined;
+            url?: string | null | undefined;
             destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
             openInNewTab?: boolean | undefined;
             couponId?: string | null | undefined;
@@ -3199,15 +3199,10 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         type: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
         id: string;
         variantId: string;
-        category: {
-            id: string;
-            name: string;
-            slug: string;
-        } | null;
         trigger: {
             type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-            categoryIds: string[];
             productIds: string[];
+            categoryIds: string[];
             delaySeconds: number;
             scrollPercent: number;
             inactivitySeconds: number;
@@ -3226,6 +3221,11 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         coupon: {
             code: string;
             id: string;
+        } | null;
+        category: {
+            id: string;
+            name: string;
+            slug: string;
         } | null;
         version: number;
         product: {
@@ -3316,8 +3316,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         primaryAction: {
             type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
             productId: string | null;
-            url: string | null;
             categoryId: string | null;
+            url: string | null;
             destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
             openInNewTab: boolean;
             couponId: string | null;
@@ -3326,8 +3326,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         secondaryAction: {
             type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
             productId: string | null;
-            url: string | null;
             categoryId: string | null;
+            url: string | null;
             destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
             openInNewTab: boolean;
             couponId: string | null;
@@ -3379,15 +3379,10 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             submitLabel?: string | null | undefined;
             consentLabel?: string | null | undefined;
         };
-        category?: {
-            id: string;
-            name: string;
-            slug: string;
-        } | null | undefined;
         trigger?: {
             type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
+            categoryIds?: string[] | undefined;
             delaySeconds?: number | undefined;
             scrollPercent?: number | undefined;
             inactivitySeconds?: number | undefined;
@@ -3404,6 +3399,11 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         coupon?: {
             code: string;
             id: string;
+        } | null | undefined;
+        category?: {
+            id: string;
+            name: string;
+            slug: string;
         } | null | undefined;
         product?: {
             id: string;
@@ -3473,8 +3473,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         primaryAction?: {
             type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
             productId?: string | null | undefined;
-            url?: string | null | undefined;
             categoryId?: string | null | undefined;
+            url?: string | null | undefined;
             destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
             openInNewTab?: boolean | undefined;
             couponId?: string | null | undefined;
@@ -3483,8 +3483,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         secondaryAction?: {
             type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
             productId?: string | null | undefined;
-            url?: string | null | undefined;
             categoryId?: string | null | undefined;
+            url?: string | null | undefined;
             destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
             openInNewTab?: boolean | undefined;
             couponId?: string | null | undefined;
@@ -3518,15 +3518,10 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         type: "FREE_SHIPPING" | "FIRST_ORDER" | "CUSTOM" | "PROMOTIONAL" | "SEASONAL" | "NEWSLETTER" | "PRODUCT_LAUNCH" | "DISCOUNT" | "WELCOME" | "EXIT_INTENT" | "ANNOUNCEMENT" | "PRODUCT_RECOMMENDATION" | "CART_REMINDER" | "LIMITED_TIME_SALE" | "RESTOCK" | "PRODUCT_SPECIFIC" | "CATEGORY_SPECIFIC" | "CROSS_SELL" | "ACCOUNT_ENCOURAGEMENT" | "LOGIN_REMINDER" | "LOYALTY_VIP" | "RETURNING_CUSTOMER" | "NEW_VISITOR" | "ORDER_UPDATE" | "STORE_PICKUP" | "DELIVERY_NOTICE" | "SYSTEM_NOTICE" | "MAINTENANCE";
         id: string;
         variantId: string;
-        category: {
-            id: string;
-            name: string;
-            slug: string;
-        } | null;
         trigger: {
             type: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT";
-            categoryIds: string[];
             productIds: string[];
+            categoryIds: string[];
             delaySeconds: number;
             scrollPercent: number;
             inactivitySeconds: number;
@@ -3545,6 +3540,11 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         coupon: {
             code: string;
             id: string;
+        } | null;
+        category: {
+            id: string;
+            name: string;
+            slug: string;
         } | null;
         version: number;
         product: {
@@ -3635,8 +3635,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         primaryAction: {
             type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
             productId: string | null;
-            url: string | null;
             categoryId: string | null;
+            url: string | null;
             destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
             openInNewTab: boolean;
             couponId: string | null;
@@ -3645,8 +3645,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         secondaryAction: {
             type: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM";
             productId: string | null;
-            url: string | null;
             categoryId: string | null;
+            url: string | null;
             destination: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null;
             openInNewTab: boolean;
             couponId: string | null;
@@ -3702,15 +3702,10 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
             submitLabel?: string | null | undefined;
             consentLabel?: string | null | undefined;
         };
-        category?: {
-            id: string;
-            name: string;
-            slug: string;
-        } | null | undefined;
         trigger?: {
             type?: "EXIT_INTENT" | "IMMEDIATE" | "DELAY" | "SCROLL_DEPTH" | "INACTIVITY" | "PAGE_VIEWS" | "SESSION_DURATION" | "PRODUCT_VIEWS" | "ADD_TO_CART" | "REMOVE_FROM_CART" | "CART_THRESHOLD" | "FIRST_VISIT" | "RETURNING_SESSION" | "CUSTOM_EVENT" | undefined;
-            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
+            categoryIds?: string[] | undefined;
             delaySeconds?: number | undefined;
             scrollPercent?: number | undefined;
             inactivitySeconds?: number | undefined;
@@ -3727,6 +3722,11 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         coupon?: {
             code: string;
             id: string;
+        } | null | undefined;
+        category?: {
+            id: string;
+            name: string;
+            slug: string;
         } | null | undefined;
         product?: {
             id: string;
@@ -3796,8 +3796,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         primaryAction?: {
             type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
             productId?: string | null | undefined;
-            url?: string | null | undefined;
             categoryId?: string | null | undefined;
+            url?: string | null | undefined;
             destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
             openInNewTab?: boolean | undefined;
             couponId?: string | null | undefined;
@@ -3806,8 +3806,8 @@ export declare const popupStorefrontResponseSchema: z.ZodObject<{
         secondaryAction?: {
             type?: "NONE" | "NAVIGATE" | "APPLY_COUPON" | "COPY_COUPON" | "CLOSE" | "SUBMIT_FORM" | undefined;
             productId?: string | null | undefined;
-            url?: string | null | undefined;
             categoryId?: string | null | undefined;
+            url?: string | null | undefined;
             destination?: "HOME" | "CATEGORY" | "PRODUCT" | "CART" | "ACCOUNT" | "URL" | null | undefined;
             openInNewTab?: boolean | undefined;
             couponId?: string | null | undefined;

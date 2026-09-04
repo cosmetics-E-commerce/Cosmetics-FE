@@ -7,8 +7,8 @@ export declare const addCartItemSchema: z.ZodObject<{
     variantId: z.ZodString;
     quantity: z.ZodDefault<z.ZodNumber>;
 }, "strict", z.ZodTypeAny, {
-    variantId: string;
     quantity: number;
+    variantId: string;
 }, {
     variantId: string;
     quantity?: number | undefined;
@@ -19,16 +19,16 @@ export declare const addCartItemsSchema: z.ZodObject<{
         variantId: z.ZodString;
         quantity: z.ZodDefault<z.ZodNumber>;
     }, "strict", z.ZodTypeAny, {
-        variantId: string;
         quantity: number;
+        variantId: string;
     }, {
         variantId: string;
         quantity?: number | undefined;
     }>, "many">;
 }, "strict", z.ZodTypeAny, {
     items: {
-        variantId: string;
         quantity: number;
+        variantId: string;
     }[];
 }, {
     items: {
@@ -182,9 +182,15 @@ export declare const cartItemSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     issues: string[];
     status: "AVAILABLE" | "OUT_OF_STOCK" | "NOT_SELLABLE";
-    variantId: string;
+    categoryIds: string[];
     quantity: number;
+    variantId: string;
     productId: string;
+    categoryId: string;
+    brandId: string | null;
+    unitPrice: number;
+    discount: number;
+    discountedLineTotal: number;
     variantOptions: {
         optionId: string;
         optionNameEn: string;
@@ -194,14 +200,8 @@ export declare const cartItemSchema: z.ZodObject<{
         valueAr: string;
     }[];
     sku: string;
-    discount: number;
     imageUrl: string | null;
     slug: string;
-    categoryIds: string[];
-    categoryId: string;
-    brandId: string | null;
-    unitPrice: number;
-    discountedLineTotal: number;
     productNameEn: string;
     productNameAr: string;
     variantNameEn: string;
@@ -212,9 +212,15 @@ export declare const cartItemSchema: z.ZodObject<{
 }, {
     issues: string[];
     status: "AVAILABLE" | "OUT_OF_STOCK" | "NOT_SELLABLE";
-    variantId: string;
+    categoryIds: string[];
     quantity: number;
+    variantId: string;
     productId: string;
+    categoryId: string;
+    brandId: string | null;
+    unitPrice: number;
+    discount: number;
+    discountedLineTotal: number;
     variantOptions: {
         optionId: string;
         optionNameEn: string;
@@ -224,14 +230,8 @@ export declare const cartItemSchema: z.ZodObject<{
         valueAr: string;
     }[];
     sku: string;
-    discount: number;
     imageUrl: string | null;
     slug: string;
-    categoryIds: string[];
-    categoryId: string;
-    brandId: string | null;
-    unitPrice: number;
-    discountedLineTotal: number;
     productNameEn: string;
     productNameAr: string;
     variantNameEn: string;
@@ -302,7 +302,6 @@ export declare const cartBundleInstanceSchema: z.ZodObject<{
         en: string;
         ar: string;
     };
-    slug: string;
     stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
     lines: {
         variantId: string;
@@ -310,6 +309,7 @@ export declare const cartBundleInstanceSchema: z.ZodObject<{
         participatingQuantity: number;
         allocatedDiscount: number;
     }[];
+    slug: string;
     bundleId: string;
     version: number;
     retailTotal: number;
@@ -323,7 +323,6 @@ export declare const cartBundleInstanceSchema: z.ZodObject<{
         en: string;
         ar: string;
     };
-    slug: string;
     stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
     lines: {
         variantId: string;
@@ -331,6 +330,7 @@ export declare const cartBundleInstanceSchema: z.ZodObject<{
         participatingQuantity: number;
         allocatedDiscount: number;
     }[];
+    slug: string;
     bundleId: string;
     version: number;
     retailTotal: number;
@@ -388,9 +388,15 @@ export declare const cartSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         issues: string[];
         status: "AVAILABLE" | "OUT_OF_STOCK" | "NOT_SELLABLE";
-        variantId: string;
+        categoryIds: string[];
         quantity: number;
+        variantId: string;
         productId: string;
+        categoryId: string;
+        brandId: string | null;
+        unitPrice: number;
+        discount: number;
+        discountedLineTotal: number;
         variantOptions: {
             optionId: string;
             optionNameEn: string;
@@ -400,14 +406,8 @@ export declare const cartSchema: z.ZodObject<{
             valueAr: string;
         }[];
         sku: string;
-        discount: number;
         imageUrl: string | null;
         slug: string;
-        categoryIds: string[];
-        categoryId: string;
-        brandId: string | null;
-        unitPrice: number;
-        discountedLineTotal: number;
         productNameEn: string;
         productNameAr: string;
         variantNameEn: string;
@@ -418,9 +418,15 @@ export declare const cartSchema: z.ZodObject<{
     }, {
         issues: string[];
         status: "AVAILABLE" | "OUT_OF_STOCK" | "NOT_SELLABLE";
-        variantId: string;
+        categoryIds: string[];
         quantity: number;
+        variantId: string;
         productId: string;
+        categoryId: string;
+        brandId: string | null;
+        unitPrice: number;
+        discount: number;
+        discountedLineTotal: number;
         variantOptions: {
             optionId: string;
             optionNameEn: string;
@@ -430,14 +436,8 @@ export declare const cartSchema: z.ZodObject<{
             valueAr: string;
         }[];
         sku: string;
-        discount: number;
         imageUrl: string | null;
         slug: string;
-        categoryIds: string[];
-        categoryId: string;
-        brandId: string | null;
-        unitPrice: number;
-        discountedLineTotal: number;
         productNameEn: string;
         productNameAr: string;
         variantNameEn: string;
@@ -451,6 +451,16 @@ export declare const cartSchema: z.ZodObject<{
     estimatedTotal: z.ZodNumber;
     totalSavings: z.ZodNumber;
     couponCode: z.ZodNullable<z.ZodString>;
+    couponInvalidation: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+        code: z.ZodLiteral<"PROMO_NOT_APPLICABLE">;
+        promoCode: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        code: "PROMO_NOT_APPLICABLE";
+        promoCode: string;
+    }, {
+        code: "PROMO_NOT_APPLICABLE";
+        promoCode: string;
+    }>>>;
     appliedPromotions: z.ZodArray<z.ZodObject<{
         id: z.ZodString;
         name: z.ZodString;
@@ -466,21 +476,21 @@ export declare const cartSchema: z.ZodObject<{
         type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
         id: string;
         name: string;
-        couponCode: string | null;
-        shippingDiscount: number;
-        discountAmount: number;
         discountedUnits: number;
+        couponCode: string | null;
         title: string;
+        discountAmount: number;
+        shippingDiscount: number;
     }, {
         message: string;
         type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
         id: string;
         name: string;
-        couponCode: string | null;
-        shippingDiscount: number;
-        discountAmount: number;
         discountedUnits: number;
+        couponCode: string | null;
         title: string;
+        discountAmount: number;
+        shippingDiscount: number;
     }>, "many">;
     promotionMessages: z.ZodArray<z.ZodString, "many">;
     giftOptions: z.ZodArray<z.ZodObject<{
@@ -489,15 +499,15 @@ export declare const cartSchema: z.ZodObject<{
         customerChooses: z.ZodBoolean;
         promotionId: z.ZodString;
     }, "strip", z.ZodTypeAny, {
-        variantId: string;
         quantity: number;
-        promotionId: string;
+        variantId: string;
         customerChooses: boolean;
+        promotionId: string;
     }, {
-        variantId: string;
         quantity: number;
-        promotionId: string;
+        variantId: string;
         customerChooses: boolean;
+        promotionId: string;
     }>, "many">;
     totalQuantity: z.ZodNumber;
     hasIssues: z.ZodBoolean;
@@ -608,7 +618,6 @@ export declare const cartSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        slug: string;
         stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         lines: {
             variantId: string;
@@ -616,6 +625,7 @@ export declare const cartSchema: z.ZodObject<{
             participatingQuantity: number;
             allocatedDiscount: number;
         }[];
+        slug: string;
         bundleId: string;
         version: number;
         retailTotal: number;
@@ -629,7 +639,6 @@ export declare const cartSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        slug: string;
         stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         lines: {
             variantId: string;
@@ -637,6 +646,7 @@ export declare const cartSchema: z.ZodObject<{
             participatingQuantity: number;
             allocatedDiscount: number;
         }[];
+        slug: string;
         bundleId: string;
         version: number;
         retailTotal: number;
@@ -650,9 +660,15 @@ export declare const cartSchema: z.ZodObject<{
     items: {
         issues: string[];
         status: "AVAILABLE" | "OUT_OF_STOCK" | "NOT_SELLABLE";
-        variantId: string;
+        categoryIds: string[];
         quantity: number;
+        variantId: string;
         productId: string;
+        categoryId: string;
+        brandId: string | null;
+        unitPrice: number;
+        discount: number;
+        discountedLineTotal: number;
         variantOptions: {
             optionId: string;
             optionNameEn: string;
@@ -662,14 +678,8 @@ export declare const cartSchema: z.ZodObject<{
             valueAr: string;
         }[];
         sku: string;
-        discount: number;
         imageUrl: string | null;
         slug: string;
-        categoryIds: string[];
-        categoryId: string;
-        brandId: string | null;
-        unitPrice: number;
-        discountedLineTotal: number;
         productNameEn: string;
         productNameAr: string;
         variantNameEn: string;
@@ -679,29 +689,33 @@ export declare const cartSchema: z.ZodObject<{
         lineTotal: number;
     }[];
     couponCode: string | null;
-    subtotal: number;
     totalSavings: number;
     appliedPromotions: {
         message: string;
         type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
         id: string;
         name: string;
-        couponCode: string | null;
-        shippingDiscount: number;
-        discountAmount: number;
         discountedUnits: number;
+        couponCode: string | null;
         title: string;
+        discountAmount: number;
+        shippingDiscount: number;
     }[];
+    subtotal: number;
     discountTotal: number;
     cartId: string | null;
     owner: "GUEST" | "USER";
     estimatedTotal: number;
+    couponInvalidation: {
+        code: "PROMO_NOT_APPLICABLE";
+        promoCode: string;
+    } | null;
     promotionMessages: string[];
     giftOptions: {
-        variantId: string;
         quantity: number;
-        promotionId: string;
+        variantId: string;
         customerChooses: boolean;
+        promotionId: string;
     }[];
     totalQuantity: number;
     hasIssues: boolean;
@@ -713,7 +727,6 @@ export declare const cartSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        slug: string;
         stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         lines: {
             variantId: string;
@@ -721,6 +734,7 @@ export declare const cartSchema: z.ZodObject<{
             participatingQuantity: number;
             allocatedDiscount: number;
         }[];
+        slug: string;
         bundleId: string;
         version: number;
         retailTotal: number;
@@ -755,9 +769,15 @@ export declare const cartSchema: z.ZodObject<{
     items: {
         issues: string[];
         status: "AVAILABLE" | "OUT_OF_STOCK" | "NOT_SELLABLE";
-        variantId: string;
+        categoryIds: string[];
         quantity: number;
+        variantId: string;
         productId: string;
+        categoryId: string;
+        brandId: string | null;
+        unitPrice: number;
+        discount: number;
+        discountedLineTotal: number;
         variantOptions: {
             optionId: string;
             optionNameEn: string;
@@ -767,14 +787,8 @@ export declare const cartSchema: z.ZodObject<{
             valueAr: string;
         }[];
         sku: string;
-        discount: number;
         imageUrl: string | null;
         slug: string;
-        categoryIds: string[];
-        categoryId: string;
-        brandId: string | null;
-        unitPrice: number;
-        discountedLineTotal: number;
         productNameEn: string;
         productNameAr: string;
         variantNameEn: string;
@@ -784,32 +798,36 @@ export declare const cartSchema: z.ZodObject<{
         lineTotal: number;
     }[];
     couponCode: string | null;
-    subtotal: number;
     totalSavings: number;
     appliedPromotions: {
         message: string;
         type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
         id: string;
         name: string;
-        couponCode: string | null;
-        shippingDiscount: number;
-        discountAmount: number;
         discountedUnits: number;
+        couponCode: string | null;
         title: string;
+        discountAmount: number;
+        shippingDiscount: number;
     }[];
+    subtotal: number;
     discountTotal: number;
     cartId: string | null;
     owner: "GUEST" | "USER";
     estimatedTotal: number;
     promotionMessages: string[];
     giftOptions: {
-        variantId: string;
         quantity: number;
-        promotionId: string;
+        variantId: string;
         customerChooses: boolean;
+        promotionId: string;
     }[];
     totalQuantity: number;
     hasIssues: boolean;
+    couponInvalidation?: {
+        code: "PROMO_NOT_APPLICABLE";
+        promoCode: string;
+    } | null | undefined;
     savedForLater?: {
         issues: string[];
         status: "AVAILABLE" | "OUT_OF_STOCK" | "VARIANT_UNAVAILABLE" | "PRODUCT_UNAVAILABLE";
@@ -840,7 +858,6 @@ export declare const cartSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        slug: string;
         stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         lines: {
             variantId: string;
@@ -848,6 +865,7 @@ export declare const cartSchema: z.ZodObject<{
             participatingQuantity: number;
             allocatedDiscount: number;
         }[];
+        slug: string;
         bundleId: string;
         version: number;
         retailTotal: number;
@@ -908,9 +926,15 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             issues: string[];
             status: "AVAILABLE" | "OUT_OF_STOCK" | "NOT_SELLABLE";
-            variantId: string;
+            categoryIds: string[];
             quantity: number;
+            variantId: string;
             productId: string;
+            categoryId: string;
+            brandId: string | null;
+            unitPrice: number;
+            discount: number;
+            discountedLineTotal: number;
             variantOptions: {
                 optionId: string;
                 optionNameEn: string;
@@ -920,14 +944,8 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 valueAr: string;
             }[];
             sku: string;
-            discount: number;
             imageUrl: string | null;
             slug: string;
-            categoryIds: string[];
-            categoryId: string;
-            brandId: string | null;
-            unitPrice: number;
-            discountedLineTotal: number;
             productNameEn: string;
             productNameAr: string;
             variantNameEn: string;
@@ -938,9 +956,15 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
         }, {
             issues: string[];
             status: "AVAILABLE" | "OUT_OF_STOCK" | "NOT_SELLABLE";
-            variantId: string;
+            categoryIds: string[];
             quantity: number;
+            variantId: string;
             productId: string;
+            categoryId: string;
+            brandId: string | null;
+            unitPrice: number;
+            discount: number;
+            discountedLineTotal: number;
             variantOptions: {
                 optionId: string;
                 optionNameEn: string;
@@ -950,14 +974,8 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 valueAr: string;
             }[];
             sku: string;
-            discount: number;
             imageUrl: string | null;
             slug: string;
-            categoryIds: string[];
-            categoryId: string;
-            brandId: string | null;
-            unitPrice: number;
-            discountedLineTotal: number;
             productNameEn: string;
             productNameAr: string;
             variantNameEn: string;
@@ -971,6 +989,16 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
         estimatedTotal: z.ZodNumber;
         totalSavings: z.ZodNumber;
         couponCode: z.ZodNullable<z.ZodString>;
+        couponInvalidation: z.ZodDefault<z.ZodNullable<z.ZodObject<{
+            code: z.ZodLiteral<"PROMO_NOT_APPLICABLE">;
+            promoCode: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            code: "PROMO_NOT_APPLICABLE";
+            promoCode: string;
+        }, {
+            code: "PROMO_NOT_APPLICABLE";
+            promoCode: string;
+        }>>>;
         appliedPromotions: z.ZodArray<z.ZodObject<{
             id: z.ZodString;
             name: z.ZodString;
@@ -986,21 +1014,21 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
             type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
             id: string;
             name: string;
-            couponCode: string | null;
-            shippingDiscount: number;
-            discountAmount: number;
             discountedUnits: number;
+            couponCode: string | null;
             title: string;
+            discountAmount: number;
+            shippingDiscount: number;
         }, {
             message: string;
             type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
             id: string;
             name: string;
-            couponCode: string | null;
-            shippingDiscount: number;
-            discountAmount: number;
             discountedUnits: number;
+            couponCode: string | null;
             title: string;
+            discountAmount: number;
+            shippingDiscount: number;
         }>, "many">;
         promotionMessages: z.ZodArray<z.ZodString, "many">;
         giftOptions: z.ZodArray<z.ZodObject<{
@@ -1009,15 +1037,15 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
             customerChooses: z.ZodBoolean;
             promotionId: z.ZodString;
         }, "strip", z.ZodTypeAny, {
-            variantId: string;
             quantity: number;
-            promotionId: string;
+            variantId: string;
             customerChooses: boolean;
+            promotionId: string;
         }, {
-            variantId: string;
             quantity: number;
-            promotionId: string;
+            variantId: string;
             customerChooses: boolean;
+            promotionId: string;
         }>, "many">;
         totalQuantity: z.ZodNumber;
         hasIssues: z.ZodBoolean;
@@ -1128,7 +1156,6 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            slug: string;
             stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
             lines: {
                 variantId: string;
@@ -1136,6 +1163,7 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 participatingQuantity: number;
                 allocatedDiscount: number;
             }[];
+            slug: string;
             bundleId: string;
             version: number;
             retailTotal: number;
@@ -1149,7 +1177,6 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            slug: string;
             stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
             lines: {
                 variantId: string;
@@ -1157,6 +1184,7 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 participatingQuantity: number;
                 allocatedDiscount: number;
             }[];
+            slug: string;
             bundleId: string;
             version: number;
             retailTotal: number;
@@ -1170,9 +1198,15 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
         items: {
             issues: string[];
             status: "AVAILABLE" | "OUT_OF_STOCK" | "NOT_SELLABLE";
-            variantId: string;
+            categoryIds: string[];
             quantity: number;
+            variantId: string;
             productId: string;
+            categoryId: string;
+            brandId: string | null;
+            unitPrice: number;
+            discount: number;
+            discountedLineTotal: number;
             variantOptions: {
                 optionId: string;
                 optionNameEn: string;
@@ -1182,14 +1216,8 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 valueAr: string;
             }[];
             sku: string;
-            discount: number;
             imageUrl: string | null;
             slug: string;
-            categoryIds: string[];
-            categoryId: string;
-            brandId: string | null;
-            unitPrice: number;
-            discountedLineTotal: number;
             productNameEn: string;
             productNameAr: string;
             variantNameEn: string;
@@ -1199,29 +1227,33 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
             lineTotal: number;
         }[];
         couponCode: string | null;
-        subtotal: number;
         totalSavings: number;
         appliedPromotions: {
             message: string;
             type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
             id: string;
             name: string;
-            couponCode: string | null;
-            shippingDiscount: number;
-            discountAmount: number;
             discountedUnits: number;
+            couponCode: string | null;
             title: string;
+            discountAmount: number;
+            shippingDiscount: number;
         }[];
+        subtotal: number;
         discountTotal: number;
         cartId: string | null;
         owner: "GUEST" | "USER";
         estimatedTotal: number;
+        couponInvalidation: {
+            code: "PROMO_NOT_APPLICABLE";
+            promoCode: string;
+        } | null;
         promotionMessages: string[];
         giftOptions: {
-            variantId: string;
             quantity: number;
-            promotionId: string;
+            variantId: string;
             customerChooses: boolean;
+            promotionId: string;
         }[];
         totalQuantity: number;
         hasIssues: boolean;
@@ -1233,7 +1265,6 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            slug: string;
             stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
             lines: {
                 variantId: string;
@@ -1241,6 +1272,7 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 participatingQuantity: number;
                 allocatedDiscount: number;
             }[];
+            slug: string;
             bundleId: string;
             version: number;
             retailTotal: number;
@@ -1275,9 +1307,15 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
         items: {
             issues: string[];
             status: "AVAILABLE" | "OUT_OF_STOCK" | "NOT_SELLABLE";
-            variantId: string;
+            categoryIds: string[];
             quantity: number;
+            variantId: string;
             productId: string;
+            categoryId: string;
+            brandId: string | null;
+            unitPrice: number;
+            discount: number;
+            discountedLineTotal: number;
             variantOptions: {
                 optionId: string;
                 optionNameEn: string;
@@ -1287,14 +1325,8 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 valueAr: string;
             }[];
             sku: string;
-            discount: number;
             imageUrl: string | null;
             slug: string;
-            categoryIds: string[];
-            categoryId: string;
-            brandId: string | null;
-            unitPrice: number;
-            discountedLineTotal: number;
             productNameEn: string;
             productNameAr: string;
             variantNameEn: string;
@@ -1304,32 +1336,36 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
             lineTotal: number;
         }[];
         couponCode: string | null;
-        subtotal: number;
         totalSavings: number;
         appliedPromotions: {
             message: string;
             type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
             id: string;
             name: string;
-            couponCode: string | null;
-            shippingDiscount: number;
-            discountAmount: number;
             discountedUnits: number;
+            couponCode: string | null;
             title: string;
+            discountAmount: number;
+            shippingDiscount: number;
         }[];
+        subtotal: number;
         discountTotal: number;
         cartId: string | null;
         owner: "GUEST" | "USER";
         estimatedTotal: number;
         promotionMessages: string[];
         giftOptions: {
-            variantId: string;
             quantity: number;
-            promotionId: string;
+            variantId: string;
             customerChooses: boolean;
+            promotionId: string;
         }[];
         totalQuantity: number;
         hasIssues: boolean;
+        couponInvalidation?: {
+            code: "PROMO_NOT_APPLICABLE";
+            promoCode: string;
+        } | null | undefined;
         savedForLater?: {
             issues: string[];
             status: "AVAILABLE" | "OUT_OF_STOCK" | "VARIANT_UNAVAILABLE" | "PRODUCT_UNAVAILABLE";
@@ -1360,7 +1396,6 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            slug: string;
             stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
             lines: {
                 variantId: string;
@@ -1368,6 +1403,7 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 participatingQuantity: number;
                 allocatedDiscount: number;
             }[];
+            slug: string;
             bundleId: string;
             version: number;
             retailTotal: number;
@@ -1399,9 +1435,15 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
         items: {
             issues: string[];
             status: "AVAILABLE" | "OUT_OF_STOCK" | "NOT_SELLABLE";
-            variantId: string;
+            categoryIds: string[];
             quantity: number;
+            variantId: string;
             productId: string;
+            categoryId: string;
+            brandId: string | null;
+            unitPrice: number;
+            discount: number;
+            discountedLineTotal: number;
             variantOptions: {
                 optionId: string;
                 optionNameEn: string;
@@ -1411,14 +1453,8 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 valueAr: string;
             }[];
             sku: string;
-            discount: number;
             imageUrl: string | null;
             slug: string;
-            categoryIds: string[];
-            categoryId: string;
-            brandId: string | null;
-            unitPrice: number;
-            discountedLineTotal: number;
             productNameEn: string;
             productNameAr: string;
             variantNameEn: string;
@@ -1428,29 +1464,33 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
             lineTotal: number;
         }[];
         couponCode: string | null;
-        subtotal: number;
         totalSavings: number;
         appliedPromotions: {
             message: string;
             type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
             id: string;
             name: string;
-            couponCode: string | null;
-            shippingDiscount: number;
-            discountAmount: number;
             discountedUnits: number;
+            couponCode: string | null;
             title: string;
+            discountAmount: number;
+            shippingDiscount: number;
         }[];
+        subtotal: number;
         discountTotal: number;
         cartId: string | null;
         owner: "GUEST" | "USER";
         estimatedTotal: number;
+        couponInvalidation: {
+            code: "PROMO_NOT_APPLICABLE";
+            promoCode: string;
+        } | null;
         promotionMessages: string[];
         giftOptions: {
-            variantId: string;
             quantity: number;
-            promotionId: string;
+            variantId: string;
             customerChooses: boolean;
+            promotionId: string;
         }[];
         totalQuantity: number;
         hasIssues: boolean;
@@ -1462,7 +1502,6 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            slug: string;
             stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
             lines: {
                 variantId: string;
@@ -1470,6 +1509,7 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 participatingQuantity: number;
                 allocatedDiscount: number;
             }[];
+            slug: string;
             bundleId: string;
             version: number;
             retailTotal: number;
@@ -1513,9 +1553,15 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
         items: {
             issues: string[];
             status: "AVAILABLE" | "OUT_OF_STOCK" | "NOT_SELLABLE";
-            variantId: string;
+            categoryIds: string[];
             quantity: number;
+            variantId: string;
             productId: string;
+            categoryId: string;
+            brandId: string | null;
+            unitPrice: number;
+            discount: number;
+            discountedLineTotal: number;
             variantOptions: {
                 optionId: string;
                 optionNameEn: string;
@@ -1525,14 +1571,8 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 valueAr: string;
             }[];
             sku: string;
-            discount: number;
             imageUrl: string | null;
             slug: string;
-            categoryIds: string[];
-            categoryId: string;
-            brandId: string | null;
-            unitPrice: number;
-            discountedLineTotal: number;
             productNameEn: string;
             productNameAr: string;
             variantNameEn: string;
@@ -1542,32 +1582,36 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
             lineTotal: number;
         }[];
         couponCode: string | null;
-        subtotal: number;
         totalSavings: number;
         appliedPromotions: {
             message: string;
             type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
             id: string;
             name: string;
-            couponCode: string | null;
-            shippingDiscount: number;
-            discountAmount: number;
             discountedUnits: number;
+            couponCode: string | null;
             title: string;
+            discountAmount: number;
+            shippingDiscount: number;
         }[];
+        subtotal: number;
         discountTotal: number;
         cartId: string | null;
         owner: "GUEST" | "USER";
         estimatedTotal: number;
         promotionMessages: string[];
         giftOptions: {
-            variantId: string;
             quantity: number;
-            promotionId: string;
+            variantId: string;
             customerChooses: boolean;
+            promotionId: string;
         }[];
         totalQuantity: number;
         hasIssues: boolean;
+        couponInvalidation?: {
+            code: "PROMO_NOT_APPLICABLE";
+            promoCode: string;
+        } | null | undefined;
         savedForLater?: {
             issues: string[];
             status: "AVAILABLE" | "OUT_OF_STOCK" | "VARIANT_UNAVAILABLE" | "PRODUCT_UNAVAILABLE";
@@ -1598,7 +1642,6 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 en: string;
                 ar: string;
             };
-            slug: string;
             stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
             lines: {
                 variantId: string;
@@ -1606,6 +1649,7 @@ export declare const bulkMoveSavedResponseSchema: z.ZodObject<{
                 participatingQuantity: number;
                 allocatedDiscount: number;
             }[];
+            slug: string;
             bundleId: string;
             version: number;
             retailTotal: number;

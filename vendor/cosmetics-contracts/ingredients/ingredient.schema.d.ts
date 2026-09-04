@@ -265,8 +265,8 @@ export declare const ingredientQuerySchema: z.ZodObject<{
     sortBy: "createdAt" | "updatedAt" | "inciName" | "commonName";
     sortOrder: "asc" | "desc";
     search?: string | undefined;
-    source?: "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
     featured?: boolean | undefined;
+    source?: "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
 }, {
     status?: "active" | "inactive" | "archived" | "all" | undefined;
     page?: number | undefined;
@@ -274,8 +274,8 @@ export declare const ingredientQuerySchema: z.ZodObject<{
     sortBy?: "createdAt" | "updatedAt" | "inciName" | "commonName" | undefined;
     sortOrder?: "asc" | "desc" | undefined;
     search?: string | undefined;
-    source?: "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
     featured?: boolean | undefined;
+    source?: "ADMIN" | "CURATED" | "COSING" | "PUBCHEM" | "OPEN_BEAUTY_FACTS" | "IMPORT" | undefined;
 }>;
 export type IngredientQuery = z.infer<typeof ingredientQuerySchema>;
 export declare const productIngredientInputSchema: z.ZodObject<{

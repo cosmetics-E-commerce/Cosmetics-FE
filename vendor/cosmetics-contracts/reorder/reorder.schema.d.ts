@@ -306,16 +306,16 @@ export declare const reorderCartInputSchema: z.ZodObject<{
         variantId: z.ZodString;
         quantity: z.ZodDefault<z.ZodNumber>;
     }, "strip", z.ZodTypeAny, {
-        variantId: string;
         quantity: number;
+        variantId: string;
     }, {
         variantId: string;
         quantity?: number | undefined;
     }>, "many">;
 }, "strict", z.ZodTypeAny, {
     items: {
-        variantId: string;
         quantity: number;
+        variantId: string;
     }[];
     sessionId: string;
 }, {

@@ -1,6 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Check, Minus, Plus, Tag, X } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { Minus, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PolishedImage } from "@/components/ui/polished-image";
 import { formatPrice } from "@/lib/products";
@@ -8,6 +7,7 @@ import { useStore } from "@/lib/store";
 import { Reveal } from "@/components/motion/Primitives";
 import { useI18n } from "@/lib/i18n";
 import { createNoindexHead } from "@/lib/seo";
+import { PromoCodeControl } from "@/components/shop/PromoCodeControl";
 
 export const Route = createFileRoute("/cart")({
   head: ({ match }) =>
@@ -29,9 +29,7 @@ function CartPage() {
     discountTotal,
     estimatedTotal,
     totalSavings,
-    couponCode,
     appliedPromotions,
-    promotionMessages,
     cartLoading,
     setQty,
     remove,
@@ -43,33 +41,8 @@ function CartPage() {
     removeBundle,
     pendingVariants,
     pendingSavedItems,
-    applyCoupon,
-    removeCoupon,
   } = useStore();
-  const [code, setCode] = useState("");
-  const [applyingCode, setApplyingCode] = useState(false);
-  const [codeError, setCodeError] = useState("");
   const hasIssues = lines.some((line) => line.status !== "AVAILABLE" || line.issues.length > 0);
-
-  const submitCode = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const normalized = code.trim().toUpperCase();
-    if (!normalized) {
-      setCodeError(locale === "ar" ? "أدخلي رمز الخصم أولاً." : "Enter a promo code first.");
-      return;
-    }
-    setCodeError("");
-    setApplyingCode(true);
-    const applied = await applyCoupon(normalized);
-    if (applied) setCode("");
-    else
-      setCodeError(
-        locale === "ar"
-          ? "تعذر تطبيق هذا الرمز. تحققي منه وحاولي مرة أخرى."
-          : "That code could not be applied. Check it and try again.",
-      );
-    setApplyingCode(false);
-  };
 
   return (
     <div className="sf-cart-page mx-auto max-w-[1400px] px-5 pb-32 pt-14 md:px-10 lg:py-20">
@@ -275,84 +248,46 @@ function CartPage() {
           <aside className="min-w-0 h-fit border border-border bg-ivory p-5 sm:p-8 lg:sticky lg:top-32">
             <h2 className="label-sm">{t("cart.summary")}</h2>
             <div className="rule-gold my-6" />
-            {promotionMessages.length > 0 && (
-              <div className="mb-5 space-y-2">
-                {promotionMessages.map((message) => (
-                  <p key={message} className="flex gap-2 bg-warm-white p-3 text-xs text-foreground">
-                    <Check className="size-4 shrink-0 text-gold" />
-                    {message}
-                  </p>
-                ))}
-              </div>
-            )}
             <div className="flex items-baseline justify-between">
               <span>{t("cart.subtotal")}</span>
               <span key={subtotal} className="count-change font-serif text-3xl">
                 {formatPrice(subtotal)}
               </span>
             </div>
+            <PromoCodeControl />
             {appliedPromotions.map((promotion) => (
-              <div key={promotion.id} className="mt-3 flex justify-between text-sm text-gold">
-                <span>{promotion.title}</span>
-                <span>-{formatPrice(promotion.discountAmount / 100)}</span>
+              <div
+                key={promotion.id}
+                className="mt-3 flex items-start justify-between gap-4 text-sm text-gold"
+              >
+                <span>
+                  <small className="block text-[0.65rem] uppercase tracking-[0.12em] text-taupe">
+                    {promotion.couponCode ? t("cart.promo") : t("cart.automaticOffer")}
+                  </small>
+                  {promotion.couponCode || promotion.title}
+                </span>
+                <span>
+                  -{formatPrice((promotion.discountAmount + promotion.shippingDiscount) / 100)}
+                </span>
               </div>
             ))}
-            {discountTotal > 0 && (
-              <div className="mt-5 flex items-baseline justify-between border-t border-border pt-5">
-                <span>{t("cart.estimated")}</span>
-                <span className="font-serif text-3xl">{formatPrice(estimatedTotal)}</span>
-              </div>
-            )}
+            <div className="mt-5 flex items-baseline justify-between border-t border-border pt-5">
+              <span>{t("cart.discount")}</span>
+              <span className="text-gold">-{formatPrice(discountTotal)}</span>
+            </div>
+            <div className="mt-3 flex items-baseline justify-between text-sm">
+              <span>{t("cart.delivery")}</span>
+              <span className="text-taupe">{t("cart.atCheckout")}</span>
+            </div>
+            <div className="mt-5 flex items-baseline justify-between border-t border-border pt-5">
+              <span>{t("cart.finalTotal")}</span>
+              <span className="font-serif text-3xl">{formatPrice(estimatedTotal)}</span>
+            </div>
             {totalSavings > 0 && (
               <p className="mt-3 text-sm text-gold">
-                {t("cart.savings")} {formatPrice(totalSavings)}
+                {t("cart.youSaved")} {formatPrice(totalSavings)}
               </p>
             )}
-            <form className="mt-6" onSubmit={submitCode}>
-              <div className="flex">
-                <label className="sr-only" htmlFor="coupon">
-                  {t("cart.promo")}
-                </label>
-                <input
-                  id="coupon"
-                  value={couponCode ?? code}
-                  disabled={Boolean(couponCode) || applyingCode}
-                  onChange={(event) => {
-                    setCode(event.target.value.toUpperCase());
-                    setCodeError("");
-                  }}
-                  placeholder={t("cart.promo")}
-                  autoComplete="off"
-                  spellCheck={false}
-                  aria-invalid={Boolean(codeError)}
-                  aria-describedby={codeError ? "coupon-error" : undefined}
-                  className="min-w-0 flex-1 border border-border bg-warm-white px-3 text-sm uppercase"
-                />
-                {couponCode ? (
-                  <button
-                    type="button"
-                    onClick={() => void removeCoupon()}
-                    className="min-h-11 border border-s-0 border-border px-4 text-xs"
-                  >
-                    {t("cart.removePromo")}
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    disabled={applyingCode}
-                    className="min-h-11 border border-s-0 border-gold px-4 text-gold disabled:opacity-50"
-                    aria-label="Apply promo code"
-                  >
-                    <Tag className="size-4" />
-                  </button>
-                )}
-              </div>
-              {codeError && (
-                <p id="coupon-error" role="alert" className="mt-2 text-xs text-destructive">
-                  {codeError}
-                </p>
-              )}
-            </form>
             <p className="mt-4 text-xs text-muted-foreground">{t("cart.deliveryNote")}</p>
             {hasIssues && (
               <p

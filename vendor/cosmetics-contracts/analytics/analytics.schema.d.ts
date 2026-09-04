@@ -33,9 +33,9 @@ export declare const businessAnalyticsQuerySchema: z.ZodObject<{
     compare: "none" | "previous_period" | "previous_week" | "previous_month" | "previous_year";
     interval: "auto" | "hour" | "day" | "week" | "month" | "quarter" | "year";
     search?: string | undefined;
-    categoryIds?: string | undefined;
     productIds?: string | undefined;
     variantIds?: string | undefined;
+    categoryIds?: string | undefined;
     brandIds?: string | undefined;
     from?: string | undefined;
     to?: string | undefined;
@@ -51,9 +51,9 @@ export declare const businessAnalyticsQuerySchema: z.ZodObject<{
     sortBy?: "revenue" | "nameEn" | "stock" | "category" | "brand" | "units" | "growth" | "conversion" | "views" | undefined;
     sortOrder?: "asc" | "desc" | undefined;
     search?: string | undefined;
-    categoryIds?: string | undefined;
     productIds?: string | undefined;
     variantIds?: string | undefined;
+    categoryIds?: string | undefined;
     brandIds?: string | undefined;
     timezone?: string | undefined;
     customerType?: "all" | "new" | "returning" | "guest" | "registered" | undefined;
@@ -100,9 +100,9 @@ export declare const commerceEventSchema: z.ZodObject<{
     orderId?: string | null | undefined;
     variantId?: string | null | undefined;
     productId?: string | null | undefined;
+    categoryId?: string | null | undefined;
     source?: "storefront" | "admin" | "server" | undefined;
     metadata?: Record<string, string | number | boolean | null> | undefined;
-    categoryId?: string | null | undefined;
     searchTerm?: string | null | undefined;
     resultCount?: number | null | undefined;
     deviceType?: "unknown" | "tablet" | "mobile" | "desktop" | undefined;

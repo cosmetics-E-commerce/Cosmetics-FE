@@ -12,21 +12,21 @@ export declare const publicStoreSettingsSchema: z.ZodObject<{
     brandMarqueeSpeed: z.ZodEnum<["SLOW", "NORMAL", "FAST", "VERY_FAST"]>;
 }, "strip", z.ZodTypeAny, {
     status: "OPEN" | "CLOSED" | "BUSY";
+    codFee: number;
     freeShippingThreshold: number | null;
     statusMessageEn: string | null;
     statusMessageAr: string | null;
     paymentWindowHours: number;
     codEnabled: boolean;
-    codFee: number;
     brandMarqueeSpeed: "NORMAL" | "SLOW" | "FAST" | "VERY_FAST";
 }, {
     status: "OPEN" | "CLOSED" | "BUSY";
+    codFee: number;
     freeShippingThreshold: number | null;
     statusMessageEn: string | null;
     statusMessageAr: string | null;
     paymentWindowHours: number;
     codEnabled: boolean;
-    codFee: number;
     brandMarqueeSpeed: "NORMAL" | "SLOW" | "FAST" | "VERY_FAST";
 }>;
 export type PublicStoreSettingsResponse = z.infer<typeof publicStoreSettingsSchema>;
@@ -46,6 +46,7 @@ export declare const adminStoreSettingsSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     status: "OPEN" | "CLOSED" | "BUSY";
     updatedAt: string;
+    codFee: number;
     vodafoneCashNumber: string | null;
     instapayAddress: string | null;
     freeShippingThreshold: number | null;
@@ -53,11 +54,11 @@ export declare const adminStoreSettingsSchema: z.ZodObject<{
     statusMessageAr: string | null;
     paymentWindowHours: number;
     codEnabled: boolean;
-    codFee: number;
     brandMarqueeSpeed: "NORMAL" | "SLOW" | "FAST" | "VERY_FAST";
 }, {
     status: "OPEN" | "CLOSED" | "BUSY";
     updatedAt: string;
+    codFee: number;
     vodafoneCashNumber: string | null;
     instapayAddress: string | null;
     freeShippingThreshold: number | null;
@@ -65,7 +66,6 @@ export declare const adminStoreSettingsSchema: z.ZodObject<{
     statusMessageAr: string | null;
     paymentWindowHours: number;
     codEnabled: boolean;
-    codFee: number;
     brandMarqueeSpeed: "NORMAL" | "SLOW" | "FAST" | "VERY_FAST";
 }>;
 export type AdminStoreSettingsResponse = z.infer<typeof adminStoreSettingsSchema>;
@@ -82,6 +82,7 @@ export declare const updateStoreSettingsSchema: z.ZodEffects<z.ZodObject<{
     brandMarqueeSpeed: z.ZodOptional<z.ZodEnum<["SLOW", "NORMAL", "FAST", "VERY_FAST"]>>;
 }, "strip", z.ZodTypeAny, {
     status?: "OPEN" | "CLOSED" | "BUSY" | undefined;
+    codFee?: number | undefined;
     vodafoneCashNumber?: string | null | undefined;
     instapayAddress?: string | null | undefined;
     freeShippingThreshold?: number | null | undefined;
@@ -89,10 +90,10 @@ export declare const updateStoreSettingsSchema: z.ZodEffects<z.ZodObject<{
     statusMessageAr?: string | null | undefined;
     paymentWindowHours?: number | undefined;
     codEnabled?: boolean | undefined;
-    codFee?: number | undefined;
     brandMarqueeSpeed?: "NORMAL" | "SLOW" | "FAST" | "VERY_FAST" | undefined;
 }, {
     status?: "OPEN" | "CLOSED" | "BUSY" | undefined;
+    codFee?: number | undefined;
     vodafoneCashNumber?: string | null | undefined;
     instapayAddress?: string | null | undefined;
     freeShippingThreshold?: number | null | undefined;
@@ -100,10 +101,10 @@ export declare const updateStoreSettingsSchema: z.ZodEffects<z.ZodObject<{
     statusMessageAr?: string | null | undefined;
     paymentWindowHours?: number | undefined;
     codEnabled?: boolean | undefined;
-    codFee?: number | undefined;
     brandMarqueeSpeed?: "NORMAL" | "SLOW" | "FAST" | "VERY_FAST" | undefined;
 }>, {
     status?: "OPEN" | "CLOSED" | "BUSY" | undefined;
+    codFee?: number | undefined;
     vodafoneCashNumber?: string | null | undefined;
     instapayAddress?: string | null | undefined;
     freeShippingThreshold?: number | null | undefined;
@@ -111,10 +112,10 @@ export declare const updateStoreSettingsSchema: z.ZodEffects<z.ZodObject<{
     statusMessageAr?: string | null | undefined;
     paymentWindowHours?: number | undefined;
     codEnabled?: boolean | undefined;
-    codFee?: number | undefined;
     brandMarqueeSpeed?: "NORMAL" | "SLOW" | "FAST" | "VERY_FAST" | undefined;
 }, {
     status?: "OPEN" | "CLOSED" | "BUSY" | undefined;
+    codFee?: number | undefined;
     vodafoneCashNumber?: string | null | undefined;
     instapayAddress?: string | null | undefined;
     freeShippingThreshold?: number | null | undefined;
@@ -122,7 +123,6 @@ export declare const updateStoreSettingsSchema: z.ZodEffects<z.ZodObject<{
     statusMessageAr?: string | null | undefined;
     paymentWindowHours?: number | undefined;
     codEnabled?: boolean | undefined;
-    codFee?: number | undefined;
     brandMarqueeSpeed?: "NORMAL" | "SLOW" | "FAST" | "VERY_FAST" | undefined;
 }>;
 export type UpdateStoreSettingsInput = z.infer<typeof updateStoreSettingsSchema>;

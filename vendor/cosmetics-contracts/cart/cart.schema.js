@@ -136,6 +136,13 @@ exports.cartSchema = zod_1.z.object({
     estimatedTotal: primitives_1.piastresSchema,
     totalSavings: primitives_1.piastresSchema,
     couponCode: zod_1.z.string().nullable(),
+    couponInvalidation: zod_1.z
+        .object({
+        code: zod_1.z.literal("PROMO_NOT_APPLICABLE"),
+        promoCode: zod_1.z.string(),
+    })
+        .nullable()
+        .default(null),
     appliedPromotions: zod_1.z.array(promotion_schema_1.appliedPromotionSchema),
     promotionMessages: zod_1.z.array(zod_1.z.string()),
     giftOptions: zod_1.z.array(zod_1.z.object({
