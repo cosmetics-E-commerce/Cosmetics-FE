@@ -1,21 +1,25 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.paginatedOrderTimelineSchema = exports.createOrderResponseSchema = exports.orderPaymentInstructionsSchema = exports.orderStatisticsSchema = exports.paginatedOrdersSchema = exports.orderResponseSchema = exports.orderEmailDeliveryResponseSchema = exports.orderEmailAttemptResponseSchema = exports.paymentProofResponseSchema = exports.invoiceResponseSchema = exports.orderCustomerSummarySchema = exports.orderTimelineResponseSchema = exports.orderItemResponseSchema = exports.orderQuerySchema = exports.updateOrderStatusSchema = exports.rejectPaymentProofSchema = exports.uploadPaymentProofSchema = exports.cancelOrderSchema = exports.checkoutOrderSchema = exports.createOrderSchema = exports.orderItemInputSchema = void 0;
+exports.paginatedOrderTimelineSchema = exports.createOrderResponseSchema = exports.orderPaymentInstructionsSchema = exports.orderStatisticsSchema = exports.paginatedOrdersSchema = exports.orderResponseSchema = exports.orderEmailDeliveryResponseSchema = exports.orderEmailAttemptResponseSchema = exports.paymentProofResponseSchema = exports.invoiceResponseSchema = exports.orderCustomerSummarySchema = exports.orderTimelineResponseSchema = exports.orderItemResponseSchema = exports.orderQuerySchema = exports.updateOrderStatusSchema = exports.rejectPaymentProofSchema = exports.uploadPaymentProofSchema = exports.cancelOrderSchema = exports.checkoutPreviewResponseSchema = exports.checkoutPreviewSchema = exports.checkoutOrderSchema = exports.createOrderSchema = exports.orderItemInputSchema = void 0;
 const zod_1 = require("zod");
 const pagination_1 = require("../common/pagination");
 const primitives_1 = require("../common/primitives");
 const enums_1 = require("../enums");
 const shipping_schema_1 = require("../shipping/shipping.schema");
-exports.orderItemInputSchema = zod_1.z.object({
+const promotion_schema_1 = require("../promotions/promotion.schema");
+exports.orderItemInputSchema = zod_1.z
+    .object({
     variantId: primitives_1.uuidSchema,
     quantity: zod_1.z.number().int().positive().max(99),
-}).strict();
+})
+    .strict();
 /**
  * POST /orders — requires an Idempotency-Key header.
  * The customer may submit cart-derived items; the API always revalidates
  * product status, price and stock server-side.
  */
-exports.createOrderSchema = zod_1.z.object({
+exports.createOrderSchema = zod_1.z
+    .object({
     items: zod_1.z
         .array(exports.orderItemInputSchema)
         .min(1, "Order must contain at least one item"),
@@ -26,8 +30,27 @@ exports.createOrderSchema = zod_1.z.object({
         .optional(),
     giftVariantIds: zod_1.z.array(primitives_1.uuidSchema).max(10).optional(),
     notes: zod_1.z.string().trim().max(500).optional(),
-}).strict();
+})
+    .strict();
 exports.checkoutOrderSchema = exports.createOrderSchema.omit({ items: true });
+exports.checkoutPreviewSchema = exports.checkoutOrderSchema.pick({
+    shippingAddressId: true,
+    paymentMethod: true,
+});
+exports.checkoutPreviewResponseSchema = zod_1.z.object({
+    subtotal: primitives_1.piastresSchema,
+    discount: primitives_1.piastresSchema,
+    shippingCost: primitives_1.piastresSchema,
+    shippingDiscount: primitives_1.piastresSchema,
+    codFee: primitives_1.piastresSchema,
+    total: primitives_1.piastresSchema,
+    totalSavings: primitives_1.piastresSchema,
+    couponCode: zod_1.z.string().nullable(),
+    appliedPromotions: zod_1.z.array(promotion_schema_1.appliedPromotionSchema),
+    provider: enums_1.ShipmentProviderEnum,
+    estimatedDays: zod_1.z.number().int().nonnegative(),
+    estimatedDeliveryDate: zod_1.z.string(),
+});
 exports.cancelOrderSchema = zod_1.z.object({
     reason: zod_1.z.string().trim().min(3).max(500),
 });

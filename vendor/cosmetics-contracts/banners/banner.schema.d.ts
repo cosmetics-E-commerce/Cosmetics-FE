@@ -316,11 +316,11 @@ export declare const bannerTargetingSchema: z.ZodObject<{
     countries: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     regions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
 }, "strip", z.ZodTypeAny, {
-    categoryIds: string[];
     productIds: string[];
+    categoryIds: string[];
     devices: ("tablet" | "mobile" | "desktop")[];
-    authentication: "ALL" | "GUEST" | "LOGGED_IN";
-    customerType: "ALL" | "RETURNING" | "NEW";
+    authentication: "GUEST" | "ALL" | "LOGGED_IN";
+    customerType: "RETURNING" | "ALL" | "NEW";
     pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
     urlPatterns: string[];
     cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
@@ -329,11 +329,11 @@ export declare const bannerTargetingSchema: z.ZodObject<{
     countries: string[];
     regions: string[];
 }, {
-    categoryIds?: string[] | undefined;
     productIds?: string[] | undefined;
+    categoryIds?: string[] | undefined;
     devices?: ("tablet" | "mobile" | "desktop")[] | undefined;
-    authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
-    customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
+    authentication?: "GUEST" | "ALL" | "LOGGED_IN" | undefined;
+    customerType?: "RETURNING" | "ALL" | "NEW" | undefined;
     pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
     urlPatterns?: string[] | undefined;
     cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
@@ -669,11 +669,11 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         countries: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         regions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
     }, "strip", z.ZodTypeAny, {
-        categoryIds: string[];
         productIds: string[];
+        categoryIds: string[];
         devices: ("tablet" | "mobile" | "desktop")[];
-        authentication: "ALL" | "GUEST" | "LOGGED_IN";
-        customerType: "ALL" | "RETURNING" | "NEW";
+        authentication: "GUEST" | "ALL" | "LOGGED_IN";
+        customerType: "RETURNING" | "ALL" | "NEW";
         pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
         urlPatterns: string[];
         cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
@@ -682,11 +682,11 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         countries: string[];
         regions: string[];
     }, {
-        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
+        categoryIds?: string[] | undefined;
         devices?: ("tablet" | "mobile" | "desktop")[] | undefined;
-        authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
-        customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
+        authentication?: "GUEST" | "ALL" | "LOGGED_IN" | undefined;
+        customerType?: "RETURNING" | "ALL" | "NEW" | undefined;
         pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
         urlPatterns?: string[] | undefined;
         cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
@@ -805,11 +805,10 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
     sortOrder: number;
-    promotionId: string | null;
-    position: "TOP" | "BOTTOM" | "BELOW_HEADER";
     state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
     priority: number;
     timezone: string;
+    promotionId: string | null;
     messages: {
         style: {
             emphasis: boolean;
@@ -831,6 +830,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         couponId?: string | null | undefined;
         countdownAt?: string | null | undefined;
     }[];
+    position: "TOP" | "BOTTOM" | "BELOW_HEADER";
     mode: "CAROUSEL" | "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "FREE_SHIPPING_PROGRESS";
     internalName: string;
     animation: {
@@ -933,11 +933,11 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         nextBannerId?: string | null | undefined;
     };
     targeting: {
-        categoryIds: string[];
         productIds: string[];
+        categoryIds: string[];
         devices: ("tablet" | "mobile" | "desktop")[];
-        authentication: "ALL" | "GUEST" | "LOGGED_IN";
-        customerType: "ALL" | "RETURNING" | "NEW";
+        authentication: "GUEST" | "ALL" | "LOGGED_IN";
+        customerType: "RETURNING" | "ALL" | "NEW";
         pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
         urlPatterns: string[];
         cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
@@ -972,13 +972,13 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     }[];
     internalName: string;
     sortOrder?: number | undefined;
-    promotionId?: string | null | undefined;
-    position?: "TOP" | "BOTTOM" | "BELOW_HEADER" | undefined;
     state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
     priority?: number | undefined;
     startsAt?: string | null | undefined;
     endsAt?: string | null | undefined;
     timezone?: string | undefined;
+    promotionId?: string | null | undefined;
+    position?: "TOP" | "BOTTOM" | "BELOW_HEADER" | undefined;
     mode?: "CAROUSEL" | "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "FREE_SHIPPING_PROGRESS" | undefined;
     animation?: {
         loop?: boolean | undefined;
@@ -1080,11 +1080,11 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         inheritPromotionSchedule?: boolean | undefined;
     } | undefined;
     targeting?: {
-        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
+        categoryIds?: string[] | undefined;
         devices?: ("tablet" | "mobile" | "desktop")[] | undefined;
-        authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
-        customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
+        authentication?: "GUEST" | "ALL" | "LOGGED_IN" | undefined;
+        customerType?: "RETURNING" | "ALL" | "NEW" | undefined;
         pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
         urlPatterns?: string[] | undefined;
         cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
@@ -1095,11 +1095,10 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     } | undefined;
 }>, {
     sortOrder: number;
-    promotionId: string | null;
-    position: "TOP" | "BOTTOM" | "BELOW_HEADER";
     state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
     priority: number;
     timezone: string;
+    promotionId: string | null;
     messages: {
         style: {
             emphasis: boolean;
@@ -1121,6 +1120,7 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         couponId?: string | null | undefined;
         countdownAt?: string | null | undefined;
     }[];
+    position: "TOP" | "BOTTOM" | "BELOW_HEADER";
     mode: "CAROUSEL" | "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "FREE_SHIPPING_PROGRESS";
     internalName: string;
     animation: {
@@ -1223,11 +1223,11 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         nextBannerId?: string | null | undefined;
     };
     targeting: {
-        categoryIds: string[];
         productIds: string[];
+        categoryIds: string[];
         devices: ("tablet" | "mobile" | "desktop")[];
-        authentication: "ALL" | "GUEST" | "LOGGED_IN";
-        customerType: "ALL" | "RETURNING" | "NEW";
+        authentication: "GUEST" | "ALL" | "LOGGED_IN";
+        customerType: "RETURNING" | "ALL" | "NEW";
         pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
         urlPatterns: string[];
         cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
@@ -1262,13 +1262,13 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
     }[];
     internalName: string;
     sortOrder?: number | undefined;
-    promotionId?: string | null | undefined;
-    position?: "TOP" | "BOTTOM" | "BELOW_HEADER" | undefined;
     state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
     priority?: number | undefined;
     startsAt?: string | null | undefined;
     endsAt?: string | null | undefined;
     timezone?: string | undefined;
+    promotionId?: string | null | undefined;
+    position?: "TOP" | "BOTTOM" | "BELOW_HEADER" | undefined;
     mode?: "CAROUSEL" | "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "FREE_SHIPPING_PROGRESS" | undefined;
     animation?: {
         loop?: boolean | undefined;
@@ -1370,11 +1370,11 @@ export declare const createBannerSchema: z.ZodEffects<z.ZodObject<{
         inheritPromotionSchedule?: boolean | undefined;
     } | undefined;
     targeting?: {
-        categoryIds?: string[] | undefined;
         productIds?: string[] | undefined;
+        categoryIds?: string[] | undefined;
         devices?: ("tablet" | "mobile" | "desktop")[] | undefined;
-        authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
-        customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
+        authentication?: "GUEST" | "ALL" | "LOGGED_IN" | undefined;
+        customerType?: "RETURNING" | "ALL" | "NEW" | undefined;
         pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
         urlPatterns?: string[] | undefined;
         cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
@@ -1462,17 +1462,17 @@ export declare const activeBannerQuerySchema: z.ZodObject<{
     cartSubtotal: number;
     cartCount: number;
     country?: string | undefined;
-    couponCode?: string | undefined;
     productId?: string | undefined;
     categoryId?: string | undefined;
+    couponCode?: string | undefined;
     region?: string | undefined;
     customerName?: string | undefined;
 }, {
     page?: string | undefined;
     country?: string | undefined;
-    couponCode?: string | undefined;
     productId?: string | undefined;
     categoryId?: string | undefined;
+    couponCode?: string | undefined;
     locale?: "en" | "ar" | undefined;
     device?: "tablet" | "mobile" | "desktop" | undefined;
     authenticated?: unknown;
@@ -1775,11 +1775,11 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             countries: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
             regions: z.ZodDefault<z.ZodArray<z.ZodString, "many">>;
         }, "strip", z.ZodTypeAny, {
-            categoryIds: string[];
             productIds: string[];
+            categoryIds: string[];
             devices: ("tablet" | "mobile" | "desktop")[];
-            authentication: "ALL" | "GUEST" | "LOGGED_IN";
-            customerType: "ALL" | "RETURNING" | "NEW";
+            authentication: "GUEST" | "ALL" | "LOGGED_IN";
+            customerType: "RETURNING" | "ALL" | "NEW";
             pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
             urlPatterns: string[];
             cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
@@ -1788,11 +1788,11 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             countries: string[];
             regions: string[];
         }, {
-            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
+            categoryIds?: string[] | undefined;
             devices?: ("tablet" | "mobile" | "desktop")[] | undefined;
-            authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
-            customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
+            authentication?: "GUEST" | "ALL" | "LOGGED_IN" | undefined;
+            customerType?: "RETURNING" | "ALL" | "NEW" | undefined;
             pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
             urlPatterns?: string[] | undefined;
             cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
@@ -1911,11 +1911,10 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         }>, "many">;
     }, "strip", z.ZodTypeAny, {
         sortOrder: number;
-        promotionId: string | null;
-        position: "TOP" | "BOTTOM" | "BELOW_HEADER";
         state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         priority: number;
         timezone: string;
+        promotionId: string | null;
         messages: {
             style: {
                 emphasis: boolean;
@@ -1937,6 +1936,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             couponId?: string | null | undefined;
             countdownAt?: string | null | undefined;
         }[];
+        position: "TOP" | "BOTTOM" | "BELOW_HEADER";
         mode: "CAROUSEL" | "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "FREE_SHIPPING_PROGRESS";
         internalName: string;
         animation: {
@@ -2039,11 +2039,11 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             nextBannerId?: string | null | undefined;
         };
         targeting: {
-            categoryIds: string[];
             productIds: string[];
+            categoryIds: string[];
             devices: ("tablet" | "mobile" | "desktop")[];
-            authentication: "ALL" | "GUEST" | "LOGGED_IN";
-            customerType: "ALL" | "RETURNING" | "NEW";
+            authentication: "GUEST" | "ALL" | "LOGGED_IN";
+            customerType: "RETURNING" | "ALL" | "NEW";
             pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
             urlPatterns: string[];
             cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
@@ -2078,13 +2078,13 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         }[];
         internalName: string;
         sortOrder?: number | undefined;
-        promotionId?: string | null | undefined;
-        position?: "TOP" | "BOTTOM" | "BELOW_HEADER" | undefined;
         state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
         priority?: number | undefined;
         startsAt?: string | null | undefined;
         endsAt?: string | null | undefined;
         timezone?: string | undefined;
+        promotionId?: string | null | undefined;
+        position?: "TOP" | "BOTTOM" | "BELOW_HEADER" | undefined;
         mode?: "CAROUSEL" | "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "FREE_SHIPPING_PROGRESS" | undefined;
         animation?: {
             loop?: boolean | undefined;
@@ -2186,11 +2186,11 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             inheritPromotionSchedule?: boolean | undefined;
         } | undefined;
         targeting?: {
-            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
+            categoryIds?: string[] | undefined;
             devices?: ("tablet" | "mobile" | "desktop")[] | undefined;
-            authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
-            customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
+            authentication?: "GUEST" | "ALL" | "LOGGED_IN" | undefined;
+            customerType?: "RETURNING" | "ALL" | "NEW" | undefined;
             pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
             urlPatterns?: string[] | undefined;
             cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
@@ -2201,11 +2201,10 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         } | undefined;
     }>, {
         sortOrder: number;
-        promotionId: string | null;
-        position: "TOP" | "BOTTOM" | "BELOW_HEADER";
         state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         priority: number;
         timezone: string;
+        promotionId: string | null;
         messages: {
             style: {
                 emphasis: boolean;
@@ -2227,6 +2226,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             couponId?: string | null | undefined;
             countdownAt?: string | null | undefined;
         }[];
+        position: "TOP" | "BOTTOM" | "BELOW_HEADER";
         mode: "CAROUSEL" | "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "FREE_SHIPPING_PROGRESS";
         internalName: string;
         animation: {
@@ -2329,11 +2329,11 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             nextBannerId?: string | null | undefined;
         };
         targeting: {
-            categoryIds: string[];
             productIds: string[];
+            categoryIds: string[];
             devices: ("tablet" | "mobile" | "desktop")[];
-            authentication: "ALL" | "GUEST" | "LOGGED_IN";
-            customerType: "ALL" | "RETURNING" | "NEW";
+            authentication: "GUEST" | "ALL" | "LOGGED_IN";
+            customerType: "RETURNING" | "ALL" | "NEW";
             pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
             urlPatterns: string[];
             cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
@@ -2368,13 +2368,13 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         }[];
         internalName: string;
         sortOrder?: number | undefined;
-        promotionId?: string | null | undefined;
-        position?: "TOP" | "BOTTOM" | "BELOW_HEADER" | undefined;
         state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
         priority?: number | undefined;
         startsAt?: string | null | undefined;
         endsAt?: string | null | undefined;
         timezone?: string | undefined;
+        promotionId?: string | null | undefined;
+        position?: "TOP" | "BOTTOM" | "BELOW_HEADER" | undefined;
         mode?: "CAROUSEL" | "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "FREE_SHIPPING_PROGRESS" | undefined;
         animation?: {
             loop?: boolean | undefined;
@@ -2476,11 +2476,11 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             inheritPromotionSchedule?: boolean | undefined;
         } | undefined;
         targeting?: {
-            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
+            categoryIds?: string[] | undefined;
             devices?: ("tablet" | "mobile" | "desktop")[] | undefined;
-            authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
-            customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
+            authentication?: "GUEST" | "ALL" | "LOGGED_IN" | undefined;
+            customerType?: "RETURNING" | "ALL" | "NEW" | undefined;
             pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
             urlPatterns?: string[] | undefined;
             cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;
@@ -2494,11 +2494,10 @@ export declare const bannerTemplateSchema: z.ZodObject<{
     name: string;
     configuration: {
         sortOrder: number;
-        promotionId: string | null;
-        position: "TOP" | "BOTTOM" | "BELOW_HEADER";
         state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         priority: number;
         timezone: string;
+        promotionId: string | null;
         messages: {
             style: {
                 emphasis: boolean;
@@ -2520,6 +2519,7 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             couponId?: string | null | undefined;
             countdownAt?: string | null | undefined;
         }[];
+        position: "TOP" | "BOTTOM" | "BELOW_HEADER";
         mode: "CAROUSEL" | "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "FREE_SHIPPING_PROGRESS";
         internalName: string;
         animation: {
@@ -2622,11 +2622,11 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             nextBannerId?: string | null | undefined;
         };
         targeting: {
-            categoryIds: string[];
             productIds: string[];
+            categoryIds: string[];
             devices: ("tablet" | "mobile" | "desktop")[];
-            authentication: "ALL" | "GUEST" | "LOGGED_IN";
-            customerType: "ALL" | "RETURNING" | "NEW";
+            authentication: "GUEST" | "ALL" | "LOGGED_IN";
+            customerType: "RETURNING" | "ALL" | "NEW";
             pages: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[];
             urlPatterns: string[];
             cartState: "HAS_ITEMS" | "ANY" | "EMPTY";
@@ -2665,13 +2665,13 @@ export declare const bannerTemplateSchema: z.ZodObject<{
         }[];
         internalName: string;
         sortOrder?: number | undefined;
-        promotionId?: string | null | undefined;
-        position?: "TOP" | "BOTTOM" | "BELOW_HEADER" | undefined;
         state?: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED" | undefined;
         priority?: number | undefined;
         startsAt?: string | null | undefined;
         endsAt?: string | null | undefined;
         timezone?: string | undefined;
+        promotionId?: string | null | undefined;
+        position?: "TOP" | "BOTTOM" | "BELOW_HEADER" | undefined;
         mode?: "CAROUSEL" | "COUNTDOWN" | "STATIC" | "TICKER" | "ROTATING" | "FREE_SHIPPING_PROGRESS" | undefined;
         animation?: {
             loop?: boolean | undefined;
@@ -2773,11 +2773,11 @@ export declare const bannerTemplateSchema: z.ZodObject<{
             inheritPromotionSchedule?: boolean | undefined;
         } | undefined;
         targeting?: {
-            categoryIds?: string[] | undefined;
             productIds?: string[] | undefined;
+            categoryIds?: string[] | undefined;
             devices?: ("tablet" | "mobile" | "desktop")[] | undefined;
-            authentication?: "ALL" | "GUEST" | "LOGGED_IN" | undefined;
-            customerType?: "ALL" | "RETURNING" | "NEW" | undefined;
+            authentication?: "GUEST" | "ALL" | "LOGGED_IN" | undefined;
+            customerType?: "RETURNING" | "ALL" | "NEW" | undefined;
             pages?: ("HOME" | "OFFERS" | "CATEGORY" | "PRODUCT" | "CUSTOM" | "CATEGORIES" | "EVERYWHERE" | "PRODUCTS" | "COLLECTIONS" | "CART" | "CHECKOUT" | "ACCOUNT")[] | undefined;
             urlPatterns?: string[] | undefined;
             cartState?: "HAS_ITEMS" | "ANY" | "EMPTY" | undefined;

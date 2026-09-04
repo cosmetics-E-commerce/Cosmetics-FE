@@ -273,8 +273,8 @@ export declare const wishlistItemSchema: z.ZodObject<{
             stock: z.ZodNumber;
         }, "strip", z.ZodTypeAny, {
             id: string;
-            sku: string;
             price: number;
+            sku: string;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -297,8 +297,8 @@ export declare const wishlistItemSchema: z.ZodObject<{
             stock: number;
         }, {
             id: string;
-            sku: string;
             price: number;
+            sku: string;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -436,8 +436,8 @@ export declare const wishlistItemSchema: z.ZodObject<{
         basePrice: number;
         variants: {
             id: string;
-            sku: string;
             price: number;
+            sku: string;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -558,8 +558,8 @@ export declare const wishlistItemSchema: z.ZodObject<{
         basePrice: number;
         variants: {
             id: string;
-            sku: string;
             price: number;
+            sku: string;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -686,8 +686,8 @@ export declare const wishlistItemSchema: z.ZodObject<{
         basePrice: number;
         variants: {
             id: string;
-            sku: string;
             price: number;
+            sku: string;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -814,8 +814,8 @@ export declare const wishlistItemSchema: z.ZodObject<{
         basePrice: number;
         variants: {
             id: string;
-            sku: string;
             price: number;
+            sku: string;
             nameEn: string;
             nameAr: string;
             compareAtPrice: number | null;
@@ -1154,8 +1154,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 stock: z.ZodNumber;
             }, "strip", z.ZodTypeAny, {
                 id: string;
-                sku: string;
                 price: number;
+                sku: string;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -1178,8 +1178,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 stock: number;
             }, {
                 id: string;
-                sku: string;
                 price: number;
+                sku: string;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -1317,8 +1317,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             basePrice: number;
             variants: {
                 id: string;
-                sku: string;
                 price: number;
+                sku: string;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -1439,8 +1439,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             basePrice: number;
             variants: {
                 id: string;
-                sku: string;
                 price: number;
+                sku: string;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -1567,8 +1567,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             basePrice: number;
             variants: {
                 id: string;
-                sku: string;
                 price: number;
+                sku: string;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -1695,8 +1695,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             basePrice: number;
             variants: {
                 id: string;
-                sku: string;
                 price: number;
+                sku: string;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -1833,8 +1833,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             basePrice: number;
             variants: {
                 id: string;
-                sku: string;
                 price: number;
+                sku: string;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -1971,8 +1971,8 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             basePrice: number;
             variants: {
                 id: string;
-                sku: string;
                 price: number;
+                sku: string;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -2316,8 +2316,8 @@ export declare const wishlistSchema: z.ZodObject<{
                     stock: z.ZodNumber;
                 }, "strip", z.ZodTypeAny, {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -2340,8 +2340,8 @@ export declare const wishlistSchema: z.ZodObject<{
                     stock: number;
                 }, {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -2479,8 +2479,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 basePrice: number;
                 variants: {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -2601,8 +2601,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 basePrice: number;
                 variants: {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -2729,8 +2729,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 basePrice: number;
                 variants: {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -2857,8 +2857,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 basePrice: number;
                 variants: {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -2995,8 +2995,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 basePrice: number;
                 variants: {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -3133,8 +3133,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 basePrice: number;
                 variants: {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -3470,8 +3470,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 stock: z.ZodNumber;
             }, "strip", z.ZodTypeAny, {
                 id: string;
-                sku: string;
                 price: number;
+                sku: string;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -3494,8 +3494,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 stock: number;
             }, {
                 id: string;
-                sku: string;
                 price: number;
+                sku: string;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -3633,8 +3633,8 @@ export declare const wishlistSchema: z.ZodObject<{
             basePrice: number;
             variants: {
                 id: string;
-                sku: string;
                 price: number;
+                sku: string;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -3755,8 +3755,8 @@ export declare const wishlistSchema: z.ZodObject<{
             basePrice: number;
             variants: {
                 id: string;
-                sku: string;
                 price: number;
+                sku: string;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -3883,8 +3883,8 @@ export declare const wishlistSchema: z.ZodObject<{
             basePrice: number;
             variants: {
                 id: string;
-                sku: string;
                 price: number;
+                sku: string;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -4011,8 +4011,8 @@ export declare const wishlistSchema: z.ZodObject<{
             basePrice: number;
             variants: {
                 id: string;
-                sku: string;
                 price: number;
+                sku: string;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -4144,8 +4144,8 @@ export declare const wishlistSchema: z.ZodObject<{
             basePrice: number;
             variants: {
                 id: string;
-                sku: string;
                 price: number;
+                sku: string;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -4280,8 +4280,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 basePrice: number;
                 variants: {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -4415,8 +4415,8 @@ export declare const wishlistSchema: z.ZodObject<{
             basePrice: number;
             variants: {
                 id: string;
-                sku: string;
                 price: number;
+                sku: string;
                 nameEn: string;
                 nameAr: string;
                 compareAtPrice: number | null;
@@ -4551,8 +4551,8 @@ export declare const wishlistSchema: z.ZodObject<{
                 basePrice: number;
                 variants: {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -4902,8 +4902,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     stock: z.ZodNumber;
                 }, "strip", z.ZodTypeAny, {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -4926,8 +4926,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     stock: number;
                 }, {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -5065,8 +5065,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 basePrice: number;
                 variants: {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -5187,8 +5187,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 basePrice: number;
                 variants: {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -5315,8 +5315,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 basePrice: number;
                 variants: {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -5443,8 +5443,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 basePrice: number;
                 variants: {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -5584,8 +5584,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 basePrice: number;
                 variants: {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -5722,8 +5722,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 basePrice: number;
                 variants: {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -5865,8 +5865,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 basePrice: number;
                 variants: {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;
@@ -6008,8 +6008,8 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 basePrice: number;
                 variants: {
                     id: string;
-                    sku: string;
                     price: number;
+                    sku: string;
                     nameEn: string;
                     nameAr: string;
                     compareAtPrice: number | null;

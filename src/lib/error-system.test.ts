@@ -3,6 +3,29 @@ import { describe, expect, it } from "vitest";
 import { humanErrorMessage, normalizeStoreApiError } from "./error-system";
 
 describe("storefront human error registry", () => {
+  it.each([
+    ["PROMO_CODE_NOT_FOUND", "isn’t valid", "غير صالح"],
+    ["PROMO_CODE_EXPIRED", "expired", "انتهت صلاحية"],
+    ["PROMO_CODE_NOT_STARTED", "isn’t active yet", "غير نشط بعد"],
+    ["PROMO_CODE_EXHAUSTED", "usage limit", "حد الاستخدام"],
+    ["PROMO_CUSTOMER_LIMIT_REACHED", "maximum number", "الحد الأقصى"],
+    ["PROMO_NOT_APPLICABLE", "apply to your bag", "لا ينطبق على حقيبتك"],
+    ["PROMO_NOT_COMBINABLE", "current offer", "العرض الحالي"],
+    ["PROMO_LOGIN_REQUIRED", "Sign in", "سجّلي الدخول"],
+  ])("localizes promo failure %s", (code, english, arabic) => {
+    expect(humanErrorMessage(normalizeStoreApiError({ code }, 409, "en"), "en")).toContain(english);
+    expect(humanErrorMessage(normalizeStoreApiError({ code }, 409, "ar"), "ar")).toContain(arabic);
+  });
+
+  it("formats authoritative minimum-spend remainder from piastres", () => {
+    const error = normalizeStoreApiError(
+      { code: "PROMO_MIN_SPEND_NOT_MET", details: { amountRemaining: 25_000 } },
+      409,
+      "en",
+    );
+    expect(humanErrorMessage(error, "en")).toContain("EGP 250");
+  });
+
   it("explains coupon minimums using authoritative structured values", () => {
     const error = normalizeStoreApiError(
       {

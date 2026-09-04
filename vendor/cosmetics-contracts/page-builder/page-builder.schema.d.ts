@@ -5589,8 +5589,8 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
     };
     label: string;
     width: "WIDE" | "CONTENT" | "FULL";
-    enabled: boolean;
     categoryIds: string[];
+    enabled: boolean;
     visibility: {
         startsAt: string | null;
         endsAt: string | null;
@@ -5640,8 +5640,8 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
     analyticsKey: string;
     limit?: number | undefined;
     width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-    enabled?: boolean | undefined;
     categoryIds?: string[] | undefined;
+    enabled?: boolean | undefined;
     schemaVersion?: number | undefined;
     spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
     layout?: "COMPACT" | "CARDS" | "EDITORIAL" | "IMAGE_TILES" | undefined;
@@ -5772,8 +5772,8 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
     };
     label: string;
     width: "WIDE" | "CONTENT" | "FULL";
-    enabled: boolean;
     brandIds: string[];
+    enabled: boolean;
     visibility: {
         startsAt: string | null;
         endsAt: string | null;
@@ -5822,8 +5822,8 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
     analyticsKey: string;
     limit?: number | undefined;
     width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-    enabled?: boolean | undefined;
     brandIds?: string[] | undefined;
+    enabled?: boolean | undefined;
     mode?: "MANUAL" | "FEATURED" | undefined;
     schemaVersion?: number | undefined;
     spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -7689,8 +7689,8 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
     };
     label: string;
     width: "WIDE" | "CONTENT" | "FULL";
-    enabled: boolean;
     endsAt: string;
+    enabled: boolean;
     visibility: {
         startsAt: string | null;
         endsAt: string | null;
@@ -13325,8 +13325,8 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         categoryIds: string[];
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -13376,8 +13376,8 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         analyticsKey: string;
         limit?: number | undefined;
         width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-        enabled?: boolean | undefined;
         categoryIds?: string[] | undefined;
+        enabled?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         layout?: "COMPACT" | "CARDS" | "EDITORIAL" | "IMAGE_TILES" | undefined;
@@ -13508,8 +13508,8 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         brandIds: string[];
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -13558,8 +13558,8 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         analyticsKey: string;
         limit?: number | undefined;
         width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-        enabled?: boolean | undefined;
         brandIds?: string[] | undefined;
+        enabled?: boolean | undefined;
         mode?: "MANUAL" | "FEATURED" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -15425,8 +15425,8 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         endsAt: string;
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -17764,8 +17764,8 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         categoryIds: string[];
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -17804,8 +17804,8 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         brandIds: string[];
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -18201,8 +18201,8 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         endsAt: string;
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -19246,8 +19246,8 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         analyticsKey: string;
         limit?: number | undefined;
         width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-        enabled?: boolean | undefined;
         categoryIds?: string[] | undefined;
+        enabled?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         layout?: "COMPACT" | "CARDS" | "EDITORIAL" | "IMAGE_TILES" | undefined;
@@ -19286,8 +19286,8 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         analyticsKey: string;
         limit?: number | undefined;
         width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-        enabled?: boolean | undefined;
         brandIds?: string[] | undefined;
+        enabled?: boolean | undefined;
         mode?: "MANUAL" | "FEATURED" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -20706,8 +20706,8 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         categoryIds: string[];
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -20746,8 +20746,8 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         brandIds: string[];
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -21143,8 +21143,8 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         endsAt: string;
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -22188,8 +22188,8 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         analyticsKey: string;
         limit?: number | undefined;
         width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-        enabled?: boolean | undefined;
         categoryIds?: string[] | undefined;
+        enabled?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         layout?: "COMPACT" | "CARDS" | "EDITORIAL" | "IMAGE_TILES" | undefined;
@@ -22228,8 +22228,8 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
         analyticsKey: string;
         limit?: number | undefined;
         width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-        enabled?: boolean | undefined;
         brandIds?: string[] | undefined;
+        enabled?: boolean | undefined;
         mode?: "MANUAL" | "FEATURED" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -26926,8 +26926,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             };
             label: string;
             width: "WIDE" | "CONTENT" | "FULL";
-            enabled: boolean;
             categoryIds: string[];
+            enabled: boolean;
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -26977,8 +26977,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             analyticsKey: string;
             limit?: number | undefined;
             width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-            enabled?: boolean | undefined;
             categoryIds?: string[] | undefined;
+            enabled?: boolean | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             layout?: "COMPACT" | "CARDS" | "EDITORIAL" | "IMAGE_TILES" | undefined;
@@ -27109,8 +27109,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             };
             label: string;
             width: "WIDE" | "CONTENT" | "FULL";
-            enabled: boolean;
             brandIds: string[];
+            enabled: boolean;
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -27159,8 +27159,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             analyticsKey: string;
             limit?: number | undefined;
             width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-            enabled?: boolean | undefined;
             brandIds?: string[] | undefined;
+            enabled?: boolean | undefined;
             mode?: "MANUAL" | "FEATURED" | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -29026,8 +29026,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             };
             label: string;
             width: "WIDE" | "CONTENT" | "FULL";
-            enabled: boolean;
             endsAt: string;
+            enabled: boolean;
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -31365,8 +31365,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             };
             label: string;
             width: "WIDE" | "CONTENT" | "FULL";
-            enabled: boolean;
             categoryIds: string[];
+            enabled: boolean;
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -31405,8 +31405,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             };
             label: string;
             width: "WIDE" | "CONTENT" | "FULL";
-            enabled: boolean;
             brandIds: string[];
+            enabled: boolean;
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -31802,8 +31802,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             };
             label: string;
             width: "WIDE" | "CONTENT" | "FULL";
-            enabled: boolean;
             endsAt: string;
+            enabled: boolean;
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -32847,8 +32847,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             analyticsKey: string;
             limit?: number | undefined;
             width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-            enabled?: boolean | undefined;
             categoryIds?: string[] | undefined;
+            enabled?: boolean | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             layout?: "COMPACT" | "CARDS" | "EDITORIAL" | "IMAGE_TILES" | undefined;
@@ -32887,8 +32887,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             analyticsKey: string;
             limit?: number | undefined;
             width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-            enabled?: boolean | undefined;
             brandIds?: string[] | undefined;
+            enabled?: boolean | undefined;
             mode?: "MANUAL" | "FEATURED" | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -34307,8 +34307,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             };
             label: string;
             width: "WIDE" | "CONTENT" | "FULL";
-            enabled: boolean;
             categoryIds: string[];
+            enabled: boolean;
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -34347,8 +34347,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             };
             label: string;
             width: "WIDE" | "CONTENT" | "FULL";
-            enabled: boolean;
             brandIds: string[];
+            enabled: boolean;
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -34744,8 +34744,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             };
             label: string;
             width: "WIDE" | "CONTENT" | "FULL";
-            enabled: boolean;
             endsAt: string;
+            enabled: boolean;
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -35789,8 +35789,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             analyticsKey: string;
             limit?: number | undefined;
             width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-            enabled?: boolean | undefined;
             categoryIds?: string[] | undefined;
+            enabled?: boolean | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             layout?: "COMPACT" | "CARDS" | "EDITORIAL" | "IMAGE_TILES" | undefined;
@@ -35829,8 +35829,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             analyticsKey: string;
             limit?: number | undefined;
             width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-            enabled?: boolean | undefined;
             brandIds?: string[] | undefined;
+            enabled?: boolean | undefined;
             mode?: "MANUAL" | "FEATURED" | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -37254,8 +37254,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             };
             label: string;
             width: "WIDE" | "CONTENT" | "FULL";
-            enabled: boolean;
             categoryIds: string[];
+            enabled: boolean;
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -37294,8 +37294,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             };
             label: string;
             width: "WIDE" | "CONTENT" | "FULL";
-            enabled: boolean;
             brandIds: string[];
+            enabled: boolean;
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -37691,8 +37691,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             };
             label: string;
             width: "WIDE" | "CONTENT" | "FULL";
-            enabled: boolean;
             endsAt: string;
+            enabled: boolean;
             visibility: {
                 startsAt: string | null;
                 endsAt: string | null;
@@ -38741,8 +38741,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             analyticsKey: string;
             limit?: number | undefined;
             width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-            enabled?: boolean | undefined;
             categoryIds?: string[] | undefined;
+            enabled?: boolean | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             layout?: "COMPACT" | "CARDS" | "EDITORIAL" | "IMAGE_TILES" | undefined;
@@ -38781,8 +38781,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
             analyticsKey: string;
             limit?: number | undefined;
             width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-            enabled?: boolean | undefined;
             brandIds?: string[] | undefined;
+            enabled?: boolean | undefined;
             mode?: "MANUAL" | "FEATURED" | undefined;
             schemaVersion?: number | undefined;
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -39552,11 +39552,11 @@ export declare const landingPageListQuerySchema: z.ZodObject<{
     sortBy: "NAME" | "UPDATED_AT" | "STATUS" | "PUBLISHED_AT";
     sortOrder: "asc" | "desc";
     type?: "BUNDLE" | "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "SEASONAL" | "HOMEPAGE" | "CAMPAIGN" | "OFFER" | "COLLECTION" | undefined;
-    status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "SCHEDULED" | undefined;
+    status?: "ARCHIVED" | "DRAFT" | "SCHEDULED" | "PUBLISHED" | undefined;
     search?: string | undefined;
 }, {
     type?: "BUNDLE" | "CATEGORY" | "BRAND" | "CONCERN" | "CUSTOM" | "SEASONAL" | "HOMEPAGE" | "CAMPAIGN" | "OFFER" | "COLLECTION" | undefined;
-    status?: "ARCHIVED" | "DRAFT" | "PUBLISHED" | "SCHEDULED" | undefined;
+    status?: "ARCHIVED" | "DRAFT" | "SCHEDULED" | "PUBLISHED" | undefined;
     page?: number | undefined;
     limit?: number | undefined;
     sortBy?: "NAME" | "UPDATED_AT" | "STATUS" | "PUBLISHED_AT" | undefined;
@@ -43588,8 +43588,8 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         categoryIds: string[];
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -43639,8 +43639,8 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
         analyticsKey: string;
         limit?: number | undefined;
         width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-        enabled?: boolean | undefined;
         categoryIds?: string[] | undefined;
+        enabled?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         layout?: "COMPACT" | "CARDS" | "EDITORIAL" | "IMAGE_TILES" | undefined;
@@ -43771,8 +43771,8 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         brandIds: string[];
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -43821,8 +43821,8 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
         analyticsKey: string;
         limit?: number | undefined;
         width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-        enabled?: boolean | undefined;
         brandIds?: string[] | undefined;
+        enabled?: boolean | undefined;
         mode?: "MANUAL" | "FEATURED" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -45688,8 +45688,8 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         endsAt: string;
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -48010,8 +48010,8 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         categoryIds: string[];
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -48050,8 +48050,8 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         brandIds: string[];
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -48447,8 +48447,8 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         endsAt: string;
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -49475,8 +49475,8 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
         analyticsKey: string;
         limit?: number | undefined;
         width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-        enabled?: boolean | undefined;
         categoryIds?: string[] | undefined;
+        enabled?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         layout?: "COMPACT" | "CARDS" | "EDITORIAL" | "IMAGE_TILES" | undefined;
@@ -49515,8 +49515,8 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
         analyticsKey: string;
         limit?: number | undefined;
         width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-        enabled?: boolean | undefined;
         brandIds?: string[] | undefined;
+        enabled?: boolean | undefined;
         mode?: "MANUAL" | "FEATURED" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -54126,8 +54126,8 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         categoryIds: string[];
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -54177,8 +54177,8 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
         analyticsKey: string;
         limit?: number | undefined;
         width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-        enabled?: boolean | undefined;
         categoryIds?: string[] | undefined;
+        enabled?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         layout?: "COMPACT" | "CARDS" | "EDITORIAL" | "IMAGE_TILES" | undefined;
@@ -54309,8 +54309,8 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         brandIds: string[];
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -54359,8 +54359,8 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
         analyticsKey: string;
         limit?: number | undefined;
         width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-        enabled?: boolean | undefined;
         brandIds?: string[] | undefined;
+        enabled?: boolean | undefined;
         mode?: "MANUAL" | "FEATURED" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
@@ -56226,8 +56226,8 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         endsAt: string;
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -58548,8 +58548,8 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         categoryIds: string[];
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -58588,8 +58588,8 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         brandIds: string[];
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -58985,8 +58985,8 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
         };
         label: string;
         width: "WIDE" | "CONTENT" | "FULL";
-        enabled: boolean;
         endsAt: string;
+        enabled: boolean;
         visibility: {
             startsAt: string | null;
             endsAt: string | null;
@@ -60014,8 +60014,8 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
         analyticsKey: string;
         limit?: number | undefined;
         width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-        enabled?: boolean | undefined;
         categoryIds?: string[] | undefined;
+        enabled?: boolean | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         layout?: "COMPACT" | "CARDS" | "EDITORIAL" | "IMAGE_TILES" | undefined;
@@ -60054,8 +60054,8 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
         analyticsKey: string;
         limit?: number | undefined;
         width?: "WIDE" | "CONTENT" | "FULL" | undefined;
-        enabled?: boolean | undefined;
         brandIds?: string[] | undefined;
+        enabled?: boolean | undefined;
         mode?: "MANUAL" | "FEATURED" | undefined;
         schemaVersion?: number | undefined;
         spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;

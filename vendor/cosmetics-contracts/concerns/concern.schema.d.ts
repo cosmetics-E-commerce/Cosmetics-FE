@@ -917,8 +917,8 @@ export declare const createConcernSchema: z.ZodObject<{
     pageId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
 }, "strict", z.ZodTypeAny, {
     sortOrder: number;
-    slug: string;
     featured: boolean;
+    slug: string;
     config: {
         name: {
             en: string;
@@ -1078,8 +1078,8 @@ export declare const createConcernSchema: z.ZodObject<{
 }>;
 export declare const updateConcernDraftSchema: z.ZodObject<{
     sortOrder: z.ZodOptional<z.ZodDefault<z.ZodNumber>>;
-    slug: z.ZodOptional<z.ZodString>;
     featured: z.ZodOptional<z.ZodDefault<z.ZodBoolean>>;
+    slug: z.ZodOptional<z.ZodString>;
     config: z.ZodOptional<z.ZodObject<{
         schemaVersion: z.ZodDefault<z.ZodLiteral<1>>;
         name: z.ZodObject<{} & {
@@ -1467,8 +1467,8 @@ export declare const updateConcernDraftSchema: z.ZodObject<{
 }, "strict", z.ZodTypeAny, {
     expectedRevision: number;
     sortOrder?: number | undefined;
-    slug?: string | undefined;
     featured?: boolean | undefined;
+    slug?: string | undefined;
     config?: {
         name: {
             en: string;
@@ -1548,8 +1548,8 @@ export declare const updateConcernDraftSchema: z.ZodObject<{
 }, {
     expectedRevision: number;
     sortOrder?: number | undefined;
-    slug?: string | undefined;
     featured?: boolean | undefined;
+    slug?: string | undefined;
     config?: {
         name: {
             en?: string | undefined;
@@ -1866,10 +1866,10 @@ export declare const concernSummarySchema: z.ZodObject<{
         en: string;
         ar: string;
     };
-    slug: string;
     featured: boolean;
-    productCount: number;
     state: "ACTIVE" | "ARCHIVED" | "DRAFT";
+    slug: string;
+    productCount: number;
     kind: "CONCERN" | "SKIN_TYPE";
     internalName: string;
     shortDescription: {
@@ -1891,10 +1891,10 @@ export declare const concernSummarySchema: z.ZodObject<{
         en?: string | undefined;
         ar?: string | undefined;
     };
-    slug: string;
     featured: boolean;
-    productCount: number;
     state: "ACTIVE" | "ARCHIVED" | "DRAFT";
+    slug: string;
+    productCount: number;
     kind: "CONCERN" | "SKIN_TYPE";
     internalName: string;
     shortDescription: {
@@ -1955,10 +1955,10 @@ export declare const concernListResponseSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        slug: string;
         featured: boolean;
-        productCount: number;
         state: "ACTIVE" | "ARCHIVED" | "DRAFT";
+        slug: string;
+        productCount: number;
         kind: "CONCERN" | "SKIN_TYPE";
         internalName: string;
         shortDescription: {
@@ -1980,10 +1980,10 @@ export declare const concernListResponseSchema: z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
-        slug: string;
         featured: boolean;
-        productCount: number;
         state: "ACTIVE" | "ARCHIVED" | "DRAFT";
+        slug: string;
+        productCount: number;
         kind: "CONCERN" | "SKIN_TYPE";
         internalName: string;
         shortDescription: {
@@ -2029,10 +2029,10 @@ export declare const concernListResponseSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        slug: string;
         featured: boolean;
-        productCount: number;
         state: "ACTIVE" | "ARCHIVED" | "DRAFT";
+        slug: string;
+        productCount: number;
         kind: "CONCERN" | "SKIN_TYPE";
         internalName: string;
         shortDescription: {
@@ -2064,10 +2064,10 @@ export declare const concernListResponseSchema: z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
-        slug: string;
         featured: boolean;
-        productCount: number;
         state: "ACTIVE" | "ARCHIVED" | "DRAFT";
+        slug: string;
+        productCount: number;
         kind: "CONCERN" | "SKIN_TYPE";
         internalName: string;
         shortDescription: {

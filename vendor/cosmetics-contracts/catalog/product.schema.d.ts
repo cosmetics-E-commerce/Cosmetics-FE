@@ -581,15 +581,15 @@ export declare const createProductSchema: z.ZodEffects<z.ZodEffects<z.ZodEffects
     width?: number | undefined;
     height?: number | undefined;
     weight?: number | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
+    brandId?: string | undefined;
     slug?: string | undefined;
     descriptionEn?: string | undefined;
     descriptionAr?: string | undefined;
     shortDescriptionEn?: string | undefined;
     shortDescriptionAr?: string | undefined;
     compareAtPrice?: number | undefined;
-    categoryIds?: string[] | undefined;
-    categoryId?: string | undefined;
-    brandId?: string | undefined;
     ingredients?: string | undefined;
     howToUse?: string | undefined;
     howToUseEn?: string | undefined;
@@ -641,6 +641,9 @@ export declare const createProductSchema: z.ZodEffects<z.ZodEffects<z.ZodEffects
     width?: number | undefined;
     height?: number | undefined;
     weight?: number | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
+    brandId?: string | undefined;
     isActive?: boolean | undefined;
     slug?: string | undefined;
     descriptionEn?: string | undefined;
@@ -648,9 +651,6 @@ export declare const createProductSchema: z.ZodEffects<z.ZodEffects<z.ZodEffects
     shortDescriptionEn?: string | undefined;
     shortDescriptionAr?: string | undefined;
     compareAtPrice?: number | undefined;
-    categoryIds?: string[] | undefined;
-    categoryId?: string | undefined;
-    brandId?: string | undefined;
     ingredients?: string | undefined;
     howToUse?: string | undefined;
     howToUseEn?: string | undefined;
@@ -721,15 +721,15 @@ export declare const createProductSchema: z.ZodEffects<z.ZodEffects<z.ZodEffects
     width?: number | undefined;
     height?: number | undefined;
     weight?: number | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
+    brandId?: string | undefined;
     slug?: string | undefined;
     descriptionEn?: string | undefined;
     descriptionAr?: string | undefined;
     shortDescriptionEn?: string | undefined;
     shortDescriptionAr?: string | undefined;
     compareAtPrice?: number | undefined;
-    categoryIds?: string[] | undefined;
-    categoryId?: string | undefined;
-    brandId?: string | undefined;
     ingredients?: string | undefined;
     howToUse?: string | undefined;
     howToUseEn?: string | undefined;
@@ -781,6 +781,9 @@ export declare const createProductSchema: z.ZodEffects<z.ZodEffects<z.ZodEffects
     width?: number | undefined;
     height?: number | undefined;
     weight?: number | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
+    brandId?: string | undefined;
     isActive?: boolean | undefined;
     slug?: string | undefined;
     descriptionEn?: string | undefined;
@@ -788,9 +791,6 @@ export declare const createProductSchema: z.ZodEffects<z.ZodEffects<z.ZodEffects
     shortDescriptionEn?: string | undefined;
     shortDescriptionAr?: string | undefined;
     compareAtPrice?: number | undefined;
-    categoryIds?: string[] | undefined;
-    categoryId?: string | undefined;
-    brandId?: string | undefined;
     ingredients?: string | undefined;
     howToUse?: string | undefined;
     howToUseEn?: string | undefined;
@@ -861,15 +861,15 @@ export declare const createProductSchema: z.ZodEffects<z.ZodEffects<z.ZodEffects
     width?: number | undefined;
     height?: number | undefined;
     weight?: number | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
+    brandId?: string | undefined;
     slug?: string | undefined;
     descriptionEn?: string | undefined;
     descriptionAr?: string | undefined;
     shortDescriptionEn?: string | undefined;
     shortDescriptionAr?: string | undefined;
     compareAtPrice?: number | undefined;
-    categoryIds?: string[] | undefined;
-    categoryId?: string | undefined;
-    brandId?: string | undefined;
     ingredients?: string | undefined;
     howToUse?: string | undefined;
     howToUseEn?: string | undefined;
@@ -921,6 +921,9 @@ export declare const createProductSchema: z.ZodEffects<z.ZodEffects<z.ZodEffects
     width?: number | undefined;
     height?: number | undefined;
     weight?: number | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
+    brandId?: string | undefined;
     isActive?: boolean | undefined;
     slug?: string | undefined;
     descriptionEn?: string | undefined;
@@ -928,9 +931,6 @@ export declare const createProductSchema: z.ZodEffects<z.ZodEffects<z.ZodEffects
     shortDescriptionEn?: string | undefined;
     shortDescriptionAr?: string | undefined;
     compareAtPrice?: number | undefined;
-    categoryIds?: string[] | undefined;
-    categoryId?: string | undefined;
-    brandId?: string | undefined;
     ingredients?: string | undefined;
     howToUse?: string | undefined;
     howToUseEn?: string | undefined;
@@ -1001,15 +1001,15 @@ export declare const createProductSchema: z.ZodEffects<z.ZodEffects<z.ZodEffects
     width?: number | undefined;
     height?: number | undefined;
     weight?: number | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
+    brandId?: string | undefined;
     slug?: string | undefined;
     descriptionEn?: string | undefined;
     descriptionAr?: string | undefined;
     shortDescriptionEn?: string | undefined;
     shortDescriptionAr?: string | undefined;
     compareAtPrice?: number | undefined;
-    categoryIds?: string[] | undefined;
-    categoryId?: string | undefined;
-    brandId?: string | undefined;
     ingredients?: string | undefined;
     howToUse?: string | undefined;
     howToUseEn?: string | undefined;
@@ -1061,6 +1061,9 @@ export declare const createProductSchema: z.ZodEffects<z.ZodEffects<z.ZodEffects
     width?: number | undefined;
     height?: number | undefined;
     weight?: number | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
+    brandId?: string | undefined;
     isActive?: boolean | undefined;
     slug?: string | undefined;
     descriptionEn?: string | undefined;
@@ -1068,9 +1071,6 @@ export declare const createProductSchema: z.ZodEffects<z.ZodEffects<z.ZodEffects
     shortDescriptionEn?: string | undefined;
     shortDescriptionAr?: string | undefined;
     compareAtPrice?: number | undefined;
-    categoryIds?: string[] | undefined;
-    categoryId?: string | undefined;
-    brandId?: string | undefined;
     ingredients?: string | undefined;
     howToUse?: string | undefined;
     howToUseEn?: string | undefined;
@@ -1525,6 +1525,9 @@ export declare const updateProductSchema: z.ZodEffects<z.ZodObject<{
     width?: number | null | undefined;
     height?: number | null | undefined;
     weight?: number | null | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
+    brandId?: string | null | undefined;
     isActive?: boolean | undefined;
     slug?: string | undefined;
     descriptionEn?: string | undefined;
@@ -1534,9 +1537,6 @@ export declare const updateProductSchema: z.ZodEffects<z.ZodObject<{
     nameEn?: string | undefined;
     nameAr?: string | undefined;
     compareAtPrice?: number | null | undefined;
-    categoryIds?: string[] | undefined;
-    categoryId?: string | undefined;
-    brandId?: string | null | undefined;
     ingredients?: string | undefined;
     howToUse?: string | undefined;
     howToUseEn?: string | null | undefined;
@@ -1613,6 +1613,9 @@ export declare const updateProductSchema: z.ZodEffects<z.ZodObject<{
     width?: number | null | undefined;
     height?: number | null | undefined;
     weight?: number | null | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
+    brandId?: string | null | undefined;
     isActive?: boolean | undefined;
     slug?: string | undefined;
     descriptionEn?: string | undefined;
@@ -1622,9 +1625,6 @@ export declare const updateProductSchema: z.ZodEffects<z.ZodObject<{
     nameEn?: string | undefined;
     nameAr?: string | undefined;
     compareAtPrice?: number | null | undefined;
-    categoryIds?: string[] | undefined;
-    categoryId?: string | undefined;
-    brandId?: string | null | undefined;
     ingredients?: string | undefined;
     howToUse?: string | undefined;
     howToUseEn?: string | null | undefined;
@@ -1701,6 +1701,9 @@ export declare const updateProductSchema: z.ZodEffects<z.ZodObject<{
     width?: number | null | undefined;
     height?: number | null | undefined;
     weight?: number | null | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
+    brandId?: string | null | undefined;
     isActive?: boolean | undefined;
     slug?: string | undefined;
     descriptionEn?: string | undefined;
@@ -1710,9 +1713,6 @@ export declare const updateProductSchema: z.ZodEffects<z.ZodObject<{
     nameEn?: string | undefined;
     nameAr?: string | undefined;
     compareAtPrice?: number | null | undefined;
-    categoryIds?: string[] | undefined;
-    categoryId?: string | undefined;
-    brandId?: string | null | undefined;
     ingredients?: string | undefined;
     howToUse?: string | undefined;
     howToUseEn?: string | null | undefined;
@@ -1789,6 +1789,9 @@ export declare const updateProductSchema: z.ZodEffects<z.ZodObject<{
     width?: number | null | undefined;
     height?: number | null | undefined;
     weight?: number | null | undefined;
+    categoryIds?: string[] | undefined;
+    categoryId?: string | undefined;
+    brandId?: string | null | undefined;
     isActive?: boolean | undefined;
     slug?: string | undefined;
     descriptionEn?: string | undefined;
@@ -1798,9 +1801,6 @@ export declare const updateProductSchema: z.ZodEffects<z.ZodObject<{
     nameEn?: string | undefined;
     nameAr?: string | undefined;
     compareAtPrice?: number | null | undefined;
-    categoryIds?: string[] | undefined;
-    categoryId?: string | undefined;
-    brandId?: string | null | undefined;
     ingredients?: string | undefined;
     howToUse?: string | undefined;
     howToUseEn?: string | null | undefined;
@@ -1886,48 +1886,48 @@ export declare const receiveBatchSchema: z.ZodEffects<z.ZodEffects<z.ZodObject<{
     quantity: z.ZodNumber;
     costPrice: z.ZodNumber;
 }, "strip", z.ZodTypeAny, {
-    variantId: string;
     quantity: number;
+    variantId: string;
     expiresAt: Date;
     costPrice: number;
     batchNumber: string;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }, {
-    variantId: string;
     quantity: number;
+    variantId: string;
     expiresAt: Date;
     costPrice: number;
     batchNumber: string;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }>, {
-    variantId: string;
     quantity: number;
+    variantId: string;
     expiresAt: Date;
     costPrice: number;
     batchNumber: string;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }, {
-    variantId: string;
     quantity: number;
+    variantId: string;
     expiresAt: Date;
     costPrice: number;
     batchNumber: string;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }>, {
-    variantId: string;
     quantity: number;
+    variantId: string;
     expiresAt: Date;
     costPrice: number;
     batchNumber: string;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }, {
-    variantId: string;
     quantity: number;
+    variantId: string;
     expiresAt: Date;
     costPrice: number;
     batchNumber: string;
@@ -2722,8 +2722,8 @@ export declare const publicProductVariantSchema: z.ZodObject<{
     stock: z.ZodNumber;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    sku: string;
     price: number;
+    sku: string;
     nameEn: string;
     nameAr: string;
     compareAtPrice: number | null;
@@ -2746,8 +2746,8 @@ export declare const publicProductVariantSchema: z.ZodObject<{
     stock: number;
 }, {
     id: string;
-    sku: string;
     price: number;
+    sku: string;
     nameEn: string;
     nameAr: string;
     compareAtPrice: number | null;
@@ -3006,8 +3006,8 @@ export declare const publicProductSchema: z.ZodObject<{
         stock: z.ZodNumber;
     }, "strip", z.ZodTypeAny, {
         id: string;
-        sku: string;
         price: number;
+        sku: string;
         nameEn: string;
         nameAr: string;
         compareAtPrice: number | null;
@@ -3030,8 +3030,8 @@ export declare const publicProductSchema: z.ZodObject<{
         stock: number;
     }, {
         id: string;
-        sku: string;
         price: number;
+        sku: string;
         nameEn: string;
         nameAr: string;
         compareAtPrice: number | null;
@@ -3169,8 +3169,8 @@ export declare const publicProductSchema: z.ZodObject<{
     basePrice: number;
     variants: {
         id: string;
-        sku: string;
         price: number;
+        sku: string;
         nameEn: string;
         nameAr: string;
         compareAtPrice: number | null;
@@ -3291,8 +3291,8 @@ export declare const publicProductSchema: z.ZodObject<{
     basePrice: number;
     variants: {
         id: string;
-        sku: string;
         price: number;
+        sku: string;
         nameEn: string;
         nameAr: string;
         compareAtPrice: number | null;
@@ -3443,8 +3443,8 @@ export declare const adminProductVariantSchema: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     id: string;
     createdAt: Date;
-    sku: string;
     price: number;
+    sku: string;
     isActive: boolean;
     nameEn: string;
     nameAr: string;
@@ -3471,8 +3471,8 @@ export declare const adminProductVariantSchema: z.ZodObject<{
 }, {
     id: string;
     createdAt: Date;
-    sku: string;
     price: number;
+    sku: string;
     isActive: boolean;
     nameEn: string;
     nameAr: string;
@@ -3840,8 +3840,8 @@ export declare const adminProductSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         id: string;
         createdAt: Date;
-        sku: string;
         price: number;
+        sku: string;
         isActive: boolean;
         nameEn: string;
         nameAr: string;
@@ -3868,8 +3868,8 @@ export declare const adminProductSchema: z.ZodObject<{
     }, {
         id: string;
         createdAt: Date;
-        sku: string;
         price: number;
+        sku: string;
         isActive: boolean;
         nameEn: string;
         nameAr: string;
@@ -3960,8 +3960,8 @@ export declare const adminProductSchema: z.ZodObject<{
     variants: {
         id: string;
         createdAt: Date;
-        sku: string;
         price: number;
+        sku: string;
         isActive: boolean;
         nameEn: string;
         nameAr: string;
@@ -4096,8 +4096,8 @@ export declare const adminProductSchema: z.ZodObject<{
     variants: {
         id: string;
         createdAt: Date;
-        sku: string;
         price: number;
+        sku: string;
         isActive: boolean;
         nameEn: string;
         nameAr: string;

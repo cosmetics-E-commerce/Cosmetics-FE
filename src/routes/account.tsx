@@ -491,6 +491,12 @@ function Account() {
                   {orders.data.map((order) => {
                     const status = getOrderStatusCopy(order.status, locale);
                     const paymentNeeded = canCompletePayment(order);
+                    const couponPromotion = order.appliedPromotions.find(
+                      (promotion) => promotion.couponCode,
+                    );
+                    const couponDiscount = couponPromotion
+                      ? couponPromotion.discountAmount + couponPromotion.shippingDiscount
+                      : 0;
                     return (
                       <li key={order.id} className="account-orders__item">
                         <div className="account-orders__index" aria-hidden="true">
@@ -505,6 +511,20 @@ function Account() {
                               timeZone: "Africa/Cairo",
                             }).format(new Date(order.placedAt))}
                           </p>
+                          {couponPromotion?.couponCode && (
+                            <dl className="account-orders__promo">
+                              <div>
+                                <dt>{locale === "ar" ? "رمز الخصم" : "Promo Code"}</dt>
+                                <dd>
+                                  <bdi>{couponPromotion.couponCode}</bdi>
+                                </dd>
+                              </div>
+                              <div>
+                                <dt>{locale === "ar" ? "الخصم" : "Discount"}</dt>
+                                <dd>-{formatPrice(couponDiscount / 100)}</dd>
+                              </div>
+                            </dl>
+                          )}
                         </div>
                         <div className="account-orders__status">
                           <span>{status.label}</span>

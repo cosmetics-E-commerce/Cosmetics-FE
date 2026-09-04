@@ -603,6 +603,8 @@ export declare const dynamicBundleDefinitionSchema: z.ZodEffects<z.ZodObject<{
         en: string;
         ar: string;
     };
+    stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
+    combinableWith: string[];
     discount: {
         type: "PERCENT_OFF";
         basisPoints: number;
@@ -625,8 +627,6 @@ export declare const dynamicBundleDefinitionSchema: z.ZodEffects<z.ZodObject<{
         en: string;
         ar: string;
     };
-    stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
-    combinableWith: string[];
     presentation: {
         indexable: boolean;
         badge: {
@@ -690,6 +690,7 @@ export declare const dynamicBundleDefinitionSchema: z.ZodEffects<z.ZodObject<{
         en?: string | undefined;
         ar?: string | undefined;
     };
+    stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
     discount: {
         type: "PERCENT_OFF";
         basisPoints: number;
@@ -712,7 +713,6 @@ export declare const dynamicBundleDefinitionSchema: z.ZodEffects<z.ZodObject<{
         en?: string | undefined;
         ar?: string | undefined;
     };
-    stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
     terms: {
         en?: string | undefined;
         ar?: string | undefined;
@@ -779,6 +779,8 @@ export declare const dynamicBundleDefinitionSchema: z.ZodEffects<z.ZodObject<{
         en: string;
         ar: string;
     };
+    stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
+    combinableWith: string[];
     discount: {
         type: "PERCENT_OFF";
         basisPoints: number;
@@ -801,8 +803,6 @@ export declare const dynamicBundleDefinitionSchema: z.ZodEffects<z.ZodObject<{
         en: string;
         ar: string;
     };
-    stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
-    combinableWith: string[];
     presentation: {
         indexable: boolean;
         badge: {
@@ -866,6 +866,7 @@ export declare const dynamicBundleDefinitionSchema: z.ZodEffects<z.ZodObject<{
         en?: string | undefined;
         ar?: string | undefined;
     };
+    stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
     discount: {
         type: "PERCENT_OFF";
         basisPoints: number;
@@ -888,7 +889,6 @@ export declare const dynamicBundleDefinitionSchema: z.ZodEffects<z.ZodObject<{
         en?: string | undefined;
         ar?: string | undefined;
     };
-    stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
     terms: {
         en?: string | undefined;
         ar?: string | undefined;
@@ -1289,6 +1289,8 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
+        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
+        combinableWith: string[];
         discount: {
             type: "PERCENT_OFF";
             basisPoints: number;
@@ -1311,8 +1313,6 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
-        combinableWith: string[];
         presentation: {
             indexable: boolean;
             badge: {
@@ -1376,6 +1376,7 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
+        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         discount: {
             type: "PERCENT_OFF";
             basisPoints: number;
@@ -1398,7 +1399,6 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
-        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         terms: {
             en?: string | undefined;
             ar?: string | undefined;
@@ -1465,6 +1465,8 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
+        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
+        combinableWith: string[];
         discount: {
             type: "PERCENT_OFF";
             basisPoints: number;
@@ -1487,8 +1489,6 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
-        combinableWith: string[];
         presentation: {
             indexable: boolean;
             badge: {
@@ -1552,6 +1552,7 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
+        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         discount: {
             type: "PERCENT_OFF";
             basisPoints: number;
@@ -1574,7 +1575,6 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
-        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         terms: {
             en?: string | undefined;
             ar?: string | undefined;
@@ -1636,9 +1636,9 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
     endsAt: z.ZodDefault<z.ZodNullable<z.ZodString>>;
     pageId: z.ZodDefault<z.ZodNullable<z.ZodString>>;
 }, "strict", z.ZodTypeAny, {
-    slug: string;
     startsAt: string | null;
     endsAt: string | null;
+    slug: string;
     internalName: string;
     pageId: string | null;
     definition: {
@@ -1651,6 +1651,8 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
+        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
+        combinableWith: string[];
         discount: {
             type: "PERCENT_OFF";
             basisPoints: number;
@@ -1673,8 +1675,6 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
-        combinableWith: string[];
         presentation: {
             indexable: boolean;
             badge: {
@@ -1742,6 +1742,7 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
+        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         discount: {
             type: "PERCENT_OFF";
             basisPoints: number;
@@ -1764,7 +1765,6 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
-        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         terms: {
             en?: string | undefined;
             ar?: string | undefined;
@@ -1826,9 +1826,9 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
     endsAt?: string | null | undefined;
     pageId?: string | null | undefined;
 }>, {
-    slug: string;
     startsAt: string | null;
     endsAt: string | null;
+    slug: string;
     internalName: string;
     pageId: string | null;
     definition: {
@@ -1841,6 +1841,8 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
+        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
+        combinableWith: string[];
         discount: {
             type: "PERCENT_OFF";
             basisPoints: number;
@@ -1863,8 +1865,6 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
             en: string;
             ar: string;
         };
-        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
-        combinableWith: string[];
         presentation: {
             indexable: boolean;
             badge: {
@@ -1932,6 +1932,7 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
+        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         discount: {
             type: "PERCENT_OFF";
             basisPoints: number;
@@ -1954,7 +1955,6 @@ export declare const createDynamicBundleSchema: z.ZodEffects<z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
-        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         terms: {
             en?: string | undefined;
             ar?: string | undefined;
@@ -2359,6 +2359,8 @@ export declare const updateDynamicBundleDraftSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
+        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
+        combinableWith: string[];
         discount: {
             type: "PERCENT_OFF";
             basisPoints: number;
@@ -2381,8 +2383,6 @@ export declare const updateDynamicBundleDraftSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
-        combinableWith: string[];
         presentation: {
             indexable: boolean;
             badge: {
@@ -2446,6 +2446,7 @@ export declare const updateDynamicBundleDraftSchema: z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
+        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         discount: {
             type: "PERCENT_OFF";
             basisPoints: number;
@@ -2468,7 +2469,6 @@ export declare const updateDynamicBundleDraftSchema: z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
-        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         terms: {
             en?: string | undefined;
             ar?: string | undefined;
@@ -2535,6 +2535,8 @@ export declare const updateDynamicBundleDraftSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
+        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
+        combinableWith: string[];
         discount: {
             type: "PERCENT_OFF";
             basisPoints: number;
@@ -2557,8 +2559,6 @@ export declare const updateDynamicBundleDraftSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
-        combinableWith: string[];
         presentation: {
             indexable: boolean;
             badge: {
@@ -2622,6 +2622,7 @@ export declare const updateDynamicBundleDraftSchema: z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
+        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         discount: {
             type: "PERCENT_OFF";
             basisPoints: number;
@@ -2644,7 +2645,6 @@ export declare const updateDynamicBundleDraftSchema: z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
-        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         terms: {
             en?: string | undefined;
             ar?: string | undefined;
@@ -2709,9 +2709,9 @@ export declare const updateDynamicBundleDraftSchema: z.ZodObject<{
     expectedRevision: z.ZodNumber;
 }, "strict", z.ZodTypeAny, {
     expectedRevision: number;
-    slug?: string | undefined;
     startsAt?: string | null | undefined;
     endsAt?: string | null | undefined;
+    slug?: string | undefined;
     internalName?: string | undefined;
     pageId?: string | null | undefined;
     definition?: {
@@ -2724,6 +2724,8 @@ export declare const updateDynamicBundleDraftSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
+        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
+        combinableWith: string[];
         discount: {
             type: "PERCENT_OFF";
             basisPoints: number;
@@ -2746,8 +2748,6 @@ export declare const updateDynamicBundleDraftSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
-        combinableWith: string[];
         presentation: {
             indexable: boolean;
             badge: {
@@ -2805,9 +2805,9 @@ export declare const updateDynamicBundleDraftSchema: z.ZodObject<{
     } | undefined;
 }, {
     expectedRevision: number;
-    slug?: string | undefined;
     startsAt?: string | null | undefined;
     endsAt?: string | null | undefined;
+    slug?: string | undefined;
     internalName?: string | undefined;
     pageId?: string | null | undefined;
     definition?: {
@@ -2819,6 +2819,7 @@ export declare const updateDynamicBundleDraftSchema: z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
+        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         discount: {
             type: "PERCENT_OFF";
             basisPoints: number;
@@ -2841,7 +2842,6 @@ export declare const updateDynamicBundleDraftSchema: z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
-        stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
         terms: {
             en?: string | undefined;
             ar?: string | undefined;
@@ -2913,13 +2913,13 @@ export declare const bundleSelectionSchema: z.ZodObject<{
     variantId: z.ZodString;
     quantity: z.ZodNumber;
 }, "strict", z.ZodTypeAny, {
-    variantId: string;
     quantity: number;
+    variantId: string;
     productId: string;
     slotKey: string;
 }, {
-    variantId: string;
     quantity: number;
+    variantId: string;
     productId: string;
     slotKey: string;
 }>;
@@ -2930,13 +2930,13 @@ export declare const previewDynamicBundleSchema: z.ZodObject<{
         variantId: z.ZodString;
         quantity: z.ZodNumber;
     }, "strict", z.ZodTypeAny, {
-        variantId: string;
         quantity: number;
+        variantId: string;
         productId: string;
         slotKey: string;
     }, {
-        variantId: string;
         quantity: number;
+        variantId: string;
         productId: string;
         slotKey: string;
     }>, "many">;
@@ -2947,16 +2947,16 @@ export declare const previewDynamicBundleSchema: z.ZodObject<{
     couponCode: string | null;
     diagnostic: boolean;
     selections: {
-        variantId: string;
         quantity: number;
+        variantId: string;
         productId: string;
         slotKey: string;
     }[];
     expectedVersion?: number | undefined;
 }, {
     selections: {
-        variantId: string;
         quantity: number;
+        variantId: string;
         productId: string;
         slotKey: string;
     }[];
@@ -2971,13 +2971,13 @@ export declare const addDynamicBundleToCartSchema: z.ZodObject<{
         variantId: z.ZodString;
         quantity: z.ZodNumber;
     }, "strict", z.ZodTypeAny, {
-        variantId: string;
         quantity: number;
+        variantId: string;
         productId: string;
         slotKey: string;
     }, {
-        variantId: string;
         quantity: number;
+        variantId: string;
         productId: string;
         slotKey: string;
     }>, "many">;
@@ -2990,8 +2990,8 @@ export declare const addDynamicBundleToCartSchema: z.ZodObject<{
     couponCode: string | null;
     diagnostic: boolean;
     selections: {
-        variantId: string;
         quantity: number;
+        variantId: string;
         productId: string;
         slotKey: string;
     }[];
@@ -2999,8 +2999,8 @@ export declare const addDynamicBundleToCartSchema: z.ZodObject<{
     expectedVersion?: number | undefined;
 }, {
     selections: {
-        variantId: string;
         quantity: number;
+        variantId: string;
         productId: string;
         slotKey: string;
     }[];
@@ -3080,20 +3080,20 @@ export declare const bundleLinePricingSchema: z.ZodObject<{
     discount: z.ZodNumber;
     finalTotal: z.ZodNumber;
 }, "strip", z.ZodTypeAny, {
-    variantId: string;
     quantity: number;
+    variantId: string;
     productId: string;
-    discount: number;
     unitPrice: number;
+    discount: number;
     slotKey: string;
     retailTotal: number;
     finalTotal: number;
 }, {
-    variantId: string;
     quantity: number;
+    variantId: string;
     productId: string;
-    discount: number;
     unitPrice: number;
+    discount: number;
     slotKey: string;
     retailTotal: number;
     finalTotal: number;
@@ -3142,20 +3142,20 @@ export declare const bundlePreviewResponseSchema: z.ZodObject<{
         discount: z.ZodNumber;
         finalTotal: z.ZodNumber;
     }, "strip", z.ZodTypeAny, {
-        variantId: string;
         quantity: number;
+        variantId: string;
         productId: string;
-        discount: number;
         unitPrice: number;
+        discount: number;
         slotKey: string;
         retailTotal: number;
         finalTotal: number;
     }, {
-        variantId: string;
         quantity: number;
+        variantId: string;
         productId: string;
-        discount: number;
         unitPrice: number;
+        discount: number;
         slotKey: string;
         retailTotal: number;
         finalTotal: number;
@@ -3170,11 +3170,11 @@ export declare const bundlePreviewResponseSchema: z.ZodObject<{
     state: "VALID" | "INVALID" | "INCOMPLETE" | "STALE";
     stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
     lines: {
-        variantId: string;
         quantity: number;
+        variantId: string;
         productId: string;
-        discount: number;
         unitPrice: number;
+        discount: number;
         slotKey: string;
         retailTotal: number;
         finalTotal: number;
@@ -3199,11 +3199,11 @@ export declare const bundlePreviewResponseSchema: z.ZodObject<{
     state: "VALID" | "INVALID" | "INCOMPLETE" | "STALE";
     stacking: "EXCLUSIVE" | "COMBINABLE" | "BEST_OFFER";
     lines: {
-        variantId: string;
         quantity: number;
+        variantId: string;
         productId: string;
-        discount: number;
         unitPrice: number;
+        discount: number;
         slotKey: string;
         retailTotal: number;
         finalTotal: number;
@@ -3263,10 +3263,10 @@ export declare const bundleSummarySchema: z.ZodObject<{
         en: string;
         ar: string;
     };
-    slug: string;
     state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
     startsAt: string | null;
     endsAt: string | null;
+    slug: string;
     internalName: string;
     draftRevision: number;
     publishedRevision: number | null;
@@ -3283,10 +3283,10 @@ export declare const bundleSummarySchema: z.ZodObject<{
         en?: string | undefined;
         ar?: string | undefined;
     };
-    slug: string;
     state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
     startsAt: string | null;
     endsAt: string | null;
+    slug: string;
     internalName: string;
     draftRevision: number;
     publishedRevision: number | null;
@@ -3337,10 +3337,10 @@ export declare const bundleListResponseSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        slug: string;
         state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         startsAt: string | null;
         endsAt: string | null;
+        slug: string;
         internalName: string;
         draftRevision: number;
         publishedRevision: number | null;
@@ -3357,10 +3357,10 @@ export declare const bundleListResponseSchema: z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
-        slug: string;
         state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         startsAt: string | null;
         endsAt: string | null;
+        slug: string;
         internalName: string;
         draftRevision: number;
         publishedRevision: number | null;
@@ -3401,10 +3401,10 @@ export declare const bundleListResponseSchema: z.ZodObject<{
             en: string;
             ar: string;
         };
-        slug: string;
         state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         startsAt: string | null;
         endsAt: string | null;
+        slug: string;
         internalName: string;
         draftRevision: number;
         publishedRevision: number | null;
@@ -3431,10 +3431,10 @@ export declare const bundleListResponseSchema: z.ZodObject<{
             en?: string | undefined;
             ar?: string | undefined;
         };
-        slug: string;
         state: "ACTIVE" | "ARCHIVED" | "DRAFT" | "PAUSED";
         startsAt: string | null;
         endsAt: string | null;
+        slug: string;
         internalName: string;
         draftRevision: number;
         publishedRevision: number | null;

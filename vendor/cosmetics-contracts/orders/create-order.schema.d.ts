@@ -3,11 +3,11 @@ export declare const orderItemInputSchema: z.ZodObject<{
     variantId: z.ZodString;
     quantity: z.ZodNumber;
 }, "strict", z.ZodTypeAny, {
-    variantId: string;
     quantity: number;
+    variantId: string;
 }, {
-    variantId: string;
     quantity: number;
+    variantId: string;
 }>;
 export type OrderItemInput = z.infer<typeof orderItemInputSchema>;
 /**
@@ -20,11 +20,11 @@ export declare const createOrderSchema: z.ZodObject<{
         variantId: z.ZodString;
         quantity: z.ZodNumber;
     }, "strict", z.ZodTypeAny, {
-        variantId: string;
         quantity: number;
+        variantId: string;
     }, {
-        variantId: string;
         quantity: number;
+        variantId: string;
     }>, "many">;
     shippingAddressId: z.ZodString;
     paymentMethod: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>;
@@ -34,8 +34,8 @@ export declare const createOrderSchema: z.ZodObject<{
 }, "strict", z.ZodTypeAny, {
     paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
     items: {
-        variantId: string;
         quantity: number;
+        variantId: string;
     }[];
     shippingAddressId: string;
     couponCode?: string | undefined;
@@ -44,8 +44,8 @@ export declare const createOrderSchema: z.ZodObject<{
 }, {
     paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
     items: {
-        variantId: string;
         quantity: number;
+        variantId: string;
     }[];
     shippingAddressId: string;
     couponCode?: string | undefined;
@@ -58,11 +58,11 @@ export declare const checkoutOrderSchema: z.ZodObject<Omit<{
         variantId: z.ZodString;
         quantity: z.ZodNumber;
     }, "strict", z.ZodTypeAny, {
-        variantId: string;
         quantity: number;
+        variantId: string;
     }, {
-        variantId: string;
         quantity: number;
+        variantId: string;
     }>, "many">;
     shippingAddressId: z.ZodString;
     paymentMethod: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>;
@@ -83,6 +83,121 @@ export declare const checkoutOrderSchema: z.ZodObject<Omit<{
     notes?: string | undefined;
 }>;
 export type CheckoutOrderInput = z.infer<typeof checkoutOrderSchema>;
+export declare const checkoutPreviewSchema: z.ZodObject<Pick<Omit<{
+    items: z.ZodArray<z.ZodObject<{
+        variantId: z.ZodString;
+        quantity: z.ZodNumber;
+    }, "strict", z.ZodTypeAny, {
+        quantity: number;
+        variantId: string;
+    }, {
+        quantity: number;
+        variantId: string;
+    }>, "many">;
+    shippingAddressId: z.ZodString;
+    paymentMethod: z.ZodEnum<["VODAFONE_CASH", "INSTAPAY", "CASH_ON_DELIVERY", "COD", "CARD"]>;
+    couponCode: z.ZodOptional<z.ZodEffects<z.ZodPipeline<z.ZodEffects<z.ZodString, string, string>, z.ZodEffects<z.ZodString, string, string>>, string, string>>;
+    giftVariantIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+    notes: z.ZodOptional<z.ZodString>;
+}, "items">, "paymentMethod" | "shippingAddressId">, "strict", z.ZodTypeAny, {
+    paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+    shippingAddressId: string;
+}, {
+    paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
+    shippingAddressId: string;
+}>;
+export type CheckoutPreviewInput = z.infer<typeof checkoutPreviewSchema>;
+export declare const checkoutPreviewResponseSchema: z.ZodObject<{
+    subtotal: z.ZodNumber;
+    discount: z.ZodNumber;
+    shippingCost: z.ZodNumber;
+    shippingDiscount: z.ZodNumber;
+    codFee: z.ZodNumber;
+    total: z.ZodNumber;
+    totalSavings: z.ZodNumber;
+    couponCode: z.ZodNullable<z.ZodString>;
+    appliedPromotions: z.ZodArray<z.ZodObject<{
+        id: z.ZodString;
+        name: z.ZodString;
+        title: z.ZodString;
+        type: z.ZodEnum<["PRODUCT_DISCOUNT", "CART_DISCOUNT", "BUY_X_GET_Y", "BUNDLE", "QUANTITY_TIER", "SPEND_TIER", "FREE_SHIPPING", "FREE_GIFT", "FLASH_SALE"]>;
+        couponCode: z.ZodNullable<z.ZodString>;
+        discountAmount: z.ZodNumber;
+        shippingDiscount: z.ZodNumber;
+        discountedUnits: z.ZodNumber;
+        message: z.ZodString;
+    }, "strip", z.ZodTypeAny, {
+        message: string;
+        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+        id: string;
+        name: string;
+        discountedUnits: number;
+        couponCode: string | null;
+        title: string;
+        discountAmount: number;
+        shippingDiscount: number;
+    }, {
+        message: string;
+        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+        id: string;
+        name: string;
+        discountedUnits: number;
+        couponCode: string | null;
+        title: string;
+        discountAmount: number;
+        shippingDiscount: number;
+    }>, "many">;
+    provider: z.ZodEnum<["MOCK", "BOSTA"]>;
+    estimatedDays: z.ZodNumber;
+    estimatedDeliveryDate: z.ZodString;
+}, "strip", z.ZodTypeAny, {
+    total: number;
+    shippingCost: number;
+    provider: "MOCK" | "BOSTA";
+    estimatedDays: number;
+    estimatedDeliveryDate: string;
+    couponCode: string | null;
+    shippingDiscount: number;
+    totalSavings: number;
+    discount: number;
+    appliedPromotions: {
+        message: string;
+        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+        id: string;
+        name: string;
+        discountedUnits: number;
+        couponCode: string | null;
+        title: string;
+        discountAmount: number;
+        shippingDiscount: number;
+    }[];
+    subtotal: number;
+    codFee: number;
+}, {
+    total: number;
+    shippingCost: number;
+    provider: "MOCK" | "BOSTA";
+    estimatedDays: number;
+    estimatedDeliveryDate: string;
+    couponCode: string | null;
+    shippingDiscount: number;
+    totalSavings: number;
+    discount: number;
+    appliedPromotions: {
+        message: string;
+        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+        id: string;
+        name: string;
+        discountedUnits: number;
+        couponCode: string | null;
+        title: string;
+        discountAmount: number;
+        shippingDiscount: number;
+    }[];
+    subtotal: number;
+    codFee: number;
+}>;
+export type CheckoutPreviewResponse = z.infer<typeof checkoutPreviewResponseSchema>;
 export declare const cancelOrderSchema: z.ZodObject<{
     reason: z.ZodString;
 }, "strip", z.ZodTypeAny, {
@@ -166,15 +281,15 @@ export declare const orderQuerySchema: z.ZodObject<{
     paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
     paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
     trackingNumber?: string | undefined;
-    shippingStatus?: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | undefined;
+    createdBy?: string | undefined;
     customer?: string | undefined;
+    shippingStatus?: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | undefined;
     dateFrom?: string | undefined;
     dateTo?: string | undefined;
     totalMin?: number | undefined;
     totalMax?: number | undefined;
     invoiceNumber?: string | undefined;
     shippingProvider?: "MOCK" | "BOSTA" | undefined;
-    createdBy?: string | undefined;
 }, {
     status?: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED" | undefined;
     page?: number | undefined;
@@ -188,15 +303,15 @@ export declare const orderQuerySchema: z.ZodObject<{
     paymentStatus?: "REFUNDED" | "FAILED" | "UNPAID" | "PENDING" | "WAITING_REVIEW" | "UNDER_REVIEW" | "PROOF_SUBMITTED" | "APPROVED" | "VERIFIED" | "REJECTED" | "EXPIRED" | undefined;
     paymentMethod?: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD" | undefined;
     trackingNumber?: string | undefined;
-    shippingStatus?: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | undefined;
+    createdBy?: string | undefined;
     customer?: string | undefined;
+    shippingStatus?: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | undefined;
     dateFrom?: string | undefined;
     dateTo?: string | undefined;
     totalMin?: number | undefined;
     totalMax?: number | undefined;
     invoiceNumber?: string | undefined;
     shippingProvider?: "MOCK" | "BOSTA" | undefined;
-    createdBy?: string | undefined;
 }>;
 export type OrderQuery = z.infer<typeof orderQuerySchema>;
 export declare const orderItemResponseSchema: z.ZodObject<{
@@ -237,9 +352,12 @@ export declare const orderItemResponseSchema: z.ZodObject<{
     promotionSnapshot: z.ZodNullable<z.ZodUnknown>;
 }, "strip", z.ZodTypeAny, {
     id: string;
-    variantId: string;
+    price: number;
     quantity: number;
+    variantId: string;
     productId: string;
+    discount: number;
+    subtotal: number;
     productName: string;
     variantName: string | null;
     variantOptions: {
@@ -252,16 +370,16 @@ export declare const orderItemResponseSchema: z.ZodObject<{
     }[];
     imageReference: string | null;
     sku: string;
-    price: number;
-    discount: number;
-    subtotal: number;
     discountedSubtotal: number;
     promotionSnapshot?: unknown;
 }, {
     id: string;
-    variantId: string;
+    price: number;
     quantity: number;
+    variantId: string;
     productId: string;
+    discount: number;
+    subtotal: number;
     productName: string;
     variantName: string | null;
     variantOptions: {
@@ -274,9 +392,6 @@ export declare const orderItemResponseSchema: z.ZodObject<{
     }[];
     imageReference: string | null;
     sku: string;
-    price: number;
-    discount: number;
-    subtotal: number;
     discountedSubtotal: number;
     promotionSnapshot?: unknown;
 }>;
@@ -388,9 +503,12 @@ export declare const invoiceResponseSchema: z.ZodObject<{
         promotionSnapshot: z.ZodNullable<z.ZodUnknown>;
     }, "strip", z.ZodTypeAny, {
         id: string;
-        variantId: string;
+        price: number;
         quantity: number;
+        variantId: string;
         productId: string;
+        discount: number;
+        subtotal: number;
         productName: string;
         variantName: string | null;
         variantOptions: {
@@ -403,16 +521,16 @@ export declare const invoiceResponseSchema: z.ZodObject<{
         }[];
         imageReference: string | null;
         sku: string;
-        price: number;
-        discount: number;
-        subtotal: number;
         discountedSubtotal: number;
         promotionSnapshot?: unknown;
     }, {
         id: string;
-        variantId: string;
+        price: number;
         quantity: number;
+        variantId: string;
         productId: string;
+        discount: number;
+        subtotal: number;
         productName: string;
         variantName: string | null;
         variantOptions: {
@@ -425,9 +543,6 @@ export declare const invoiceResponseSchema: z.ZodObject<{
         }[];
         imageReference: string | null;
         sku: string;
-        price: number;
-        discount: number;
-        subtotal: number;
         discountedSubtotal: number;
         promotionSnapshot?: unknown;
     }>, "many">>;
@@ -453,9 +568,12 @@ export declare const invoiceResponseSchema: z.ZodObject<{
     shippingCost?: number | undefined;
     items?: {
         id: string;
-        variantId: string;
+        price: number;
         quantity: number;
+        variantId: string;
         productId: string;
+        discount: number;
+        subtotal: number;
         productName: string;
         variantName: string | null;
         variantOptions: {
@@ -468,12 +586,10 @@ export declare const invoiceResponseSchema: z.ZodObject<{
         }[];
         imageReference: string | null;
         sku: string;
-        price: number;
-        discount: number;
-        subtotal: number;
         discountedSubtotal: number;
         promotionSnapshot?: unknown;
     }[] | undefined;
+    discount?: number | undefined;
     customer?: {
         id: string;
         firstName: string;
@@ -481,7 +597,6 @@ export declare const invoiceResponseSchema: z.ZodObject<{
         phone: string;
         email: string | null;
     } | undefined;
-    discount?: number | undefined;
     subtotal?: number | undefined;
     tax?: number | undefined;
 }, {
@@ -498,9 +613,12 @@ export declare const invoiceResponseSchema: z.ZodObject<{
     shippingCost?: number | undefined;
     items?: {
         id: string;
-        variantId: string;
+        price: number;
         quantity: number;
+        variantId: string;
         productId: string;
+        discount: number;
+        subtotal: number;
         productName: string;
         variantName: string | null;
         variantOptions: {
@@ -513,12 +631,10 @@ export declare const invoiceResponseSchema: z.ZodObject<{
         }[];
         imageReference: string | null;
         sku: string;
-        price: number;
-        discount: number;
-        subtotal: number;
         discountedSubtotal: number;
         promotionSnapshot?: unknown;
     }[] | undefined;
+    discount?: number | undefined;
     customer?: {
         id: string;
         firstName: string;
@@ -526,7 +642,6 @@ export declare const invoiceResponseSchema: z.ZodObject<{
         phone: string;
         email: string | null;
     } | undefined;
-    discount?: number | undefined;
     subtotal?: number | undefined;
     tax?: number | undefined;
 }>;
@@ -651,8 +766,8 @@ export declare const orderEmailDeliveryResponseSchema: z.ZodObject<{
     updatedAt: string;
     provider: string;
     orderId: string;
-    providerEmailId: string | null;
     customerId: string | null;
+    providerEmailId: string | null;
     recipientEmail: string;
     senderEmail: string;
     attemptCount: number;
@@ -682,8 +797,8 @@ export declare const orderEmailDeliveryResponseSchema: z.ZodObject<{
     updatedAt: string;
     provider: string;
     orderId: string;
-    providerEmailId: string | null;
     customerId: string | null;
+    providerEmailId: string | null;
     recipientEmail: string;
     senderEmail: string;
     attemptCount: number;
@@ -862,9 +977,12 @@ export declare const orderResponseSchema: z.ZodObject<{
         promotionSnapshot: z.ZodNullable<z.ZodUnknown>;
     }, "strip", z.ZodTypeAny, {
         id: string;
-        variantId: string;
+        price: number;
         quantity: number;
+        variantId: string;
         productId: string;
+        discount: number;
+        subtotal: number;
         productName: string;
         variantName: string | null;
         variantOptions: {
@@ -877,16 +995,16 @@ export declare const orderResponseSchema: z.ZodObject<{
         }[];
         imageReference: string | null;
         sku: string;
-        price: number;
-        discount: number;
-        subtotal: number;
         discountedSubtotal: number;
         promotionSnapshot?: unknown;
     }, {
         id: string;
-        variantId: string;
+        price: number;
         quantity: number;
+        variantId: string;
         productId: string;
+        discount: number;
+        subtotal: number;
         productName: string;
         variantName: string | null;
         variantOptions: {
@@ -899,9 +1017,6 @@ export declare const orderResponseSchema: z.ZodObject<{
         }[];
         imageReference: string | null;
         sku: string;
-        price: number;
-        discount: number;
-        subtotal: number;
         discountedSubtotal: number;
         promotionSnapshot?: unknown;
     }>, "many">;
@@ -969,9 +1084,12 @@ export declare const orderResponseSchema: z.ZodObject<{
             promotionSnapshot: z.ZodNullable<z.ZodUnknown>;
         }, "strip", z.ZodTypeAny, {
             id: string;
-            variantId: string;
+            price: number;
             quantity: number;
+            variantId: string;
             productId: string;
+            discount: number;
+            subtotal: number;
             productName: string;
             variantName: string | null;
             variantOptions: {
@@ -984,16 +1102,16 @@ export declare const orderResponseSchema: z.ZodObject<{
             }[];
             imageReference: string | null;
             sku: string;
-            price: number;
-            discount: number;
-            subtotal: number;
             discountedSubtotal: number;
             promotionSnapshot?: unknown;
         }, {
             id: string;
-            variantId: string;
+            price: number;
             quantity: number;
+            variantId: string;
             productId: string;
+            discount: number;
+            subtotal: number;
             productName: string;
             variantName: string | null;
             variantOptions: {
@@ -1006,9 +1124,6 @@ export declare const orderResponseSchema: z.ZodObject<{
             }[];
             imageReference: string | null;
             sku: string;
-            price: number;
-            discount: number;
-            subtotal: number;
             discountedSubtotal: number;
             promotionSnapshot?: unknown;
         }>, "many">>;
@@ -1034,9 +1149,12 @@ export declare const orderResponseSchema: z.ZodObject<{
         shippingCost?: number | undefined;
         items?: {
             id: string;
-            variantId: string;
+            price: number;
             quantity: number;
+            variantId: string;
             productId: string;
+            discount: number;
+            subtotal: number;
             productName: string;
             variantName: string | null;
             variantOptions: {
@@ -1049,12 +1167,10 @@ export declare const orderResponseSchema: z.ZodObject<{
             }[];
             imageReference: string | null;
             sku: string;
-            price: number;
-            discount: number;
-            subtotal: number;
             discountedSubtotal: number;
             promotionSnapshot?: unknown;
         }[] | undefined;
+        discount?: number | undefined;
         customer?: {
             id: string;
             firstName: string;
@@ -1062,7 +1178,6 @@ export declare const orderResponseSchema: z.ZodObject<{
             phone: string;
             email: string | null;
         } | undefined;
-        discount?: number | undefined;
         subtotal?: number | undefined;
         tax?: number | undefined;
     }, {
@@ -1079,9 +1194,12 @@ export declare const orderResponseSchema: z.ZodObject<{
         shippingCost?: number | undefined;
         items?: {
             id: string;
-            variantId: string;
+            price: number;
             quantity: number;
+            variantId: string;
             productId: string;
+            discount: number;
+            subtotal: number;
             productName: string;
             variantName: string | null;
             variantOptions: {
@@ -1094,12 +1212,10 @@ export declare const orderResponseSchema: z.ZodObject<{
             }[];
             imageReference: string | null;
             sku: string;
-            price: number;
-            discount: number;
-            subtotal: number;
             discountedSubtotal: number;
             promotionSnapshot?: unknown;
         }[] | undefined;
+        discount?: number | undefined;
         customer?: {
             id: string;
             firstName: string;
@@ -1107,7 +1223,6 @@ export declare const orderResponseSchema: z.ZodObject<{
             phone: string;
             email: string | null;
         } | undefined;
-        discount?: number | undefined;
         subtotal?: number | undefined;
         tax?: number | undefined;
     }>>;
@@ -1198,8 +1313,8 @@ export declare const orderResponseSchema: z.ZodObject<{
         updatedAt: string;
         provider: string;
         orderId: string;
-        providerEmailId: string | null;
         customerId: string | null;
+        providerEmailId: string | null;
         recipientEmail: string;
         senderEmail: string;
         attemptCount: number;
@@ -1229,8 +1344,8 @@ export declare const orderResponseSchema: z.ZodObject<{
         updatedAt: string;
         provider: string;
         orderId: string;
-        providerEmailId: string | null;
         customerId: string | null;
+        providerEmailId: string | null;
         recipientEmail: string;
         senderEmail: string;
         attemptCount: number;
@@ -1262,15 +1377,15 @@ export declare const orderResponseSchema: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         name: string;
         couponCode: string | null;
+        discountAmount: number;
         shippingDiscount: number;
         promotionId: string | null;
-        discountAmount: number;
     }, {
         name: string;
         couponCode: string | null;
+        discountAmount: number;
         shippingDiscount: number;
         promotionId: string | null;
-        discountAmount: number;
     }>, "many">;
 }, "strip", z.ZodTypeAny, {
     status: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED";
@@ -1285,9 +1400,12 @@ export declare const orderResponseSchema: z.ZodObject<{
     estimatedDeliveryDate: string | null;
     items: {
         id: string;
-        variantId: string;
+        price: number;
         quantity: number;
+        variantId: string;
         productId: string;
+        discount: number;
+        subtotal: number;
         productName: string;
         variantName: string | null;
         variantOptions: {
@@ -1300,22 +1418,26 @@ export declare const orderResponseSchema: z.ZodObject<{
         }[];
         imageReference: string | null;
         sku: string;
-        price: number;
-        discount: number;
-        subtotal: number;
         discountedSubtotal: number;
         promotionSnapshot?: unknown;
     }[];
-    shippingAddressId: string | null;
-    notes: string | null;
-    shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
-    shippingProvider: "MOCK" | "BOSTA" | null;
-    discount: number;
-    subtotal: number;
-    tax: number;
     customerId: string;
     shippingDiscount: number;
     totalSavings: number;
+    discount: number;
+    appliedPromotions: {
+        name: string;
+        couponCode: string | null;
+        discountAmount: number;
+        shippingDiscount: number;
+        promotionId: string | null;
+    }[];
+    shippingAddressId: string | null;
+    notes: string | null;
+    subtotal: number;
+    shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
+    shippingProvider: "MOCK" | "BOSTA" | null;
+    tax: number;
     estimatedDeliveryDays: number | null;
     paymentDueAt: string | null;
     invoice: {
@@ -1332,9 +1454,12 @@ export declare const orderResponseSchema: z.ZodObject<{
         shippingCost?: number | undefined;
         items?: {
             id: string;
-            variantId: string;
+            price: number;
             quantity: number;
+            variantId: string;
             productId: string;
+            discount: number;
+            subtotal: number;
             productName: string;
             variantName: string | null;
             variantOptions: {
@@ -1347,12 +1472,10 @@ export declare const orderResponseSchema: z.ZodObject<{
             }[];
             imageReference: string | null;
             sku: string;
-            price: number;
-            discount: number;
-            subtotal: number;
             discountedSubtotal: number;
             promotionSnapshot?: unknown;
         }[] | undefined;
+        discount?: number | undefined;
         customer?: {
             id: string;
             firstName: string;
@@ -1360,17 +1483,9 @@ export declare const orderResponseSchema: z.ZodObject<{
             phone: string;
             email: string | null;
         } | undefined;
-        discount?: number | undefined;
         subtotal?: number | undefined;
         tax?: number | undefined;
     } | null;
-    appliedPromotions: {
-        name: string;
-        couponCode: string | null;
-        shippingDiscount: number;
-        promotionId: string | null;
-        discountAmount: number;
-    }[];
     shipment?: {
         status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
         id: string;
@@ -1422,8 +1537,8 @@ export declare const orderResponseSchema: z.ZodObject<{
         updatedAt: string;
         provider: string;
         orderId: string;
-        providerEmailId: string | null;
         customerId: string | null;
+        providerEmailId: string | null;
         recipientEmail: string;
         senderEmail: string;
         attemptCount: number;
@@ -1459,9 +1574,12 @@ export declare const orderResponseSchema: z.ZodObject<{
     estimatedDeliveryDate: string | null;
     items: {
         id: string;
-        variantId: string;
+        price: number;
         quantity: number;
+        variantId: string;
         productId: string;
+        discount: number;
+        subtotal: number;
         productName: string;
         variantName: string | null;
         variantOptions: {
@@ -1474,22 +1592,26 @@ export declare const orderResponseSchema: z.ZodObject<{
         }[];
         imageReference: string | null;
         sku: string;
-        price: number;
-        discount: number;
-        subtotal: number;
         discountedSubtotal: number;
         promotionSnapshot?: unknown;
     }[];
-    shippingAddressId: string | null;
-    notes: string | null;
-    shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
-    shippingProvider: "MOCK" | "BOSTA" | null;
-    discount: number;
-    subtotal: number;
-    tax: number;
     customerId: string;
     shippingDiscount: number;
     totalSavings: number;
+    discount: number;
+    appliedPromotions: {
+        name: string;
+        couponCode: string | null;
+        discountAmount: number;
+        shippingDiscount: number;
+        promotionId: string | null;
+    }[];
+    shippingAddressId: string | null;
+    notes: string | null;
+    subtotal: number;
+    shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
+    shippingProvider: "MOCK" | "BOSTA" | null;
+    tax: number;
     estimatedDeliveryDays: number | null;
     paymentDueAt: string | null;
     invoice: {
@@ -1506,9 +1628,12 @@ export declare const orderResponseSchema: z.ZodObject<{
         shippingCost?: number | undefined;
         items?: {
             id: string;
-            variantId: string;
+            price: number;
             quantity: number;
+            variantId: string;
             productId: string;
+            discount: number;
+            subtotal: number;
             productName: string;
             variantName: string | null;
             variantOptions: {
@@ -1521,12 +1646,10 @@ export declare const orderResponseSchema: z.ZodObject<{
             }[];
             imageReference: string | null;
             sku: string;
-            price: number;
-            discount: number;
-            subtotal: number;
             discountedSubtotal: number;
             promotionSnapshot?: unknown;
         }[] | undefined;
+        discount?: number | undefined;
         customer?: {
             id: string;
             firstName: string;
@@ -1534,17 +1657,9 @@ export declare const orderResponseSchema: z.ZodObject<{
             phone: string;
             email: string | null;
         } | undefined;
-        discount?: number | undefined;
         subtotal?: number | undefined;
         tax?: number | undefined;
     } | null;
-    appliedPromotions: {
-        name: string;
-        couponCode: string | null;
-        shippingDiscount: number;
-        promotionId: string | null;
-        discountAmount: number;
-    }[];
     shipment?: {
         status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
         id: string;
@@ -1596,8 +1711,8 @@ export declare const orderResponseSchema: z.ZodObject<{
         updatedAt: string;
         provider: string;
         orderId: string;
-        providerEmailId: string | null;
         customerId: string | null;
+        providerEmailId: string | null;
         recipientEmail: string;
         senderEmail: string;
         attemptCount: number;
@@ -1778,9 +1893,12 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             promotionSnapshot: z.ZodNullable<z.ZodUnknown>;
         }, "strip", z.ZodTypeAny, {
             id: string;
-            variantId: string;
+            price: number;
             quantity: number;
+            variantId: string;
             productId: string;
+            discount: number;
+            subtotal: number;
             productName: string;
             variantName: string | null;
             variantOptions: {
@@ -1793,16 +1911,16 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             }[];
             imageReference: string | null;
             sku: string;
-            price: number;
-            discount: number;
-            subtotal: number;
             discountedSubtotal: number;
             promotionSnapshot?: unknown;
         }, {
             id: string;
-            variantId: string;
+            price: number;
             quantity: number;
+            variantId: string;
             productId: string;
+            discount: number;
+            subtotal: number;
             productName: string;
             variantName: string | null;
             variantOptions: {
@@ -1815,9 +1933,6 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             }[];
             imageReference: string | null;
             sku: string;
-            price: number;
-            discount: number;
-            subtotal: number;
             discountedSubtotal: number;
             promotionSnapshot?: unknown;
         }>, "many">;
@@ -1885,9 +2000,12 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 promotionSnapshot: z.ZodNullable<z.ZodUnknown>;
             }, "strip", z.ZodTypeAny, {
                 id: string;
-                variantId: string;
+                price: number;
                 quantity: number;
+                variantId: string;
                 productId: string;
+                discount: number;
+                subtotal: number;
                 productName: string;
                 variantName: string | null;
                 variantOptions: {
@@ -1900,16 +2018,16 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 }[];
                 imageReference: string | null;
                 sku: string;
-                price: number;
-                discount: number;
-                subtotal: number;
                 discountedSubtotal: number;
                 promotionSnapshot?: unknown;
             }, {
                 id: string;
-                variantId: string;
+                price: number;
                 quantity: number;
+                variantId: string;
                 productId: string;
+                discount: number;
+                subtotal: number;
                 productName: string;
                 variantName: string | null;
                 variantOptions: {
@@ -1922,9 +2040,6 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 }[];
                 imageReference: string | null;
                 sku: string;
-                price: number;
-                discount: number;
-                subtotal: number;
                 discountedSubtotal: number;
                 promotionSnapshot?: unknown;
             }>, "many">>;
@@ -1950,9 +2065,12 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             shippingCost?: number | undefined;
             items?: {
                 id: string;
-                variantId: string;
+                price: number;
                 quantity: number;
+                variantId: string;
                 productId: string;
+                discount: number;
+                subtotal: number;
                 productName: string;
                 variantName: string | null;
                 variantOptions: {
@@ -1965,12 +2083,10 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 }[];
                 imageReference: string | null;
                 sku: string;
-                price: number;
-                discount: number;
-                subtotal: number;
                 discountedSubtotal: number;
                 promotionSnapshot?: unknown;
             }[] | undefined;
+            discount?: number | undefined;
             customer?: {
                 id: string;
                 firstName: string;
@@ -1978,7 +2094,6 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 phone: string;
                 email: string | null;
             } | undefined;
-            discount?: number | undefined;
             subtotal?: number | undefined;
             tax?: number | undefined;
         }, {
@@ -1995,9 +2110,12 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             shippingCost?: number | undefined;
             items?: {
                 id: string;
-                variantId: string;
+                price: number;
                 quantity: number;
+                variantId: string;
                 productId: string;
+                discount: number;
+                subtotal: number;
                 productName: string;
                 variantName: string | null;
                 variantOptions: {
@@ -2010,12 +2128,10 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 }[];
                 imageReference: string | null;
                 sku: string;
-                price: number;
-                discount: number;
-                subtotal: number;
                 discountedSubtotal: number;
                 promotionSnapshot?: unknown;
             }[] | undefined;
+            discount?: number | undefined;
             customer?: {
                 id: string;
                 firstName: string;
@@ -2023,7 +2139,6 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 phone: string;
                 email: string | null;
             } | undefined;
-            discount?: number | undefined;
             subtotal?: number | undefined;
             tax?: number | undefined;
         }>>;
@@ -2114,8 +2229,8 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             updatedAt: string;
             provider: string;
             orderId: string;
-            providerEmailId: string | null;
             customerId: string | null;
+            providerEmailId: string | null;
             recipientEmail: string;
             senderEmail: string;
             attemptCount: number;
@@ -2145,8 +2260,8 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             updatedAt: string;
             provider: string;
             orderId: string;
-            providerEmailId: string | null;
             customerId: string | null;
+            providerEmailId: string | null;
             recipientEmail: string;
             senderEmail: string;
             attemptCount: number;
@@ -2178,15 +2293,15 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             name: string;
             couponCode: string | null;
+            discountAmount: number;
             shippingDiscount: number;
             promotionId: string | null;
-            discountAmount: number;
         }, {
             name: string;
             couponCode: string | null;
+            discountAmount: number;
             shippingDiscount: number;
             promotionId: string | null;
-            discountAmount: number;
         }>, "many">;
     }, "items">, "strip", z.ZodTypeAny, {
         status: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED";
@@ -2199,16 +2314,23 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
         paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
         shippingCost: number;
         estimatedDeliveryDate: string | null;
-        shippingAddressId: string | null;
-        notes: string | null;
-        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
-        shippingProvider: "MOCK" | "BOSTA" | null;
-        discount: number;
-        subtotal: number;
-        tax: number;
         customerId: string;
         shippingDiscount: number;
         totalSavings: number;
+        discount: number;
+        appliedPromotions: {
+            name: string;
+            couponCode: string | null;
+            discountAmount: number;
+            shippingDiscount: number;
+            promotionId: string | null;
+        }[];
+        shippingAddressId: string | null;
+        notes: string | null;
+        subtotal: number;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
+        shippingProvider: "MOCK" | "BOSTA" | null;
+        tax: number;
         estimatedDeliveryDays: number | null;
         paymentDueAt: string | null;
         invoice: {
@@ -2225,9 +2347,12 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             shippingCost?: number | undefined;
             items?: {
                 id: string;
-                variantId: string;
+                price: number;
                 quantity: number;
+                variantId: string;
                 productId: string;
+                discount: number;
+                subtotal: number;
                 productName: string;
                 variantName: string | null;
                 variantOptions: {
@@ -2240,12 +2365,10 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 }[];
                 imageReference: string | null;
                 sku: string;
-                price: number;
-                discount: number;
-                subtotal: number;
                 discountedSubtotal: number;
                 promotionSnapshot?: unknown;
             }[] | undefined;
+            discount?: number | undefined;
             customer?: {
                 id: string;
                 firstName: string;
@@ -2253,17 +2376,9 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 phone: string;
                 email: string | null;
             } | undefined;
-            discount?: number | undefined;
             subtotal?: number | undefined;
             tax?: number | undefined;
         } | null;
-        appliedPromotions: {
-            name: string;
-            couponCode: string | null;
-            shippingDiscount: number;
-            promotionId: string | null;
-            discountAmount: number;
-        }[];
         shipment?: {
             status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
             id: string;
@@ -2315,8 +2430,8 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             updatedAt: string;
             provider: string;
             orderId: string;
-            providerEmailId: string | null;
             customerId: string | null;
+            providerEmailId: string | null;
             recipientEmail: string;
             senderEmail: string;
             attemptCount: number;
@@ -2350,16 +2465,23 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
         paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
         shippingCost: number;
         estimatedDeliveryDate: string | null;
-        shippingAddressId: string | null;
-        notes: string | null;
-        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
-        shippingProvider: "MOCK" | "BOSTA" | null;
-        discount: number;
-        subtotal: number;
-        tax: number;
         customerId: string;
         shippingDiscount: number;
         totalSavings: number;
+        discount: number;
+        appliedPromotions: {
+            name: string;
+            couponCode: string | null;
+            discountAmount: number;
+            shippingDiscount: number;
+            promotionId: string | null;
+        }[];
+        shippingAddressId: string | null;
+        notes: string | null;
+        subtotal: number;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
+        shippingProvider: "MOCK" | "BOSTA" | null;
+        tax: number;
         estimatedDeliveryDays: number | null;
         paymentDueAt: string | null;
         invoice: {
@@ -2376,9 +2498,12 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             shippingCost?: number | undefined;
             items?: {
                 id: string;
-                variantId: string;
+                price: number;
                 quantity: number;
+                variantId: string;
                 productId: string;
+                discount: number;
+                subtotal: number;
                 productName: string;
                 variantName: string | null;
                 variantOptions: {
@@ -2391,12 +2516,10 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 }[];
                 imageReference: string | null;
                 sku: string;
-                price: number;
-                discount: number;
-                subtotal: number;
                 discountedSubtotal: number;
                 promotionSnapshot?: unknown;
             }[] | undefined;
+            discount?: number | undefined;
             customer?: {
                 id: string;
                 firstName: string;
@@ -2404,17 +2527,9 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 phone: string;
                 email: string | null;
             } | undefined;
-            discount?: number | undefined;
             subtotal?: number | undefined;
             tax?: number | undefined;
         } | null;
-        appliedPromotions: {
-            name: string;
-            couponCode: string | null;
-            shippingDiscount: number;
-            promotionId: string | null;
-            discountAmount: number;
-        }[];
         shipment?: {
             status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
             id: string;
@@ -2466,8 +2581,8 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             updatedAt: string;
             provider: string;
             orderId: string;
-            providerEmailId: string | null;
             customerId: string | null;
+            providerEmailId: string | null;
             recipientEmail: string;
             senderEmail: string;
             attemptCount: number;
@@ -2525,16 +2640,23 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
         paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
         shippingCost: number;
         estimatedDeliveryDate: string | null;
-        shippingAddressId: string | null;
-        notes: string | null;
-        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
-        shippingProvider: "MOCK" | "BOSTA" | null;
-        discount: number;
-        subtotal: number;
-        tax: number;
         customerId: string;
         shippingDiscount: number;
         totalSavings: number;
+        discount: number;
+        appliedPromotions: {
+            name: string;
+            couponCode: string | null;
+            discountAmount: number;
+            shippingDiscount: number;
+            promotionId: string | null;
+        }[];
+        shippingAddressId: string | null;
+        notes: string | null;
+        subtotal: number;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
+        shippingProvider: "MOCK" | "BOSTA" | null;
+        tax: number;
         estimatedDeliveryDays: number | null;
         paymentDueAt: string | null;
         invoice: {
@@ -2551,9 +2673,12 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             shippingCost?: number | undefined;
             items?: {
                 id: string;
-                variantId: string;
+                price: number;
                 quantity: number;
+                variantId: string;
                 productId: string;
+                discount: number;
+                subtotal: number;
                 productName: string;
                 variantName: string | null;
                 variantOptions: {
@@ -2566,12 +2691,10 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 }[];
                 imageReference: string | null;
                 sku: string;
-                price: number;
-                discount: number;
-                subtotal: number;
                 discountedSubtotal: number;
                 promotionSnapshot?: unknown;
             }[] | undefined;
+            discount?: number | undefined;
             customer?: {
                 id: string;
                 firstName: string;
@@ -2579,17 +2702,9 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 phone: string;
                 email: string | null;
             } | undefined;
-            discount?: number | undefined;
             subtotal?: number | undefined;
             tax?: number | undefined;
         } | null;
-        appliedPromotions: {
-            name: string;
-            couponCode: string | null;
-            shippingDiscount: number;
-            promotionId: string | null;
-            discountAmount: number;
-        }[];
         shipment?: {
             status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
             id: string;
@@ -2641,8 +2756,8 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             updatedAt: string;
             provider: string;
             orderId: string;
-            providerEmailId: string | null;
             customerId: string | null;
+            providerEmailId: string | null;
             recipientEmail: string;
             senderEmail: string;
             attemptCount: number;
@@ -2686,16 +2801,23 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
         paymentMethod: "VODAFONE_CASH" | "INSTAPAY" | "CASH_ON_DELIVERY" | "COD" | "CARD";
         shippingCost: number;
         estimatedDeliveryDate: string | null;
-        shippingAddressId: string | null;
-        notes: string | null;
-        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
-        shippingProvider: "MOCK" | "BOSTA" | null;
-        discount: number;
-        subtotal: number;
-        tax: number;
         customerId: string;
         shippingDiscount: number;
         totalSavings: number;
+        discount: number;
+        appliedPromotions: {
+            name: string;
+            couponCode: string | null;
+            discountAmount: number;
+            shippingDiscount: number;
+            promotionId: string | null;
+        }[];
+        shippingAddressId: string | null;
+        notes: string | null;
+        subtotal: number;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
+        shippingProvider: "MOCK" | "BOSTA" | null;
+        tax: number;
         estimatedDeliveryDays: number | null;
         paymentDueAt: string | null;
         invoice: {
@@ -2712,9 +2834,12 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             shippingCost?: number | undefined;
             items?: {
                 id: string;
-                variantId: string;
+                price: number;
                 quantity: number;
+                variantId: string;
                 productId: string;
+                discount: number;
+                subtotal: number;
                 productName: string;
                 variantName: string | null;
                 variantOptions: {
@@ -2727,12 +2852,10 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 }[];
                 imageReference: string | null;
                 sku: string;
-                price: number;
-                discount: number;
-                subtotal: number;
                 discountedSubtotal: number;
                 promotionSnapshot?: unknown;
             }[] | undefined;
+            discount?: number | undefined;
             customer?: {
                 id: string;
                 firstName: string;
@@ -2740,17 +2863,9 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
                 phone: string;
                 email: string | null;
             } | undefined;
-            discount?: number | undefined;
             subtotal?: number | undefined;
             tax?: number | undefined;
         } | null;
-        appliedPromotions: {
-            name: string;
-            couponCode: string | null;
-            shippingDiscount: number;
-            promotionId: string | null;
-            discountAmount: number;
-        }[];
         shipment?: {
             status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
             id: string;
@@ -2802,8 +2917,8 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
             updatedAt: string;
             provider: string;
             orderId: string;
-            providerEmailId: string | null;
             customerId: string | null;
+            providerEmailId: string | null;
             recipientEmail: string;
             senderEmail: string;
             attemptCount: number;
@@ -2848,6 +2963,7 @@ export declare const orderStatisticsSchema: z.ZodObject<{
     refunded: z.ZodNumber;
     revenue: z.ZodNumber;
 }, "strip", z.ZodTypeAny, {
+    revenue: number;
     totalOrders: number;
     pendingPayment: number;
     paymentReview: number;
@@ -2857,8 +2973,8 @@ export declare const orderStatisticsSchema: z.ZodObject<{
     delivered: number;
     cancelled: number;
     refunded: number;
-    revenue: number;
 }, {
+    revenue: number;
     totalOrders: number;
     pendingPayment: number;
     paymentReview: number;
@@ -2868,7 +2984,6 @@ export declare const orderStatisticsSchema: z.ZodObject<{
     delivered: number;
     cancelled: number;
     refunded: number;
-    revenue: number;
 }>;
 export type OrderStatisticsResponse = z.infer<typeof orderStatisticsSchema>;
 export declare const orderPaymentInstructionsSchema: z.ZodObject<{
@@ -3053,9 +3168,12 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             promotionSnapshot: z.ZodNullable<z.ZodUnknown>;
         }, "strip", z.ZodTypeAny, {
             id: string;
-            variantId: string;
+            price: number;
             quantity: number;
+            variantId: string;
             productId: string;
+            discount: number;
+            subtotal: number;
             productName: string;
             variantName: string | null;
             variantOptions: {
@@ -3068,16 +3186,16 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             }[];
             imageReference: string | null;
             sku: string;
-            price: number;
-            discount: number;
-            subtotal: number;
             discountedSubtotal: number;
             promotionSnapshot?: unknown;
         }, {
             id: string;
-            variantId: string;
+            price: number;
             quantity: number;
+            variantId: string;
             productId: string;
+            discount: number;
+            subtotal: number;
             productName: string;
             variantName: string | null;
             variantOptions: {
@@ -3090,9 +3208,6 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             }[];
             imageReference: string | null;
             sku: string;
-            price: number;
-            discount: number;
-            subtotal: number;
             discountedSubtotal: number;
             promotionSnapshot?: unknown;
         }>, "many">;
@@ -3160,9 +3275,12 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 promotionSnapshot: z.ZodNullable<z.ZodUnknown>;
             }, "strip", z.ZodTypeAny, {
                 id: string;
-                variantId: string;
+                price: number;
                 quantity: number;
+                variantId: string;
                 productId: string;
+                discount: number;
+                subtotal: number;
                 productName: string;
                 variantName: string | null;
                 variantOptions: {
@@ -3175,16 +3293,16 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 }[];
                 imageReference: string | null;
                 sku: string;
-                price: number;
-                discount: number;
-                subtotal: number;
                 discountedSubtotal: number;
                 promotionSnapshot?: unknown;
             }, {
                 id: string;
-                variantId: string;
+                price: number;
                 quantity: number;
+                variantId: string;
                 productId: string;
+                discount: number;
+                subtotal: number;
                 productName: string;
                 variantName: string | null;
                 variantOptions: {
@@ -3197,9 +3315,6 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 }[];
                 imageReference: string | null;
                 sku: string;
-                price: number;
-                discount: number;
-                subtotal: number;
                 discountedSubtotal: number;
                 promotionSnapshot?: unknown;
             }>, "many">>;
@@ -3225,9 +3340,12 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             shippingCost?: number | undefined;
             items?: {
                 id: string;
-                variantId: string;
+                price: number;
                 quantity: number;
+                variantId: string;
                 productId: string;
+                discount: number;
+                subtotal: number;
                 productName: string;
                 variantName: string | null;
                 variantOptions: {
@@ -3240,12 +3358,10 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 }[];
                 imageReference: string | null;
                 sku: string;
-                price: number;
-                discount: number;
-                subtotal: number;
                 discountedSubtotal: number;
                 promotionSnapshot?: unknown;
             }[] | undefined;
+            discount?: number | undefined;
             customer?: {
                 id: string;
                 firstName: string;
@@ -3253,7 +3369,6 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 phone: string;
                 email: string | null;
             } | undefined;
-            discount?: number | undefined;
             subtotal?: number | undefined;
             tax?: number | undefined;
         }, {
@@ -3270,9 +3385,12 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             shippingCost?: number | undefined;
             items?: {
                 id: string;
-                variantId: string;
+                price: number;
                 quantity: number;
+                variantId: string;
                 productId: string;
+                discount: number;
+                subtotal: number;
                 productName: string;
                 variantName: string | null;
                 variantOptions: {
@@ -3285,12 +3403,10 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 }[];
                 imageReference: string | null;
                 sku: string;
-                price: number;
-                discount: number;
-                subtotal: number;
                 discountedSubtotal: number;
                 promotionSnapshot?: unknown;
             }[] | undefined;
+            discount?: number | undefined;
             customer?: {
                 id: string;
                 firstName: string;
@@ -3298,7 +3414,6 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 phone: string;
                 email: string | null;
             } | undefined;
-            discount?: number | undefined;
             subtotal?: number | undefined;
             tax?: number | undefined;
         }>>;
@@ -3389,8 +3504,8 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             updatedAt: string;
             provider: string;
             orderId: string;
-            providerEmailId: string | null;
             customerId: string | null;
+            providerEmailId: string | null;
             recipientEmail: string;
             senderEmail: string;
             attemptCount: number;
@@ -3420,8 +3535,8 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             updatedAt: string;
             provider: string;
             orderId: string;
-            providerEmailId: string | null;
             customerId: string | null;
+            providerEmailId: string | null;
             recipientEmail: string;
             senderEmail: string;
             attemptCount: number;
@@ -3453,15 +3568,15 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         }, "strip", z.ZodTypeAny, {
             name: string;
             couponCode: string | null;
+            discountAmount: number;
             shippingDiscount: number;
             promotionId: string | null;
-            discountAmount: number;
         }, {
             name: string;
             couponCode: string | null;
+            discountAmount: number;
             shippingDiscount: number;
             promotionId: string | null;
-            discountAmount: number;
         }>, "many">;
     }, "strip", z.ZodTypeAny, {
         status: "PENDING_PAYMENT" | "AWAITING_PAYMENT" | "PAYMENT_REVIEW" | "PAYMENT_FAILED" | "PAID" | "CONFIRMED" | "PROCESSING" | "READY_TO_SHIP" | "READY_FOR_SHIPPING" | "SHIPPED" | "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "REFUNDED" | "FAILED";
@@ -3476,9 +3591,12 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         estimatedDeliveryDate: string | null;
         items: {
             id: string;
-            variantId: string;
+            price: number;
             quantity: number;
+            variantId: string;
             productId: string;
+            discount: number;
+            subtotal: number;
             productName: string;
             variantName: string | null;
             variantOptions: {
@@ -3491,22 +3609,26 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             }[];
             imageReference: string | null;
             sku: string;
-            price: number;
-            discount: number;
-            subtotal: number;
             discountedSubtotal: number;
             promotionSnapshot?: unknown;
         }[];
-        shippingAddressId: string | null;
-        notes: string | null;
-        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
-        shippingProvider: "MOCK" | "BOSTA" | null;
-        discount: number;
-        subtotal: number;
-        tax: number;
         customerId: string;
         shippingDiscount: number;
         totalSavings: number;
+        discount: number;
+        appliedPromotions: {
+            name: string;
+            couponCode: string | null;
+            discountAmount: number;
+            shippingDiscount: number;
+            promotionId: string | null;
+        }[];
+        shippingAddressId: string | null;
+        notes: string | null;
+        subtotal: number;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
+        shippingProvider: "MOCK" | "BOSTA" | null;
+        tax: number;
         estimatedDeliveryDays: number | null;
         paymentDueAt: string | null;
         invoice: {
@@ -3523,9 +3645,12 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             shippingCost?: number | undefined;
             items?: {
                 id: string;
-                variantId: string;
+                price: number;
                 quantity: number;
+                variantId: string;
                 productId: string;
+                discount: number;
+                subtotal: number;
                 productName: string;
                 variantName: string | null;
                 variantOptions: {
@@ -3538,12 +3663,10 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 }[];
                 imageReference: string | null;
                 sku: string;
-                price: number;
-                discount: number;
-                subtotal: number;
                 discountedSubtotal: number;
                 promotionSnapshot?: unknown;
             }[] | undefined;
+            discount?: number | undefined;
             customer?: {
                 id: string;
                 firstName: string;
@@ -3551,17 +3674,9 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 phone: string;
                 email: string | null;
             } | undefined;
-            discount?: number | undefined;
             subtotal?: number | undefined;
             tax?: number | undefined;
         } | null;
-        appliedPromotions: {
-            name: string;
-            couponCode: string | null;
-            shippingDiscount: number;
-            promotionId: string | null;
-            discountAmount: number;
-        }[];
         shipment?: {
             status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
             id: string;
@@ -3613,8 +3728,8 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             updatedAt: string;
             provider: string;
             orderId: string;
-            providerEmailId: string | null;
             customerId: string | null;
+            providerEmailId: string | null;
             recipientEmail: string;
             senderEmail: string;
             attemptCount: number;
@@ -3650,9 +3765,12 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         estimatedDeliveryDate: string | null;
         items: {
             id: string;
-            variantId: string;
+            price: number;
             quantity: number;
+            variantId: string;
             productId: string;
+            discount: number;
+            subtotal: number;
             productName: string;
             variantName: string | null;
             variantOptions: {
@@ -3665,22 +3783,26 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             }[];
             imageReference: string | null;
             sku: string;
-            price: number;
-            discount: number;
-            subtotal: number;
             discountedSubtotal: number;
             promotionSnapshot?: unknown;
         }[];
-        shippingAddressId: string | null;
-        notes: string | null;
-        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
-        shippingProvider: "MOCK" | "BOSTA" | null;
-        discount: number;
-        subtotal: number;
-        tax: number;
         customerId: string;
         shippingDiscount: number;
         totalSavings: number;
+        discount: number;
+        appliedPromotions: {
+            name: string;
+            couponCode: string | null;
+            discountAmount: number;
+            shippingDiscount: number;
+            promotionId: string | null;
+        }[];
+        shippingAddressId: string | null;
+        notes: string | null;
+        subtotal: number;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
+        shippingProvider: "MOCK" | "BOSTA" | null;
+        tax: number;
         estimatedDeliveryDays: number | null;
         paymentDueAt: string | null;
         invoice: {
@@ -3697,9 +3819,12 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             shippingCost?: number | undefined;
             items?: {
                 id: string;
-                variantId: string;
+                price: number;
                 quantity: number;
+                variantId: string;
                 productId: string;
+                discount: number;
+                subtotal: number;
                 productName: string;
                 variantName: string | null;
                 variantOptions: {
@@ -3712,12 +3837,10 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 }[];
                 imageReference: string | null;
                 sku: string;
-                price: number;
-                discount: number;
-                subtotal: number;
                 discountedSubtotal: number;
                 promotionSnapshot?: unknown;
             }[] | undefined;
+            discount?: number | undefined;
             customer?: {
                 id: string;
                 firstName: string;
@@ -3725,17 +3848,9 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 phone: string;
                 email: string | null;
             } | undefined;
-            discount?: number | undefined;
             subtotal?: number | undefined;
             tax?: number | undefined;
         } | null;
-        appliedPromotions: {
-            name: string;
-            couponCode: string | null;
-            shippingDiscount: number;
-            promotionId: string | null;
-            discountAmount: number;
-        }[];
         shipment?: {
             status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
             id: string;
@@ -3787,8 +3902,8 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             updatedAt: string;
             provider: string;
             orderId: string;
-            providerEmailId: string | null;
             customerId: string | null;
+            providerEmailId: string | null;
             recipientEmail: string;
             senderEmail: string;
             attemptCount: number;
@@ -3915,9 +4030,12 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         estimatedDeliveryDate: string | null;
         items: {
             id: string;
-            variantId: string;
+            price: number;
             quantity: number;
+            variantId: string;
             productId: string;
+            discount: number;
+            subtotal: number;
             productName: string;
             variantName: string | null;
             variantOptions: {
@@ -3930,22 +4048,26 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             }[];
             imageReference: string | null;
             sku: string;
-            price: number;
-            discount: number;
-            subtotal: number;
             discountedSubtotal: number;
             promotionSnapshot?: unknown;
         }[];
-        shippingAddressId: string | null;
-        notes: string | null;
-        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
-        shippingProvider: "MOCK" | "BOSTA" | null;
-        discount: number;
-        subtotal: number;
-        tax: number;
         customerId: string;
         shippingDiscount: number;
         totalSavings: number;
+        discount: number;
+        appliedPromotions: {
+            name: string;
+            couponCode: string | null;
+            discountAmount: number;
+            shippingDiscount: number;
+            promotionId: string | null;
+        }[];
+        shippingAddressId: string | null;
+        notes: string | null;
+        subtotal: number;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
+        shippingProvider: "MOCK" | "BOSTA" | null;
+        tax: number;
         estimatedDeliveryDays: number | null;
         paymentDueAt: string | null;
         invoice: {
@@ -3962,9 +4084,12 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             shippingCost?: number | undefined;
             items?: {
                 id: string;
-                variantId: string;
+                price: number;
                 quantity: number;
+                variantId: string;
                 productId: string;
+                discount: number;
+                subtotal: number;
                 productName: string;
                 variantName: string | null;
                 variantOptions: {
@@ -3977,12 +4102,10 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 }[];
                 imageReference: string | null;
                 sku: string;
-                price: number;
-                discount: number;
-                subtotal: number;
                 discountedSubtotal: number;
                 promotionSnapshot?: unknown;
             }[] | undefined;
+            discount?: number | undefined;
             customer?: {
                 id: string;
                 firstName: string;
@@ -3990,17 +4113,9 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 phone: string;
                 email: string | null;
             } | undefined;
-            discount?: number | undefined;
             subtotal?: number | undefined;
             tax?: number | undefined;
         } | null;
-        appliedPromotions: {
-            name: string;
-            couponCode: string | null;
-            shippingDiscount: number;
-            promotionId: string | null;
-            discountAmount: number;
-        }[];
         shipment?: {
             status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
             id: string;
@@ -4052,8 +4167,8 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             updatedAt: string;
             provider: string;
             orderId: string;
-            providerEmailId: string | null;
             customerId: string | null;
+            providerEmailId: string | null;
             recipientEmail: string;
             senderEmail: string;
             attemptCount: number;
@@ -4122,9 +4237,12 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         estimatedDeliveryDate: string | null;
         items: {
             id: string;
-            variantId: string;
+            price: number;
             quantity: number;
+            variantId: string;
             productId: string;
+            discount: number;
+            subtotal: number;
             productName: string;
             variantName: string | null;
             variantOptions: {
@@ -4137,22 +4255,26 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             }[];
             imageReference: string | null;
             sku: string;
-            price: number;
-            discount: number;
-            subtotal: number;
             discountedSubtotal: number;
             promotionSnapshot?: unknown;
         }[];
-        shippingAddressId: string | null;
-        notes: string | null;
-        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
-        shippingProvider: "MOCK" | "BOSTA" | null;
-        discount: number;
-        subtotal: number;
-        tax: number;
         customerId: string;
         shippingDiscount: number;
         totalSavings: number;
+        discount: number;
+        appliedPromotions: {
+            name: string;
+            couponCode: string | null;
+            discountAmount: number;
+            shippingDiscount: number;
+            promotionId: string | null;
+        }[];
+        shippingAddressId: string | null;
+        notes: string | null;
+        subtotal: number;
+        shippingStatus: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD" | null;
+        shippingProvider: "MOCK" | "BOSTA" | null;
+        tax: number;
         estimatedDeliveryDays: number | null;
         paymentDueAt: string | null;
         invoice: {
@@ -4169,9 +4291,12 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             shippingCost?: number | undefined;
             items?: {
                 id: string;
-                variantId: string;
+                price: number;
                 quantity: number;
+                variantId: string;
                 productId: string;
+                discount: number;
+                subtotal: number;
                 productName: string;
                 variantName: string | null;
                 variantOptions: {
@@ -4184,12 +4309,10 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 }[];
                 imageReference: string | null;
                 sku: string;
-                price: number;
-                discount: number;
-                subtotal: number;
                 discountedSubtotal: number;
                 promotionSnapshot?: unknown;
             }[] | undefined;
+            discount?: number | undefined;
             customer?: {
                 id: string;
                 firstName: string;
@@ -4197,17 +4320,9 @@ export declare const createOrderResponseSchema: z.ZodObject<{
                 phone: string;
                 email: string | null;
             } | undefined;
-            discount?: number | undefined;
             subtotal?: number | undefined;
             tax?: number | undefined;
         } | null;
-        appliedPromotions: {
-            name: string;
-            couponCode: string | null;
-            shippingDiscount: number;
-            promotionId: string | null;
-            discountAmount: number;
-        }[];
         shipment?: {
             status: "IN_TRANSIT" | "OUT_FOR_DELIVERY" | "DELIVERED" | "RETURNED" | "CANCELLED" | "FAILED" | "CREATED" | "PENDING_PICKUP" | "PICKED_UP" | "AT_WAREHOUSE" | "FULFILLED" | "EXCEPTION" | "TERMINATED" | "LOST" | "DAMAGED" | "AWAITING_ACTION" | "ARCHIVED" | "ON_HOLD";
             id: string;
@@ -4259,8 +4374,8 @@ export declare const createOrderResponseSchema: z.ZodObject<{
             updatedAt: string;
             provider: string;
             orderId: string;
-            providerEmailId: string | null;
             customerId: string | null;
+            providerEmailId: string | null;
             recipientEmail: string;
             senderEmail: string;
             attemptCount: number;

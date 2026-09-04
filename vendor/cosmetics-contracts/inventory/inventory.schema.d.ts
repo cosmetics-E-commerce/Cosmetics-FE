@@ -549,8 +549,8 @@ export declare const stockReservationSchema: z.ZodObject<{
     id: string;
     createdAt: string;
     orderId: string;
-    variantId: string;
     quantity: number;
+    variantId: string;
     expiresAt: string;
     variant: {
         id: string;
@@ -577,8 +577,8 @@ export declare const stockReservationSchema: z.ZodObject<{
     id: string;
     createdAt: string;
     orderId: string;
-    variantId: string;
     quantity: number;
+    variantId: string;
     expiresAt: string;
     variant: {
         id: string;
@@ -1260,8 +1260,8 @@ export declare const paginatedStockReservationsSchema: z.ZodObject<{
         id: string;
         createdAt: string;
         orderId: string;
-        variantId: string;
         quantity: number;
+        variantId: string;
         expiresAt: string;
         variant: {
             id: string;
@@ -1288,8 +1288,8 @@ export declare const paginatedStockReservationsSchema: z.ZodObject<{
         id: string;
         createdAt: string;
         orderId: string;
-        variantId: string;
         quantity: number;
+        variantId: string;
         expiresAt: string;
         variant: {
             id: string;
@@ -1340,8 +1340,8 @@ export declare const paginatedStockReservationsSchema: z.ZodObject<{
         id: string;
         createdAt: string;
         orderId: string;
-        variantId: string;
         quantity: number;
+        variantId: string;
         expiresAt: string;
         variant: {
             id: string;
@@ -1378,8 +1378,8 @@ export declare const paginatedStockReservationsSchema: z.ZodObject<{
         id: string;
         createdAt: string;
         orderId: string;
-        variantId: string;
         quantity: number;
+        variantId: string;
         expiresAt: string;
         variant: {
             id: string;
@@ -1420,48 +1420,48 @@ export declare const receiveInventoryBatchSchema: z.ZodEffects<z.ZodEffects<z.Zo
     quantity: z.ZodNumber;
     costPrice: z.ZodNumber;
 }, "strip", z.ZodTypeAny, {
-    variantId: string;
     quantity: number;
+    variantId: string;
     expiresAt: Date;
     costPrice: number;
     batchNumber: string;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }, {
-    variantId: string;
     quantity: number;
+    variantId: string;
     expiresAt: Date;
     costPrice: number;
     batchNumber: string;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }>, {
-    variantId: string;
     quantity: number;
+    variantId: string;
     expiresAt: Date;
     costPrice: number;
     batchNumber: string;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }, {
-    variantId: string;
     quantity: number;
+    variantId: string;
     expiresAt: Date;
     costPrice: number;
     batchNumber: string;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }>, {
-    variantId: string;
     quantity: number;
+    variantId: string;
     expiresAt: Date;
     costPrice: number;
     batchNumber: string;
     manufacturedAt?: Date | undefined;
     paoMonths?: number | undefined;
 }, {
-    variantId: string;
     quantity: number;
+    variantId: string;
     expiresAt: Date;
     costPrice: number;
     batchNumber: string;
@@ -1644,26 +1644,26 @@ export declare const inventoryMovementSchema: z.ZodObject<{
     type: "RECEIPT" | "RESERVE" | "RELEASE" | "COMMIT" | "ADJUSTMENT" | "RETURN" | "EXPIRY_WRITE_OFF";
     id: string;
     createdAt: string;
-    variantId: string;
     quantity: number;
-    reason: string | null;
+    variantId: string;
     createdBy: {
         id: string;
         name: string;
     } | null;
+    reason: string | null;
     batchNumber: string | null;
     batchId: string | null;
 }, {
     type: "RECEIPT" | "RESERVE" | "RELEASE" | "COMMIT" | "ADJUSTMENT" | "RETURN" | "EXPIRY_WRITE_OFF";
     id: string;
     createdAt: string;
-    variantId: string;
     quantity: number;
-    reason: string | null;
+    variantId: string;
     createdBy: {
         id: string;
         name: string;
     } | null;
+    reason: string | null;
     batchNumber: string | null;
     batchId: string | null;
 }>;
@@ -1691,26 +1691,26 @@ export declare const paginatedInventoryMovementsSchema: z.ZodObject<{
         type: "RECEIPT" | "RESERVE" | "RELEASE" | "COMMIT" | "ADJUSTMENT" | "RETURN" | "EXPIRY_WRITE_OFF";
         id: string;
         createdAt: string;
-        variantId: string;
         quantity: number;
-        reason: string | null;
+        variantId: string;
         createdBy: {
             id: string;
             name: string;
         } | null;
+        reason: string | null;
         batchNumber: string | null;
         batchId: string | null;
     }, {
         type: "RECEIPT" | "RESERVE" | "RELEASE" | "COMMIT" | "ADJUSTMENT" | "RETURN" | "EXPIRY_WRITE_OFF";
         id: string;
         createdAt: string;
-        variantId: string;
         quantity: number;
-        reason: string | null;
+        variantId: string;
         createdBy: {
             id: string;
             name: string;
         } | null;
+        reason: string | null;
         batchNumber: string | null;
         batchId: string | null;
     }>, "many">;
@@ -1741,13 +1741,13 @@ export declare const paginatedInventoryMovementsSchema: z.ZodObject<{
         type: "RECEIPT" | "RESERVE" | "RELEASE" | "COMMIT" | "ADJUSTMENT" | "RETURN" | "EXPIRY_WRITE_OFF";
         id: string;
         createdAt: string;
-        variantId: string;
         quantity: number;
-        reason: string | null;
+        variantId: string;
         createdBy: {
             id: string;
             name: string;
         } | null;
+        reason: string | null;
         batchNumber: string | null;
         batchId: string | null;
     }[];
@@ -1764,13 +1764,13 @@ export declare const paginatedInventoryMovementsSchema: z.ZodObject<{
         type: "RECEIPT" | "RESERVE" | "RELEASE" | "COMMIT" | "ADJUSTMENT" | "RETURN" | "EXPIRY_WRITE_OFF";
         id: string;
         createdAt: string;
-        variantId: string;
         quantity: number;
-        reason: string | null;
+        variantId: string;
         createdBy: {
             id: string;
             name: string;
         } | null;
+        reason: string | null;
         batchNumber: string | null;
         batchId: string | null;
     }[];
