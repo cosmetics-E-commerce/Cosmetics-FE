@@ -91,6 +91,27 @@ describe("PromoCodeControl", () => {
     expect(input).toHaveAttribute("aria-describedby", error.id);
   });
 
+  it("keeps the entered code and shows promo-specific copy after a network failure", async () => {
+    storeState = {
+      ...baseStore(),
+      applyCoupon: vi.fn().mockResolvedValue({
+        ok: false,
+        code: "NETWORK_UNAVAILABLE",
+        error: "No internet connection",
+      }),
+    };
+    render(<PromoCodeControl />);
+
+    const input = screen.getByLabelText("Promo code");
+    fireEvent.change(input, { target: { value: "BIOREZA20" } });
+    fireEvent.click(screen.getByRole("button", { name: "Apply" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Couldn't apply the promo code. Try again.",
+    );
+    expect(input).toHaveValue("BIOREZA20");
+  });
+
   it("shows authoritative savings and confirms replacing the single supported code", async () => {
     const applyCoupon = vi.fn().mockResolvedValue({ ok: true });
     storeState = {

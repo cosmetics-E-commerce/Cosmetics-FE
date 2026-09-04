@@ -22,6 +22,7 @@ import type {
 import {
   addCartItem,
   applyCartCoupon,
+  apiErrorCode,
   addWishlist,
   apiErrorMessage,
   clearCartRequest,
@@ -80,7 +81,7 @@ export type SavedForLaterLine = {
 };
 
 type Locale = "ar" | "en";
-export type CouponMutationResult = { ok: true } | { ok: false; error: string };
+export type CouponMutationResult = { ok: true } | { ok: false; error: string; code?: string };
 export type AddLine = {
   variantId?: string | undefined;
   productId?: string | undefined;
@@ -508,7 +509,11 @@ export function StoreProvider({
         commitCart(await applyCartCoupon(code));
         return { ok: true } as const;
       } catch (error) {
-        return { ok: false, error: apiErrorMessage(error, locale) } as const;
+        return {
+          ok: false,
+          error: apiErrorMessage(error, locale),
+          code: apiErrorCode(error),
+        } as const;
       }
     },
     [commitCart, locale],

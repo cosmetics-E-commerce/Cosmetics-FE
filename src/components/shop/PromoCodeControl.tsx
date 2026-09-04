@@ -62,7 +62,13 @@ export function PromoCodeControl() {
           : `Promo code ${nextCode.toUpperCase()} applied.`,
       );
     } else {
-      setError(result.error);
+      setError(
+        result.code === "NETWORK_UNAVAILABLE" || result.code === "NETWORK_ERROR"
+          ? locale === "ar"
+            ? "تعذر تطبيق رمز الخصم. حاولي مرة أخرى."
+            : "Couldn't apply the promo code. Try again."
+          : result.error,
+      );
     }
     setPending(false);
     requestPending.current = false;
