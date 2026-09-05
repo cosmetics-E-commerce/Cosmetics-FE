@@ -235,6 +235,7 @@ export type StorefrontOffer = {
   title: string;
   description: string | null;
   type: string;
+  bannerImageKey?: string | null;
   badgeText: string | null;
   startsAt: string | null;
   endsAt: string | null;
