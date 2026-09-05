@@ -236,6 +236,7 @@ exports.promotionDisplaySchema = zod_1.z
     badgeText: zod_1.z.string().trim().max(48).nullable().default(null),
     showCountdown: zod_1.z.boolean().default(false),
     showOnOffers: zod_1.z.boolean().default(true),
+    placement: zod_1.z.enum(["OFFERS_PAGE", "HOME_HERO"]).default("OFFERS_PAGE"),
     featured: zod_1.z.boolean().default(false),
     bannerImageKey: zod_1.z.string().trim().max(2048).nullable().default(null),
 })

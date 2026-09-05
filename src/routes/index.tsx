@@ -1,5 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { OfferHero } from "@/components/offers/OfferHero";
+import { heroOffersQuery } from "@/lib/offers";
 import { Hero } from "@/components/home/Hero";
 import { LandingPageRenderer } from "@/components/page-builder/LandingPageRenderer";
 import { brandMarqueeQuery, categoriesQuery, merchandisingQuery } from "@/lib/catalog";
@@ -12,8 +15,11 @@ const HomeBelowFold = lazy(() => import("@/components/home/HomeBelowFold"));
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
     const locale = context.locale === "ar" ? ("ar" as const) : ("en" as const);
-    const builder = await getPublishedHomepage().catch(() => null);
-    if (builder) return { mode: "builder" as const, builder, locale };
+    const [builder, heroOffers] = await Promise.all([
+      getPublishedHomepage().catch(() => null),
+      context.queryClient.ensureQueryData(heroOffersQuery()).catch(() => []),
+    ]);
+    if (builder) return { mode: "builder" as const, builder, locale, heroOffers };
     const [arrivals, customerEdit, categories, brands] = await Promise.all([
       context.queryClient.ensureQueryData(
         merchandisingQuery(
@@ -35,6 +41,7 @@ export const Route = createFileRoute("/")({
     ]);
     return {
       mode: "legacy" as const,
+      heroOffers,
       arrivals,
       customerEdit,
       categories,
@@ -102,12 +109,21 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const data = Route.useLoaderData();
+  const heroQuery = useQuery({
+    ...heroOffersQuery(),
+    initialData: data.heroOffers,
+    refetchInterval: 60_000,
+  });
+  const hero =
+    !heroQuery.isError && heroQuery.data.length ? (
+      <OfferHero offers={heroQuery.data} locale={data.locale} />
+    ) : undefined;
   if (data.mode === "builder")
-    return <LandingPageRenderer snapshot={data.builder} locale={data.locale} />;
+    return <LandingPageRenderer snapshot={data.builder} locale={data.locale} heroOverride={hero} />;
   const { arrivals, customerEdit, categories, brands } = data;
   return (
     <>
-      <Hero />
+      {hero ?? <Hero />}
       <Suspense fallback={null}>
         <HomeBelowFold
           arrivals={arrivals}

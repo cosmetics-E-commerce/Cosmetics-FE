@@ -1486,7 +1486,11 @@ const server = createServer((request, response) => {
   if (path === "/campaigns/events") {
     return success(response, { accepted: 0, duplicates: 0, rejected: 0 });
   }
-  if (path === "/banners/active" || path === "/promotions/offers") {
+  if (
+    path === "/banners/active" ||
+    path === "/promotions/offers" ||
+    path === "/promotions/hero-offers"
+  ) {
     return success(response, []);
   }
 

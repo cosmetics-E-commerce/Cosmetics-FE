@@ -235,6 +235,7 @@ export type StorefrontOffer = {
   title: string;
   description: string | null;
   type: string;
+  bannerImageKey?: string | null;
   badgeText: string | null;
   startsAt: string | null;
   endsAt: string | null;
@@ -1635,6 +1636,9 @@ export const getPromotionPrices = (
     auth: false,
     body: { lines },
   });
+export const listHeroOffers = () =>
+  rawRequest<StorefrontOffer[]>("/promotions/hero-offers", { auth: false });
+
 export const listOffers = () =>
   rawRequest<StorefrontOffer[]>("/promotions/offers", { auth: false });
 
