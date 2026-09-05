@@ -1636,6 +1636,9 @@ export const getPromotionPrices = (
     auth: false,
     body: { lines },
   });
+export const listHeroOffers = () =>
+  rawRequest<StorefrontOffer[]>("/promotions/hero-offers", { auth: false });
+
 export const listOffers = () =>
   rawRequest<StorefrontOffer[]>("/promotions/offers", { auth: false });
 

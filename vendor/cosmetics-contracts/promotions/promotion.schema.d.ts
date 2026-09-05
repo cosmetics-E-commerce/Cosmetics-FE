@@ -1225,18 +1225,21 @@ export declare const promotionDisplaySchema: z.ZodDefault<z.ZodObject<{
     badgeText: z.ZodDefault<z.ZodNullable<z.ZodString>>;
     showCountdown: z.ZodDefault<z.ZodBoolean>;
     showOnOffers: z.ZodDefault<z.ZodBoolean>;
+    placement: z.ZodDefault<z.ZodEnum<["OFFERS_PAGE", "HOME_HERO"]>>;
     featured: z.ZodDefault<z.ZodBoolean>;
     bannerImageKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
 }, "strip", z.ZodTypeAny, {
     badgeText: string | null;
     showCountdown: boolean;
     showOnOffers: boolean;
+    placement: "OFFERS_PAGE" | "HOME_HERO";
     featured: boolean;
     bannerImageKey: string | null;
 }, {
     badgeText?: string | null | undefined;
     showCountdown?: boolean | undefined;
     showOnOffers?: boolean | undefined;
+    placement?: "OFFERS_PAGE" | "HOME_HERO" | undefined;
     featured?: boolean | undefined;
     bannerImageKey?: string | null | undefined;
 }>>;
@@ -2447,18 +2450,21 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         badgeText: z.ZodDefault<z.ZodNullable<z.ZodString>>;
         showCountdown: z.ZodDefault<z.ZodBoolean>;
         showOnOffers: z.ZodDefault<z.ZodBoolean>;
+        placement: z.ZodDefault<z.ZodEnum<["OFFERS_PAGE", "HOME_HERO"]>>;
         featured: z.ZodDefault<z.ZodBoolean>;
         bannerImageKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
     }, "strip", z.ZodTypeAny, {
         badgeText: string | null;
         showCountdown: boolean;
         showOnOffers: boolean;
+        placement: "OFFERS_PAGE" | "HOME_HERO";
         featured: boolean;
         bannerImageKey: string | null;
     }, {
         badgeText?: string | null | undefined;
         showCountdown?: boolean | undefined;
         showOnOffers?: boolean | undefined;
+        placement?: "OFFERS_PAGE" | "HOME_HERO" | undefined;
         featured?: boolean | undefined;
         bannerImageKey?: string | null | undefined;
     }>>;
@@ -2733,6 +2739,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         badgeText: string | null;
         showCountdown: boolean;
         showOnOffers: boolean;
+        placement: "OFFERS_PAGE" | "HOME_HERO";
         featured: boolean;
         bannerImageKey: string | null;
     };
@@ -2995,6 +3002,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         badgeText?: string | null | undefined;
         showCountdown?: boolean | undefined;
         showOnOffers?: boolean | undefined;
+        placement?: "OFFERS_PAGE" | "HOME_HERO" | undefined;
         featured?: boolean | undefined;
         bannerImageKey?: string | null | undefined;
     } | undefined;
@@ -3253,6 +3261,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         badgeText: string | null;
         showCountdown: boolean;
         showOnOffers: boolean;
+        placement: "OFFERS_PAGE" | "HOME_HERO";
         featured: boolean;
         bannerImageKey: string | null;
     };
@@ -3515,6 +3524,7 @@ export declare const createPromotionSchema: z.ZodEffects<z.ZodObject<{
         badgeText?: string | null | undefined;
         showCountdown?: boolean | undefined;
         showOnOffers?: boolean | undefined;
+        placement?: "OFFERS_PAGE" | "HOME_HERO" | undefined;
         featured?: boolean | undefined;
         bannerImageKey?: string | null | undefined;
     } | undefined;
@@ -4711,18 +4721,21 @@ export declare const updatePromotionSchema: z.ZodObject<{
         badgeText: z.ZodDefault<z.ZodNullable<z.ZodString>>;
         showCountdown: z.ZodDefault<z.ZodBoolean>;
         showOnOffers: z.ZodDefault<z.ZodBoolean>;
+        placement: z.ZodDefault<z.ZodEnum<["OFFERS_PAGE", "HOME_HERO"]>>;
         featured: z.ZodDefault<z.ZodBoolean>;
         bannerImageKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
     }, "strip", z.ZodTypeAny, {
         badgeText: string | null;
         showCountdown: boolean;
         showOnOffers: boolean;
+        placement: "OFFERS_PAGE" | "HOME_HERO";
         featured: boolean;
         bannerImageKey: string | null;
     }, {
         badgeText?: string | null | undefined;
         showCountdown?: boolean | undefined;
         showOnOffers?: boolean | undefined;
+        placement?: "OFFERS_PAGE" | "HOME_HERO" | undefined;
         featured?: boolean | undefined;
         bannerImageKey?: string | null | undefined;
     }>>>;
@@ -4999,6 +5012,7 @@ export declare const updatePromotionSchema: z.ZodObject<{
         badgeText: string | null;
         showCountdown: boolean;
         showOnOffers: boolean;
+        placement: "OFFERS_PAGE" | "HOME_HERO";
         featured: boolean;
         bannerImageKey: string | null;
     } | undefined;
@@ -5259,6 +5273,7 @@ export declare const updatePromotionSchema: z.ZodObject<{
         badgeText?: string | null | undefined;
         showCountdown?: boolean | undefined;
         showOnOffers?: boolean | undefined;
+        placement?: "OFFERS_PAGE" | "HOME_HERO" | undefined;
         featured?: boolean | undefined;
         bannerImageKey?: string | null | undefined;
     } | undefined;
@@ -6514,18 +6529,21 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             badgeText: z.ZodDefault<z.ZodNullable<z.ZodString>>;
             showCountdown: z.ZodDefault<z.ZodBoolean>;
             showOnOffers: z.ZodDefault<z.ZodBoolean>;
+            placement: z.ZodDefault<z.ZodEnum<["OFFERS_PAGE", "HOME_HERO"]>>;
             featured: z.ZodDefault<z.ZodBoolean>;
             bannerImageKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
         }, "strip", z.ZodTypeAny, {
             badgeText: string | null;
             showCountdown: boolean;
             showOnOffers: boolean;
+            placement: "OFFERS_PAGE" | "HOME_HERO";
             featured: boolean;
             bannerImageKey: string | null;
         }, {
             badgeText?: string | null | undefined;
             showCountdown?: boolean | undefined;
             showOnOffers?: boolean | undefined;
+            placement?: "OFFERS_PAGE" | "HOME_HERO" | undefined;
             featured?: boolean | undefined;
             bannerImageKey?: string | null | undefined;
         }>>;
@@ -6800,6 +6818,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             badgeText: string | null;
             showCountdown: boolean;
             showOnOffers: boolean;
+            placement: "OFFERS_PAGE" | "HOME_HERO";
             featured: boolean;
             bannerImageKey: string | null;
         };
@@ -7062,6 +7081,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             badgeText?: string | null | undefined;
             showCountdown?: boolean | undefined;
             showOnOffers?: boolean | undefined;
+            placement?: "OFFERS_PAGE" | "HOME_HERO" | undefined;
             featured?: boolean | undefined;
             bannerImageKey?: string | null | undefined;
         } | undefined;
@@ -7372,6 +7392,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             badgeText: string | null;
             showCountdown: boolean;
             showOnOffers: boolean;
+            placement: "OFFERS_PAGE" | "HOME_HERO";
             featured: boolean;
             bannerImageKey: string | null;
         };
@@ -7649,6 +7670,7 @@ export declare const promotionPreviewSchema: z.ZodObject<{
             badgeText?: string | null | undefined;
             showCountdown?: boolean | undefined;
             showOnOffers?: boolean | undefined;
+            placement?: "OFFERS_PAGE" | "HOME_HERO" | undefined;
             featured?: boolean | undefined;
             bannerImageKey?: string | null | undefined;
         } | undefined;
@@ -9050,18 +9072,21 @@ export declare const promotionResponseSchema: z.ZodObject<{
         badgeText: z.ZodDefault<z.ZodNullable<z.ZodString>>;
         showCountdown: z.ZodDefault<z.ZodBoolean>;
         showOnOffers: z.ZodDefault<z.ZodBoolean>;
+        placement: z.ZodDefault<z.ZodEnum<["OFFERS_PAGE", "HOME_HERO"]>>;
         featured: z.ZodDefault<z.ZodBoolean>;
         bannerImageKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
     }, "strip", z.ZodTypeAny, {
         badgeText: string | null;
         showCountdown: boolean;
         showOnOffers: boolean;
+        placement: "OFFERS_PAGE" | "HOME_HERO";
         featured: boolean;
         bannerImageKey: string | null;
     }, {
         badgeText?: string | null | undefined;
         showCountdown?: boolean | undefined;
         showOnOffers?: boolean | undefined;
+        placement?: "OFFERS_PAGE" | "HOME_HERO" | undefined;
         featured?: boolean | undefined;
         bannerImageKey?: string | null | undefined;
     }>>;
@@ -9362,6 +9387,7 @@ export declare const promotionResponseSchema: z.ZodObject<{
         badgeText: string | null;
         showCountdown: boolean;
         showOnOffers: boolean;
+        placement: "OFFERS_PAGE" | "HOME_HERO";
         featured: boolean;
         bannerImageKey: string | null;
     };
@@ -9653,6 +9679,7 @@ export declare const promotionResponseSchema: z.ZodObject<{
         badgeText?: string | null | undefined;
         showCountdown?: boolean | undefined;
         showOnOffers?: boolean | undefined;
+        placement?: "OFFERS_PAGE" | "HOME_HERO" | undefined;
         featured?: boolean | undefined;
         bannerImageKey?: string | null | undefined;
     } | undefined;
@@ -10847,18 +10874,21 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             badgeText: z.ZodDefault<z.ZodNullable<z.ZodString>>;
             showCountdown: z.ZodDefault<z.ZodBoolean>;
             showOnOffers: z.ZodDefault<z.ZodBoolean>;
+            placement: z.ZodDefault<z.ZodEnum<["OFFERS_PAGE", "HOME_HERO"]>>;
             featured: z.ZodDefault<z.ZodBoolean>;
             bannerImageKey: z.ZodDefault<z.ZodNullable<z.ZodString>>;
         }, "strip", z.ZodTypeAny, {
             badgeText: string | null;
             showCountdown: boolean;
             showOnOffers: boolean;
+            placement: "OFFERS_PAGE" | "HOME_HERO";
             featured: boolean;
             bannerImageKey: string | null;
         }, {
             badgeText?: string | null | undefined;
             showCountdown?: boolean | undefined;
             showOnOffers?: boolean | undefined;
+            placement?: "OFFERS_PAGE" | "HOME_HERO" | undefined;
             featured?: boolean | undefined;
             bannerImageKey?: string | null | undefined;
         }>>;
@@ -11159,6 +11189,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             badgeText: string | null;
             showCountdown: boolean;
             showOnOffers: boolean;
+            placement: "OFFERS_PAGE" | "HOME_HERO";
             featured: boolean;
             bannerImageKey: string | null;
         };
@@ -11450,6 +11481,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             badgeText?: string | null | undefined;
             showCountdown?: boolean | undefined;
             showOnOffers?: boolean | undefined;
+            placement?: "OFFERS_PAGE" | "HOME_HERO" | undefined;
             featured?: boolean | undefined;
             bannerImageKey?: string | null | undefined;
         } | undefined;
@@ -11735,6 +11767,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             badgeText: string | null;
             showCountdown: boolean;
             showOnOffers: boolean;
+            placement: "OFFERS_PAGE" | "HOME_HERO";
             featured: boolean;
             bannerImageKey: string | null;
         };
@@ -12036,6 +12069,7 @@ export declare const promotionListResponseSchema: z.ZodObject<{
             badgeText?: string | null | undefined;
             showCountdown?: boolean | undefined;
             showOnOffers?: boolean | undefined;
+            placement?: "OFFERS_PAGE" | "HOME_HERO" | undefined;
             featured?: boolean | undefined;
             bannerImageKey?: string | null | undefined;
         } | undefined;

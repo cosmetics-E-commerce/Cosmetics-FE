@@ -58,28 +58,36 @@ import "./page-builder.css";
 export function LandingPageRenderer({
   snapshot,
   locale,
+  heroOverride,
 }: {
   snapshot: LandingPagePublicSnapshot;
   locale: Locale;
+  heroOverride?: ReactNode;
 }) {
   const resolvedAt = Date.parse(snapshot.resolvedAt);
   const visible = snapshot.config.sections.filter((section) =>
     isLandingSectionVisible(section, locale, resolvedAt),
   );
+  const firstHero = visible.find((section) => section.type === "HERO");
   return (
     <main
       className="landing-page"
       data-page-id={snapshot.pageId}
       data-revision={snapshot.revisionId}
     >
+      {!firstHero && heroOverride}
       {visible.map((section, index) => (
         <LandingSectionBoundary key={section.id} section={section}>
-          <LandingSection
-            section={section}
-            snapshot={snapshot}
-            locale={locale}
-            priority={index === 0 && section.type === "HERO"}
-          />
+          {heroOverride && section.id === firstHero?.id ? (
+            heroOverride
+          ) : (
+            <LandingSection
+              section={section}
+              snapshot={snapshot}
+              locale={locale}
+              priority={index === 0 && section.type === "HERO"}
+            />
+          )}
         </LandingSectionBoundary>
       ))}
     </main>

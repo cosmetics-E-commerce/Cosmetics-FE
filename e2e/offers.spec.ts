@@ -144,3 +144,59 @@ test("product failures preserve the offer and provide a working retry", async ({
   await page.getByRole("button", { name: "Try again" }).click();
   await expect(page.locator(".sf-offer-product")).toHaveCount(1);
 });
+
+for (const builder of [false, true]) {
+  test(`homepage hero offers work with ${builder ? "published" : "default"} homepage`, async ({
+    page,
+    request,
+  }) => {
+    const response = await request.get("http://127.0.0.1:4174/api/v1/products");
+    const body = await response.json();
+    const template = (Array.isArray(body.data) ? body.data : body.data.items)[0];
+    const homepage = builder
+      ? (
+          await (
+            await request.get("http://127.0.0.1:4174/api/v1/pages/page-builder-hero-test")
+          ).json()
+        ).data
+      : null;
+    await page.route("**/pages/homepage", (route) =>
+      route.fulfill({ json: { success: true, data: homepage } }),
+    );
+    await page.route("**/promotions/hero-offers", (route) =>
+      route.fulfill({
+        json: { success: true, data: offers.map((offer) => ({ ...offer, productIds: [ids[0]] })) },
+      }),
+    );
+    await page.route("**/products/by-ids?*", (route) =>
+      route.fulfill({ json: { success: true, data: [{ ...template, id: ids[0] }] } }),
+    );
+    await page.goto("/privacy-policy");
+    await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
+    await page.getByRole("link", { name: "Home", exact: true }).first().click();
+    const hero = page.locator(".sf-offers-home-hero");
+    await expect(hero).toBeVisible();
+    if (builder)
+      await expect(page.locator(".landing-page")).toHaveAttribute("data-page-id", homepage.pageId);
+    await expect(hero.locator("h1")).toHaveText("Flash Sale");
+    await expect(hero.locator(".sf-offer-product")).toHaveCount(1);
+    await expect(page.locator(".sf-hero, .landing-section--hero")).toHaveCount(0);
+    await hero.getByRole("button", { name: "Next offer" }).click();
+    await expect(hero).toContainText("Selected skincare essentials.");
+    await hero.getByRole("button", { name: "Previous offer" }).click();
+    await expect(hero.getByText("Selected skincare essentials.")).toHaveCount(0);
+    for (const width of [320, 390, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      expect(
+        await page.evaluate(() => document.documentElement.scrollWidth - innerWidth),
+      ).toBeLessThanOrEqual(1);
+    }
+  });
+}
+
+test("homepage keeps its usual hero when no hero offer is active", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
+  await expect(page.locator(".sf-offers-home-hero")).toHaveCount(0);
+  await expect(page.locator(".sf-hero, .landing-section--hero").first()).toBeVisible();
+});
