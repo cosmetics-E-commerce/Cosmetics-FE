@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 
 import { Reveal } from "@/components/brand/Reveal";
@@ -14,6 +14,7 @@ import {
 } from "@/components/shop/catalog-listing-state";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { Button } from "@/components/ui/button";
+import { CategoryScrollStrip } from "@/components/ui/horizontal-scroll";
 import {
   brandsQuery,
   catalogFacetsQuery,
@@ -25,7 +26,6 @@ import {
   useCategories,
 } from "@/lib/catalog";
 import { useI18n } from "@/lib/i18n";
-import { scrollElementHorizontallyIntoView } from "@/lib/horizontal-nav";
 import {
   breadcrumbSchema,
   createSeoHead,
@@ -127,7 +127,6 @@ export const Route = createFileRoute("/shop")({
 function Shop() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
-  const categoryTabsRef = useRef<HTMLDivElement>(null);
   const { locale } = useStore();
   const { t } = useI18n();
   const page = search.page ?? 1;
@@ -141,7 +140,7 @@ function Shop() {
   const meta = catalog.data?.meta;
   const view = search.view ?? "grid";
   const categoryTabs = [
-    { id: "all", slug: undefined, label: t("shop.all"), count: undefined },
+    { id: "all", slug: undefined, label: t("shop.all") },
     ...(categories.data ?? [])
       .filter(
         (category) =>
@@ -152,7 +151,6 @@ function Shop() {
         id: category.id,
         slug: category.slug,
         label: locale === "ar" ? category.nameAr : category.nameEn,
-        count: category.aggregateProductCount ?? category.productCount,
       })),
   ];
   const categoryOptions = (categories.data ?? []).map((category) => ({
@@ -183,20 +181,6 @@ function Shop() {
       ? "تسوّقي العناية بالبشرة والشعر والجسم والعطور"
       : "Shop Skincare, Haircare, Body Care & Fragrance";
 
-  useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
-      const scroller = categoryTabsRef.current;
-      const selected = scroller?.querySelector<HTMLElement>('[aria-selected="true"]');
-      if (scroller && selected) {
-        scrollElementHorizontallyIntoView(scroller, selected, {
-          behavior: "auto",
-          edgePadding: 16,
-        });
-      }
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [locale, search.category]);
-
   return (
     <div className="sf-shop-page sf-shop-page--minimal">
       <nav
@@ -211,11 +195,12 @@ function Shop() {
         <h1>{shopHeadline}</h1>
       </Reveal>
       <section className="sf-shop-catalog" aria-labelledby="shop-products-title">
-        <div
-          ref={categoryTabsRef}
-          className="sf-shop-tabs"
-          role="tablist"
-          aria-label={t("shop.category")}
+        <CategoryScrollStrip
+          locale={locale}
+          viewportClassName="sf-shop-tabs"
+          tabs
+          label={t("shop.category")}
+          activeKey={search.category ?? "all"}
         >
           {categoryTabs.map((category) => {
             const selected =
@@ -230,11 +215,10 @@ function Shop() {
                 onClick={() => setSearch(withResetPage(search, { category: category.slug }))}
               >
                 {category.label}
-                {category.count ? <span>({category.count})</span> : null}
               </button>
             );
           })}
-        </div>
+        </CategoryScrollStrip>
 
         <h2 id="shop-products-title" className="sr-only">
           {shopHeadline}

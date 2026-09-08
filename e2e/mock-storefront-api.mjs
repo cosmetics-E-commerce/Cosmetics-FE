@@ -1,5 +1,6 @@
 import { createServer } from "node:http";
 import { DEFAULT_NAVIGATION_CONFIG } from "@cosmetics/contracts";
+import { landingPageSectionSchema } from "@cosmetics/contracts/page-builder/page-builder.schema";
 
 const host = "127.0.0.1";
 const port = Number.parseInt(process.env.E2E_MOCK_API_PORT || "4174", 10);
@@ -1266,6 +1267,62 @@ const pageBuilderSignatureHomeSnapshot = {
   links: {},
 };
 
+const featuredCategorySection = pageBuilderSignatureHomeSnapshot.config.sections.find(
+  (section) => section.module === "FEATURED",
+);
+const featuredCategories = [
+  categories[5],
+  categories[2],
+  categories[4],
+  categories[0],
+  categories[3],
+];
+const pageBuilderFeaturedTabsSnapshot = {
+  ...pageBuilderSignatureHomeSnapshot,
+  slug: "page-builder-featured-tabs-test",
+  config: {
+    ...pageBuilderSignatureHomeSnapshot.config,
+    sections: [
+      {
+        ...featuredCategorySection,
+        featuredCategoryIds: featuredCategories.map((item) => item.id),
+      },
+    ],
+  },
+  entities: {
+    [featuredCategorySection.id]: featuredCategories.map((item) => ({
+      kind: "CATEGORY",
+      id: item.id,
+      slug: item.slug,
+      labelEn: item.nameEn,
+      labelAr: item.nameAr,
+      href: `/categories/${item.slug}`,
+    })),
+  },
+};
+
+const pageBuilderScrollSnapshot = {
+  ...pageBuilderSignatureHomeSnapshot,
+  slug: "page-builder-scroll-test",
+  config: {
+    ...pageBuilderSignatureHomeSnapshot.config,
+    sections: [
+      landingPageSectionSchema.parse({
+        id: "92000000-0000-4000-8000-000000000020",
+        analyticsKey: "scroll-test",
+        label: "Product carousel",
+        visibility: featuredCategorySection.visibility,
+        type: "PRODUCT_CAROUSEL",
+        heading: { en: "Explore products", ar: "اكتشفي المنتجات" },
+        description: { en: "", ar: "" },
+        viewAllLabel: { en: "View all", ar: "عرض الكل" },
+        source: { mode: "FEATURED" },
+        columns: { desktop: 4, tablet: 3, mobile: 2 },
+      }),
+    ],
+  },
+};
+
 const server = createServer((request, response) => {
   const url = new URL(request.url || "/", `http://${host}:${port}`);
   const path = url.pathname.replace(/^\/api\/v1/, "");
@@ -1298,6 +1355,12 @@ const server = createServer((request, response) => {
   }
   if (path === "/pages/page-builder-signature-home-test") {
     return success(response, pageBuilderSignatureHomeSnapshot);
+  }
+  if (path === "/pages/page-builder-featured-tabs-test") {
+    return success(response, pageBuilderFeaturedTabsSnapshot);
+  }
+  if (path === "/pages/page-builder-scroll-test") {
+    return success(response, pageBuilderScrollSnapshot);
   }
   if (path.startsWith("/page-builder-fixtures/")) {
     const mobile = path.endsWith("/mobile.svg");
@@ -1387,7 +1450,22 @@ const server = createServer((request, response) => {
       price: { min: 41900, max: 41900 },
     });
   }
-  if (path === "/products/merchandising") return success(response, [product]);
+  if (path === "/products/merchandising") {
+    if (["home-customer-edit", "page-scroll-test"].includes(url.searchParams.get("section"))) {
+      return success(
+        response,
+        Array.from({ length: 8 }, (_, index) => ({
+          ...product,
+          id:
+            index === 0
+              ? product.id
+              : `30000000-0000-4000-8000-${String(index + 10).padStart(12, "0")}`,
+          slug: index === 0 ? product.slug : `customer-edit-${index + 1}`,
+        })),
+      );
+    }
+    return success(response, [product]);
+  }
   if (path === "/products") {
     const search = url.searchParams.get("search");
     const stockBySearch = new Map([

@@ -21,6 +21,7 @@ import { BrandLogo } from "@/components/brand/BrandLogo";
 import {
   Component,
   useEffect,
+  useId,
   useState,
   type CSSProperties,
   type ErrorInfo,
@@ -41,6 +42,8 @@ import {
 } from "@/components/home/Sections";
 import { PolishedImage } from "@/components/ui/polished-image";
 import { Button } from "@/components/ui/button";
+import { ProductScrollControls } from "@/components/ui/horizontal-scroll";
+import { useHorizontalScroll } from "@/hooks/use-horizontal-scroll";
 import { Magnetic, ParallaxMedia, TextReveal } from "@/components/motion/Primitives";
 import { useMotionPreferences } from "@/components/motion/motion-context";
 import {
@@ -138,7 +141,7 @@ function LandingSection({
         data-visible-tablet={section.visibility.devices.includes("TABLET")}
         data-visible-mobile={section.visibility.devices.includes("MOBILE")}
       >
-        <BioRezaHomeModule module={section.module} />
+        <BioRezaHomeModule section={section} entities={snapshot.entities[section.id] ?? []} />
       </div>
     );
   const classes = `landing-section landing-section--${section.type.toLowerCase().replace(/_/g, "-")} landing-section--${section.surface.toLowerCase()} landing-section--space-${section.spacing.toLowerCase()}`;
@@ -299,14 +302,28 @@ function ContentBlocksSection({
 }
 
 function BioRezaHomeModule({
-  module,
+  section,
+  entities,
 }: {
-  module: Extract<LandingPageSection, { type: "BIOREZA_HOME_MODULE" }>["module"];
+  section: Extract<LandingPageSection, { type: "BIOREZA_HOME_MODULE" }>;
+  entities: LandingPageResolvedEntity[];
 }) {
+  const { module } = section;
   if (module === "BRAND_MARQUEE") return <BrandMarquee />;
   if (module === "BENEFITS") return <Benefits />;
   if (module === "CATEGORY_SHOWCASE") return <CategoryShowcase />;
-  if (module === "FEATURED") return <Featured />;
+  if (module === "FEATURED") {
+    const byId = new Map(
+      entities.filter((entity) => entity.kind === "CATEGORY").map((entity) => [entity.id, entity]),
+    );
+    const categoryTabs = section.featuredCategoryIds?.flatMap((id) => {
+      const category = byId.get(id);
+      return category?.slug
+        ? [{ id, slug: category.slug, nameEn: category.labelEn, nameAr: category.labelAr }]
+        : [];
+    });
+    return <Featured {...(categoryTabs === undefined ? {} : { categoryTabs })} />;
+  }
   if (module === "COLLECTION_FEATURE") return <CollectionFeature />;
   if (module === "CONCERNS") return <Concerns />;
   if (module === "BEST_SELLERS") return <BestSellers />;
@@ -1143,6 +1160,9 @@ function CatalogProducts({
   entities: LandingPageResolvedEntity[];
   locale: Locale;
 }) {
+  const carousel = section.type === "PRODUCT_CAROUSEL";
+  const railId = useId();
+  const rail = useHorizontalScroll<HTMLDivElement>({ rtl: locale === "ar", enabled: carousel });
   const source = section.source;
   const reference = entities.find((entity) => entity.kind !== "PRODUCT");
   const categoryReference = entities.find((entity) => entity.kind === "CATEGORY");
@@ -1230,21 +1250,37 @@ function CatalogProducts({
     );
   if (!products.length) return null;
   return (
-    <div
-      className={`landing-products ${section.type === "PRODUCT_CAROUSEL" ? "landing-products--carousel" : ""}`}
-      data-style={section.style}
-      style={
-        {
-          "--landing-columns": section.columns.desktop,
-          "--landing-tablet-columns": section.columns.tablet,
-          "--landing-mobile-columns": section.columns.mobile,
-        } as CSSProperties
-      }
-    >
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} compact={section.style === "COMPACT"} />
-      ))}
-    </div>
+    <>
+      {carousel && (
+        <div className="landing-products-controls">
+          <ProductScrollControls state={rail} locale={locale} controls={railId} />
+        </div>
+      )}
+      <div
+        id={railId}
+        ref={carousel ? rail.ref : undefined}
+        tabIndex={carousel ? 0 : undefined}
+        role={carousel ? "region" : undefined}
+        aria-label={
+          carousel
+            ? text(section.heading, locale) || (locale === "ar" ? "المنتجات" : "Products")
+            : undefined
+        }
+        className={`landing-products ${carousel ? "landing-products--carousel sf-drag-scroll" : ""}`}
+        data-style={section.style}
+        style={
+          {
+            "--landing-columns": section.columns.desktop,
+            "--landing-tablet-columns": section.columns.tablet,
+            "--landing-mobile-columns": section.columns.mobile,
+          } as CSSProperties
+        }
+      >
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} compact={section.style === "COMPACT"} />
+        ))}
+      </div>
+    </>
   );
 }
 

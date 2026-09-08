@@ -123,6 +123,8 @@ export declare const landingPageDestinationSchema: z.ZodUnion<[z.ZodDiscriminate
 }>]>;
 export type LandingPageDestination = z.infer<typeof landingPageDestinationSchema>;
 export declare const landingPageSchemaVersion: 1;
+export declare const featuredCategoryLimit = 12;
+export declare const featuredCategoryIdsSchema: z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>;
 export declare const landingPageTypeSchema: z.ZodEnum<["HOMEPAGE", "CAMPAIGN", "BRAND", "CATEGORY", "CONCERN", "BUNDLE", "OFFER", "SEASONAL", "COLLECTION", "CUSTOM"]>;
 export type LandingPageType = z.infer<typeof landingPageTypeSchema>;
 export declare const landingPageStatusSchema: z.ZodEnum<["DRAFT", "SCHEDULED", "PUBLISHED", "ARCHIVED"]>;
@@ -8197,6 +8199,8 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
 }>, z.ZodObject<{
     type: z.ZodLiteral<"BIOREZA_HOME_MODULE">;
     module: z.ZodEnum<["BRAND_MARQUEE", "BENEFITS", "CATEGORY_SHOWCASE", "FEATURED", "COLLECTION_FEATURE", "CONCERNS", "BEST_SELLERS", "BRAND_STORY", "BEAUTY_DIFFERENCE"]>;
+    /** Unset/null preserves automatic tabs; an empty list shows only All. */
+    featuredCategoryIds: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>>;
     id: z.ZodString;
     /** Independent section evolution; absent legacy values migrate to v1. */
     schemaVersion: z.ZodOptional<z.ZodNumber>;
@@ -8302,6 +8306,7 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         };
     } | undefined;
+    featuredCategoryIds?: string[] | null | undefined;
 }, {
     type: "BIOREZA_HOME_MODULE";
     id: string;
@@ -8330,6 +8335,7 @@ export declare const landingPageSectionSchema: z.ZodDiscriminatedUnion<"type", [
             spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
         } | undefined;
     } | undefined;
+    featuredCategoryIds?: string[] | null | undefined;
 }>, z.ZodObject<{
     type: z.ZodLiteral<"CONTENT_BLOCKS">;
     heading: z.ZodObject<{} & {
@@ -15933,6 +15939,8 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
     }>, z.ZodObject<{
         type: z.ZodLiteral<"BIOREZA_HOME_MODULE">;
         module: z.ZodEnum<["BRAND_MARQUEE", "BENEFITS", "CATEGORY_SHOWCASE", "FEATURED", "COLLECTION_FEATURE", "CONCERNS", "BEST_SELLERS", "BRAND_STORY", "BEAUTY_DIFFERENCE"]>;
+        /** Unset/null preserves automatic tabs; an empty list shows only All. */
+        featuredCategoryIds: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>>;
         id: z.ZodString;
         /** Independent section evolution; absent legacy values migrate to v1. */
         schemaVersion: z.ZodOptional<z.ZodNumber>;
@@ -16038,6 +16046,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             };
         } | undefined;
+        featuredCategoryIds?: string[] | null | undefined;
     }, {
         type: "BIOREZA_HOME_MODULE";
         id: string;
@@ -16066,6 +16075,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             } | undefined;
         } | undefined;
+        featuredCategoryIds?: string[] | null | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"CONTENT_BLOCKS">;
         heading: z.ZodObject<{} & {
@@ -18351,6 +18361,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             };
         } | undefined;
+        featuredCategoryIds?: string[] | null | undefined;
     } | {
         type: "CONTENT_BLOCKS";
         id: string;
@@ -19822,6 +19833,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             } | undefined;
         } | undefined;
+        featuredCategoryIds?: string[] | null | undefined;
     } | {
         type: "CONTENT_BLOCKS";
         id: string;
@@ -21293,6 +21305,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             };
         } | undefined;
+        featuredCategoryIds?: string[] | null | undefined;
     } | {
         type: "CONTENT_BLOCKS";
         id: string;
@@ -22764,6 +22777,7 @@ export declare const landingPageConfigSchema: z.ZodEffects<z.ZodObject<{
                 spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             } | undefined;
         } | undefined;
+        featuredCategoryIds?: string[] | null | undefined;
     } | {
         type: "CONTENT_BLOCKS";
         id: string;
@@ -29534,6 +29548,8 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
         }>, z.ZodObject<{
             type: z.ZodLiteral<"BIOREZA_HOME_MODULE">;
             module: z.ZodEnum<["BRAND_MARQUEE", "BENEFITS", "CATEGORY_SHOWCASE", "FEATURED", "COLLECTION_FEATURE", "CONCERNS", "BEST_SELLERS", "BRAND_STORY", "BEAUTY_DIFFERENCE"]>;
+            /** Unset/null preserves automatic tabs; an empty list shows only All. */
+            featuredCategoryIds: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>>;
             id: z.ZodString;
             /** Independent section evolution; absent legacy values migrate to v1. */
             schemaVersion: z.ZodOptional<z.ZodNumber>;
@@ -29639,6 +29655,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
                 };
             } | undefined;
+            featuredCategoryIds?: string[] | null | undefined;
         }, {
             type: "BIOREZA_HOME_MODULE";
             id: string;
@@ -29667,6 +29684,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
                 } | undefined;
             } | undefined;
+            featuredCategoryIds?: string[] | null | undefined;
         }>, z.ZodObject<{
             type: z.ZodLiteral<"CONTENT_BLOCKS">;
             heading: z.ZodObject<{} & {
@@ -31952,6 +31970,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
                 };
             } | undefined;
+            featuredCategoryIds?: string[] | null | undefined;
         } | {
             type: "CONTENT_BLOCKS";
             id: string;
@@ -33423,6 +33442,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
                 } | undefined;
             } | undefined;
+            featuredCategoryIds?: string[] | null | undefined;
         } | {
             type: "CONTENT_BLOCKS";
             id: string;
@@ -34894,6 +34914,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
                 };
             } | undefined;
+            featuredCategoryIds?: string[] | null | undefined;
         } | {
             type: "CONTENT_BLOCKS";
             id: string;
@@ -36365,6 +36386,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
                 } | undefined;
             } | undefined;
+            featuredCategoryIds?: string[] | null | undefined;
         } | {
             type: "CONTENT_BLOCKS";
             id: string;
@@ -37841,6 +37863,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
                 };
             } | undefined;
+            featuredCategoryIds?: string[] | null | undefined;
         } | {
             type: "CONTENT_BLOCKS";
             id: string;
@@ -39317,6 +39340,7 @@ export declare const updateLandingPageDraftSchema: z.ZodObject<{
                     spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
                 } | undefined;
             } | undefined;
+            featuredCategoryIds?: string[] | null | undefined;
         } | {
             type: "CONTENT_BLOCKS";
             id: string;
@@ -39565,8 +39589,9 @@ export declare const landingPageListQuerySchema: z.ZodObject<{
 }>;
 export type LandingPageListQuery = z.infer<typeof landingPageListQuerySchema>;
 export declare const landingPageEntityTypeSchema: z.ZodEnum<["PRODUCT", "CATEGORY", "BRAND", "TAG", "MEDIA", "PROMOTION", "PAGE"]>;
-export declare const landingPageEntityQuerySchema: z.ZodObject<{
+export declare const landingPageEntityQuerySchema: z.ZodEffects<z.ZodObject<{
     type: z.ZodEnum<["PRODUCT", "CATEGORY", "BRAND", "TAG", "MEDIA", "PROMOTION", "PAGE"]>;
+    categoryIds: z.ZodOptional<z.ZodEffects<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>, string[], unknown>>;
     search: z.ZodOptional<z.ZodString>;
     page: z.ZodDefault<z.ZodNumber>;
     limit: z.ZodDefault<z.ZodNumber>;
@@ -39575,11 +39600,25 @@ export declare const landingPageEntityQuerySchema: z.ZodObject<{
     page: number;
     limit: number;
     search?: string | undefined;
+    categoryIds?: string[] | undefined;
 }, {
     type: "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "MEDIA" | "PAGE" | "PROMOTION";
     page?: number | undefined;
     limit?: number | undefined;
     search?: string | undefined;
+    categoryIds?: unknown;
+}>, {
+    type: "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "MEDIA" | "PAGE" | "PROMOTION";
+    page: number;
+    limit: number;
+    search?: string | undefined;
+    categoryIds?: string[] | undefined;
+}, {
+    type: "CATEGORY" | "BRAND" | "PRODUCT" | "TAG" | "MEDIA" | "PAGE" | "PROMOTION";
+    page?: number | undefined;
+    limit?: number | undefined;
+    search?: string | undefined;
+    categoryIds?: unknown;
 }>;
 export type LandingPageEntityQuery = z.infer<typeof landingPageEntityQuerySchema>;
 export type LandingPageValidationIssue = {
@@ -46196,6 +46235,8 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
     }>, z.ZodObject<{
         type: z.ZodLiteral<"BIOREZA_HOME_MODULE">;
         module: z.ZodEnum<["BRAND_MARQUEE", "BENEFITS", "CATEGORY_SHOWCASE", "FEATURED", "COLLECTION_FEATURE", "CONCERNS", "BEST_SELLERS", "BRAND_STORY", "BEAUTY_DIFFERENCE"]>;
+        /** Unset/null preserves automatic tabs; an empty list shows only All. */
+        featuredCategoryIds: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>>;
         id: z.ZodString;
         /** Independent section evolution; absent legacy values migrate to v1. */
         schemaVersion: z.ZodOptional<z.ZodNumber>;
@@ -46301,6 +46342,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
                 spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             };
         } | undefined;
+        featuredCategoryIds?: string[] | null | undefined;
     }, {
         type: "BIOREZA_HOME_MODULE";
         id: string;
@@ -46329,6 +46371,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
                 spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             } | undefined;
         } | undefined;
+        featuredCategoryIds?: string[] | null | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"CONTENT_BLOCKS">;
         heading: z.ZodObject<{} & {
@@ -48597,6 +48640,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
                 spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             };
         } | undefined;
+        featuredCategoryIds?: string[] | null | undefined;
     } | {
         type: "CONTENT_BLOCKS";
         id: string;
@@ -50051,6 +50095,7 @@ export declare const createGlobalSectionSchema: z.ZodObject<{
                 spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             } | undefined;
         } | undefined;
+        featuredCategoryIds?: string[] | null | undefined;
     } | {
         type: "CONTENT_BLOCKS";
         id: string;
@@ -56734,6 +56779,8 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
     }>, z.ZodObject<{
         type: z.ZodLiteral<"BIOREZA_HOME_MODULE">;
         module: z.ZodEnum<["BRAND_MARQUEE", "BENEFITS", "CATEGORY_SHOWCASE", "FEATURED", "COLLECTION_FEATURE", "CONCERNS", "BEST_SELLERS", "BRAND_STORY", "BEAUTY_DIFFERENCE"]>;
+        /** Unset/null preserves automatic tabs; an empty list shows only All. */
+        featuredCategoryIds: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodArray<z.ZodString, "many">, string[], string[]>>>;
         id: z.ZodString;
         /** Independent section evolution; absent legacy values migrate to v1. */
         schemaVersion: z.ZodOptional<z.ZodNumber>;
@@ -56839,6 +56886,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
                 spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             };
         } | undefined;
+        featuredCategoryIds?: string[] | null | undefined;
     }, {
         type: "BIOREZA_HOME_MODULE";
         id: string;
@@ -56867,6 +56915,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
                 spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             } | undefined;
         } | undefined;
+        featuredCategoryIds?: string[] | null | undefined;
     }>, z.ZodObject<{
         type: z.ZodLiteral<"CONTENT_BLOCKS">;
         heading: z.ZodObject<{} & {
@@ -59135,6 +59184,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
                 spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             };
         } | undefined;
+        featuredCategoryIds?: string[] | null | undefined;
     } | {
         type: "CONTENT_BLOCKS";
         id: string;
@@ -60590,6 +60640,7 @@ export declare const updateGlobalSectionDraftSchema: z.ZodObject<{
                 spacing?: "SMALL" | "LARGE" | "NONE" | "MEDIUM" | "XS" | "XL" | undefined;
             } | undefined;
         } | undefined;
+        featuredCategoryIds?: string[] | null | undefined;
     } | {
         type: "CONTENT_BLOCKS";
         id: string;

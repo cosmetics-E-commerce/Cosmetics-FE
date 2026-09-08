@@ -21,6 +21,7 @@ import {
 import {
   useCallback,
   useEffect,
+  useId,
   useRef,
   useState,
   type CSSProperties,
@@ -30,6 +31,8 @@ import { toast } from "sonner";
 
 import { ProductCard } from "@/components/shop/ProductCard";
 import { Button } from "@/components/ui/button";
+import { CategoryScrollStrip, ProductScrollControls } from "@/components/ui/horizontal-scroll";
+import { useHorizontalScroll } from "@/hooks/use-horizontal-scroll";
 import {
   ImageReveal,
   Magnetic,
@@ -38,8 +41,13 @@ import {
   TextReveal,
 } from "@/components/motion/Primitives";
 import { useMotionPreferences } from "@/components/motion/motion-context";
-import { apiErrorMessage, listConcerns, subscribeNewsletter } from "@/lib/api";
-import { useCategories, useMerchandisingCatalog } from "@/lib/catalog";
+import {
+  apiErrorMessage,
+  listConcerns,
+  subscribeNewsletter,
+  type PublicCategoryResponse,
+} from "@/lib/api";
+import { categoriesQuery, useMerchandisingCatalog } from "@/lib/catalog";
 import { useI18n } from "@/lib/i18n";
 import { images, type Product } from "@/lib/products";
 import { useStore } from "@/lib/store";
@@ -289,16 +297,26 @@ export function Benefits() {
   );
 }
 
-export function Featured({ initialProducts }: { initialProducts?: Product[] }) {
+export function Featured({
+  initialProducts,
+  categoryTabs,
+}: {
+  initialProducts?: Product[];
+  categoryTabs?: Pick<PublicCategoryResponse, "id" | "slug" | "nameEn" | "nameAr">[];
+}) {
   const { locale } = useStore();
   const products =
     useMerchandisingCatalog({ section: "home-arrivals", limit: 5 }, locale, initialProducts).data ??
     [];
-  const categories = useCategories().data ?? [];
+  const automaticCategories =
+    useQuery({
+      ...categoriesQuery(),
+      enabled: categoryTabs === undefined,
+    }).data ?? [];
   const ar = locale === "ar";
-  const tabs = categories.slice(0, 4).map((category) => ({
+  const tabs = (categoryTabs ?? automaticCategories.slice(0, 4)).map((category) => ({
     slug: category.slug,
-    label: ar ? category.nameAr : category.nameEn,
+    label: ar ? category.nameAr || category.nameEn : category.nameEn,
   }));
   const arrivalBenefits = [
     {
@@ -355,9 +373,11 @@ export function Featured({ initialProducts }: { initialProducts?: Product[] }) {
         </Reveal>
 
         <Reveal className="sf-arrivals-toolbar" stagger>
-          <nav
-            className="sf-arrivals-tabs"
-            aria-label={ar ? "فئات المنتجات الجديدة" : "New arrival categories"}
+          <CategoryScrollStrip
+            locale={locale}
+            className="sf-arrivals-category-strip"
+            viewportClassName="sf-arrivals-tabs"
+            label={ar ? "فئات المنتجات الجديدة" : "New arrival categories"}
           >
             <Link to="/shop" className="sf-arrivals-tab sf-arrivals-tab--active">
               {ar ? "الكل" : "All"}
@@ -372,7 +392,7 @@ export function Featured({ initialProducts }: { initialProducts?: Product[] }) {
                 {tab.label}
               </Link>
             ))}
-          </nav>
+          </CategoryScrollStrip>
           <div
             className="sf-arrivals-controls"
             aria-label={ar ? "عرض المنتجات" : "Product display"}
@@ -630,13 +650,9 @@ export function BestSellers({ initialProducts }: { initialProducts?: Product[] }
     useMerchandisingCatalog({ section: "home-customer-edit", limit: 8 }, locale, initialProducts)
       .data ?? [];
   const list = products;
-  const trackRef = useRef<HTMLUListElement>(null);
   const ar = locale === "ar";
-  const scroll = (direction: 1 | -1) =>
-    trackRef.current?.scrollBy({
-      left: direction * trackRef.current.clientWidth * 0.78,
-      behavior: "smooth",
-    });
+  const railId = useId();
+  const rail = useHorizontalScroll<HTMLUListElement>({ rtl: ar });
 
   return (
     <section className="sf-bestsellers">
@@ -648,16 +664,15 @@ export function BestSellers({ initialProducts }: { initialProducts?: Product[] }
               {ar ? "اختيارات العملاء." : "The customer edit."}
             </h2>
           </div>
-          <div className="sf-rail-controls">
-            <button type="button" onClick={() => scroll(-1)} aria-label="Previous products">
-              <ChevronLeft />
-            </button>
-            <button type="button" onClick={() => scroll(1)} aria-label="Next products">
-              <ChevronRight />
-            </button>
-          </div>
+          <ProductScrollControls state={rail} locale={locale} controls={railId} />
         </Reveal>
-        <ul ref={trackRef} className="sf-product-rail no-scrollbar">
+        <ul
+          ref={rail.ref}
+          id={railId}
+          className="sf-product-rail sf-drag-scroll"
+          tabIndex={0}
+          aria-label={ar ? "اختيارات العملاء" : "The customer edit"}
+        >
           {list.map((product) => (
             <li key={product.slug}>
               <ProductCard product={product} compact />
