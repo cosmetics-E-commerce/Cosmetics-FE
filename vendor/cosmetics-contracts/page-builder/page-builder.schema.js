@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.landingPageListResponseSchema = exports.landingPageSectionRegistry = exports.updateGlobalSectionDraftSchema = exports.createGlobalSectionSchema = exports.previewPageTemplateSchema = exports.updatePageTemplateSchema = exports.savePageAsTemplateSchema = exports.pageTemplateFamilySchema = exports.landingPageEntityQuerySchema = exports.landingPageEntityTypeSchema = exports.landingPageListQuerySchema = exports.duplicateLandingPageSchema = exports.scheduleLandingPageSchema = exports.landingPageRevisionActionSchema = exports.updateLandingPageDraftSchema = exports.createLandingPageSchema = exports.landingPageTemplateKeySchema = exports.landingPageSlugSchema = exports.landingPageConfigSchema = exports.landingPageSeoSchema = exports.landingPageSectionSchema = exports.landingPageHeroSlideSchema = exports.landingPageWidthSchema = exports.landingPageSpacingSchema = exports.landingPageSurfaceSchema = exports.landingPageLocalizedTextSchema = exports.landingPageStatusSchema = exports.landingPageTypeSchema = exports.landingPageSchemaVersion = exports.landingPageDestinationSchema = void 0;
+exports.landingPageListResponseSchema = exports.landingPageSectionRegistry = exports.updateGlobalSectionDraftSchema = exports.createGlobalSectionSchema = exports.previewPageTemplateSchema = exports.updatePageTemplateSchema = exports.savePageAsTemplateSchema = exports.pageTemplateFamilySchema = exports.landingPageEntityQuerySchema = exports.landingPageEntityTypeSchema = exports.landingPageListQuerySchema = exports.duplicateLandingPageSchema = exports.scheduleLandingPageSchema = exports.landingPageRevisionActionSchema = exports.updateLandingPageDraftSchema = exports.createLandingPageSchema = exports.landingPageTemplateKeySchema = exports.landingPageSlugSchema = exports.landingPageConfigSchema = exports.landingPageSeoSchema = exports.landingPageSectionSchema = exports.landingPageHeroSlideSchema = exports.landingPageWidthSchema = exports.landingPageSpacingSchema = exports.landingPageSurfaceSchema = exports.landingPageLocalizedTextSchema = exports.landingPageStatusSchema = exports.landingPageTypeSchema = exports.featuredCategoryIdsSchema = exports.featuredCategoryLimit = exports.landingPageSchemaVersion = exports.landingPageDestinationSchema = void 0;
 exports.migrateLandingPageConfig = migrateLandingPageConfig;
 const zod_1 = require("zod");
 const pagination_1 = require("../common/pagination");
@@ -10,6 +10,11 @@ exports.landingPageDestinationSchema = zod_1.z.union([
     zod_1.z.object({ type: zod_1.z.literal("PAGE"), id: zod_1.z.string().uuid() }).strict(),
 ]);
 exports.landingPageSchemaVersion = 1;
+exports.featuredCategoryLimit = 12;
+exports.featuredCategoryIdsSchema = zod_1.z
+    .array(zod_1.z.string().uuid().toLowerCase())
+    .max(exports.featuredCategoryLimit)
+    .refine((ids) => new Set(ids).size === ids.length, "Select each category only once");
 exports.landingPageTypeSchema = zod_1.z.enum([
     "HOMEPAGE",
     "CAMPAIGN",
@@ -587,6 +592,8 @@ exports.landingPageSectionSchema = zod_1.z.discriminatedUnion("type", [
             "BRAND_STORY",
             "BEAUTY_DIFFERENCE",
         ]),
+        /** Unset/null preserves automatic tabs; an empty list shows only All. */
+        featuredCategoryIds: exports.featuredCategoryIdsSchema.nullable().optional(),
     })
         .strict(),
     zod_1.z
@@ -819,12 +826,17 @@ exports.landingPageEntityTypeSchema = zod_1.z.enum([
     "PROMOTION",
     "PAGE",
 ]);
-exports.landingPageEntityQuerySchema = zod_1.z.object({
+exports.landingPageEntityQuerySchema = zod_1.z
+    .object({
     type: exports.landingPageEntityTypeSchema,
+    categoryIds: zod_1.z
+        .preprocess((value) => (typeof value === "string" ? value.split(",") : value), exports.featuredCategoryIdsSchema)
+        .optional(),
     search: zod_1.z.string().trim().max(120).optional(),
     page: zod_1.z.coerce.number().int().min(1).default(1),
     limit: zod_1.z.coerce.number().int().min(1).max(50).default(20),
-});
+})
+    .refine((query) => query.categoryIds === undefined || query.type === "CATEGORY", "Category IDs can only be used for category lookups");
 exports.pageTemplateFamilySchema = zod_1.z.enum([
     "HOMEPAGE",
     "CAMPAIGN",

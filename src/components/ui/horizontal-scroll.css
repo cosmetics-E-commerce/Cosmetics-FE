@@ -1,0 +1,134 @@
+.sf-drag-scroll {
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  touch-action: pan-x pan-y pinch-zoom;
+  scrollbar-width: none;
+}
+
+.sf-drag-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.sf-drag-scroll[data-scrollable] {
+  cursor: grab;
+}
+
+.sf-drag-scroll[data-scrollable] :is(a, [role="tab"]) {
+  cursor: grab;
+}
+
+.sf-drag-scroll[data-dragging],
+.sf-drag-scroll[data-dragging] * {
+  cursor: grabbing !important;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.sf-drag-scroll[data-dragging] {
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+}
+
+.sf-drag-scroll:focus-visible {
+  outline: 2px solid var(--sf-gold);
+  outline-offset: 3px;
+}
+
+.sf-category-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.sf-category-strip > .sf-drag-scroll {
+  flex: 1;
+  min-width: 0;
+  margin-inline: 0;
+  padding-inline: 4px;
+  flex-wrap: nowrap;
+  touch-action: pan-x pan-y pinch-zoom;
+}
+
+.sf-category-strip .sf-arrivals-tab {
+  flex: none;
+  white-space: nowrap;
+}
+
+.sf-arrivals-category-strip {
+  flex: 1;
+}
+
+.sf-scroll-arrow {
+  display: grid;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid var(--sf-line);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--sf-carbon);
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.sf-scroll-arrow svg {
+  width: 17px;
+  height: 17px;
+}
+
+.sf-scroll-arrow:hover:not(:disabled) {
+  background: var(--sf-carbon);
+  color: var(--sf-porcelain);
+}
+
+.sf-scroll-arrow:focus-visible {
+  outline: 2px solid var(--sf-gold);
+  outline-offset: 3px;
+}
+
+.sf-scroll-arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.sf-scroll-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.sf-scroll-hint {
+  margin-inline-end: 8px;
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.sf-drag-scroll[data-dragging] .quick-add {
+  pointer-events: none;
+}
+
+@media (pointer: coarse), (max-width: 640px) {
+  .sf-scroll-hint {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .sf-arrivals-category-strip {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-scroll-arrow {
+    transition: none;
+  }
+}

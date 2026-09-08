@@ -548,8 +548,11 @@
   display: flex;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
-  scrollbar-width: thin;
+  scrollbar-width: none;
   padding-bottom: 16px;
+}
+.landing-products-controls:has(.sf-scroll-controls) {
+  margin-block-end: 16px;
 }
 .landing-products--carousel > * {
   flex: 0 0 min(320px, 78vw);

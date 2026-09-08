@@ -39,7 +39,8 @@ test("category navigation stays lightweight, canonical, scrollable, and RTL-safe
   const strip = page.getByRole("tablist", { name: "Category" });
   const allProducts = strip.getByRole("tab", { name: "All products" });
   const bodyCare = strip.getByRole("tab", {
-    name: "Body Moisturizer and Intensive Daily Care (9)",
+    name: "Body Moisturizer and Intensive Daily Care",
+    exact: true,
   });
   const toolbar = page.locator(".catalog-listing-toolbar");
   const sort = toolbar.getByRole("combobox", { name: "Sort products" });
@@ -142,7 +143,9 @@ test("category navigation stays lightweight, canonical, scrollable, and RTL-safe
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
   await expect(page.locator(".catalog-listing-toolbar__sort-prefix")).toHaveText("الترتيب:");
   await expect(page.getByRole("combobox", { name: "ترتيب المنتجات" })).toBeVisible();
-  await rtlStrip.getByRole("tab", { name: "مرطبات الجسم والعناية اليومية المكثفة (9)" }).click();
+  await rtlStrip
+    .getByRole("tab", { name: "مرطبات الجسم والعناية اليومية المكثفة", exact: true })
+    .click();
   await expect
     .poll(() => new URL(page.url()).searchParams.get("category"))
     .toBe("body-moisturizer");
