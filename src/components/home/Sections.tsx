@@ -29,6 +29,8 @@ import {
 } from "react";
 import { toast } from "sonner";
 
+import newArrivalsSkincare from "@/assets/new-arrivals-skincare.webp";
+import biorezaStandardCleansers from "@/assets/bioreza-standard-cleansers.webp";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { Button } from "@/components/ui/button";
 import { CategoryScrollStrip, ProductScrollControls } from "@/components/ui/horizontal-scroll";
@@ -362,10 +364,10 @@ export function Featured({
           </div>
           <div className="sf-arrivals-hero__media" aria-hidden="true">
             <img
-              src={images.cream}
+              src={newArrivalsSkincare}
               alt=""
-              width={900}
-              height={1100}
+              width={1254}
+              height={1254}
               loading="lazy"
               decoding="async"
             />
@@ -692,10 +694,14 @@ export function BrandStory() {
       <div className="sf-shell sf-story__layout">
         <ImageReveal direction="left" className="sf-story__image">
           <img
-            src={images.collection}
-            alt=""
-            width={1600}
-            height={1104}
+            src={biorezaStandardCleansers}
+            alt={
+              ar
+                ? "غسول سيرافي المرطب وغسول فيشي نورماديرم في ضوء الشمس"
+                : "CeraVe Hydrating Cleanser and Vichy Normaderm cleansing gel in sunlight"
+            }
+            width={1024}
+            height={1024}
             loading="lazy"
             decoding="async"
             className="size-full object-cover"
