@@ -40,6 +40,7 @@ import {
 import { AddressForm } from "@/components/forms/AddressForm";
 import { InternationalPhoneField } from "@/components/forms/InternationalPhoneField";
 import { CustomerAvatar } from "@/components/account/CustomerAvatar";
+import { OrderContents } from "@/components/account/OrderContents";
 import { OrderReorderAction, ReorderCenter } from "@/components/account/ReorderCenter";
 import { ReviewLibrary } from "@/components/account/ReviewLibrary";
 import { WishlistStudio } from "@/components/account/WishlistStudio";
@@ -579,6 +580,11 @@ function Account() {
                             <OrderReorderAction orderId={order.id} locale={locale} />
                           )}
                         </div>
+                        <OrderContents
+                          orderId={order.id}
+                          orderNumber={order.orderNumber}
+                          locale={locale}
+                        />
                         {expandedPaymentOrderId === order.id && (
                           <PaymentContinuation order={order} locale={locale} />
                         )}
