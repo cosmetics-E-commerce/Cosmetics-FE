@@ -24,6 +24,7 @@ import type {
   WishlistCollectionResponse,
   WishlistResponse,
   PublicStoreSettingsResponse,
+  OrderResponse,
 } from "../../vendor/cosmetics-contracts/index.js";
 import { randomUuid } from "@/lib/uuid";
 import {
@@ -57,6 +58,7 @@ export type {
   WishlistCollectionResponse,
   WishlistResponse,
   PublicStoreSettingsResponse,
+  OrderResponse,
 };
 
 export async function getPublicStoreSettings(signal?: AbortSignal) {
@@ -1723,6 +1725,9 @@ export async function listOrders() {
     appliedPromotions: order.appliedPromotions ?? [],
   }));
 }
+
+export const getOrderDetails = (orderId: string) =>
+  rawRequest<OrderResponse>(`/orders/${encodeURIComponent(orderId)}`);
 
 export const getBuyAgain = (page = 1, limit = 24) =>
   rawRequest<BuyAgainResponse>(`/me/reorder/buy-again?page=${page}&limit=${limit}`);
