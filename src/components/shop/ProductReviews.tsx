@@ -34,9 +34,12 @@ export function ProductReviews({
     staleTime: 60_000,
   });
   const eligibility = useQuery({
-    queryKey: ["reviews", "eligibility", productId],
+    queryKey: ["reviews", "eligibility", productId, user?.id],
     queryFn: () => getReviewEligibility(productId),
     enabled: Boolean(user),
+    staleTime: 0,
+    refetchInterval: 15_000,
+    refetchOnWindowFocus: true,
   });
   const create = useMutation({
     mutationFn: (body: { rating: number; title?: string; body?: string }) =>
@@ -72,16 +75,30 @@ export function ProductReviews({
 
       <div className="review-studio__grid">
         <div className="review-studio__compose">
-          <ReviewEligibilityState
-            user={Boolean(user)}
-            loading={eligibility.isLoading}
-            eligibility={eligibility.data}
-            rating={rating}
-            setRating={setRating}
-            pending={create.isPending}
-            ar={ar}
-            onSubmit={(form) => create.mutate(form)}
-          />
+          {eligibility.isError && user ? (
+            <StatePanel
+              kind="error"
+              title={ar ? "تعذر التحقق من طلبك" : "Couldn’t verify your purchase"}
+              description={
+                ar
+                  ? "حاول مرة أخرى للتحقق من إمكانية المراجعة."
+                  : "Try again to check whether your order is ready to review."
+              }
+              action={() => void eligibility.refetch()}
+              actionLabel={ar ? "إعادة المحاولة" : "Try again"}
+            />
+          ) : (
+            <ReviewEligibilityState
+              user={Boolean(user)}
+              loading={eligibility.isLoading}
+              eligibility={eligibility.data}
+              rating={rating}
+              setRating={setRating}
+              pending={create.isPending}
+              ar={ar}
+              onSubmit={(form) => create.mutate(form)}
+            />
+          )}
         </div>
 
         <div className="review-studio__feed">

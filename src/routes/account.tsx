@@ -139,6 +139,8 @@ function Account() {
     queryKey: ["account", "orders"],
     queryFn: listOrders,
     enabled: Boolean(user),
+    refetchInterval: 15_000,
+    refetchOnWindowFocus: true,
   });
   const wishlistProducts = useQuery({
     queryKey: ["wishlist"],
@@ -1672,11 +1674,16 @@ function OrderTrackingPanel({
   const tracking = useQuery({
     queryKey: ["account", "orders", orderId, "tracking"],
     queryFn: () => getOrderTracking(orderId),
+    refetchInterval: 15_000,
+    refetchOnWindowFocus: true,
   });
   const refresh = useMutation({
     mutationFn: () => refreshOrderTracking(orderId),
     onSuccess: (data) => {
       queryClient.setQueryData(["account", "orders", orderId, "tracking"], data);
+      void queryClient.invalidateQueries({ queryKey: ["account", "orders"] });
+      void queryClient.invalidateQueries({ queryKey: ["reviews", "eligibility"] });
+      void queryClient.invalidateQueries({ queryKey: ["reorder"] });
     },
   });
 
@@ -1699,7 +1706,7 @@ function OrderTrackingPanel({
     );
   }
 
-  const data = refresh.data ?? tracking.data;
+  const data = tracking.data;
   if (!data) return null;
   const steps = trackingSteps(data, locale);
   const activeIndex = Math.max(

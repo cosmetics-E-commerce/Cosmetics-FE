@@ -3,7 +3,7 @@ name: Storefront CI
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, test]
 
 concurrency:
   group: storefront-${{ github.ref }}

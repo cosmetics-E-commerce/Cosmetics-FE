@@ -258,3 +258,33 @@ test("a failed order-detail request can be retried without hiding the order or t
   await contents.getByRole("button", { name: "Try again", exact: true }).click();
   await expect(contents.getByText("Purchased Hydrating Cleanser")).toBeVisible();
 });
+
+test("tracking refresh updates order history and subsequent polls can show delivery", async ({
+  page,
+}) => {
+  await page.goto("/account?section=orders");
+  await expect(page.getByRole("heading", { name: "Your orders", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Track order", exact: true }).click();
+  let delivered = false;
+  const fulfill = (route: import("@playwright/test").Route, data: unknown) =>
+    route.fulfill({ json: { success: true, data } });
+  await page.route(`**/api/v1/orders/${orderId}/tracking`, (route) =>
+    fulfill(route, {
+      ...tracking,
+      orderStatus: delivered ? "DELIVERED" : "OUT_FOR_DELIVERY",
+      shipment: { ...tracking.shipment, status: delivered ? "DELIVERED" : "OUT_FOR_DELIVERY" },
+    }),
+  );
+  await page.route("**/api/v1/orders", (route) =>
+    fulfill(route, { data: [{ ...order, status: delivered ? "DELIVERED" : "OUT_FOR_DELIVERY" }] }),
+  );
+  await page.getByRole("button", { name: "Refresh", exact: true }).click();
+  await expect(page.locator(".account-tracking__header strong")).toHaveText("OUT FOR DELIVERY");
+  await expect(page.locator(".account-orders__status")).toContainText(/out for delivery/i);
+
+  delivered = true;
+  await expect(page.locator(".account-tracking__header strong")).toHaveText("DELIVERED", {
+    timeout: 25_000,
+  });
+  await expect(page.locator(".account-orders__status")).toContainText(/delivered/i);
+});
