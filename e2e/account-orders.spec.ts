@@ -90,6 +90,8 @@ const tracking = {
 };
 
 test.beforeEach(async ({ page }) => {
+  let currentTracking = tracking;
+  let currentOrder = order;
   test.setTimeout(90_000);
   await page.addInitScript(() => window.localStorage.setItem("bioreza.csrf", "x".repeat(32)));
   await page.route("**/api/v1/**", async (route) => {
@@ -124,14 +126,17 @@ test.beforeEach(async ({ page }) => {
         updatedAt: "2026-09-25T12:00:00Z",
       });
     }
-    if (path.endsWith("/orders")) return fulfill({ data: [order] });
+    if (path.endsWith("/orders")) return fulfill({ data: [currentOrder] });
     if (path.endsWith(`/orders/${orderId}`)) return fulfill(details);
-    if (path.endsWith(`/orders/${orderId}/tracking`)) return fulfill(tracking);
+    if (path.endsWith(`/orders/${orderId}/tracking`)) return fulfill(currentTracking);
     if (path.endsWith(`/orders/${orderId}/tracking/refresh`)) {
-      return fulfill({
+      currentOrder = { ...order, status: "OUT_FOR_DELIVERY" };
+      currentTracking = {
         ...tracking,
+        orderStatus: "OUT_FOR_DELIVERY",
         shipment: { ...tracking.shipment, status: "OUT_FOR_DELIVERY" },
-      });
+      };
+      return fulfill(currentTracking);
     }
     return route.fulfill({ status: 404, json: { code: "NOT_MOCKED", message: path } });
   });
@@ -173,6 +178,7 @@ test("tracking remains readable across phone, tablet and desktop widths and Arab
     testInfo.project.name === "mobile-webkit"
       ? [320, 375, 390]
       : [320, 375, 390, 640, 768, 1024, 1366];
+  let refreshed = false;
   for (const width of widths) {
     await page.setViewportSize({ width, height: 850 });
     await page.goto("/account?section=orders");
@@ -182,7 +188,7 @@ test("tracking remains readable across phone, tablet and desktop widths and Arab
     await expect(page.getByText("Purchased Hydrating Cleanser")).toBeVisible();
     await page.getByRole("button", { name: "Track order", exact: true }).click();
     const header = page.locator(".account-tracking__header");
-    await expect(header.locator("strong")).toHaveText("CREATED");
+    await expect(header.locator("strong")).toHaveText(refreshed ? "OUT FOR DELIVERY" : "CREATED");
     const geometry = await header.evaluate((element) => {
       const status = element.querySelector("strong")!;
       const copy = element.querySelector("div")!;
@@ -210,6 +216,7 @@ test("tracking remains readable across phone, tablet and desktop widths and Arab
     if (width === 390) {
       await page.getByRole("button", { name: "Refresh", exact: true }).click();
       await expect(header.locator("strong")).toHaveText("OUT FOR DELIVERY");
+      refreshed = true;
       await page.screenshot({ path: testInfo.outputPath("tracking-390px.png"), fullPage: true });
     }
     await page.getByRole("button", { name: "Hide tracking", exact: true }).click();
@@ -223,7 +230,7 @@ test("tracking remains readable across phone, tablet and desktop widths and Arab
   await expect(contents.getByText("الحجم: 200 مل")).toBeVisible();
   await expect(contents.getByText(/الكمية: 2/)).toBeVisible();
   await page.getByRole("button", { name: "تتبع الطلب", exact: true }).click();
-  await expect(page.locator(".account-tracking__header strong")).toHaveText("CREATED");
+  await expect(page.locator(".account-tracking__header strong")).toHaveText("OUT FOR DELIVERY");
   expect(
     await page
       .locator(".account-tracking__header > div")
@@ -257,4 +264,34 @@ test("a failed order-detail request can be retried without hiding the order or t
   available = true;
   await contents.getByRole("button", { name: "Try again", exact: true }).click();
   await expect(contents.getByText("Purchased Hydrating Cleanser")).toBeVisible();
+});
+
+test("tracking refresh updates order history and subsequent polls can show delivery", async ({
+  page,
+}) => {
+  await page.goto("/account?section=orders");
+  await expect(page.getByRole("heading", { name: "Your orders", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Track order", exact: true }).click();
+  let delivered = false;
+  const fulfill = (route: import("@playwright/test").Route, data: unknown) =>
+    route.fulfill({ json: { success: true, data } });
+  await page.route(`**/api/v1/orders/${orderId}/tracking`, (route) =>
+    fulfill(route, {
+      ...tracking,
+      orderStatus: delivered ? "DELIVERED" : "OUT_FOR_DELIVERY",
+      shipment: { ...tracking.shipment, status: delivered ? "DELIVERED" : "OUT_FOR_DELIVERY" },
+    }),
+  );
+  await page.route("**/api/v1/orders", (route) =>
+    fulfill(route, { data: [{ ...order, status: delivered ? "DELIVERED" : "OUT_FOR_DELIVERY" }] }),
+  );
+  await page.getByRole("button", { name: "Refresh", exact: true }).click();
+  await expect(page.locator(".account-tracking__header strong")).toHaveText("OUT FOR DELIVERY");
+  await expect(page.locator(".account-orders__status")).toContainText(/out for delivery/i);
+
+  delivered = true;
+  await expect(page.locator(".account-tracking__header strong")).toHaveText("DELIVERED", {
+    timeout: 25_000,
+  });
+  await expect(page.locator(".account-orders__status")).toContainText(/delivered/i);
 });
