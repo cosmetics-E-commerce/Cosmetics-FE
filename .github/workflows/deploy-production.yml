@@ -1,0 +1,181 @@
+# Deploy the storefront (Nitro node-server SSR under PM2) to the native
+# production server (Lightsail, no Docker).
+#
+# Manual only (workflow_dispatch), from this repo or from the release-all
+# orchestrator in cosmetics_platform. One run tests the requested commit,
+# packages it ONCE on a GitHub-hosted Linux runner matching the server
+# (Ubuntu 24.04, x64, Node from .node-version), and ships that same tarball.
+# The server never builds and never pulls from GitHub.
+#
+# Server side: cosmetics_platform/deploy/native (bioreza-deploy, behind the
+# SSH gateway). Secrets live only in the `production` environment, which
+# pull_request workflows never use.
+
+name: Deploy storefront (production)
+run-name: "Deploy storefront ${{ inputs.ref }}${{ inputs.request_id && format(' [{0}]', inputs.request_id) || '' }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch, tag or full commit SHA to deploy
+        required: true
+        default: main
+      allow_non_main:
+        description: Allow a commit that is not on main (hotfix branch)
+        type: boolean
+        default: false
+      request_id:
+        description: Set by release-all; leave empty
+        required: false
+        default: ""
+
+permissions: {}
+
+# Never two storefront deploys at once; the server's lock also serialises
+# deploys coming from the other repositories.
+concurrency:
+  group: bioreza-production-storefront
+  cancel-in-progress: false
+
+jobs:
+  verify-and-package:
+    name: Test and package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    outputs:
+      sha: ${{ steps.resolve.outputs.sha }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref }}
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Resolve the commit
+        id: resolve
+        env:
+          ALLOW_NON_MAIN: ${{ inputs.allow_non_main }}
+        run: |
+          sha="$(git rev-parse HEAD)"
+          if [[ "$ALLOW_NON_MAIN" != "true" ]] && ! git merge-base --is-ancestor "$sha" origin/main; then
+            echo "::error::$sha is not on main. Re-run with allow_non_main for a hotfix."
+            exit 1
+          fi
+          echo "sha=$sha" >>"$GITHUB_OUTPUT"
+          echo "Deploying storefront \`$sha\`" >>"$GITHUB_STEP_SUMMARY"
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with: { version: 11.9.0 }
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint && pnpm typecheck && pnpm test
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e --project=chromium
+
+      # Public build-time values from repository variables. This job does not
+      # use the production environment or its deployment secrets.
+      # No backend secret is available to this job.
+      - name: Package the release (Nitro node-server)
+        env:
+          GITHUB_SHA: ${{ steps.resolve.outputs.sha }}
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+          VITE_SITE_URL: ${{ vars.VITE_SITE_URL }}
+          VITE_MEDIA_BASE_URL: ${{ vars.VITE_MEDIA_BASE_URL }}
+          VITE_ENFORCE_CANONICAL_HOST: ${{ vars.VITE_ENFORCE_CANONICAL_HOST || 'false' }}
+          VITE_GOOGLE_SITE_VERIFICATION: ${{ vars.VITE_GOOGLE_SITE_VERIFICATION }}
+          VITE_BING_SITE_VERIFICATION: ${{ vars.VITE_BING_SITE_VERIFICATION }}
+        run: bash scripts/release/package-storefront.sh release
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: storefront-${{ steps.resolve.outputs.sha }}
+          path: release/
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: failure()
+        with:
+          name: storefront-playwright-report-${{ github.run_id }}
+          path: playwright-report
+          if-no-files-found: ignore
+          retention-days: 7
+
+  deploy:
+    name: Deploy to production
+    needs: verify-and-package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment: production
+    permissions:
+      actions: read
+    env:
+      SHA: ${{ needs.verify-and-package.outputs.sha }}
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: storefront-${{ needs.verify-and-package.outputs.sha }}
+          path: release
+
+      - name: Configure SSH (pinned host key, dedicated key)
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ vars.DEPLOY_USER || 'ubuntu' }}
+          DEPLOY_PORT: ${{ vars.DEPLOY_PORT || '22' }}
+        run: |
+          for v in DEPLOY_SSH_KEY DEPLOY_KNOWN_HOSTS DEPLOY_HOST; do
+            [[ -n "${!v}" ]] || { echo "::error::$v is not configured for the production environment"; exit 1; }
+          done
+          install -d -m 700 ~/.ssh
+          (umask 077 && printf '%s\n' "$DEPLOY_SSH_KEY" >~/.ssh/deploy_key)
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" >~/.ssh/known_hosts_deploy
+          cat >~/.ssh/config <<EOF
+          Host production
+            HostName $DEPLOY_HOST
+            User $DEPLOY_USER
+            Port $DEPLOY_PORT
+            IdentityFile ~/.ssh/deploy_key
+            IdentitiesOnly yes
+            UserKnownHostsFile ~/.ssh/known_hosts_deploy
+            StrictHostKeyChecking yes
+            BatchMode yes
+            ConnectTimeout 20
+            ServerAliveInterval 15
+          EOF
+          chmod 600 ~/.ssh/config
+
+      - name: Upload the artifact
+        run: |
+          tarball="release/storefront-$SHA.tar.gz"
+          (cd release && sha256sum -c "storefront-$SHA.tar.gz.sha256")
+          digest="$(awk '{ print $1 }' "release/storefront-$SHA.tar.gz.sha256")"
+          # shellcheck disable=SC2029 # expands on the runner; the gateway validates it
+          ssh production "receive storefront $SHA $digest" <"$tarball"
+
+      - name: Activate (switch, health check, auto-restore)
+        run: |
+          # shellcheck disable=SC2029 # $SHA expands on the runner; the gateway validates it
+          ssh production "deploy storefront $SHA"
+
+      - name: Release manifest
+        if: always()
+        run: |
+          {
+            echo '### Server state'
+            echo "\`\`\`"
+            ssh production status || echo "status unavailable"
+            echo '```'
+          } >>"$GITHUB_STEP_SUMMARY"
+
+      - name: Remove the key
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
