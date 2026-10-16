@@ -1,13 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import type { BrandLogoDisplay } from "@cosmetics/contracts";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { ProductListRow } from "@/components/shop/ProductListRow";
 import { CatalogListingControls } from "@/components/shop/CatalogListingControls";
 import { BrandLogo } from "@/components/brand/BrandLogo";
+import { CategoryChildCards, type CategoryChild } from "@/components/shop/CategoryChildCards";
 import {
   type CatalogListingSearch,
   withListingPage,
 } from "@/components/shop/catalog-listing-state";
-import { PolishedImage } from "@/components/ui/polished-image";
 import type { CatalogFacetResponse, PaginationMeta } from "@/lib/api";
 import type { Product } from "@/lib/products";
 import { groupBrandProducts } from "@/components/shop/brand-product-groups";
@@ -21,13 +22,7 @@ type Props = {
   meta: PaginationMeta;
   locale: "ar" | "en";
   ancestors?: Array<{ name: string; slug: string }>;
-  children?: Array<{
-    id: string;
-    slug: string;
-    name: string;
-    imageUrl: string | null;
-    productCount: number;
-  }>;
+  children?: CategoryChild[];
   logo?: string | null;
   logoDisplay?: BrandLogoDisplay;
   facets: CatalogFacetResponse;
@@ -114,47 +109,7 @@ export function SeoCatalogLanding({
       </header>
 
       {kind === "category" && children.length ? (
-        <section className="sf-category-children" aria-labelledby="category-children-title">
-          <div className="sf-category-children__heading">
-            <p className="label-xs text-gold">
-              {locale === "ar" ? "اكتشفي الأقسام" : "Explore the range"}
-            </p>
-            <h2 id="category-children-title">
-              {locale === "ar" ? "تسوّقي حسب الفئة" : "Shop by category"}
-            </h2>
-          </div>
-          <div className="sf-category-children__grid">
-            {children.map((child) => (
-              <Link
-                key={child.id}
-                to="/categories/$slug"
-                params={{ slug: child.slug }}
-                className="sf-category-child"
-              >
-                {child.imageUrl ? (
-                  <PolishedImage
-                    src={child.imageUrl}
-                    alt=""
-                    width={360}
-                    height={240}
-                    wrapperClassName="sf-category-child__image"
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <span className="sf-category-child__monogram" aria-hidden="true">
-                    {child.name.slice(0, 1)}
-                  </span>
-                )}
-                <span>
-                  <strong>{child.name}</strong>
-                  <small>
-                    {child.productCount} {locale === "ar" ? "منتج" : "products"}
-                  </small>
-                </span>
-              </Link>
-            ))}
-          </div>
-        </section>
+        <CategoryChildCards categories={children} products={products} locale={locale} />
       ) : null}
 
       <section className="sf-shop-catalog" aria-labelledby="catalog-products-title">
@@ -200,14 +155,13 @@ export function SeoCatalogLanding({
                 <div
                   className={`sf-shop-products ${search.view === "list" ? "sf-shop-products--list" : "sf-shop-products--grid"}`}
                 >
-                  {group.products.map((product) => (
-                    <ProductCard
-                      key={product.id}
-                      product={product}
-                      compact={search.view !== "list"}
-                      layout={search.view === "list" ? "list" : "grid"}
-                    />
-                  ))}
+                  {group.products.map((product) =>
+                    search.view === "list" ? (
+                      <ProductListRow key={product.id} product={product} />
+                    ) : (
+                      <ProductCard key={product.id} product={product} compact />
+                    ),
+                  )}
                 </div>
               </section>
             ))}
@@ -216,14 +170,13 @@ export function SeoCatalogLanding({
           <div
             className={`sf-shop-products ${search.view === "list" ? "sf-shop-products--list" : "sf-shop-products--grid"}`}
           >
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                compact={search.view !== "list"}
-                layout={search.view === "list" ? "list" : "grid"}
-              />
-            ))}
+            {products.map((product) =>
+              search.view === "list" ? (
+                <ProductListRow key={product.id} product={product} />
+              ) : (
+                <ProductCard key={product.id} product={product} compact />
+              ),
+            )}
           </div>
         )}
         {meta.total === 0 ? (

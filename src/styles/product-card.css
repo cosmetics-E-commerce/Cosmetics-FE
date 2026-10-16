@@ -1,0 +1,180 @@
+/*
+ * Grid product card (`.sf-product-card[data-layout="grid"]`), site-wide.
+ * One seamless surface: a warm rounded stage the packshot dissolves into,
+ * brand → name → price, with the price as the anchor of every card.
+ * The quick-add toolbar is styled in quick-add.css and left untouched here.
+ * Image framing stays 4:5 with object-fit: cover (asserted by e2e).
+ */
+
+.sf-product-card[data-layout="grid"] {
+  --card-ink: var(--brand-text);
+  --card-muted: var(--brand-text-muted);
+  --card-gold: var(--brand-gold);
+  --card-stage: #f3eee6;
+  --card-radius: 20px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sf-product-card[data-layout="grid"]:hover {
+    border-color: transparent;
+    box-shadow: none;
+    transform: none;
+  }
+}
+
+/* ── Media ─────────────────────────────────────────────────────────── */
+
+.sf-product-card[data-layout="grid"] .sf-product-card__media {
+  border: 0;
+  border-radius: var(--card-radius);
+  background: var(--card-stage);
+  box-shadow: none;
+  transition: box-shadow 320ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sf-product-card[data-layout="grid"]:hover .sf-product-card__media {
+    border-color: transparent;
+    box-shadow: 0 26px 44px -30px rgba(70, 48, 18, 0.45);
+  }
+}
+
+/* Each image layer is its own stacking context, so the stage colour lives on
+   the layer and white packshot backgrounds multiply into it. */
+.sf-product-card[data-layout="grid"] .product-card-layer,
+.sf-product-card[data-layout="grid"] .product-card-layer::after {
+  background: var(--card-stage);
+}
+
+.sf-product-card[data-layout="grid"] .product-card-image {
+  background: transparent;
+  filter: none;
+  mix-blend-mode: multiply;
+}
+
+.sf-product-card[data-layout="grid"] .sf-product-card__badge {
+  min-height: 26px;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, #fff 92%, transparent);
+  padding-inline: 10px;
+  color: var(--card-ink);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  box-shadow: 0 6px 16px -10px rgba(40, 28, 12, 0.45);
+  backdrop-filter: blur(8px);
+}
+
+.sf-product-card[data-layout="grid"] .sf-product-card__badge--sale {
+  background: #b3261e;
+  color: #fff;
+}
+
+.sf-product-card[data-layout="grid"] .sf-product-card__wish {
+  border: 0;
+  background: color-mix(in srgb, #fff 90%, transparent);
+  color: var(--card-ink);
+  box-shadow: 0 6px 16px -10px rgba(40, 28, 12, 0.5);
+  backdrop-filter: blur(8px);
+}
+
+/* ── Copy ──────────────────────────────────────────────────────────── */
+
+.sf-product-card[data-layout="grid"] .sf-product-card__info {
+  padding: 14px 4px 0;
+}
+
+.sf-product-card[data-layout="grid"] .sf-product-card__category {
+  overflow: hidden;
+  color: var(--card-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sf-product-card[data-layout="grid"] .sf-product-card__category[data-kind="brand"] {
+  color: var(--card-gold);
+}
+
+/* Two lines, always: prices line up across a row. */
+.sf-product-card[data-layout="grid"] .sf-product-card__title {
+  display: -webkit-box;
+  min-height: calc(2 * 1.35em);
+  margin-top: 6px;
+  overflow: hidden;
+  color: var(--card-ink);
+  font-family: var(--font-sans);
+  font-size: clamp(0.9rem, 1.05vw, 1rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.sf-product-card[data-layout="grid"] .sf-product-card__title a:hover {
+  color: var(--card-gold);
+}
+
+.sf-product-card[data-layout="grid"] .sf-product-card__footer {
+  margin-top: 10px;
+  padding-top: 0;
+}
+
+.sf-product-card[data-layout="grid"] .sf-product-card__price {
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  color: var(--card-ink);
+}
+
+.sf-product-card[data-layout="grid"] .sf-product-card__now {
+  color: var(--card-ink);
+  font-size: clamp(1.08rem, 1.35vw, 1.28rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.sf-product-card[data-layout="grid"] .sf-product-card__original {
+  color: var(--card-muted);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+@media (max-width: 640px) {
+  .sf-product-card[data-layout="grid"] {
+    --card-radius: 16px;
+  }
+
+  .sf-product-card[data-layout="grid"] .sf-product-card__info {
+    padding: 10px 2px 0;
+  }
+
+  .sf-product-card[data-layout="grid"] .sf-product-card__title {
+    font-size: 0.86rem;
+  }
+
+  .sf-product-card[data-layout="grid"] .sf-product-card__now {
+    font-size: 1.02rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-product-card[data-layout="grid"] .sf-product-card__media {
+    transition: none;
+  }
+}

@@ -5,12 +5,13 @@ import { Reveal } from "@/components/motion/Primitives";
 import { getOrderStatusCopy } from "@/lib/i18n";
 import { useStore } from "@/lib/store";
 import { createNoindexHead } from "@/lib/seo";
-type Search = { order?: string; status?: string; payment?: string };
+type Search = { order?: string; status?: string; payment?: string; token?: string };
 export const Route = createFileRoute("/order-confirmed")({
   validateSearch: (raw: Record<string, unknown>): Search => ({
     ...(typeof raw["order"] === "string" ? { order: raw["order"] } : {}),
     ...(typeof raw["status"] === "string" ? { status: raw["status"] } : {}),
     ...(typeof raw["payment"] === "string" ? { payment: raw["payment"] } : {}),
+    ...(typeof raw["token"] === "string" ? { token: raw["token"] } : {}),
   }),
   head: ({ match }) =>
     createNoindexHead(
@@ -42,7 +43,9 @@ function Confirmed() {
       <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-muted-foreground">
         {underReview
           ? "Your transfer is awaiting human verification. You can follow its status from your account."
-          : "Your order is confirmed. The team will prepare it for delivery using the current order status shown in your account."}
+          : search.token
+            ? "Your order is confirmed. The team will prepare it for delivery; follow it from your order page."
+            : "Your order is confirmed. The team will prepare it for delivery using the current order status shown in your account."}
       </p>
       <div className="rule-gold my-10" />
       <dl className="grid gap-6 text-start sm:grid-cols-3">
@@ -60,18 +63,40 @@ function Confirmed() {
           <dd className="mt-2 text-sm">Order number required</dd>
         </div>
       </dl>
-      <div className="mt-14 flex flex-wrap justify-center gap-4">
-        <Button asChild variant="solid" size="pill">
-          <Link to="/account" search={{ section: "orders" }}>
-            Track Order
-          </Link>
-        </Button>
-        <Button asChild variant="quiet" size="pill">
-          <Link to="/account" search={{ section: "orders" }}>
-            View my order
-          </Link>
-        </Button>
-      </div>
+      {search.token ? (
+        <>
+          <p className="mx-auto mt-10 max-w-md text-sm text-muted-foreground">
+            {locale === "ar"
+              ? "أرسلنا رابطًا خاصًا لطلبك إلى بريدك الإلكتروني. يمكنك أيضًا العثور عليه من صفحة تتبع الطلب على هذا الجهاز."
+              : "We emailed you a private link to this order. You can also find it under Track order on this device."}
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-4">
+            <Button asChild variant="solid" size="pill">
+              <Link to="/order/$token" params={{ token: search.token }}>
+                {locale === "ar" ? "عرض طلبي" : "View my order"}
+              </Link>
+            </Button>
+            <Button asChild variant="quiet" size="pill">
+              <Link to="/register">
+                {locale === "ar" ? "إنشاء حساب بنفس البريد" : "Create an account with this email"}
+              </Link>
+            </Button>
+          </div>
+        </>
+      ) : (
+        <div className="mt-14 flex flex-wrap justify-center gap-4">
+          <Button asChild variant="solid" size="pill">
+            <Link to="/account" search={{ section: "orders" }}>
+              Track Order
+            </Link>
+          </Button>
+          <Button asChild variant="quiet" size="pill">
+            <Link to="/account" search={{ section: "orders" }}>
+              View my order
+            </Link>
+          </Button>
+        </div>
+      )}
     </Reveal>
   );
 }

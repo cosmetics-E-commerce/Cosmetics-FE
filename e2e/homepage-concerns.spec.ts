@@ -16,8 +16,13 @@ for (const width of viewports) {
 
     const section = page.locator(".sf-concerns");
     await section.scrollIntoViewIfNeeded();
-    await expect(section.locator(".sf-concern-list > li > a")).toHaveCount(6);
-    await expect(section.getByRole("link", { name: "Dry Skin" })).toHaveAttribute(
+    // Every published skin type is a tab; the first is selected and links to its page.
+    await expect(section.getByRole("tab")).toHaveCount(6);
+    await expect(section.getByRole("tab", { name: /Dry Skin/ })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    await expect(section.getByRole("link", { name: /Shop all 200 for Dry Skin/ })).toHaveAttribute(
       "href",
       "/skin-concerns/dry-skin",
     );

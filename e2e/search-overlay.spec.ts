@@ -132,6 +132,19 @@ test("search opens focused, presents live results, and dismisses with Escape", a
   expect(runtimeIssues).toEqual([]);
 });
 
+test("desktop search closes when clicking outside the panel", async ({ page, isMobile }) => {
+  test.skip(isMobile, "Phones get a full-screen sheet with no backdrop to click");
+  const runtimeIssues = monitorRuntime(page);
+  await prepareSearch(page);
+
+  await page.getByRole("banner").getByRole("button", { name: "Search" }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+  await page.locator(".search-overlay__backdrop").click({ position: { x: 5, y: 5 } });
+  await expect(dialog).not.toBeVisible();
+  expect(runtimeIssues).toEqual([]);
+});
+
 test("mobile search stays anchored when tapping the trigger does not move focus", async ({
   page,
 }) => {
@@ -161,9 +174,15 @@ test("mobile search stays anchored when tapping the trigger does not move focus"
   await expect(dialog).not.toBeVisible();
   await expect(trigger).toBeFocused();
 
+  // Phones get a full-screen sheet (room for results above the keyboard), so there is
+  // no backdrop to tap; the sheet must cover the viewport and still close with Escape.
   await trigger.click();
   await expect(dialog).toBeVisible();
-  await page.locator(".search-overlay__backdrop").click({ position: { x: 5, y: 5 } });
+  const sheet = await dialog.boundingBox();
+  expect(sheet?.x).toBeLessThanOrEqual(0);
+  expect(sheet?.y).toBeLessThanOrEqual(0);
+  expect(sheet?.width).toBeGreaterThan(390 - 20);
+  await page.keyboard.press("Escape");
   await expect(dialog).not.toBeVisible();
   expect(runtimeIssues).toEqual([]);
 });

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 import { OfferHero } from "@/components/offers/OfferHero";
 import { heroOffersQuery } from "@/lib/offers";
 import { Hero } from "@/components/home/Hero";
@@ -12,11 +12,20 @@ import { absoluteUrl, canonicalUrl, createSeoHead, itemListSchema, jsonLd } from
 
 const HomeBelowFold = lazy(() => import("@/components/home/HomeBelowFold"));
 
+// Cached like the rest of the homepage data, so returning to the homepage reuses it
+// instead of refetching the page-builder snapshot on every visit.
+const publishedHomepageQuery = () =>
+  queryOptions({
+    queryKey: ["published-homepage"] as const,
+    queryFn: ({ signal }) => getPublishedHomepage(signal),
+    staleTime: 60_000,
+  });
+
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
     const locale = context.locale === "ar" ? ("ar" as const) : ("en" as const);
     const [builder, heroOffers] = await Promise.all([
-      getPublishedHomepage().catch(() => null),
+      context.queryClient.ensureQueryData(publishedHomepageQuery()).catch(() => null),
       context.queryClient.ensureQueryData(heroOffersQuery()).catch(() => []),
     ]);
     if (builder) return { mode: "builder" as const, builder, locale, heroOffers };

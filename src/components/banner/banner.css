@@ -1,10 +1,6 @@
 .global-banner-slot {
   width: 100%;
 }
-.global-banner-slot--loading {
-  min-height: 32px;
-  background: var(--color-primary);
-}
 .global-banner-slot--bottom {
   position: fixed;
   inset-inline: 0;

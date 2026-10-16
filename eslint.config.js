@@ -49,7 +49,7 @@ export default tseslint.config(
         "warn",
         {
           allowConstantExport: true,
-          allowExportNames: ["useStore", "useProductCardStore"],
+          allowExportNames: ["useStore", "useProductCardStore", "useSearchOpen"],
         },
       ],
       "@typescript-eslint/no-unused-vars": "off",

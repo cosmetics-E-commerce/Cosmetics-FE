@@ -903,7 +903,7 @@ const publicConcerns = [
   shortDescription: { en: "", ar: "" },
   heroMediaKey: null,
   iconMediaKey: null,
-  productCount: index === 0 ? 200 : 0,
+  productCount: index === 0 ? 200 : 12 + index * 5,
   revision: 1,
   publishedAt: "2026-09-02T09:00:00.000Z",
   ...concern,
@@ -1344,6 +1344,9 @@ const server = createServer((request, response) => {
   }
 
   if (url.pathname === "/health") return json(response, 200, { ok: true });
+  // Like the real API: no published page-builder homepage is a 200 with null, not a
+  // 404, so the storefront renders its built-in homepage (and preloading it is quiet).
+  if (path === "/pages/homepage") return success(response, null);
   if (path === "/pages/page-builder-image-test") {
     return success(response, pageBuilderImageSnapshot);
   }

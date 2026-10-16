@@ -47,6 +47,8 @@ type ActiveState = {
 
 type CampaignPageDetails = NonNullable<Parameters<typeof pageContext>[2]>;
 
+const COPY_CONFIRM_MS = 1_500;
+
 export default function CampaignEngine() {
   const location = useLocation();
   const store = useStore();
@@ -67,6 +69,7 @@ export default function CampaignEngine() {
   const requestSequence = useRef(0);
   const cooldownUntil = useRef(0);
   const queueTimer = useRef<number | null>(null);
+  const actionCloseTimer = useRef<number | null>(null);
   const eligibleTracked = useRef(new Set<string>());
   const lastBehaviorEvent = useRef<{
     detail: Record<string, unknown>;
@@ -377,6 +380,7 @@ export default function CampaignEngine() {
   useEffect(
     () => () => {
       if (queueTimer.current !== null) window.clearTimeout(queueTimer.current);
+      if (actionCloseTimer.current !== null) window.clearTimeout(actionCloseTimer.current);
     },
     [],
   );
@@ -384,6 +388,10 @@ export default function CampaignEngine() {
   const dismiss = useCallback(
     (reason: "customer" | "action" | "completion" | "expired" = "customer") => {
       if (!active || !context) return;
+      if (actionCloseTimer.current !== null) {
+        window.clearTimeout(actionCloseTimer.current);
+        actionCloseTimer.current = null;
+      }
       if (reason === "customer") {
         updateHistory(active.campaign.id, { dismissedAt: new Date().toISOString() });
         track("DISMISS", active.campaign, context);
@@ -439,7 +447,17 @@ export default function CampaignEngine() {
       } else if (["COPY_COUPON", "APPLY_COUPON"].includes(config.type) && !campaign.coupon) {
         succeeded = false;
       }
-      if (config.type === "CLOSE" || (succeeded && config.closeAfterAction)) dismiss("action");
+      if (config.type === "CLOSE") dismiss("action");
+      else if (succeeded && config.closeAfterAction) {
+        // A copied code has nothing on screen to show for it once the popup is
+        // gone, so hold it open long enough to read the "Copied" confirmation.
+        if (config.type === "COPY_COUPON") {
+          actionCloseTimer.current = window.setTimeout(() => {
+            actionCloseTimer.current = null;
+            dismiss("action");
+          }, COPY_CONFIRM_MS);
+        } else dismiss("action");
+      }
       return succeeded;
     },
     [active, context, dismiss, store],

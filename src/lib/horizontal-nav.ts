@@ -18,7 +18,9 @@ export function scrollElementHorizontallyIntoView(
   const visibleStart = scrollerRect.left + edgePadding;
   const visibleEnd = scrollerRect.right - edgePadding;
 
-  if (targetRect.left >= visibleStart && targetRect.right <= visibleEnd) {
+  // A pixel of tolerance: bordered items resolve to fractional edges (notably in
+  // WebKit RTL), and an item sitting exactly on the padding must count as visible.
+  if (targetRect.left >= visibleStart - 1 && targetRect.right <= visibleEnd + 1) {
     return false;
   }
 

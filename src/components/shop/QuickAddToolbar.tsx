@@ -203,6 +203,7 @@ function PurchasableProductAction({
             className="quick-add__action"
             aria-label={`${labels.add}: ${product.name}`}
             aria-busy={busy || undefined}
+            data-state={state}
             disabled={disabled}
             onClick={addToCart}
           >

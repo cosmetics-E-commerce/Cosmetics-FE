@@ -81,6 +81,12 @@ export function CampaignRenderer(props: Props) {
             if (!props.campaign.presentation.closeOnOverlay) event.preventDefault();
           }}
           aria-describedby={undefined}
+          onOpenAutoFocus={(event) => {
+            // Land on the dialog itself: focusing the close button first paints a
+            // focus ring on it before the customer has done anything.
+            event.preventDefault();
+            (event.target as HTMLElement | null)?.focus({ preventScroll: true });
+          }}
           style={campaignStyle(props.campaign)}
         >
           <CampaignCardContent {...effectiveProps} titlePrimitive />
@@ -252,6 +258,16 @@ function CampaignCardContent({
     ? (content.successHeadline ?? (locale === "ar" ? "تم بنجاح" : "You’re all set"))
     : content.headline;
   const body = success ? (content.successBody ?? content.body) : content.body;
+  // A "copy coupon" primary action and the coupon chip are the same control, so
+  // they render once, as a ticket with the code beside its copy button.
+  const copyIsPrimary =
+    Boolean(campaign.coupon) &&
+    campaign.form.type === "NONE" &&
+    campaign.primaryAction.type === "COPY_COUPON";
+  const showPrimary = campaign.primaryAction.type !== "NONE" && !copyIsPrimary;
+  const showSecondary = campaign.secondaryAction.type !== "NONE" && !!content.secondaryCtaLabel;
+  const icon =
+    campaign.appearance.icon !== "NONE" ? <CampaignIcon icon={campaign.appearance.icon} /> : null;
 
   return (
     <div className="campaign-card__frame">
@@ -292,14 +308,20 @@ function CampaignCardContent({
 
       <div className="campaign-card__content">
         {success ? <Check className="campaign-card__success-icon" aria-hidden="true" /> : null}
-        {!success && campaign.appearance.icon !== "NONE" ? (
-          <CampaignIcon icon={campaign.appearance.icon} />
+        {!success && icon && !content.badge && !content.eyebrow ? (
+          <span className="campaign-card__icon">{icon}</span>
         ) : null}
         {!success && content.badge ? (
-          <span className="campaign-card__badge">{content.badge}</span>
+          <span className="campaign-card__badge">
+            {icon}
+            {content.badge}
+          </span>
         ) : null}
         {!success && content.eyebrow ? (
-          <p className="campaign-card__eyebrow">{content.eyebrow}</p>
+          <p className="campaign-card__eyebrow">
+            {content.badge ? null : icon}
+            {content.eyebrow}
+          </p>
         ) : null}
         {titlePrimitive ? (
           <DialogPrimitive.Title className="campaign-card__headline">
@@ -326,7 +348,26 @@ function CampaignCardContent({
           </div>
         ) : null}
 
-        {!success && campaign.coupon ? (
+        {!success && campaign.coupon && copyIsPrimary ? (
+          <div className="campaign-card__ticket">
+            <span className="campaign-card__ticket-code" dir="ltr">
+              {campaign.coupon.code}
+            </span>
+            <button
+              className="campaign-card__primary"
+              type="button"
+              disabled={actionPending !== null}
+              data-done={primaryFeedback ? "" : undefined}
+              onClick={() => void runAction("primary")}
+            >
+              {primaryFeedback ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+              {primaryFeedback ||
+                content.primaryCtaLabel ||
+                (locale === "ar" ? "نسخ الكود" : "Copy code")}
+            </button>
+          </div>
+        ) : null}
+        {!success && campaign.coupon && !copyIsPrimary ? (
           <button
             className="campaign-card__coupon"
             type="button"
@@ -418,9 +459,9 @@ function CampaignCardContent({
           </form>
         ) : null}
 
-        {!success ? (
+        {!success && (showPrimary || showSecondary) ? (
           <div className="campaign-card__actions">
-            {campaign.primaryAction.type !== "NONE" ? (
+            {showPrimary ? (
               <button
                 className="campaign-card__primary"
                 form={campaign.form.type !== "NONE" ? formId : undefined}
@@ -440,7 +481,7 @@ function CampaignCardContent({
                       (locale === "ar" ? "متابعة" : "Continue")))}
               </button>
             ) : null}
-            {campaign.secondaryAction.type !== "NONE" && content.secondaryCtaLabel ? (
+            {showSecondary ? (
               <button
                 className="campaign-card__secondary"
                 type="button"
@@ -520,9 +561,5 @@ function CampaignIcon({ icon }: { icon: PopupPublishedCampaign["appearance"]["ic
     BELL: Bell,
     NONE: Sparkles,
   }[icon];
-  return (
-    <span className="campaign-card__icon" aria-hidden="true">
-      <Icon />
-    </span>
-  );
+  return <Icon aria-hidden="true" />;
 }

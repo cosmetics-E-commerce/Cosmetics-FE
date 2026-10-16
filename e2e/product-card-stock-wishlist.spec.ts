@@ -154,7 +154,9 @@ test("wishlist control is balanced, separated from badges, and mirrors in RTL", 
   const rtlCard = page.locator(".sf-product-card").first();
   const rtlGeometry = await measureWishlist(rtlCard);
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-  await expect(rtlCard.locator(".sf-product-card__wish")).toHaveAccessibleName(/إضافة .* المفضلة/);
+  // The guest save above persists across the reload, so the Arabic control offers removal.
+  await expect(rtlCard.locator(".sf-product-card__wish")).toHaveAttribute("aria-pressed", "true");
+  await expect(rtlCard.locator(".sf-product-card__wish")).toHaveAccessibleName(/إزالة .* المفضلة/);
   expect(rtlGeometry.button.left).toBeGreaterThanOrEqual(rtlGeometry.media.left);
 });
 

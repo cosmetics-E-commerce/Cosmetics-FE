@@ -170,7 +170,9 @@
   min-height: 100%;
 }
 
-.campaign-card--split .campaign-card__frame {
+/* Split only when there is a picture to put in the second column; otherwise the
+   copy is squeezed into half the card beside an empty one. */
+.campaign-card--split .campaign-card__frame:has(> .campaign-card__media:not([hidden])) {
   grid-template-columns: minmax(0, 0.88fr) minmax(0, 1fr);
 }
 
@@ -220,7 +222,7 @@
 }
 
 .campaign-card__content {
-  padding: clamp(26px, 5vw, 52px);
+  padding: clamp(26px, 4vw, 44px);
 }
 .campaign-card--compact .campaign-card__content {
   padding: 22px;
@@ -239,22 +241,30 @@
   inset-inline-end: 14px;
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
+  width: 36px;
+  height: 36px;
   padding: 0;
-  color: var(--campaign-ink);
-  background: color-mix(in srgb, var(--campaign-surface) 82%, transparent);
-  border: 1px solid var(--campaign-border);
+  color: var(--campaign-muted);
+  background: transparent;
+  border: 0;
   border-radius: 999px;
   cursor: pointer;
-  backdrop-filter: blur(8px);
   transition:
-    transform 180ms ease,
-    background 180ms ease;
+    color 160ms ease,
+    background 160ms ease;
 }
 .campaign-card__close:hover {
-  transform: rotate(7deg);
-  background: var(--campaign-surface);
+  color: var(--campaign-ink);
+  background: color-mix(in srgb, var(--campaign-ink) 8%, transparent);
+}
+/* Over a photograph the close button needs its own backing to stay legible. */
+.campaign-card__frame:has(> .campaign-card__media:not([hidden])) > .campaign-card__close {
+  color: var(--campaign-ink);
+  background: color-mix(in srgb, var(--campaign-surface) 82%, transparent);
+  backdrop-filter: blur(8px);
+}
+.campaign-card:focus-visible {
+  outline: none;
 }
 .campaign-card__close:focus-visible,
 .campaign-card :is(button, input):focus-visible {
@@ -267,29 +277,45 @@
 
 .campaign-card__badge,
 .campaign-card__eyebrow {
-  display: inline-block;
-  margin: 0 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 16px;
   color: var(--campaign-accent);
   font:
-    700 0.69rem/1.2 Manrope,
+    700 0.7rem/1.2 Manrope,
     sans-serif;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 .campaign-card__badge {
-  padding: 7px 10px;
-  border: 1px solid currentColor;
+  padding: 6px 11px 6px 9px;
+  background: color-mix(in srgb, var(--campaign-accent) 11%, transparent);
   border-radius: 999px;
+}
+.campaign-card__badge svg,
+.campaign-card__eyebrow svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+[dir="rtl"] .campaign-card__badge,
+[dir="rtl"] .campaign-card__eyebrow {
+  letter-spacing: 0;
+}
+/* Leave the close button's corner clear. */
+.campaign-card__content > :first-child:not(.campaign-card__headline) {
+  margin-inline-end: 40px;
 }
 
 .campaign-card__headline {
-  max-width: 15ch;
+  max-width: 18ch;
   margin: 0;
   color: var(--campaign-ink);
   font:
-    500 clamp(2rem, 5vw, 3.5rem)/0.98 "Playfair Display",
+    500 clamp(1.9rem, 3.2vw, 2.55rem)/1.06 "Playfair Display",
     serif;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.02em;
   text-wrap: balance;
 }
 [dir="rtl"] .campaign-card__headline {
@@ -301,9 +327,10 @@
   margin-inline: auto;
 }
 .campaign-card__subtitle {
-  margin: 18px 0 0;
-  color: var(--campaign-ink);
-  font-weight: 650;
+  margin: 14px 0 0;
+  color: var(--campaign-muted);
+  font-size: 1.02rem;
+  line-height: 1.55;
 }
 .campaign-card__body {
   max-width: 54ch;
@@ -362,6 +389,54 @@
 }
 .campaign-card__coupon svg {
   width: 16px;
+}
+
+/* Code and its copy button as one ticket: the code is the thing being given,
+   the button is how you take it. */
+.campaign-card__ticket {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 400px;
+  margin-top: 26px;
+  padding: 6px;
+  padding-inline-start: 20px;
+  background: color-mix(in srgb, var(--campaign-surface) 55%, white 45%);
+  border: 1px dashed color-mix(in srgb, var(--campaign-accent) 55%, transparent);
+  border-radius: 14px;
+}
+.campaign-card--centered .campaign-card__ticket {
+  margin-inline: auto;
+}
+.campaign-card__ticket-code {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--campaign-ink);
+  font:
+    700 1.08rem/1 Manrope,
+    sans-serif;
+  letter-spacing: 0.16em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  user-select: all;
+}
+.campaign-card__ticket .campaign-card__primary {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding-inline: 18px;
+  border-radius: 10px;
+}
+.campaign-card__ticket .campaign-card__primary:hover {
+  transform: none;
+  filter: brightness(1.08);
+}
+.campaign-card__ticket .campaign-card__primary svg {
+  width: 15px;
+  height: 15px;
 }
 
 .campaign-card__form {
@@ -472,9 +547,9 @@
 }
 .campaign-card__icon {
   display: grid;
-  width: 42px;
-  height: 42px;
-  margin-bottom: 18px;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 16px;
   place-items: center;
   border: 1px solid color-mix(in srgb, var(--campaign-accent) 32%, transparent);
   border-radius: 999px;
@@ -551,7 +626,7 @@
     border-radius: 22px 22px 0 0;
     padding-bottom: env(safe-area-inset-bottom);
   }
-  .campaign-card--split .campaign-card__frame {
+  .campaign-card--split .campaign-card__frame:has(> .campaign-card__media:not([hidden])) {
     grid-template-columns: 1fr;
   }
   .campaign-card--split .campaign-card__media {
@@ -572,6 +647,12 @@
   .campaign-card__primary,
   .campaign-card__secondary {
     width: 100%;
+  }
+  .campaign-card__ticket {
+    max-width: none;
+  }
+  .campaign-card__ticket .campaign-card__primary {
+    width: auto;
   }
 }
 

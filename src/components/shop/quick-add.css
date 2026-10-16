@@ -469,3 +469,265 @@
     animation-duration: 1.2s;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Quick-add capsule skin.
+   Rounded controls that echo the round wishlist button: a frosted quantity
+   pill and an ink "Add to bag" pill that warms to gold on hover and confirms
+   with a check. Selectors carry three classes so they hold over the
+   section-specific sizing overrides (shop grid, home rails, related products)
+   without each of those needing to change.
+   --------------------------------------------------------------------------- */
+.product-card .quick-add {
+  /* 44px row and 40px steppers keep every control a comfortable touch target. */
+  --qa-height: 44px;
+  --qa-step: 38px;
+  --qa-ink: #1d1a17;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.product-card .quick-add .quick-add__content {
+  display: flex;
+  min-height: var(--qa-height);
+  align-items: center;
+  gap: 8px;
+}
+
+.product-card .quick-add .quick-add__quantity {
+  display: inline-flex;
+  flex: none;
+  height: var(--qa-height);
+  min-height: var(--qa-height);
+  align-items: center;
+  gap: 0;
+  overflow: visible;
+  padding: 1px 3px;
+  border: 1px solid rgb(29 26 23 / 9%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 88%);
+  box-shadow: 0 6px 18px rgb(29 26 23 / 9%);
+  backdrop-filter: blur(10px) saturate(1.1);
+}
+
+.product-card .quick-add .quick-add__quantity button {
+  width: var(--qa-step);
+  height: 40px;
+  min-height: 40px;
+  border-radius: 999px;
+  color: var(--qa-ink);
+}
+
+.product-card .quick-add .quick-add__quantity button:hover:not(:disabled) {
+  background: rgb(29 26 23 / 7%);
+  color: var(--qa-ink);
+}
+
+.product-card .quick-add .quick-add__quantity svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+}
+
+/* −, count and + are equal cells so the count sits exactly in the middle. */
+.product-card .quick-add .quick-add__quantity output {
+  width: var(--qa-step);
+  min-width: var(--qa-step);
+  color: var(--qa-ink);
+  font-size: 0.84rem;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+
+.product-card .quick-add .quick-add__action {
+  position: relative;
+  flex: 1;
+  height: var(--qa-height);
+  min-height: var(--qa-height);
+  max-width: none;
+  gap: 8px;
+  overflow: hidden;
+  padding-inline: 16px;
+  border-radius: 999px;
+  background: var(--qa-ink);
+  color: #fff;
+  box-shadow: 0 8px 20px rgb(29 26 23 / 20%);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  transition:
+    background-color 220ms ease,
+    box-shadow 220ms ease,
+    transform 160ms ease;
+}
+
+/* A soft sheen that crosses the button once on hover. */
+.product-card .quick-add .quick-add__action::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgb(255 255 255 / 22%) 48%, transparent 66%);
+  content: "";
+  pointer-events: none;
+  transform: translateX(-120%);
+}
+
+.product-card .quick-add .quick-add__action:hover:not(:disabled) {
+  background: var(--brand-gold);
+  color: #fff;
+  box-shadow: 0 10px 24px rgb(128 90 32 / 32%);
+  transform: translateY(-1px);
+}
+
+.product-card .quick-add .quick-add__action:hover:not(:disabled)::after {
+  transform: translateX(120%);
+  transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.product-card .quick-add .quick-add__action:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.product-card .quick-add .quick-add__action[data-state="added"] {
+  background: var(--brand-gold);
+  box-shadow: 0 10px 24px rgb(128 90 32 / 32%);
+}
+
+.product-card .quick-add .quick-add__action[data-state="added"] svg {
+  animation: quick-add-pop 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.product-card .quick-add .quick-add__action:disabled:not([data-state="adding"]) {
+  background: rgb(29 26 23 / 8%);
+  box-shadow: none;
+  color: rgb(29 26 23 / 45%);
+}
+
+.product-card .quick-add .quick-add__action svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.8;
+}
+
+[dir="rtl"] .product-card .quick-add .quick-add__action {
+  font-family: var(--font-arabic);
+  font-size: 0.82rem;
+  letter-spacing: 0;
+}
+
+.product-card .quick-add .quick-add__unavailable {
+  height: var(--qa-height);
+  min-height: var(--qa-height);
+  border: 1px solid rgb(29 26 23 / 8%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 88%);
+  color: rgb(29 26 23 / 55%);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  backdrop-filter: blur(10px);
+}
+
+.product-card .quick-add :focus-visible {
+  outline-offset: 2px;
+}
+
+/* Narrow cards on touch layouts (two-up phone grid): quantity and add stack as
+   two full-width pills so every control keeps a 44px touch target and the
+   label fits. Desktop list cards are narrow too but stay one row on hover. */
+@media (max-width: 767px),
+  (max-width: 1023px) and (hover: none),
+  (max-width: 1023px) and (pointer: coarse) {
+  @container (max-width: 300px) {
+    .product-card .quick-add .quick-add__content {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+    }
+
+    .product-card .quick-add .quick-add__quantity {
+      display: grid;
+      width: 100%;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      padding: 0;
+      border: 0;
+      box-shadow: inset 0 0 0 1px rgb(29 26 23 / 12%);
+    }
+
+    .product-card .quick-add .quick-add__quantity button,
+    .product-card .quick-add .quick-add__quantity output {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .product-card .quick-add .quick-add__quantity button {
+      height: var(--qa-height);
+      min-height: var(--qa-height);
+    }
+
+    .product-card .quick-add .quick-add__action {
+      flex: none;
+      width: 100%;
+    }
+  }
+}
+
+/* Hover overlay on tighter desktop cards: the label matters more than the
+   bag icon, so the icon gives way (the "Added" check still shows). */
+@media (hover: hover) and (pointer: fine) {
+  @container (max-width: 290px) {
+    .product-card .quick-add .quick-add__content {
+      gap: 6px;
+    }
+
+    .product-card .quick-add .quick-add__action {
+      padding-inline: 12px;
+    }
+
+    .product-card .quick-add .quick-add__action:not([data-state="added"]) svg {
+      display: none;
+    }
+  }
+}
+
+/* Under the image on touch layouts the quantity pill has nothing behind it,
+   so it reads as an outlined control rather than frosted glass. */
+@media (max-width: 767px),
+  (max-width: 1023px) and (hover: none),
+  (max-width: 1023px) and (pointer: coarse) {
+  .product-card .quick-add .quick-add__quantity {
+    background: #fff;
+    box-shadow: none;
+    backdrop-filter: none;
+  }
+
+  .product-card .quick-add .quick-add__action {
+    box-shadow: none;
+  }
+}
+
+@keyframes quick-add-pop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-card .quick-add .quick-add__action::after {
+    display: none;
+  }
+
+  .product-card .quick-add .quick-add__action[data-state="added"] svg {
+    animation: none;
+  }
+}

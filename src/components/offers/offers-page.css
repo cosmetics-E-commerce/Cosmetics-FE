@@ -1,0 +1,742 @@
+/* Offers page: the Shop layout (.sf-shop-*) with the homepage's warmth —
+   brand photography, the display serif, gold details and an espresso band. */
+
+.sf-deals {
+  --deals-cream: #f3ebdf;
+  --deals-sand: #eadcc6;
+  --deals-espresso: var(--brand-primary-dark, #211d19);
+  --deals-gold: var(--brand-gold, #805a20);
+  --deals-soft-gold: var(--brand-soft-gold, #e5d1ad);
+}
+
+.sf-deals-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  color: var(--deals-gold);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.sf-deals-eyebrow::before {
+  width: 44px;
+  height: 1px;
+  background: currentColor;
+  content: "";
+}
+
+[dir="rtl"] .sf-deals-eyebrow {
+  font-family: var(--font-arabic);
+  letter-spacing: 0;
+}
+
+/* Hero: copy on warm cream, photograph on the other half. */
+.sf-deals-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  overflow: hidden;
+  margin-top: 22px;
+  border-radius: 16px;
+  background: var(--deals-cream);
+}
+
+.sf-deals-hero__copy {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 22px;
+  padding: clamp(36px, 5vw, 72px);
+}
+
+.sf-deals-hero h1 {
+  margin: 0;
+  color: #1d1a17;
+  font-family: var(--font-display);
+  font-size: clamp(2.9rem, 5.4vw, 5.1rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+}
+
+.sf-deals-hero h1 em {
+  display: block;
+  color: var(--deals-gold);
+  font-style: italic;
+}
+
+[dir="rtl"] .sf-deals-hero h1 {
+  font-family: var(--font-arabic);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.25;
+}
+
+[dir="rtl"] .sf-deals-hero h1 em {
+  font-style: normal;
+}
+
+.sf-deals-hero__lede {
+  max-width: 30rem;
+  margin: 0;
+  color: #5e574f;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.sf-deals-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 22px;
+  margin-top: 6px;
+}
+
+.sf-deals-hero__ends {
+  margin: 0;
+  color: #6f6a64;
+  font-size: 0.86rem;
+}
+
+.sf-deals-hero__ends strong {
+  color: var(--deals-gold);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.sf-deals-hero__visual {
+  position: relative;
+  min-height: clamp(420px, 40vw, 560px);
+}
+
+.sf-deals-hero__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+}
+
+/* Price tag pinned to the photograph. */
+.sf-deals-tag {
+  position: absolute;
+  inset-inline: 24px;
+  inset-block-end: 24px;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  max-width: 400px;
+  border-radius: 12px;
+  background: rgb(255 252 247 / 94%);
+  padding: 10px 14px 10px 10px;
+  color: #1d1a17;
+  box-shadow: 0 18px 40px rgb(33 29 25 / 18%);
+  backdrop-filter: blur(6px);
+  transition: transform 180ms ease;
+}
+
+[dir="rtl"] .sf-deals-tag {
+  padding: 10px 10px 10px 14px;
+}
+
+.sf-deals-tag:hover,
+.sf-deals-tag:focus-visible {
+  transform: translateY(-2px);
+}
+
+.sf-deals-tag__image {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.sf-deals-tag__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.sf-deals-tag__body {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.sf-deals-tag__label {
+  color: var(--deals-gold);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+[dir="rtl"] .sf-deals-tag__label {
+  letter-spacing: 0;
+}
+
+.sf-deals-tag__name {
+  overflow: hidden;
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-deals-tag__price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.84rem;
+}
+
+.sf-deals-tag__price s {
+  color: #9a928a;
+  font-size: 0.74rem;
+}
+
+.sf-deals-tag__seal {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--deals-espresso);
+  color: var(--deals-soft-gold);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-style: italic;
+}
+
+[dir="rtl"] .sf-deals-tag__seal {
+  font-family: var(--font-arabic);
+  font-style: normal;
+  font-weight: 700;
+}
+
+/* Category tiles: the best deal's packshot on warm sand. */
+.sf-deals-section-title {
+  margin: 0 0 18px;
+  color: #1d1a17;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+[dir="rtl"] .sf-deals-section-title {
+  font-family: var(--font-arabic);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.sf-deals-tiles {
+  display: flex;
+  gap: 14px;
+  overflow-x: auto;
+  padding-block: 4px 12px;
+  scrollbar-width: none;
+}
+
+.sf-deals-tiles::-webkit-scrollbar {
+  display: none;
+}
+
+.sf-deals-tile {
+  display: grid;
+  flex: 0 0 clamp(150px, 15vw, 184px);
+  gap: 4px;
+  justify-items: start;
+  text-align: start;
+  cursor: pointer;
+}
+
+.sf-deals-tile__media {
+  display: grid;
+  width: 100%;
+  aspect-ratio: 1;
+  margin-bottom: 8px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: var(--deals-cream);
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.sf-deals-tile__media img {
+  width: auto;
+  height: auto;
+  max-width: 76%;
+  max-height: 80%;
+  /* Packshots sit on white; multiply lets them stand on the sand tone. */
+  mix-blend-mode: multiply;
+  transition: transform 260ms ease;
+}
+
+/* "All offers": a 2×2 shelf of each category's best deal, same sand as its
+   neighbours, so it reads as the sum of the strip rather than a badge. */
+.sf-deals-tile--all .sf-deals-tile__media {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: minmax(0, 1fr);
+  place-items: stretch;
+  gap: 2px;
+  background: var(--deals-sand);
+}
+
+.sf-deals-tile__cell {
+  display: grid;
+  min-height: 0;
+  place-items: center;
+  overflow: hidden;
+  background: var(--deals-cream);
+}
+
+.sf-deals-tile--all .sf-deals-tile__media img {
+  max-width: 72%;
+  max-height: 78%;
+}
+
+.sf-deals-tile__name {
+  color: #1d1a17;
+  font-size: 0.94rem;
+  font-weight: 600;
+}
+
+.sf-deals-tile__meta {
+  color: var(--deals-gold);
+  font-size: 0.78rem;
+  font-weight: 650;
+}
+
+.sf-deals-tile:hover .sf-deals-tile__media img,
+.sf-deals-tile:focus-visible .sf-deals-tile__media img {
+  transform: scale(1.05);
+}
+
+.sf-deals-tile:hover .sf-deals-tile__media {
+  background: var(--deals-sand);
+}
+
+.sf-deals-tile--all:hover .sf-deals-tile__cell {
+  background: var(--deals-sand);
+}
+
+.sf-deals-tile[aria-selected="true"] .sf-deals-tile__media {
+  border-color: var(--deals-gold);
+  box-shadow: inset 0 0 0 1px var(--deals-gold);
+}
+
+.sf-deals-tile:focus-visible {
+  outline: none;
+}
+
+.sf-deals-tile:focus-visible .sf-deals-tile__media {
+  border-color: var(--deals-espresso);
+}
+
+.sf-deals-label {
+  margin: 0 0 6px;
+  color: var(--deals-soft-gold);
+  font-family: var(--font-sans);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+[dir="rtl"] .sf-deals-label {
+  letter-spacing: 0;
+}
+
+/* Featured offers: an espresso band, like the homepage's dark section. */
+.sf-deals-featured {
+  margin-top: clamp(40px, 5vw, 64px);
+  border-radius: 16px;
+  background: var(--deals-espresso);
+  padding: clamp(28px, 4vw, 52px);
+  color: #f5ede1;
+}
+
+.sf-deals-featured ul,
+.sf-deals-scopes ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sf-deals-featured li + li {
+  border-top: 1px solid rgb(245 237 225 / 14%);
+}
+
+.sf-deals-scopes li + li {
+  border-top: 1px solid #eee9e2;
+}
+
+.sf-deals-spotlight {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+  align-items: center;
+  padding-block: 18px;
+}
+
+.sf-deals-spotlight:has(.sf-deals-spotlight__media) {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+}
+
+.sf-deals-spotlight__media {
+  display: block;
+  order: 2;
+  overflow: hidden;
+  border-radius: 10px;
+  aspect-ratio: 16 / 10;
+  background: #2e2823;
+}
+
+.sf-deals-spotlight__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sf-deals-spotlight__body {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+}
+
+.sf-deals-spotlight__meta {
+  margin: 0;
+  color: var(--deals-soft-gold);
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.sf-deals-spotlight h3 {
+  margin: 0;
+  color: #fffaf3;
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.4vw, 2.8rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+
+[dir="rtl"] .sf-deals-spotlight h3 {
+  font-family: var(--font-arabic);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.sf-deals-spotlight__body > p:not(.sf-deals-spotlight__meta) {
+  max-width: 40rem;
+  margin: 0;
+  color: rgb(245 237 225 / 74%);
+  font-size: 0.96rem;
+  line-height: 1.65;
+}
+
+.sf-deals-spotlight__body > button {
+  margin-top: 8px;
+  border-color: rgb(229 209 173 / 60%);
+  color: #fffaf3;
+}
+
+.sf-deals-spotlight__body > button:hover {
+  border-color: var(--deals-soft-gold);
+  color: var(--deals-soft-gold);
+}
+
+.sf-deals-spotlight[data-active] h3 {
+  color: var(--deals-soft-gold);
+}
+
+.sf-deals-catalog .sf-category-strip + .sf-deals-toolbar {
+  margin-top: 26px;
+}
+
+/* Toolbar: same rhythm as the Shop listing toolbar. */
+.sf-deals-catalog {
+  scroll-margin-top: 96px;
+}
+
+.sf-deals-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: 56px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 18px;
+  border-block: 1px solid #eee9e2;
+  padding-block: 10px;
+}
+
+.sf-deals-toolbar__count {
+  margin: 0;
+  color: #8a8580;
+  font-size: 0.8rem;
+  font-weight: 560;
+  white-space: nowrap;
+}
+
+.sf-deals-toolbar__count strong {
+  color: #2b2926;
+  font-variant-numeric: tabular-nums;
+  font-weight: 720;
+}
+
+.sf-deals-toolbar__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+}
+
+.sf-deals-tiers {
+  display: inline-flex;
+  gap: 3px;
+  border: 1px solid #ededed;
+  border-radius: 7px;
+  background: #f8f7f5;
+  padding: 3px;
+}
+
+.sf-deals-tiers button {
+  min-height: 32px;
+  border-radius: 4px;
+  padding-inline: 12px;
+  color: #8d8881;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.sf-deals-tiers button:hover,
+.sf-deals-tiers button:focus-visible {
+  color: #202020;
+}
+
+.sf-deals-tiers button[aria-pressed="true"] {
+  background: #fff;
+  color: #202020;
+  box-shadow: 0 5px 14px rgba(24, 20, 16, 0.08);
+}
+
+.sf-deals-select {
+  min-height: 38px;
+  max-width: 220px;
+  border: 1px solid #ededed;
+  border-radius: 6px;
+  background-color: #fff;
+  padding-inline: 13px 32px;
+  color: #202020;
+  font-size: 0.82rem;
+  font-weight: 560;
+  text-overflow: ellipsis;
+  outline: none;
+}
+
+.sf-deals-select:hover,
+.sf-deals-select:focus-visible {
+  border-color: #d4c1aa;
+}
+
+/* Empty and error states match the Shop's. */
+.sf-deals-empty {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  margin-top: 40px;
+  border: 1px solid #eee9e2;
+  padding: 72px 24px;
+  text-align: center;
+}
+
+.sf-deals-empty h3 {
+  margin: 0;
+  color: #202020;
+  font-family: var(--font-serif);
+  font-size: 1.85rem;
+  font-weight: 500;
+}
+
+.sf-deals-empty p {
+  max-width: 28rem;
+  margin: 0 0 8px;
+  color: #6f6a64;
+  font-size: 0.9rem;
+}
+
+/* Category- and brand-wide offers: a plain list of destinations. */
+.sf-deals-scopes {
+  margin-top: clamp(48px, 6vw, 72px);
+}
+
+.sf-deals-scopes a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-block: 18px;
+  color: #202020;
+  transition: color 160ms ease;
+}
+
+.sf-deals-scopes strong {
+  font-size: 1.05rem;
+  font-weight: 560;
+}
+
+.sf-deals-scopes span {
+  color: var(--brand-gold);
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+
+.sf-deals-scopes svg {
+  width: 16px;
+  height: 16px;
+  margin-inline-start: auto;
+  transition: transform 160ms ease;
+}
+
+[dir="rtl"] .sf-deals-scopes svg {
+  transform: scaleX(-1);
+}
+
+.sf-deals-scopes a:hover svg,
+.sf-deals-scopes a:focus-visible svg {
+  transform: translateX(3px);
+}
+
+[dir="rtl"] .sf-deals-scopes a:hover svg,
+[dir="rtl"] .sf-deals-scopes a:focus-visible svg {
+  transform: scaleX(-1) translateX(3px);
+}
+
+@media (max-width: 820px) {
+  .sf-deals-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sf-deals-hero {
+    overflow: visible;
+  }
+
+  .sf-deals-hero__visual {
+    order: -1;
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+  }
+
+  .sf-deals-hero__photo {
+    border-radius: 16px 16px 0 0;
+    object-position: center 72%;
+  }
+
+  /* The tag straddles the photo's lower edge instead of covering the jar. */
+  .sf-deals-hero__visual .sf-deals-tag {
+    z-index: 2;
+    inset-block-end: -34px;
+  }
+
+  .sf-deals-hero:has(.sf-deals-tag) .sf-deals-hero__copy {
+    padding-top: 62px;
+  }
+
+  .sf-deals-hero__copy {
+    gap: 16px;
+    padding: 28px 22px 32px;
+  }
+
+  .sf-deals-spotlight:has(.sf-deals-spotlight__media) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .sf-deals-spotlight__media {
+    order: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .sf-deals-hero__lede {
+    font-size: 0.92rem;
+  }
+
+  .sf-deals-hero__actions > * {
+    width: 100%;
+  }
+
+  .sf-deals-tag {
+    inset-inline: 12px;
+    inset-block-end: 12px;
+    grid-template-columns: 52px minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+
+  .sf-deals-tag__image {
+    width: 52px;
+    height: 52px;
+  }
+
+  .sf-deals-tag__seal {
+    width: 50px;
+    height: 50px;
+    font-size: 0.92rem;
+  }
+
+  .sf-deals-tile {
+    flex-basis: 128px;
+  }
+
+  .sf-deals-featured {
+    margin-inline: calc(-1 * var(--mobile-page-gutter, 16px));
+    border-radius: 0;
+  }
+
+  .sf-deals-toolbar__actions {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sf-deals-tiers {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .sf-deals-tiers button {
+    min-height: 36px;
+    padding-inline: 6px;
+  }
+
+  .sf-deals-select {
+    width: 100%;
+    max-width: none;
+    min-height: 42px;
+  }
+
+  .sf-deals-select:only-of-type {
+    grid-column: 1 / -1;
+  }
+
+  .sf-deals-empty {
+    padding: 48px 18px;
+  }
+}

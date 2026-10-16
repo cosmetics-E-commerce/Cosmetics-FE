@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowRight,
   ChevronLeft,
@@ -25,7 +25,7 @@ import {
   useRef,
   useState,
   type CSSProperties,
-  type PointerEvent as ReactPointerEvent,
+  type KeyboardEvent as ReactKeyboardEvent,
 } from "react";
 import { toast } from "sonner";
 
@@ -45,11 +45,12 @@ import {
 import { useMotionPreferences } from "@/components/motion/motion-context";
 import {
   apiErrorMessage,
+  getConcernProducts,
   listConcerns,
   subscribeNewsletter,
   type PublicCategoryResponse,
 } from "@/lib/api";
-import { categoriesQuery, useMerchandisingCatalog } from "@/lib/catalog";
+import { categoriesQuery, mapProduct, useMerchandisingCatalog } from "@/lib/catalog";
 import { useI18n } from "@/lib/i18n";
 import { images, type Product } from "@/lib/products";
 import { useStore } from "@/lib/store";
@@ -506,144 +507,192 @@ export function CollectionFeature() {
 
 export function Concerns() {
   const { locale } = useStore();
-  const { finePointer, reducedMotion } = useMotionPreferences();
   const ar = locale === "ar";
+  const client = useQueryClient();
+  const tabsId = useId();
   const concernQuery = useQuery({
     queryKey: ["concerns", "public"],
     queryFn: ({ signal }) => listConcerns(signal),
     staleTime: 5 * 60_000,
   });
-  const concernItems = concernQuery.data ?? [];
-  const sectionRef = useRef<HTMLElement>(null);
-  const pointerFrameRef = useRef<number | null>(null);
-  const headlineLines = ar
-    ? ["روتين يبدأ", "من بشرتك."]
-    : ["A ritual that", "begins with", "your skin."];
+  // A skin type with nothing to show is a dead end, so it is left out.
+  const concernItems = (concernQuery.data ?? []).filter((concern) => concern.productCount > 0);
+  const [activeSlug, setActiveSlug] = useState<string | null>(null);
+  const active = concernItems.find((concern) => concern.slug === activeSlug) ?? concernItems[0];
+  const previewQuery = (slug: string) => ({
+    queryKey: ["concern-preview", slug] as const,
+    queryFn: ({ signal }: { signal: AbortSignal }) =>
+      getConcernProducts(slug, { page: 1, limit: 4, sort: "RELEVANCE", inStock: true }, signal),
+    staleTime: 5 * 60_000,
+  });
+  const products = useQuery({
+    ...previewQuery(active?.slug ?? ""),
+    enabled: Boolean(active),
+    placeholderData: keepPreviousData,
+  });
+  const preview = (products.data?.data ?? []).map((product) => mapProduct(product, locale));
+  const prefetch = (slug: string) => void client.prefetchQuery(previewQuery(slug));
+  const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
-  const handlePointerMove = useCallback(
-    (event: ReactPointerEvent<HTMLElement>) => {
-      if (!finePointer || reducedMotion || pointerFrameRef.current !== null) return;
-      const clientX = event.clientX;
-      const clientY = event.clientY;
-      pointerFrameRef.current = window.requestAnimationFrame(() => {
-        const section = sectionRef.current;
-        if (section) {
-          const bounds = section.getBoundingClientRect();
-          section.style.setProperty("--concern-pointer-x", `${clientX - bounds.left}px`);
-          section.style.setProperty("--concern-pointer-y", `${clientY - bounds.top}px`);
-        }
-        pointerFrameRef.current = null;
-      });
-    },
-    [finePointer, reducedMotion],
-  );
+  // Roving focus: arrows move between skin types, Home/End jump to the ends.
+  const onTabKey = (event: ReactKeyboardEvent<HTMLButtonElement>, index: number) => {
+    const last = concernItems.length - 1;
+    const forward = ar ? "ArrowLeft" : "ArrowRight";
+    const backward = ar ? "ArrowRight" : "ArrowLeft";
+    const next =
+      event.key === "ArrowDown" || event.key === forward
+        ? index === last
+          ? 0
+          : index + 1
+        : event.key === "ArrowUp" || event.key === backward
+          ? index === 0
+            ? last
+            : index - 1
+          : event.key === "Home"
+            ? 0
+            : event.key === "End"
+              ? last
+              : null;
+    if (next === null) return;
+    event.preventDefault();
+    const target = concernItems[next];
+    if (!target) return;
+    setActiveSlug(target.slug);
+    tabRefs.current[next]?.focus();
+  };
 
-  useEffect(
-    () => () => {
-      if (pointerFrameRef.current !== null) {
-        window.cancelAnimationFrame(pointerFrameRef.current);
-      }
-    },
-    [],
-  );
+  // The number is shown; the noun is only announced, so the list reads as a quiet column.
+  const productsLabel = (value: number) => (ar ? " منتج" : ` product${value === 1 ? "" : "s"}`);
 
   return (
-    <section ref={sectionRef} className="sf-concerns" onPointerMove={handlePointerMove}>
-      <div className="sf-concerns__atmosphere" aria-hidden="true">
-        {concernItems.map((concern, index) => (
-          <span
-            key={concern.id}
-            data-concern={concern.slug}
-            style={{ "--concern-color": concernColor(index) } as CSSProperties}
-          />
-        ))}
-      </div>
-      <div className="sf-shell sf-concerns__layout">
-        <Reveal className="sf-section-intro sf-concerns__intro" duration={760} distance={22}>
-          <p className="sf-kicker sf-concerns__kicker">
-            <span>{ar ? "تسوقي حسب احتياجك" : "Shop by concern"}</span>
-          </p>
-          <TextReveal
-            className="sf-display sf-section-title sf-concerns__title"
-            lines={headlineLines}
-            delay={90}
-            staggerMs={105}
-          />
+    <section className="sf-concerns" aria-labelledby={`${tabsId}-title`}>
+      <div className="sf-shell">
+        <Reveal className="sf-concerns__head" duration={700} distance={18}>
+          <h2 id={`${tabsId}-title`} className="sf-display sf-section-title sf-concerns__title">
+            {ar ? "تسوقي حسب نوع البشرة" : "Shop by skin type"}
+          </h2>
         </Reveal>
-        <Reveal
-          as="ul"
-          stagger
-          staggerMs={72}
-          delay={150}
-          duration={700}
-          distance={18}
-          className="sf-concern-list"
-        >
-          {concernQuery.isPending ? (
-            Array.from({ length: 6 }, (_, index) => (
-              <li className="sf-concern-list__skeleton" key={index} aria-hidden="true">
-                <span />
-                <span />
-              </li>
-            ))
-          ) : concernQuery.isError ? (
-            <li className="sf-concern-list__state" data-tone="error">
-              <p className="sf-concern-list__state-kicker">
-                {ar ? "تعذر تحميل الاحتياجات" : "Concern guides unavailable"}
-              </p>
-              <h3>{ar ? "لم نتمكن من تحميل هذه القائمة." : "We couldn't load this list."}</h3>
-              <p>{apiErrorMessage(concernQuery.error, locale)}</p>
-              <Button variant="solid" onClick={() => void concernQuery.refetch()}>
-                <RotateCcw aria-hidden="true" />
-                {ar ? "حاولي مرة أخرى" : "Try again"}
-              </Button>
-            </li>
-          ) : concernItems.length === 0 ? (
-            <li className="sf-concern-list__state">
-              <p className="sf-concern-list__state-kicker">
-                {ar ? "أدلة جديدة قيد الإعداد" : "New guides in preparation"}
-              </p>
-              <h3>
-                {ar ? "تصفحي منتجات العناية الآن." : "Explore skincare while we prepare them."}
-              </h3>
-              <p>
-                {ar
-                  ? "ستظهر أدلة احتياجات البشرة المعتمدة هنا بمجرد نشرها."
-                  : "Approved concern guides will appear here as soon as they are published."}
-              </p>
-              <Button asChild variant="solid">
-                <Link to="/shop">
-                  {ar ? "تصفحي منتجات العناية" : "Shop skincare"}
-                  <ArrowRight aria-hidden="true" />
-                </Link>
-              </Button>
-            </li>
-          ) : (
-            concernItems.map((concern, index) => (
-              <li
-                key={concern.id}
-                data-concern={concern.slug}
-                style={{ "--concern-color": concernColor(index) } as CSSProperties}
+
+        {concernQuery.isPending ? (
+          <div className="sf-concerns__body" aria-busy="true">
+            <div className="sf-concerns__tabs">
+              {Array.from({ length: 6 }, (_, index) => (
+                <span key={index} className="sf-concerns__tab-skeleton" aria-hidden="true" />
+              ))}
+            </div>
+            <PreviewSkeleton />
+          </div>
+        ) : concernQuery.isError ? (
+          <div className="sf-concerns__state" role="alert">
+            <h3>{ar ? "لم نتمكن من تحميل أنواع البشرة." : "We couldn't load skin types."}</h3>
+            <p>{apiErrorMessage(concernQuery.error, locale)}</p>
+            <Button variant="solid" onClick={() => void concernQuery.refetch()}>
+              <RotateCcw aria-hidden="true" />
+              {ar ? "حاولي مرة أخرى" : "Try again"}
+            </Button>
+          </div>
+        ) : !active ? (
+          <div className="sf-concerns__state">
+            <h3>{ar ? "أدلة أنواع البشرة قيد الإعداد." : "Skin type guides are on their way."}</h3>
+            <Button asChild variant="solid">
+              <Link to="/shop">
+                {ar ? "تصفحي منتجات العناية" : "Shop skincare"}
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            </Button>
+          </div>
+        ) : (
+          <div className="sf-concerns__body">
+            <div
+              className="sf-concerns__tabs"
+              role="tablist"
+              aria-orientation="vertical"
+              aria-label={ar ? "نوع البشرة" : "Skin type"}
+            >
+              {concernItems.map((concern, index) => {
+                const selected = concern.slug === active.slug;
+                const description = concern.shortDescription?.[locale]?.trim();
+                return (
+                  <button
+                    key={concern.id}
+                    ref={(element) => {
+                      tabRefs.current[index] = element;
+                    }}
+                    type="button"
+                    role="tab"
+                    id={`${tabsId}-tab-${concern.slug}`}
+                    aria-selected={selected}
+                    aria-controls={`${tabsId}-panel`}
+                    tabIndex={selected ? 0 : -1}
+                    className="sf-concerns__tab"
+                    onClick={() => setActiveSlug(concern.slug)}
+                    onPointerEnter={() => prefetch(concern.slug)}
+                    onFocus={() => prefetch(concern.slug)}
+                    onKeyDown={(event) => onTabKey(event, index)}
+                  >
+                    <span className="sf-concerns__tab-name">{concern.name[locale]}</span>
+                    <span className="sf-concerns__tab-count">
+                      {ar ? concern.productCount.toLocaleString("ar-EG") : concern.productCount}
+                      <span className="sr-only">{productsLabel(concern.productCount)}</span>
+                    </span>
+                    {description ? (
+                      <span className="sf-concerns__tab-desc">{description}</span>
+                    ) : null}
+                  </button>
+                );
+              })}
+            </div>
+
+            <div
+              id={`${tabsId}-panel`}
+              role="tabpanel"
+              aria-labelledby={`${tabsId}-tab-${active.slug}`}
+              className="sf-concerns__panel"
+              data-loading={products.isFetching || undefined}
+            >
+              {products.isPending ? (
+                <PreviewSkeleton />
+              ) : preview.length ? (
+                <ul className="sf-concerns__products">
+                  {preview.map((product) => (
+                    <li key={product.slug}>
+                      <ProductCard product={product} compact />
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="sf-concerns__empty">
+                  {ar
+                    ? "لا توجد منتجات متوفرة لهذا النوع حاليًا."
+                    : "Nothing in stock for this skin type right now."}
+                </p>
+              )}
+              <Link
+                to="/skin-concerns/$slug"
+                params={{ slug: active.slug }}
+                className="sf-text-link sf-concerns__all"
               >
-                <Link to="/skin-concerns/$slug" params={{ slug: concern.slug }}>
-                  <span className="sf-concern-list__dot" aria-hidden="true" />
-                  <span className="sf-concern-list__label">{concern.name[locale]}</span>
-                  <span className="sf-concern-list__arrow" aria-hidden="true">
-                    <ArrowRight className="sf-concern-list__arrow-primary" />
-                    <ArrowRight className="sf-concern-list__arrow-echo" />
-                  </span>
-                </Link>
-              </li>
-            ))
-          )}
-        </Reveal>
+                {ar
+                  ? `تسوقي كل منتجات ${active.name.ar} (${active.productCount.toLocaleString("ar-EG")})`
+                  : `Shop all ${active.productCount} for ${active.name.en}`}
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
-function concernColor(index: number) {
-  return ["#cdbba7", "#b9c3b0", "#d2b7ad", "#c8bd9e", "#b7c2c5", "#c4b6c8"][index % 6];
+function PreviewSkeleton() {
+  return (
+    <ul className="sf-concerns__products" aria-hidden="true">
+      {Array.from({ length: 4 }, (_, index) => (
+        <li key={index} className="sf-concerns__product-skeleton" />
+      ))}
+    </ul>
+  );
 }
 
 export function BestSellers({ initialProducts }: { initialProducts?: Product[] }) {

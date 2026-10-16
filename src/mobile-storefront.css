@@ -149,9 +149,8 @@
   }
   :root {
     --mobile-page-gutter: 20px;
-    /* Match the server-rendered non-home offset to the compact mobile header.
-       ResizeObserver refines this value after hydration without a 39px jump. */
-    --store-header-offset: 64px;
+    /* The resting header offset (65px: 64px bar + 1px border) is defined with the
+       desktop value at the top of storefront.css. */
   }
 
   .storefront-main {
@@ -213,11 +212,6 @@
   /* Compact, stable mobile header. */
   .store-header {
     --header-height: 64px;
-  }
-
-  .global-banner-slot--loading {
-    min-height: 0;
-    background: var(--sf-brand-ivory);
   }
 
   .store-header__inner {

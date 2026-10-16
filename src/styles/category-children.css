@@ -1,0 +1,332 @@
+/*
+ * "Shop by category" subcategory cards on category landing pages.
+ * Scoped to `.sf-category-children.cc`; loaded after the legacy storefront
+ * layers, whose `.sf-category-child*` tile rules are no longer rendered.
+ */
+
+.sf-category-children.cc {
+  --cc-ink: var(--brand-text);
+  --cc-muted: var(--brand-text-muted);
+  --cc-line: color-mix(in srgb, var(--brand-border) 72%, transparent);
+  --cc-surface: var(--brand-surface);
+  --cc-gold: var(--brand-gold);
+  --cc-tint: #f1e9dd;
+  width: min(1280px, calc(100% - 64px));
+  margin: 0 auto clamp(48px, 6vw, 88px);
+}
+
+.sf-category-children.cc .cc__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-bottom: clamp(20px, 2.4vw, 32px);
+}
+
+.sf-category-children.cc .cc__header h2 {
+  margin-top: 8px;
+  color: var(--cc-ink);
+  font-size: clamp(1.9rem, 3vw, 2.75rem);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+.sf-category-children.cc .cc__summary {
+  border: 1px solid var(--cc-line);
+  border-radius: 999px;
+  padding: 8px 14px;
+  color: var(--cc-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.sf-category-children.cc .cc__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(12px, 1.4vw, 20px);
+}
+
+/* ── Card ──────────────────────────────────────────────────────────── */
+
+.sf-category-children.cc .cc-card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--cc-line);
+  border-radius: 24px;
+  background: var(--cc-surface);
+  color: var(--cc-ink);
+  transition:
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 260ms ease,
+    border-color 200ms ease;
+}
+
+.sf-category-children.cc .cc-card:nth-child(4n + 2) {
+  --cc-tint: #f3e4df;
+}
+
+.sf-category-children.cc .cc-card:nth-child(4n + 3) {
+  --cc-tint: #e7eadf;
+}
+
+.sf-category-children.cc .cc-card:nth-child(4n + 4) {
+  --cc-tint: #ece6dc;
+}
+
+.sf-category-children.cc .cc-card:hover {
+  border-color: color-mix(in srgb, var(--cc-gold) 30%, var(--cc-line));
+  box-shadow: 0 28px 50px -32px rgba(70, 48, 18, 0.45);
+  transform: translateY(-4px);
+}
+
+.sf-category-children.cc .cc-card:focus-visible {
+  outline: 2px solid var(--cc-gold);
+  outline-offset: 3px;
+}
+
+/* Stage: tinted backdrop the white packshots dissolve into (multiply). */
+.sf-category-children.cc .cc-card__stage {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background:
+    radial-gradient(60% 70% at 50% 60%, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 70%),
+    var(--cc-tint);
+}
+
+.sf-category-children.cc .cc-card__cover {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.sf-category-children.cc .cc-card__cover img {
+  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sf-category-children.cc .cc-card:hover .cc-card__cover img {
+  transform: scale(1.05);
+}
+
+/* Packshots sit on small white cards fanned across the stage, so photos with
+   white, tinted or lifestyle backgrounds all read as intentional. */
+.sf-category-children.cc .cc-card__shot {
+  position: absolute;
+  inset-block-end: 12%;
+  left: 50%;
+  display: block;
+  width: 40%;
+  height: 72%;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow:
+    0 1px 2px rgba(60, 40, 15, 0.08),
+    0 18px 30px -18px rgba(60, 40, 15, 0.45);
+  transform: translateX(-50%);
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sf-category-children.cc .cc-card__shot img {
+  width: 100%;
+  height: 100%;
+  padding: 8%;
+  background: transparent;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+.sf-category-children.cc .cc-card__shot--0 {
+  z-index: 2;
+}
+
+.sf-category-children.cc .cc-card__stage[data-shots="3"] .cc-card__shot--1,
+.sf-category-children.cc .cc-card__stage[data-shots="3"] .cc-card__shot--2 {
+  width: 34%;
+  height: 62%;
+}
+
+.sf-category-children.cc .cc-card__stage[data-shots="3"] .cc-card__shot--1 {
+  transform: translateX(-118%) rotate(-8deg);
+}
+
+.sf-category-children.cc .cc-card__stage[data-shots="3"] .cc-card__shot--2 {
+  transform: translateX(18%) rotate(8deg);
+}
+
+.sf-category-children.cc .cc-card:hover .cc-card__stage[data-shots="3"] .cc-card__shot--1 {
+  transform: translateX(-130%) rotate(-11deg);
+}
+
+.sf-category-children.cc .cc-card:hover .cc-card__stage[data-shots="3"] .cc-card__shot--2 {
+  transform: translateX(30%) rotate(11deg);
+}
+
+.sf-category-children.cc .cc-card__stage[data-shots="2"] .cc-card__shot {
+  width: 36%;
+  height: 66%;
+}
+
+.sf-category-children.cc .cc-card__stage[data-shots="2"] .cc-card__shot--0 {
+  transform: translateX(-92%) rotate(-5deg);
+}
+
+.sf-category-children.cc .cc-card__stage[data-shots="2"] .cc-card__shot--1 {
+  transform: translateX(-8%) rotate(5deg);
+}
+
+.sf-category-children.cc .cc-card:hover .cc-card__stage[data-shots="2"] .cc-card__shot--0 {
+  transform: translateX(-100%) rotate(-8deg);
+}
+
+.sf-category-children.cc .cc-card:hover .cc-card__stage[data-shots="2"] .cc-card__shot--1 {
+  transform: translateX(0) rotate(8deg);
+}
+
+.sf-category-children.cc .cc-card:hover .cc-card__stage[data-shots="1"] .cc-card__shot,
+.sf-category-children.cc .cc-card:hover .cc-card__stage[data-shots="3"] .cc-card__shot--0 {
+  transform: translateX(-50%) translateY(-6px);
+}
+
+.sf-category-children.cc .cc-card__stage[data-loading]::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  content: "";
+  animation: cc-shimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes cc-shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+/* Body */
+
+.sf-category-children.cc .cc-card__body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px 18px;
+}
+
+.sf-category-children.cc .cc-card__body > span:first-child {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.sf-category-children.cc .cc-card__body strong {
+  overflow: hidden;
+  font-size: 1rem;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sf-category-children.cc .cc-card__body small {
+  color: var(--cc-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.sf-category-children.cc .cc-card__arrow {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--cc-line);
+  border-radius: 50%;
+  color: var(--cc-ink);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease,
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sf-category-children.cc .cc-card__arrow svg {
+  width: 17px;
+  height: 17px;
+}
+
+[dir="rtl"] .sf-category-children.cc .cc-card__arrow svg {
+  transform: scaleX(-1);
+}
+
+.sf-category-children.cc .cc-card:hover .cc-card__arrow {
+  border-color: var(--cc-ink);
+  background: var(--cc-ink);
+  color: var(--cc-surface);
+  transform: rotate(45deg);
+}
+
+[dir="rtl"] .sf-category-children.cc .cc-card:hover .cc-card__arrow {
+  transform: rotate(-45deg);
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────── */
+
+@media (max-width: 1100px) {
+  .sf-category-children.cc .cc__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .sf-category-children.cc {
+    width: calc(100% - (var(--mobile-page-gutter, 16px) * 2));
+  }
+
+  .sf-category-children.cc .cc__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .sf-category-children.cc .cc-card {
+    border-radius: 18px;
+  }
+
+  .sf-category-children.cc .cc-card__body {
+    padding: 12px 12px 14px;
+  }
+
+  .sf-category-children.cc .cc-card__body strong {
+    font-size: 0.9rem;
+    white-space: normal;
+  }
+
+  .sf-category-children.cc .cc-card__arrow {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-category-children.cc :is(.cc-card, .cc-card__shot, .cc-card__arrow, .cc-card__cover img) {
+    transition: none;
+  }
+
+  .sf-category-children.cc .cc-card__stage[data-loading]::after {
+    animation: none;
+  }
+}

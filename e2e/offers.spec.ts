@@ -32,7 +32,7 @@ const offers = [
   },
 ];
 
-test("offers show real products and prices, expand all targets, and sort without losing promotions", async ({
+test("offers page shows every deal as a shoppable grid with real prices, filters and spotlights", async ({
   page,
   request,
 }) => {
@@ -75,28 +75,27 @@ test("offers show real products and prices, expand all targets, and sort without
   await page.goto("/privacy-policy");
   await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
   await page.getByRole("link", { name: "Offers", exact: true }).first().click();
-  const cards = page.locator(".sf-offer-card");
-  await expect(cards).toHaveCount(2);
-  await expect(cards.first().locator(".sf-offer-product")).toHaveCount(3);
-  await expect(cards.first().locator(".sf-offer-product__price").first()).toContainText("350");
-  await expect(cards.first().locator("del").first()).toContainText("419");
+  const cards = page.locator(".sf-deals-grid article");
+  await expect(cards).toHaveCount(28, { timeout: 30_000 });
   expect(new Set(batches.flat()).size).toBe(28);
   expect(batches.every((batch) => batch.length <= 24)).toBe(true);
-  await cards.first().getByRole("button", { name: "View all 28 products" }).click();
-  await expect(cards.first().locator(".sf-offer-product")).toHaveCount(28);
-  await cards.first().getByRole("button", { name: "Show fewer products" }).click();
-  await expect(cards.first().locator(".sf-offer-product")).toHaveCount(3);
-  await expect(cards.first().locator(".sf-offer-product").first()).toHaveAttribute(
-    "href",
-    /\/product\/offer-product-/,
-  );
-  await page.getByRole("combobox", { name: "Sort by" }).selectOption("ending");
-  await expect(cards.first()).toContainText("Selected skincare essentials.");
-  await expect(cards.first().getByRole("link", { name: "Browse collection" })).toHaveAttribute(
-    "href",
-    "/shop",
-  );
-  await expect(page.locator(".sf-offer-card__art, .sf-offers-emblem")).toHaveCount(0);
+  await expect(cards.first()).toContainText("350");
+  await expect(cards.first()).toContainText("419");
+  await expect(cards.first().locator('a[href*="/product/offer-product-"]').first()).toBeVisible();
+  await expect(page.locator(".sf-deals-hero h1")).toHaveText("Your ritual, for less.");
+  await expect(page.locator(".sf-deals-hero")).toContainText("Up to 16% off 28 products");
+  await expect(page.getByRole("timer")).toBeVisible();
+  // Only an offer with its own description or artwork earns a featured row.
+  await expect(page.locator(".sf-deals-spotlight")).toHaveCount(1);
+  await expect(page.locator(".sf-deals-spotlight")).toContainText("Selected skincare essentials.");
+
+  await page.getByRole("button", { name: "40%+ off" }).click();
+  await expect(page.getByText("No deals match these filters")).toBeVisible();
+  await page.locator(".sf-deals-empty").getByRole("button", { name: "Clear filters" }).click();
+  await expect(cards).toHaveCount(28);
+  await page.getByRole("combobox", { name: "Sort by" }).selectOption("price-asc");
+  await expect(cards).toHaveCount(28);
+
   for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     expect(
@@ -106,21 +105,21 @@ test("offers show real products and prices, expand all targets, and sort without
 });
 
 test("empty offers stay useful and Arabic layout fits mobile", async ({ page }) => {
+  await page.route("**/promotions/offers", (route) =>
+    route.fulfill({ json: { success: true, data: [] } }),
+  );
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/offers?lang=ar");
   await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
-  await expect(page.locator(".sf-offers-page")).toHaveAttribute("dir", "rtl");
-  await expect(page.locator(".sf-offers-empty")).toBeVisible();
-  await expect(page.locator(".sf-offers-empty a")).toHaveAttribute("href", /\/shop/);
+  await expect(page.locator(".sf-deals")).toHaveAttribute("dir", "rtl");
+  await expect(page.locator(".sf-deals-empty")).toBeVisible();
+  await expect(page.locator(".sf-deals-empty a")).toHaveAttribute("href", /\/shop/);
   expect(
     await page.evaluate(() => document.documentElement.scrollWidth - innerWidth),
   ).toBeLessThanOrEqual(1);
 });
 
-test("product failures preserve the offer and provide a working retry", async ({
-  page,
-  request,
-}) => {
+test("product failures keep the page and provide a working retry", async ({ page, request }) => {
   const response = await request.get("http://127.0.0.1:4174/api/v1/products");
   const body = await response.json();
   const template = (Array.isArray(body.data) ? body.data : body.data.items)[0];
@@ -139,10 +138,9 @@ test("product failures preserve the offer and provide a working retry", async ({
   await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
   await page.getByRole("link", { name: "Offers", exact: true }).first().click();
   await expect(page.getByText("Products could not be loaded.")).toBeVisible({ timeout: 30_000 });
-  await expect(page.locator(".sf-offer-card")).toContainText("Available now");
   fail = false;
   await page.getByRole("button", { name: "Try again" }).click();
-  await expect(page.locator(".sf-offer-product")).toHaveCount(1);
+  await expect(page.locator(".sf-deals-grid article")).toHaveCount(1);
 });
 
 for (const builder of [false, true]) {

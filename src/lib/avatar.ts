@@ -1,4 +1,9 @@
-import { classifyImageReference, resolveImageReferenceUrl } from "@cosmetics/contracts";
+// Import the dependency-free subpath: the package root pulls every Zod schema
+// (plus libphonenumber) into the critical bundle that loads on every page.
+import {
+  classifyImageReference,
+  resolveImageReferenceUrl,
+} from "@cosmetics/contracts/media/image-reference";
 
 export type AvatarIdentity = {
   firstName?: string | null | undefined;

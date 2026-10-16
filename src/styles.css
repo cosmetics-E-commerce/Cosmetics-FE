@@ -1,5 +1,41 @@
 @import "tailwindcss" source(none);
 @source "../src";
+/* shadcn components nothing imports stay in the repo but out of the stylesheet. Tailwind
+   scans every file, and one sidebar utility alone (a `:has()` evaluated against every
+   element) added ~9ms of style work to every DOM change on every page. */
+@source not "./components/ui/alert.tsx";
+@source not "./components/ui/alert-dialog.tsx";
+@source not "./components/ui/aspect-ratio.tsx";
+@source not "./components/ui/avatar.tsx";
+@source not "./components/ui/badge.tsx";
+@source not "./components/ui/calendar.tsx";
+@source not "./components/ui/card.tsx";
+@source not "./components/ui/carousel.tsx";
+@source not "./components/ui/chart.tsx";
+@source not "./components/ui/checkbox.tsx";
+@source not "./components/ui/collapsible.tsx";
+@source not "./components/ui/context-menu.tsx";
+@source not "./components/ui/drawer.tsx";
+@source not "./components/ui/form.tsx";
+@source not "./components/ui/label.tsx";
+@source not "./components/ui/menubar.tsx";
+@source not "./components/ui/navigation-menu.tsx";
+@source not "./components/ui/pagination.tsx";
+@source not "./components/ui/progress.tsx";
+@source not "./components/ui/radio-group.tsx";
+@source not "./components/ui/resizable.tsx";
+@source not "./components/ui/scroll-area.tsx";
+@source not "./components/ui/select.tsx";
+@source not "./components/ui/separator.tsx";
+@source not "./components/ui/sidebar.tsx";
+@source not "./components/ui/skeleton.tsx";
+@source not "./components/ui/slider.tsx";
+@source not "./components/ui/switch.tsx";
+@source not "./components/ui/table.tsx";
+@source not "./components/ui/tabs.tsx";
+@source not "./components/ui/toggle.tsx";
+@source not "./components/ui/toggle-group.tsx";
+@source not "./components/ui/tooltip.tsx";
 @import "tw-animate-css";
 @import "./components/banner/banner.css";
 @import "./components/shop/quick-add.css";
@@ -593,8 +629,11 @@ html[data-motion-ready="true"]
   }
 }
 
+/* `backwards`, not `both`: a held transform would make the page wrapper the
+   containing block for every position:fixed descendant (sticky purchase bars,
+   drawers) for as long as the page is open. */
 @utility page-enter {
-  animation: page-enter 280ms var(--ease-reveal) both;
+  animation: page-enter 280ms var(--ease-reveal) backwards;
 }
 
 @utility rise-in {
@@ -654,40 +693,12 @@ html[data-motion-ready="true"]
   background: var(--color-ivory);
 }
 
-.image-reveal-shell::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--color-stone);
-  opacity: 0;
-  transition: opacity var(--motion-layout) var(--ease-premium);
-  pointer-events: none;
-}
-
-html[data-hydrated="true"] .image-reveal-shell[data-loaded="false"]::after {
-  opacity: 1;
-}
-
-.image-reveal-shell[data-loaded="true"]::after {
-  opacity: 0;
-  animation: none;
-}
-
+/* Images are never hidden to be faded in. The ivory shell is the placeholder, and the
+   browser paints the image the moment it decodes. Hiding "not yet loaded" images also
+   blanked every already-loaded image for a frame at hydration, before each image's
+   effect marked it loaded. */
 .image-reveal-media {
   opacity: 1;
-  transform: scale(1.012);
-  transition:
-    opacity var(--motion-layout) var(--ease-premium),
-    transform 420ms var(--ease-premium);
-}
-
-html[data-hydrated="true"] .image-reveal-shell[data-loaded="false"] .image-reveal-media {
-  opacity: 0;
-}
-
-.image-reveal-shell[data-loaded="true"] .image-reveal-media {
-  opacity: 1;
-  transform: scale(1);
 }
 
 @keyframes route-old {
@@ -774,33 +785,6 @@ html[data-hydrated="true"] .image-reveal-shell[data-loaded="false"] .image-revea
   box-shadow: var(--shadow-lift);
 }
 
-.search-result {
-  transition:
-    background-color var(--motion-micro) var(--ease-premium),
-    transform 180ms var(--ease-premium);
-}
-
-.search-result:hover,
-.search-result:focus-visible {
-  transform: translateX(6px);
-  background: var(--color-ivory);
-}
-
-[dir="rtl"] .search-result:hover,
-[dir="rtl"] .search-result:focus-visible {
-  transform: translateX(-6px);
-}
-
-.search-result .image-reveal-media {
-  transition:
-    transform 320ms var(--ease-premium),
-    opacity var(--motion-layout) var(--ease-premium);
-}
-
-.search-result:hover .image-reveal-media {
-  transform: scale(1.035);
-}
-
 .cart-line {
   max-height: 220px;
   overflow: hidden;
@@ -846,27 +830,6 @@ html[data-hydrated="true"] .image-reveal-shell[data-loaded="false"] .image-revea
 
 .premium-button:hover {
   background-position: 0 0;
-}
-
-@keyframes search-aperture {
-  from {
-    clip-path: inset(0 0 100% 0);
-  }
-  to {
-    clip-path: inset(0);
-  }
-}
-
-.search-overlay[data-state="open"] {
-  animation: search-aperture 240ms var(--ease-reveal) both;
-}
-
-.search-overlay[data-state="open"] .search-overlay-content > * {
-  animation: page-enter 260ms var(--ease-reveal) both;
-}
-
-.search-overlay[data-state="open"] .search-overlay-content > :nth-child(2) {
-  animation-delay: 90ms;
 }
 
 .product-gallery-active > .image-reveal-shell {

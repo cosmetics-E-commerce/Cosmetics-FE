@@ -24,6 +24,9 @@ import {
   applyCartCoupon,
   apiErrorCode,
   addWishlist,
+  readGuestWishlist,
+  writeGuestWishlist,
+  type GuestWishItem,
   apiErrorMessage,
   clearCartRequest,
   getCart,
@@ -100,8 +103,9 @@ type StoreValue = {
   bundleInstances: CommerceCartResponse["bundleInstances"];
   savedForLater: SavedForLaterLine[];
   wishlist: string[];
+  /** Products saved while signed out (device only). */
+  guestWishlist: GuestWishItem[];
   cartOpen: boolean;
-  searchOpen: boolean;
   searchTriggerRef: RefObject<HTMLButtonElement | null>;
   count: number;
   cartFeedbackKey: number;
@@ -149,6 +153,9 @@ type StoreValue = {
 const StoreContext = createContext<StoreValue | null>(null);
 type ProductCardStoreValue = Pick<StoreValue, "locale" | "wishlist" | "toggleWish" | "add">;
 const ProductCardStoreContext = createContext<ProductCardStoreValue | null>(null);
+// Search open/closed lives in its own context: toggling it must not re-render every
+// useStore() consumer on the page, only the header button and the search panel.
+const SearchOpenContext = createContext<boolean | null>(null);
 
 export function StoreProvider({
   children,
@@ -170,9 +177,27 @@ export function StoreProvider({
   const [pendingSavedItems, setPendingSavedItems] = useState<string[]>([]);
   const pendingVariantIds = useRef(new Set<string>());
   const [wishOverrides, setWishOverrides] = useState<Record<string, boolean>>({});
+  const [guestWishlist, setGuestWishlist] = useState<GuestWishItem[]>([]);
+
+  /** Moves the device wishlist into the account after sign-in. */
+  const mergeGuestWishlist = useCallback(async () => {
+    const saved = readGuestWishlist();
+    if (!saved.length) return;
+    for (const item of saved) {
+      try {
+        await addWishlist(item.productId);
+      } catch {
+        // Already saved or no longer available: nothing to keep.
+      }
+    }
+    writeGuestWishlist([]);
+    setGuestWishlist([]);
+    void queryClient.invalidateQueries({ queryKey: ["wishlist"] });
+  }, [queryClient]);
 
   useEffect(() => {
     setReady(true);
+    setGuestWishlist(readGuestWishlist());
     const saved = initialLocale;
     setLocaleState(saved);
     window.localStorage.setItem("bioreza.locale", saved);
@@ -188,10 +213,11 @@ export function StoreProvider({
         } catch {
           void queryClient.invalidateQueries({ queryKey: ["cart"] });
         }
+        void mergeGuestWishlist();
       })
       .catch(() => setUser(null))
       .finally(() => setAuthHydrated(true));
-  }, [initialLocale, queryClient]);
+  }, [initialLocale, mergeGuestWishlist, queryClient]);
 
   const cartQuery = useQuery({ queryKey: ["cart"], queryFn: getCart, enabled: ready });
   const wishlistQuery = useQuery({
@@ -534,18 +560,35 @@ export function StoreProvider({
     [wishlistData],
   );
   const wishlist = useMemo(() => {
+    if (!user) return guestWishlist.map((item) => item.slug);
     const slugs = new Set(baseWishlist);
     Object.entries(wishOverrides).forEach(([slug, included]) => {
       if (included) slugs.add(slug);
       else slugs.delete(slug);
     });
     return [...slugs];
-  }, [baseWishlist, wishOverrides]);
+  }, [baseWishlist, guestWishlist, user, wishOverrides]);
 
   const toggleWish = useCallback(
     async (productId: string, slug: string) => {
       if (!user) {
-        toast(locale === "ar" ? "سجّلي الدخول لحفظ قائمة المفضلة" : "Sign in to save a wishlist");
+        const current = readGuestWishlist();
+        const desired = !current.some((item) => item.slug === slug);
+        const next = desired
+          ? [{ productId, slug, savedAt: new Date().toISOString() }, ...current]
+          : current.filter((item) => item.slug !== slug);
+        writeGuestWishlist(next);
+        setGuestWishlist(next);
+        trackCommerceEvent(desired ? "wishlist_added" : "wishlist_removed", { productId });
+        toast(
+          locale === "ar"
+            ? desired
+              ? "تم الحفظ في المفضلة"
+              : "تمت الإزالة من المفضلة"
+            : desired
+              ? "Saved to your wishlist"
+              : "Removed from your wishlist",
+        );
         return;
       }
       const desired = !wishlist.includes(slug);
@@ -586,11 +629,12 @@ export function StoreProvider({
       } catch {
         void queryClient.invalidateQueries({ queryKey: ["cart"] });
       }
+      void mergeGuestWishlist();
       void queryClient.invalidateQueries({
         predicate: (query) => query.queryKey[0] !== "cart",
       });
     },
-    [commitCart, queryClient],
+    [commitCart, mergeGuestWishlist, queryClient],
   );
 
   const signOut = useCallback(async () => {
@@ -679,8 +723,8 @@ export function StoreProvider({
       bundleInstances: cart?.bundleInstances ?? [],
       savedForLater,
       wishlist,
+      guestWishlist,
       cartOpen,
-      searchOpen,
       searchTriggerRef,
       count: cart?.totalQuantity ?? 0,
       cartFeedbackKey,
@@ -742,7 +786,6 @@ export function StoreProvider({
       breakBundle,
       removeBundle,
       removeCoupon,
-      searchOpen,
       searchTriggerRef,
       setSession,
       setLocale,
@@ -751,6 +794,7 @@ export function StoreProvider({
       toggleWish,
       user,
       wishlist,
+      guestWishlist,
     ],
   );
 
@@ -762,7 +806,7 @@ export function StoreProvider({
   return (
     <StoreContext.Provider value={value}>
       <ProductCardStoreContext.Provider value={productCardValue}>
-        {children}
+        <SearchOpenContext.Provider value={searchOpen}>{children}</SearchOpenContext.Provider>
       </ProductCardStoreContext.Provider>
     </StoreContext.Provider>
   );
@@ -791,6 +835,12 @@ function recalculateCart(
 export function useStore() {
   const context = useContext(StoreContext);
   if (!context) throw new Error("useStore must be used within StoreProvider");
+  return context;
+}
+
+export function useSearchOpen() {
+  const context = useContext(SearchOpenContext);
+  if (context === null) throw new Error("useSearchOpen must be used within StoreProvider");
   return context;
 }
 

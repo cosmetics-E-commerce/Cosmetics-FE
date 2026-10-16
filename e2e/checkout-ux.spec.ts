@@ -177,23 +177,20 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
   await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
   await page.getByRole("link", { name: "Proceed to checkout" }).click();
   await expect(page).toHaveURL(/\/checkout/);
-  await expect(page.getByRole("heading", { name: "Confirm delivery and payment." })).toBeVisible({
+  await expect(page.getByRole("heading", { name: "Delivery", exact: true })).toBeVisible({
     // Cold Vite route splitting plus the mocked auth/cart bootstrap can exceed
     // the global assertion budget when another route-heavy test runs in the
     // second worker. This waits for the actual ready state; it does not mask a
     // missing heading because the route must still complete before proceeding.
     timeout: 30_000,
   });
+  // Focused checkout: the store navigation and footer step aside.
+  await expect(page.locator(".site-footer")).toHaveCount(0);
+  await expect(page.getByRole("navigation", { name: "Store policies" })).toBeVisible();
 
-  if (testInfo.project.name.startsWith("mobile")) {
-    await page.getByRole("button", { name: "Open menu" }).click();
-    await page.getByRole("button", { name: "العربية" }).click();
-    await expect(page).toHaveURL(/(?:\?|&)lang=ar(?:&|$)/);
-  } else {
-    await page.getByRole("button", { name: "التبديل إلى العربية" }).click();
-  }
+  await page.getByRole("button", { name: "التبديل إلى العربية" }).click();
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-  await expect(page.getByRole("heading", { name: "أكّدي التوصيل وطريقة الدفع." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "التوصيل", exact: true })).toBeVisible();
 
   const originalViewport = page.viewportSize()!;
   for (const width of [320, 360, 375, 390, 414, 430]) {
@@ -219,55 +216,51 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
   }
   await page.setViewportSize(originalViewport);
 
-  if (testInfo.project.name.startsWith("mobile")) {
-    await page.getByRole("button", { name: "فتح القائمة" }).click();
-    await page.getByRole("button", { name: "English" }).click();
-    await expect(page).not.toHaveURL(/(?:\?|&)lang=ar(?:&|$)/);
-  } else {
-    await page.getByRole("button", { name: "Switch to English" }).click();
-  }
+  await page.getByRole("button", { name: "Switch to English" }).click();
   await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
 
-  const stepper = page.getByRole("list", { name: "Checkout progress" });
-  await expect(stepper.getByRole("listitem")).toHaveCount(4);
-  await expect(stepper.getByText("Bag", { exact: true })).toHaveCount(0);
-  await expect(page.getByRole("heading", { name: "Delivery Address", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Place order" })).toHaveCount(0);
+  // One page, no stepper: delivery, shipping and payment are all present, and
+  // nothing can be placed until there is an address — the page says so.
+  await expect(page.getByRole("list", { name: "Checkout progress" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Delivery", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Shipping method", exact: true })).toBeAttached();
+  await expect(page.getByRole("heading", { name: "Payment", exact: true })).toBeAttached();
+  await expect(page.getByText("Complete your delivery details above.")).toBeAttached();
+  // On phones the order summary starts collapsed behind "Show order summary".
+  await expect(
+    page.getByRole("list", { name: "Order products", includeHidden: true }),
+  ).toContainText("Calm Serum");
   await expect(page.getByLabel("Receiver name")).toHaveValue("Sara Ali");
+
+  // Like a hosted "Pay now", placing early validates the address instead of ordering.
+  await page.locator(".sf-checkout-place-order:visible").first().click();
+  await expect(page.getByLabel("Street")).toHaveAttribute("aria-invalid", "true");
+  expect(checkoutRequests).toBe(0);
+
+  // Governorate → city → area is one chained choice: each pick opens the next list.
   await page.getByRole("combobox", { name: "Governorate" }).click();
-  await page.getByText("Cairo", { exact: true }).click();
-  const city = page.getByRole("combobox", { name: "City / Markaz" });
-  await expect(city).toBeEnabled();
-  await city.click();
-  await page.getByText("Nasr City", { exact: true }).click();
-  const area = page.getByRole("combobox", { name: "District / area" });
-  await expect(area).toBeEnabled();
-  await area.click();
-  await page.getByText("El-Tawfiq", { exact: true }).click();
+  await page
+    .getByRole("option", { name: /^Cairo/ })
+    .first()
+    .click();
+  await page.getByRole("option", { name: /^Nasr City/ }).click();
+  await page.getByRole("option", { name: /^El-Tawfiq/ }).click();
+  await expect(page.getByRole("combobox", { name: "District / area" })).toContainText("El-Tawfiq");
   await page.getByLabel("Street").fill("Mostafa El Nahas");
   await page.getByLabel("Building").fill("12");
-  await page.getByRole("button", { name: "Save and use this address" }).click();
+  await page.getByRole("button", { name: "Use this address" }).click();
 
+  // Saving the address prices delivery and goes straight to payment.
   await expect(page.getByText("12 Mostafa El Nahas", { exact: false })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Delivery Address", exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Payment", exact: true })).toBeHidden();
+  await expect(page.getByRole("heading", { name: "Payment", exact: true })).toBeInViewport();
+  await expect(page.getByText("Complete your delivery details above.")).toHaveCount(0);
+  await expect(page.getByText("Standard delivery")).toBeVisible();
 
-  await page.getByRole("button", { name: "Continue to Review" }).click();
-  await expect(page.getByRole("heading", { name: "Review", exact: true })).toBeVisible();
-  await expect(page.getByRole("list", { name: "Order products" })).toContainText("Calm Serum");
-  await expect(page.getByText("12 Mostafa El Nahas", { exact: false })).toBeVisible();
-
-  await page.getByRole("button", { name: "Back to Delivery Address" }).click();
-  await expect(page.getByRole("heading", { name: "Delivery Address", exact: true })).toBeVisible();
-  await expect(page.getByText("12 Mostafa El Nahas", { exact: false })).toBeVisible();
-  await page.getByRole("button", { name: "Continue to Review" }).click();
-
-  await page.getByRole("button", { name: "Continue to Payment" }).click();
-  await expect(page.getByRole("heading", { name: "Payment", exact: true })).toBeVisible();
+  // The optional note is folded away until asked for, and keeps its text.
+  await page.getByText("Add a note to your order (optional)").click();
   await page.getByPlaceholder("Optional delivery instructions").fill("Leave with reception");
-  await page.getByRole("button", { name: "Back to Review" }).click();
-  await expect(page.getByRole("heading", { name: "Review", exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Continue to Payment" }).click();
+  await page.getByText("Add a note to your order (optional)").click();
+  await page.getByText("Add a note to your order (optional)").click();
   await expect(page.getByPlaceholder("Optional delivery instructions")).toHaveValue(
     "Leave with reception",
   );
@@ -282,7 +275,8 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
     const originalViewport = page.viewportSize()!;
     for (const width of [320, 360, 375, 390, 414, 430]) {
       await page.setViewportSize({ width, height: width === 320 ? 568 : 844 });
-      await page.getByRole("heading", { name: "Payment", exact: true }).scrollIntoViewIfNeeded();
+      // The compact checkout can fit its end on screen; at the top the bar must float.
+      await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
       await expect(mobileBar).toHaveAttribute("data-position", "fixed");
       const stickyGeometry = await mobileBar.evaluate((element) => {
         const bounds = element.getBoundingClientRect();
@@ -295,7 +289,7 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
       expect(stickyGeometry.position).toBe("fixed");
       expect(stickyGeometry.bottom).toBeCloseTo(stickyGeometry.viewportHeight, 0);
 
-      await page.locator(".site-footer").evaluate((element) =>
+      await page.locator(".ck-footer").evaluate((element) =>
         element.scrollIntoView({
           block: "start",
           behavior: "instant",
@@ -304,7 +298,7 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
       await expect(mobileBar).toHaveAttribute("data-position", "docked");
       const footerBoundary = await page.evaluate(() => {
         const checkout = document.querySelector<HTMLElement>(".sf-checkout-page");
-        const footer = document.querySelector<HTMLElement>(".site-footer");
+        const footer = document.querySelector<HTMLElement>(".ck-footer");
         const bar = document.querySelector<HTMLElement>(".sf-checkout-mobile-purchase");
         if (!checkout || !footer || !bar) return null;
         const footerBounds = footer.getBoundingClientRect();
@@ -330,7 +324,7 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
       expect(footerBoundary!.checkoutPaddingBottom).toBeLessThanOrEqual(1);
     }
     await page.setViewportSize(originalViewport);
-    await page.getByRole("heading", { name: "Payment", exact: true }).scrollIntoViewIfNeeded();
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
     await expect(mobileBar).toHaveAttribute("data-position", "fixed");
     await expect(page.locator(".sf-checkout-place-order--sticky")).toBeVisible();
   } else {
@@ -346,6 +340,146 @@ test("adds an address in checkout and prevents duplicate order intent", async ({
   await expect(page.getByRole("heading", { name: "Thank you." })).toBeVisible();
   expect(checkoutKey).not.toBe("");
   expect(checkoutRequests).toBe(1);
+});
+
+test("guests get live delivery pricing and one-click ordering without a continue step", async ({
+  page,
+}) => {
+  test.setTimeout(120_000);
+  const sessionId = "guest-session-1";
+  const guestAddress = {
+    id: addressId,
+    label: "HOME",
+    receiverName: "Mona Hassan",
+    phone: "+201012345678",
+    country: "EG",
+    governorate: "Cairo",
+    city: "Nasr City",
+    area: "El-Tawfiq",
+    street: "Abbas El Akkad",
+    building: "7",
+    floor: null,
+    apartment: null,
+    postalCode: null,
+    bostaGovernorateId: governorateId,
+    bostaCityId: cityId,
+    bostaZoneId: areaId,
+    deliveryInstructions: null,
+    landmark: null,
+    isDefault: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  let ordered = false;
+  let starts = 0;
+  let places = 0;
+  let placeKey = "";
+
+  await page.route("**/api/v1/**", async (route) => {
+    const request = route.request();
+    const path = new URL(request.url()).pathname;
+    const fulfill = (data: unknown) => route.fulfill({ json: { success: true, data } });
+
+    if (path.endsWith("/auth/refresh")) {
+      return route.fulfill({ status: 401, json: { success: false, code: "UNAUTHORIZED" } });
+    }
+    if (path.endsWith("/cart")) return fulfill({ ...cart(ordered), owner: "GUEST" });
+    if (path.endsWith("/wishlist")) return fulfill({ items: [], totalItems: 0, updatedAt: null });
+    if (path.endsWith("/guest-checkout/payment-instructions")) return fulfill([]);
+    if (path.endsWith("/shipping/locations/governorates")) {
+      return fulfill([{ id: governorateId, name: "Cairo", nameAr: "القاهرة", code: "CAI" }]);
+    }
+    if (path.endsWith("/shipping/locations/cities")) {
+      return fulfill([
+        { id: cityId, name: "Nasr City", nameAr: "مدينة نصر", governorateId, code: "NASR" },
+      ]);
+    }
+    if (path.endsWith("/shipping/locations/areas")) {
+      return fulfill([{ id: areaId, name: "El-Tawfiq", nameAr: "التوفيق" }]);
+    }
+    if (path.endsWith("/guest-checkout/start")) {
+      starts += 1;
+      expect(request.postDataJSON()).toMatchObject({
+        contact: { firstName: "Mona", lastName: "Hassan", email: "mona@example.com" },
+        address: { street: "Abbas El Akkad", building: "7", bostaZoneId: areaId },
+      });
+      return fulfill({
+        sessionId,
+        expiresAt: new Date(Date.now() + 2 * 3_600_000).toISOString(),
+        address: guestAddress,
+      });
+    }
+    if (path.endsWith(`/guest-checkout/${sessionId}/preview`)) {
+      return fulfill({
+        subtotal: 125000,
+        discount: 0,
+        shippingDiscount: 0,
+        codFee: 0,
+        total: 129000,
+        totalSavings: 0,
+        couponCode: null,
+        appliedPromotions: [],
+        provider: "MOCK",
+        shippingCost: 4000,
+        estimatedDays: 2,
+        estimatedDeliveryDate: new Date(Date.now() + 2 * 86_400_000).toISOString(),
+      });
+    }
+    if (path.endsWith(`/guest-checkout/${sessionId}/place`)) {
+      places += 1;
+      placeKey = request.headers()["idempotency-key"] ?? "";
+      ordered = true;
+      return fulfill({
+        order: {
+          id: "77777777-7777-4777-8777-777777777777",
+          orderNumber: "BRZ-2001",
+          status: "CONFIRMED",
+          paymentStatus: "UNPAID",
+          paymentMethod: "CASH_ON_DELIVERY",
+          grandTotal: 129000,
+        },
+        guestOrderToken: "guest-order-token",
+      });
+    }
+    return route.fulfill({ status: 404, json: { code: "NOT_MOCKED", message: path } });
+  });
+
+  await page.goto("/checkout");
+  await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
+  await expect(page.getByRole("heading", { name: "Delivery", exact: true })).toBeVisible({
+    timeout: 30_000,
+  });
+  await expect(page.getByText("Enter your delivery address to see shipping")).toBeVisible();
+
+  await page.getByLabel("Full name").fill("Mona Hassan");
+  await page.locator("#phone-number").fill("01012345678");
+  await page.getByLabel("Email").fill("mona@example.com");
+  await page.getByRole("combobox", { name: "Governorate" }).click();
+  await page
+    .getByRole("option", { name: /^Cairo/ })
+    .first()
+    .click();
+  await page.getByRole("option", { name: /^Nasr City/ }).click();
+  await page.getByRole("option", { name: /^El-Tawfiq/ }).click();
+  await page.getByLabel("Street").fill("Abbas El Akkad");
+  await page.getByLabel("Building").fill("7");
+  // Done typing: on phones the purchase bar stays out of the keyboard's way until then.
+  await page.getByLabel("Building").blur();
+
+  // No "continue" button: delivery is priced as soon as the address is complete.
+  await expect(page.getByRole("button", { name: /continue to payment/i })).toHaveCount(0);
+  await expect(page.getByText("Standard delivery")).toBeVisible();
+  await expect(page.locator(".ck-shipping")).toContainText("EGP 40.00");
+  await expect(page.locator(".sf-checkout-place-order:visible").first()).toContainText(
+    /Place order/,
+  );
+  expect(starts).toBe(1);
+
+  await page.locator(".sf-checkout-place-order:visible").first().dblclick();
+  await expect(page).toHaveURL(/\/order-confirmed/);
+  expect(places).toBe(1);
+  expect(placeKey).toMatch(/^[0-9a-f-]{36}$/);
+  expect(starts).toBe(1);
 });
 
 test("empty carts cannot enter checkout steps", async ({ page }) => {

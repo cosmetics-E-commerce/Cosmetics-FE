@@ -71,6 +71,7 @@ const socialLinks = [
 ] as const;
 
 const careLinks = [
+  { label: "footer.trackOrder" as const, to: "/track-order" as const },
   { label: "footer.faq" as const, to: "/faq" as const },
   { label: "footer.shipping" as const, to: "/shipping-policy" as const },
   { label: "footer.returns" as const, to: "/returns" as const },

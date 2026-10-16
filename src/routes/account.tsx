@@ -41,7 +41,9 @@ import { AddressForm } from "@/components/forms/AddressForm";
 import { InternationalPhoneField } from "@/components/forms/InternationalPhoneField";
 import { CustomerAvatar } from "@/components/account/CustomerAvatar";
 import { OrderContents } from "@/components/account/OrderContents";
-import { OrderReorderAction, ReorderCenter } from "@/components/account/ReorderCenter";
+import { OrderTrackingPanel as SharedOrderTrackingPanel } from "@/components/orders/OrderTrackingPanel";
+import { ReorderCenter } from "@/components/account/ReorderCenter";
+import { OrderAgainButton } from "@/components/orders/OrderAgainButton";
 import { ReviewLibrary } from "@/components/account/ReviewLibrary";
 import { WishlistStudio } from "@/components/account/WishlistStudio";
 import {
@@ -49,6 +51,7 @@ import {
   createAddress,
   createPayment,
   deleteAddress,
+  getOrderDetails,
   getOrderTracking,
   getProfile,
   getWishlist,
@@ -490,55 +493,73 @@ function Account() {
                   </Button>
                 </div>
               ) : orders.data?.length ? (
-                <ol className="account-orders__list">
+                <ol className="account-orders__list sf-simple-orders">
                   {orders.data.map((order) => {
                     const status = getOrderStatusCopy(order.status, locale);
                     const paymentNeeded = canCompletePayment(order);
-                    const couponPromotion = order.appliedPromotions.find(
-                      (promotion) => promotion.couponCode,
-                    );
-                    const couponDiscount = couponPromotion
-                      ? couponPromotion.discountAmount + couponPromotion.shippingDiscount
-                      : 0;
+                    const open = expandedOrderId === order.id;
+                    const itemCount = order.itemCount ?? order.itemPreview?.length ?? 0;
+                    const preview = order.itemPreview ?? [];
                     return (
-                      <li key={order.id} className="account-orders__item">
-                        <div className="account-orders__index" aria-hidden="true">
-                          {String(orders.data.indexOf(order) + 1).padStart(2, "0")}
-                        </div>
-                        <div className="account-orders__identity">
-                          <small>{locale === "ar" ? "رقم الطلب" : "Order number"}</small>
-                          <h3>{order.orderNumber}</h3>
-                          <p>
-                            {new Intl.DateTimeFormat(locale === "ar" ? "ar-EG" : "en-EG", {
-                              dateStyle: "medium",
-                              timeZone: "Africa/Cairo",
-                            }).format(new Date(order.placedAt))}
-                          </p>
-                          {couponPromotion?.couponCode && (
-                            <dl className="account-orders__promo">
-                              <div>
-                                <dt>{locale === "ar" ? "رمز الخصم" : "Promo Code"}</dt>
-                                <dd>
-                                  <bdi>{couponPromotion.couponCode}</bdi>
-                                </dd>
-                              </div>
-                              <div>
-                                <dt>{locale === "ar" ? "الخصم" : "Discount"}</dt>
-                                <dd>-{formatPrice(couponDiscount / 100)}</dd>
-                              </div>
-                            </dl>
+                      <li key={order.id} className="sf-simple-order" data-open={open || undefined}>
+                        <button
+                          type="button"
+                          className="sf-simple-order__row"
+                          aria-expanded={open}
+                          aria-controls={`order-details-${order.id}`}
+                          onClick={() => {
+                            setExpandedPaymentOrderId(null);
+                            setExpandedOrderId((current) =>
+                              current === order.id ? null : order.id,
+                            );
+                          }}
+                        >
+                          {preview.length > 0 && (
+                            <span className="sf-simple-order__thumbs" aria-hidden="true">
+                              {preview.slice(0, 3).map((item, index) =>
+                                item.imageReference ? (
+                                  <img
+                                    key={`${item.productName}-${index}`}
+                                    src={item.imageReference}
+                                    alt=""
+                                    loading="lazy"
+                                  />
+                                ) : (
+                                  <span key={`${item.productName}-${index}`}>
+                                    <Package />
+                                  </span>
+                                ),
+                              )}
+                              {itemCount > 3 && (
+                                <span className="sf-simple-order__more">+{itemCount - 3}</span>
+                              )}
+                            </span>
                           )}
-                        </div>
-                        <div className="account-orders__status">
-                          <span>{status.label}</span>
-                          <p>{status.description}</p>
-                        </div>
-                        <div className="account-orders__actions">
-                          <strong>{formatPrice(order.grandTotal / 100)}</strong>
-                          {paymentNeeded ? (
-                            <button
+                          <span className="sf-simple-order__summary">
+                            <strong>{order.orderNumber}</strong>
+                            <small>
+                              {new Intl.DateTimeFormat(locale === "ar" ? "ar-EG" : "en-EG", {
+                                dateStyle: "medium",
+                                timeZone: "Africa/Cairo",
+                              }).format(new Date(order.placedAt))}
+                              {itemCount > 0 &&
+                                ` · ${itemCount} ${locale === "ar" ? "منتج" : itemCount === 1 ? "item" : "items"}`}
+                              {` · ${formatPrice(order.grandTotal / 100)}`}
+                            </small>
+                          </span>
+                          <span
+                            className="sf-simple-order__status"
+                            data-tone={orderStatusTone(order.status)}
+                          >
+                            {status.label}
+                          </span>
+                        </button>
+                        <div className="sf-simple-order__actions">
+                          {paymentNeeded && (
+                            <Button
                               type="button"
-                              className="account-orders__pay-button"
+                              variant="solid"
+                              size="pill"
                               aria-expanded={expandedPaymentOrderId === order.id}
                               onClick={() => {
                                 setExpandedOrderId(null);
@@ -548,50 +569,32 @@ function Account() {
                               }}
                             >
                               <CreditCard aria-hidden="true" />
-                              {expandedPaymentOrderId === order.id
-                                ? locale === "ar"
-                                  ? "إخفاء الدفع"
-                                  : "Hide payment"
-                                : locale === "ar"
-                                  ? "إكمال الدفع"
-                                  : "Complete payment"}
-                            </button>
-                          ) : (
-                            <button
-                              type="button"
-                              className="account-orders__track-button"
-                              aria-expanded={expandedOrderId === order.id}
-                              onClick={() => {
-                                setExpandedPaymentOrderId(null);
-                                setExpandedOrderId((current) =>
-                                  current === order.id ? null : order.id,
-                                );
-                              }}
-                            >
-                              <Truck aria-hidden="true" />
-                              {expandedOrderId === order.id
-                                ? locale === "ar"
-                                  ? "إخفاء التتبع"
-                                  : "Hide tracking"
-                                : locale === "ar"
-                                  ? "تتبع الطلب"
-                                  : "Track order"}
-                            </button>
+                              {locale === "ar" ? "إكمال الدفع" : "Complete payment"}
+                            </Button>
                           )}
-                          {order.status === "DELIVERED" && (
-                            <OrderReorderAction orderId={order.id} locale={locale} />
-                          )}
+                          <OrderAgainButton
+                            locale={locale}
+                            loadItems={() =>
+                              getOrderDetails(order.id).then((details) => details.items)
+                            }
+                          />
                         </div>
-                        <OrderContents
-                          orderId={order.id}
-                          orderNumber={order.orderNumber}
-                          locale={locale}
-                        />
                         {expandedPaymentOrderId === order.id && (
                           <PaymentContinuation order={order} locale={locale} />
                         )}
-                        {expandedOrderId === order.id && (
-                          <OrderTrackingPanel orderId={order.id} locale={locale} />
+                        {open && (
+                          <div
+                            id={`order-details-${order.id}`}
+                            className="sf-simple-order__details"
+                          >
+                            <p className="sf-simple-order__status-copy">{status.description}</p>
+                            <OrderContents
+                              orderId={order.id}
+                              orderNumber={order.orderNumber}
+                              locale={locale}
+                            />
+                            <OrderTrackingPanel orderId={order.id} locale={locale} compact />
+                          </div>
                         )}
                       </li>
                     );
@@ -1409,6 +1412,15 @@ function AccountSectionHeading({
   );
 }
 
+function orderStatusTone(status: string) {
+  if (["DELIVERED", "PAID", "CONFIRMED"].includes(status)) return "success";
+  if (["CANCELLED", "REFUNDED", "FAILED", "PAYMENT_FAILED", "RETURNED"].includes(status)) {
+    return "danger";
+  }
+  if (["PENDING_PAYMENT", "AWAITING_PAYMENT", "PAYMENT_REVIEW"].includes(status)) return "warning";
+  return "progress";
+}
+
 function canCompletePayment(order: OrderSummary) {
   return (
     ["PENDING_PAYMENT", "AWAITING_PAYMENT", "PAYMENT_FAILED"].includes(order.status) &&
@@ -1671,216 +1683,20 @@ function OrderTrackingPanel({
   compact?: boolean;
 }) {
   const queryClient = useQueryClient();
-  const tracking = useQuery({
-    queryKey: ["account", "orders", orderId, "tracking"],
-    queryFn: () => getOrderTracking(orderId),
-    refetchInterval: 15_000,
-    refetchOnWindowFocus: true,
-  });
-  const refresh = useMutation({
-    mutationFn: () => refreshOrderTracking(orderId),
-    onSuccess: (data) => {
-      queryClient.setQueryData(["account", "orders", orderId, "tracking"], data);
-      void queryClient.invalidateQueries({ queryKey: ["account", "orders"] });
-      void queryClient.invalidateQueries({ queryKey: ["reviews", "eligibility"] });
-      void queryClient.invalidateQueries({ queryKey: ["reorder"] });
-    },
-  });
-
-  if (tracking.isLoading) {
-    return (
-      <div
-        className="account-tracking account-tracking--loading"
-        data-compact={compact || undefined}
-      >
-        {locale === "ar" ? "جارٍ تحميل التتبع…" : "Loading tracking…"}
-      </div>
-    );
-  }
-
-  if (tracking.isError) {
-    return (
-      <div className="account-tracking account-tracking--error" data-compact={compact || undefined}>
-        {apiErrorMessage(tracking.error, locale)}
-      </div>
-    );
-  }
-
-  const data = tracking.data;
-  if (!data) return null;
-  const steps = trackingSteps(data, locale);
-  const activeIndex = Math.max(
-    0,
-    steps.findIndex((step) => step.state === "active"),
-  );
-  const carrier = data.shipment?.provider ?? "BOSTA";
-
   return (
-    <div className="account-tracking" data-compact={compact || undefined}>
-      <div className="account-tracking__header">
-        <div>
-          <p>{locale === "ar" ? "تتبع الشحنة" : "Order tracking"}</p>
-          <strong>
-            {data.shipment ? data.shipment.status.replace(/_/g, " ") : "Preparing after payment"}
-          </strong>
-          <small>{trackingAddress(data)}</small>
-        </div>
-        <Button
-          type="button"
-          variant="quiet"
-          size="pill"
-          loading={refresh.isPending}
-          onClick={() => refresh.mutate()}
-        >
-          <RefreshCw className="size-4" />
-          {locale === "ar" ? "تحديث" : "Refresh"}
-        </Button>
-      </div>
-
-      <div className="account-tracking__carrier">
-        <span>{carrier}</span>
-        <strong>
-          {data.shipment?.trackingNumber ??
-            (locale === "ar" ? "لم يتم الحجز بعد" : "Not booked yet")}
-        </strong>
-      </div>
-
-      <ol
-        className="account-tracking__timeline"
-        style={
-          {
-            "--tracking-progress": `${(activeIndex / Math.max(steps.length - 1, 1)) * 100}%`,
-          } as CSSProperties
-        }
-      >
-        {steps.map((step) => (
-          <li key={step.id} data-state={step.state}>
-            <span className="account-tracking__step-icon">{step.icon}</span>
-            <strong>{step.label}</strong>
-            <small>{step.detail}</small>
-          </li>
-        ))}
-      </ol>
-
-      {data.shipment ? (
-        <div className="account-tracking__details">
-          <div>
-            <small>{locale === "ar" ? "شركة الشحن" : "Carrier"}</small>
-            <strong>{data.shipment.provider}</strong>
-          </div>
-          <div>
-            <small>{locale === "ar" ? "رقم التتبع" : "Tracking number"}</small>
-            <strong>{data.shipment.trackingNumber}</strong>
-          </div>
-          <a href={data.shipment.trackingUrl} target="_blank" rel="noreferrer">
-            {locale === "ar" ? "فتح موقع شركة الشحن" : "Open carrier tracking"}
-            <ExternalLink aria-hidden="true" />
-          </a>
-        </div>
-      ) : (
-        <p className="account-tracking__empty">
-          {locale === "ar"
-            ? "سيظهر التتبع بعد اعتماد الدفع وحجز الشحنة."
-            : "Tracking appears after payment approval and shipment booking."}
-        </p>
-      )}
-      {data.history.length > 0 && (
-        <ol className="account-tracking__history">
-          {data.history.slice(0, 4).map((entry) => (
-            <li key={`${entry.action}-${entry.createdAt}`}>
-              <p>{entry.description}</p>
-              <small>
-                {new Intl.DateTimeFormat(locale === "ar" ? "ar-EG" : "en-EG", {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                  timeZone: "Africa/Cairo",
-                }).format(new Date(entry.createdAt))}
-              </small>
-            </li>
-          ))}
-        </ol>
-      )}
-    </div>
+    <SharedOrderTrackingPanel
+      queryKey={["account", "orders", orderId, "tracking"]}
+      load={() => getOrderTracking(orderId)}
+      refresh={() => refreshOrderTracking(orderId)}
+      onRefreshed={() => {
+        void queryClient.invalidateQueries({ queryKey: ["account", "orders"] });
+        void queryClient.invalidateQueries({ queryKey: ["reviews", "eligibility"] });
+        void queryClient.invalidateQueries({ queryKey: ["reorder"] });
+      }}
+      locale={locale}
+      compact={compact}
+    />
   );
-}
-
-function trackingSteps(data: OrderTracking, locale: "ar" | "en") {
-  const ar = locale === "ar";
-  const status = `${data.shipment?.status ?? data.orderStatus ?? ""}`.toUpperCase();
-  const isDelivered = status.includes("DELIVER");
-  const isOut = status.includes("OUT") || status.includes("DELIVERY");
-  const isBooked = Boolean(data.shipment);
-  const isTransit =
-    isBooked &&
-    !isDelivered &&
-    (status.includes("TRANSIT") ||
-      status.includes("PICK") ||
-      status.includes("SENT") ||
-      status.includes("BOOK") ||
-      status.includes("CREATED"));
-  const active = isDelivered ? 4 : isOut ? 3 : isTransit ? 2 : isBooked ? 1 : 0;
-  const placedDate =
-    data.history[0]?.createdAt || data.shipment?.createdAt || data.estimatedDeliveryDate || null;
-
-  return [
-    {
-      id: "placed",
-      label: ar ? "تم الطلب" : "Order placed",
-      detail: placedDate ? formatTrackingDate(placedDate, locale) : "-",
-      icon: <Package aria-hidden="true" />,
-    },
-    {
-      id: "booked",
-      label: ar ? "حجز Bosta" : "Bosta booked",
-      detail: isBooked ? (data.shipment?.provider ?? "BOSTA") : "-",
-      icon: <PackageCheck aria-hidden="true" />,
-    },
-    {
-      id: "transit",
-      label: ar ? "في الطريق" : "In transit",
-      detail: isTransit || isOut || isDelivered ? (data.shipment?.status ?? "-") : "-",
-      icon: <Truck aria-hidden="true" />,
-    },
-    {
-      id: "out",
-      label: ar ? "خارج للتوصيل" : "Out for delivery",
-      detail:
-        isOut || isDelivered
-          ? data.shipment?.estimatedDelivery
-            ? formatTrackingDate(data.shipment.estimatedDelivery, locale)
-            : (data.shipment?.status ?? "-")
-          : "-",
-      icon: <CalendarDays aria-hidden="true" />,
-    },
-    {
-      id: "delivered",
-      label: ar ? "تم التسليم" : "Delivered",
-      detail: isDelivered
-        ? data.shipment?.updatedAt
-          ? formatTrackingDate(data.shipment.updatedAt, locale)
-          : (data.shipment?.status ?? "-")
-        : "-",
-      icon: <Home aria-hidden="true" />,
-    },
-  ].map((step, index) => ({
-    ...step,
-    state: index < active ? "complete" : index === active ? "active" : "idle",
-  }));
-}
-
-function formatTrackingDate(value: string, locale: "ar" | "en") {
-  return new Intl.DateTimeFormat(locale === "ar" ? "ar-EG" : "en-EG", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    timeZone: "Africa/Cairo",
-  }).format(new Date(value));
-}
-
-function trackingAddress(data: OrderTracking) {
-  return [data.shippingAddress.area, data.shippingAddress.city, data.shippingAddress.governorate]
-    .filter(Boolean)
-    .join(", ");
 }
 
 function isAddressDeliveryReady(address: AddressResponse) {
