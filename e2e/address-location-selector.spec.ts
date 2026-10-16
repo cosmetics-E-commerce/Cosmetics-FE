@@ -127,7 +127,11 @@ test("uses a searchable dependent location sheet on an iPhone-sized viewport", a
   await governorate.click();
   // Giza is listed under "Popular" as well as in the full list.
   await page.getByText("الجيزة", { exact: true }).first().click();
+  // Choosing a governorate opens the city list on its own; close it once it is open.
+  const cityDialog = page.getByRole("dialog", { name: "المدينة / المركز" });
+  await expect(cityDialog).toBeVisible();
   await page.keyboard.press("Escape");
+  await expect(cityDialog).toBeHidden();
   await expect(city).toContainText("اختر المدينة");
   await expect(area).toBeDisabled();
 });
