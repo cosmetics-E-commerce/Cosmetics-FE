@@ -8,8 +8,9 @@ import {
   HeadContent,
   Scripts,
   retainSearchParams,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
 import appCss from "../app.css?url";
 import { StoreProvider, useSearchOpen, useStore } from "@/lib/store";
@@ -61,7 +62,12 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error: thrown, reset }: ErrorComponentProps) {
+  // The router passes whatever was thrown; keep a stable Error for reporting.
+  const error = useMemo(
+    () => (thrown instanceof Error ? thrown : new Error(String(thrown))),
+    [thrown],
+  );
   console.error(error);
   const router = useRouter();
   const reference = uiErrorReference(error);
