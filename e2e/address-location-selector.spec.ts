@@ -113,20 +113,21 @@ test("uses a searchable dependent location sheet on an iPhone-sized viewport", a
   await page.getByPlaceholder(/ابحث عن المحافظة/).fill("قاهره");
   await page.getByText("القاهرة", { exact: true }).click();
 
+  // Each choice opens the next list on its own.
   const city = page.getByRole("combobox", { name: "المدينة / المركز" });
-  await expect(city).toBeEnabled();
-  await city.click();
+  await expect(page.getByRole("dialog", { name: "المدينة / المركز" })).toBeVisible();
   await page.getByText("مدينة نصر", { exact: true }).click();
 
   const area = page.getByRole("combobox", { name: "المنطقة / الحي" });
-  await expect(area).toBeEnabled();
-  await area.click();
+  await expect(page.getByRole("dialog", { name: "المنطقة / الحي" })).toBeVisible();
   await page.getByPlaceholder(/ابحث عن المنطقة/).fill("توفيق");
   await expect(page.getByText("التوفيق", { exact: true })).toBeVisible();
   await page.getByText("التوفيق", { exact: true }).click();
 
   await governorate.click();
-  await page.getByText("الجيزة", { exact: true }).click();
+  // Giza is listed under "Popular" as well as in the full list.
+  await page.getByText("الجيزة", { exact: true }).first().click();
+  await page.keyboard.press("Escape");
   await expect(city).toContainText("اختر المدينة");
   await expect(area).toBeDisabled();
 });

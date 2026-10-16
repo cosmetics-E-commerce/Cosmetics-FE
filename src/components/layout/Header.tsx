@@ -8,7 +8,7 @@ import {
   type RefObject,
   type ReactNode,
 } from "react";
-import { Link, useLocation, useNavigate } from "@tanstack/react-router";
+import { Link, useLocation, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -46,7 +46,7 @@ import {
   type PublicCategoryResponse,
 } from "@/lib/api";
 import { buildCategoryTree, categoryProductCount } from "@/lib/category-hierarchy";
-import { useStore } from "@/lib/store";
+import { useSearchOpen, useStore } from "@/lib/store";
 import { displayCountBadge } from "@/lib/count-badge";
 import { GlobalBannerSlot } from "@/components/banner/GlobalBannerSlot";
 import { useI18n, type MessageKey } from "@/lib/i18n";
@@ -157,7 +157,6 @@ export function Header({
   const headerRef = useRef<HTMLElement>(null);
   const {
     count,
-    searchOpen,
     searchTriggerRef,
     setCartOpen,
     setSearchOpen,
@@ -167,6 +166,7 @@ export function Header({
     setLocale,
     signOut,
   } = useStore();
+  const searchOpen = useSearchOpen();
   const { pathname, search } = useLocation();
   const categories = useCategories();
   const brands = useAllBrands();
@@ -207,7 +207,12 @@ export function Header({
                     ? "brands"
                     : "categories"
                   : null;
-  const transparentHeader = pathname === "/" && !scrolled;
+  // The page currently on screen. `pathname` already points at the destination while a
+  // navigation loads, which flipped the bar to its hero overlay over the old page.
+  const shownPathname = useRouterState({
+    select: (state) => (state.resolvedLocation ?? state.location).pathname,
+  });
+  const transparentHeader = shownPathname === "/" && !scrolled;
   const visibleBrands = useMemo(() => sortBrands(brands.data ?? [], locale), [brands.data, locale]);
   const navigationSnapshot = publishedNavigationIsUsable(publishedNavigation.data)
     ? publishedNavigation.data
@@ -618,8 +623,9 @@ export function Header({
               </Link>
             )}
             <Link
-              to={accountTo}
-              search={user ? { section: "wishlist" } : { returnTo: undefined }}
+              {...(user
+                ? { to: "/account" as const, search: { section: "wishlist" as const } }
+                : { to: "/wishlist" as const })}
               aria-label={`${copy.wishlist}, ${wishlist.length}`}
               className="header-action header-action--wishlist relative grid h-11 w-11 place-items-center"
             >
@@ -809,8 +815,9 @@ export function Header({
                 </li>
                 <li>
                   <Link
-                    to={accountTo}
-                    search={user ? { section: "wishlist" } : { returnTo: undefined }}
+                    {...(user
+                      ? { to: "/account" as const, search: { section: "wishlist" as const } }
+                      : { to: "/wishlist" as const })}
                     onClick={closeMobileMenu}
                     className="mobile-nav__utility-link"
                   >

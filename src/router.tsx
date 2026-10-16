@@ -29,10 +29,12 @@ export const getRouter = () => {
     context: { queryClient },
     scrollRestoration: true,
     trailingSlash: "never",
+    // Start loading a page's code and data when the pointer rests on (or touches) a
+    // link, so most clicks land on data that is already there.
+    defaultPreload: "intent",
     // Intent-preloaded route data should still be fresh when the user completes the click.
     defaultPreloadStaleTime: 30_000,
-    // Full-document snapshots are expensive for long catalog/home pages. The
-    // compositor-only page-enter animation in the root layout preserves motion.
+    // Full-document snapshots are expensive for long catalog/home pages.
     defaultViewTransition: false,
   });
 

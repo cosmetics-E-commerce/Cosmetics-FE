@@ -113,27 +113,44 @@ test("list view and Arabic RTL preserve the same logical separation", async ({ p
   }
 });
 
-test("desktop grid and list cards keep the toolbar inside the product media", async ({ page }) => {
+test("desktop grid cards keep the toolbar inside the product media", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
+  await navigateReady(page, "/shop");
+  const card = page.locator(".sf-product-card").first();
+  await card.hover();
+  const toolbar = card.locator(".quick-add");
+  await expect(toolbar).toBeVisible();
+  const geometry = await measureToolbar(toolbar);
+  const media = await box(card.locator(".sf-product-card__media"));
 
-  for (const url of ["/shop", "/shop?view=list"]) {
-    await navigateReady(page, url);
-    const card = page.locator(".sf-product-card").first();
-    await card.hover();
-    const toolbar = card.locator(".quick-add");
-    await expect(toolbar).toBeVisible();
-    const geometry = await measureToolbar(toolbar);
-    const media = await box(card.locator(".sf-product-card__media"));
+  assertStableToolbar(geometry);
+  expect(geometry.layout).toBe("inline");
+  expect(geometry.quantity.height).toBeLessThanOrEqual(44.5);
+  expect(geometry.action.height).toBeLessThanOrEqual(44.5);
+  expect(geometry.root.left).toBeGreaterThanOrEqual(media.left);
+  expect(geometry.root.right).toBeLessThanOrEqual(media.right);
+  expect(geometry.root.top).toBeGreaterThanOrEqual(media.top);
+  expect(geometry.root.bottom).toBeLessThanOrEqual(media.bottom);
+});
 
-    assertStableToolbar(geometry);
-    expect(geometry.layout).toBe("inline");
-    expect(geometry.quantity.height).toBeLessThanOrEqual(44.5);
-    expect(geometry.action.height).toBeLessThanOrEqual(44.5);
-    expect(geometry.root.left).toBeGreaterThanOrEqual(media.left);
-    expect(geometry.root.right).toBeLessThanOrEqual(media.right);
-    expect(geometry.root.top).toBeGreaterThanOrEqual(media.top);
-    expect(geometry.root.bottom).toBeLessThanOrEqual(media.bottom);
-  }
+test("desktop list rows show the toolbar in their purchase column without hover", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await navigateReady(page, "/shop?view=list");
+  const row = page.locator(".pl-row").first();
+  const toolbar = row.locator(".quick-add");
+  await expect(toolbar).toBeVisible();
+  const geometry = await measureToolbar(toolbar);
+  const column = await box(row.locator(".pl-row__buy"));
+
+  assertStableToolbar(geometry);
+  expect(geometry.layout).toBe("inline");
+  expect(geometry.root.left).toBeGreaterThanOrEqual(column.left - 0.5);
+  expect(geometry.root.right).toBeLessThanOrEqual(column.right + 0.5);
+  expect(geometry.root.top).toBeGreaterThanOrEqual(column.top);
+  expect(geometry.root.bottom).toBeLessThanOrEqual(column.bottom);
+  expect(geometry.documentOverflow).toBeLessThanOrEqual(0.5);
 });
 
 async function navigateReady(page: Page, url: string) {

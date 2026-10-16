@@ -139,6 +139,8 @@ test("category navigation stays lightweight, canonical, scrollable, and RTL-safe
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/shop?lang=ar", { waitUntil: "networkidle" });
+  // Clicking before hydration hits a tab with no handler yet.
+  await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
   const rtlStrip = page.getByRole("tablist", { name: "الفئة" });
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
   await expect(page.locator(".catalog-listing-toolbar__sort-prefix")).toHaveText("الترتيب:");

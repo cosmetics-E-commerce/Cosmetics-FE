@@ -190,9 +190,9 @@ test("concern links, brand filtering, and grouped brand merchandising use canoni
 }) => {
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
-  const concernList = page.locator(".sf-concern-list");
-  await expect(concernList).toBeVisible();
-  await expect(concernList.locator("a")).toHaveText([
+  const concernTabs = page.locator(".sf-concerns").getByRole("tab");
+  await expect(concernTabs.first()).toBeVisible();
+  await expect(concernTabs).toHaveText([
     /Dry Skin/,
     /Sensitive Skin/,
     /Combination Skin/,
@@ -200,7 +200,10 @@ test("concern links, brand filtering, and grouped brand merchandising use canoni
     /Acne-Prone Skin/,
     /All Skin Types/,
   ]);
-  await expect(concernList.locator("a").first()).toHaveAttribute("href", "/skin-concerns/dry-skin");
+  await expect(page.locator(".sf-concerns__all")).toHaveAttribute(
+    "href",
+    "/skin-concerns/dry-skin",
+  );
 
   await page.goto("/shop");
   await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
@@ -216,7 +219,7 @@ test("concern links, brand filtering, and grouped brand merchandising use canoni
 
   await page.goto("/?lang=ar");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-  await expect(page.locator(".sf-concern-list a")).toHaveText([
+  await expect(page.locator(".sf-concerns").getByRole("tab")).toHaveText([
     /البشرة الجافة/,
     /البشرة الحساسة/,
     /البشرة المختلطة/,

@@ -21,12 +21,9 @@ export function MotionProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  useEffect(() => {
-    document.documentElement.dataset["motionReady"] = "true";
-    return () => {
-      delete document.documentElement.dataset["motionReady"];
-    };
-  }, []);
+  // `data-motion-ready` is deliberately never set. Every scroll-reveal hidden state in
+  // styles.css is gated on it, so content renders in place instead of fading and
+  // sliding in when scrolled into view (which read as blank cards and lag).
 
   const value = useMemo(() => preferences, [preferences]);
   return <MotionContext.Provider value={value}>{children}</MotionContext.Provider>;

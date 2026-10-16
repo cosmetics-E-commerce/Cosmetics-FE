@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useLocation } from "@tanstack/react-router";
+import { useLoaderData, useLocation } from "@tanstack/react-router";
 import { getActiveBanners, type Device, type StoreBanner } from "@/lib/banner-api";
 import { useStore } from "@/lib/store";
 import { AnnouncementBanner } from "./AnnouncementBanner";
@@ -8,6 +8,8 @@ import { useMotionPreferences } from "@/components/motion/motion-context";
 
 export function GlobalBannerSlot({ position }: { position: StoreBanner["position"] }) {
   const location = useLocation();
+  // Banners resolved during the server render (null after client navigations).
+  const initialBanners = useLoaderData({ from: "__root__", select: (data) => data.banners });
   const { locale, user, subtotal, count, couponCode } = useStore();
   const device = useDevice();
   const [active, setActive] = useState(0);
@@ -34,12 +36,17 @@ export function GlobalBannerSlot({ position }: { position: StoreBanner["position
     staleTime: 30_000,
     refetchInterval: 60_000,
     retry: 1,
+    // When the context changes (cart loads, device is detected, route changes) keep
+    // showing the current banners until the refined answer arrives, instead of
+    // collapsing the row and re-opening it.
+    placeholderData: (previous) => previous ?? initialBanners ?? undefined,
   });
+  const result = query.data ?? initialBanners;
   const banners = useMemo(
-    () => (query.data?.banners ?? []).filter((banner) => banner.position === position),
-    [position, query.data?.banners],
+    () => (result?.banners ?? []).filter((banner) => banner.position === position),
+    [position, result?.banners],
   );
-  const strategy = query.data?.strategy ?? "HIGHEST_PRIORITY";
+  const strategy = result?.strategy ?? "HIGHEST_PRIORITY";
   const ids = useMemo(() => banners.map(({ id }) => id).join("|"), [banners]);
   useEffect(() => setActive(0), [ids]);
   useEffect(() => {
@@ -50,14 +57,9 @@ export function GlobalBannerSlot({ position }: { position: StoreBanner["position
     );
     return () => window.clearTimeout(timer);
   }, [active, banners, reducedMotion, strategy]);
-  // Match the first client render during hydration while reserving the active
-  // announcement row's height. This prevents both a hydration mismatch and CLS.
-  if (position === "TOP" && (typeof window === "undefined" || query.isLoading)) {
-    return (
-      <div className="global-banner-slot global-banner-slot--top global-banner-slot--loading" />
-    );
-  }
-  if (query.isError || banners.length === 0) return null;
+  // No reserved placeholder: the server render already holds the real banners, so
+  // the first client render matches it and nothing shifts when the query settles.
+  if (banners.length === 0) return null;
   const visible = (strategy === "STACK" ? banners : [banners[active] ?? banners[0]]).filter(
     Boolean,
   ) as StoreBanner[];

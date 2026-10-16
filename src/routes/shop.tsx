@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 
 import { Reveal } from "@/components/brand/Reveal";
 import { sortBrands } from "@/components/layout/brand-directory-data";
@@ -13,6 +14,7 @@ import {
   withResetPage,
 } from "@/components/shop/catalog-listing-state";
 import { ProductCard } from "@/components/shop/ProductCard";
+import { ProductListRow } from "@/components/shop/ProductListRow";
 import { Button } from "@/components/ui/button";
 import { CategoryScrollStrip } from "@/components/ui/horizontal-scroll";
 import {
@@ -140,7 +142,13 @@ function Shop() {
   const meta = catalog.data?.meta;
   const view = search.view ?? "grid";
   const categoryTabs = [
-    { id: "all", slug: undefined, label: t("shop.all") },
+    {
+      id: "all",
+      slug: undefined,
+      label: t("shop.all"),
+      // Categories overlap, so their counts cannot be summed into an honest total.
+      count: 0,
+    },
     ...(categories.data ?? [])
       .filter(
         (category) =>
@@ -151,6 +159,7 @@ function Shop() {
         id: category.id,
         slug: category.slug,
         label: locale === "ar" ? category.nameAr : category.nameEn,
+        count: category.aggregateProductCount ?? category.productCount,
       })),
   ];
   const categoryOptions = (categories.data ?? []).map((category) => ({
@@ -173,16 +182,60 @@ function Shop() {
       ...(search.sort ? { sort: search.sort } : {}),
       ...(search.view ? { view: search.view } : {}),
     });
+  const ar = locale === "ar";
+  const activeCategory = categoryTabs.find((tab) => tab.slug && tab.slug === search.category);
+  // The heading names what is on screen; the line under it states plain facts from the
+  // live facets (brands and price span of the current selection). The product count
+  // already lives in the toolbar.
+  const facetBrands = facets.data?.brands.filter((brand) => brand.count > 0).length ?? 0;
+  const priceMin = facets.data?.price.min ?? null;
+  const priceMax = facets.data?.price.max ?? null;
+  const wholePounds = new Intl.NumberFormat("en-EG", { maximumFractionDigits: 0 });
+  // Isolated so the Latin price range keeps its order inside Arabic sentences.
+  const priceSpan =
+    priceMin !== null && priceMax !== null && priceMax > 0 ? (
+      <bdi dir="ltr">
+        EGP {wholePounds.format(priceMin / 100)} – {wholePounds.format(priceMax / 100)}
+      </bdi>
+    ) : null;
   const shopHeadline = search.search
-    ? locale === "ar"
-      ? `نتائج البحث عن «${search.search}»`
-      : `Search results for “${search.search}”`
-    : locale === "ar"
-      ? "تسوّقي العناية بالبشرة والشعر والجسم والعطور"
-      : "Shop Skincare, Haircare, Body Care & Fragrance";
+    ? ar
+      ? `نتائج «${search.search}»`
+      : `Results for “${search.search}”`
+    : activeCategory
+      ? activeCategory.label
+      : ar
+        ? "كل المنتجات"
+        : "All products";
+  const brandsLabel = ar
+    ? `${facetBrands} علامة تجارية`
+    : `${facetBrands} ${facetBrands === 1 ? "brand" : "brands"}`;
+  const shopLede = !facetBrands ? null : search.search || activeCategory ? (
+    ar ? (
+      <>
+        من {brandsLabel}
+        {priceSpan ? <>، بأسعار {priceSpan}</> : null}.
+      </>
+    ) : (
+      <>
+        From {brandsLabel}
+        {priceSpan ? <>, priced {priceSpan}</> : null}.
+      </>
+    )
+  ) : ar ? (
+    <>
+      عناية بالبشرة والشعر والجسم وعطور من {brandsLabel}
+      {priceSpan ? <>، بأسعار {priceSpan}</> : null}.
+    </>
+  ) : (
+    <>
+      Skincare, haircare, body care and fragrance from {brandsLabel}
+      {priceSpan ? <>, priced {priceSpan}</> : null}.
+    </>
+  );
 
   return (
-    <div className="sf-shop-page sf-shop-page--minimal">
+    <div className="sf-shop-page sf-shop-page--minimal sf-shop-page--shop">
       <nav
         aria-label={locale === "ar" ? "مسار الصفحة" : "Breadcrumb"}
         className="storefront-breadcrumb sf-shop-breadcrumb"
@@ -191,8 +244,15 @@ function Shop() {
         <span aria-hidden="true">/</span>
         <span>{t("common.shop")}</span>
       </nav>
-      <Reveal className="sf-shop-hero">
-        <h1>{shopHeadline}</h1>
+      <Reveal className="shop-head">
+        <div className="shop-head__copy">
+          <h1 dir="auto">{shopHeadline}</h1>
+          {shopLede ? <p className="shop-head__lede">{shopLede}</p> : null}
+        </div>
+        <Link to="/brands" className="shop-head__link">
+          {ar ? "تصفّحي حسب العلامة" : "Browse by brand"}
+          <ArrowRight aria-hidden="true" />
+        </Link>
       </Reveal>
       <section className="sf-shop-catalog" aria-labelledby="shop-products-title">
         <CategoryScrollStrip
@@ -215,6 +275,11 @@ function Shop() {
                 onClick={() => setSearch(withResetPage(search, { category: category.slug }))}
               >
                 {category.label}
+                {category.count > 0 ? (
+                  <span className="sf-shop-tab__count" aria-hidden="true">
+                    {category.count}
+                  </span>
+                ) : null}
               </button>
             );
           })}
@@ -257,7 +322,11 @@ function Shop() {
             >
               {products.map((product, index) => (
                 <Reveal key={product.slug} delay={(index % 4) * 35}>
-                  <ProductCard product={product} compact={view !== "list"} layout={view} />
+                  {view === "list" ? (
+                    <ProductListRow product={product} />
+                  ) : (
+                    <ProductCard product={product} compact />
+                  )}
                 </Reveal>
               ))}
             </div>

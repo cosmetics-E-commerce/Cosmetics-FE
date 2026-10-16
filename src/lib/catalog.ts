@@ -197,6 +197,26 @@ export function useCatalog(
   });
 }
 
+/**
+ * Type-ahead results for the search panel. Unlike the shop page query it does not
+ * record a search event: partial terms ("s", "se", "ser") are not searches. The
+ * panel records one when a result is chosen, and /shop records submitted terms.
+ */
+export function searchPreviewQuery(search: string, locale: Locale = "en") {
+  return queryOptions({
+    queryKey: ["search-preview", search, locale] as const,
+    queryFn: async ({ signal }) => {
+      const page = await listProductsPage({ search, limit: 6 }, signal);
+      const prices = await promotionalPrices(page.items);
+      return {
+        items: page.items.map((product) => applyPrices(mapProduct(product, locale), prices)),
+        total: page.meta.total,
+      };
+    },
+    staleTime: CATALOG_STALE_TIME,
+  });
+}
+
 export function useCatalogPage(
   params: Record<string, string | number | undefined> = {},
   locale: Locale = "en",

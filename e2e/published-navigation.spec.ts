@@ -5,6 +5,8 @@ test("published Brands is a searchable alphabetical directory in English and Ara
 }, testInfo) => {
   test.skip(testInfo.project.name !== "chromium", "The primary menu is desktop-only");
   await page.goto("/about");
+  // Hover opens the menu only once React owns the header.
+  await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
   const navigation = page.getByRole("navigation", { name: "Primary" });
   await navigation.getByRole("button", { name: "Brands", exact: true }).hover();
   const directory = page.locator(".published-brand-directory");
@@ -26,6 +28,7 @@ test("published Brands is a searchable alphabetical directory in English and Ara
 
   await page.goto("/about?lang=ar");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
   await page
     .getByRole("navigation", { name: "Primary" })
     .getByRole("button", { name: "العلامات", exact: true })
@@ -39,6 +42,7 @@ test("published navigation renders resolved categories in English and Arabic", a
 }, testInfo) => {
   test.skip(testInfo.project.name !== "chromium", "The primary menu is desktop-only");
   await page.goto("/about");
+  await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
   const primaryNavigation = page.getByRole("navigation", { name: "Primary" });
   const categoriesTrigger = primaryNavigation.getByRole("button", {
     name: "Categories",
@@ -66,6 +70,7 @@ test("published navigation renders resolved categories in English and Arabic", a
 
   await page.goto("/about?lang=ar");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(page.locator("html")).toHaveAttribute("data-hydrated", "true");
   const arabicNavigation = page.getByRole("navigation", { name: "Primary" });
   const arabicCategoriesTrigger = arabicNavigation.getByRole("button", {
     name: "الفئات",

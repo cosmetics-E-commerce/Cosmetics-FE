@@ -191,7 +191,7 @@ async function run() {
       page,
       "home-to-offers",
       () => nav.getByRole("link", { name: "Offers", exact: true }).click(),
-      () => page.getByRole("heading", { name: /Offers, thoughtfully applied/i }).waitFor(),
+      () => page.locator("#offers-heading").waitFor(),
     ),
   );
 

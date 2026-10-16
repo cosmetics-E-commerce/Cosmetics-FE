@@ -103,7 +103,7 @@ export function getConcern(slug: string, signal?: AbortSignal) {
   });
 }
 
-export function getConcernProducts(
+export async function getConcernProducts(
   slug: string,
   params: Record<string, string | number | boolean | undefined>,
   signal?: AbortSignal,
@@ -112,10 +112,20 @@ export function getConcernProducts(
   Object.entries(params).forEach(([key, value]) => {
     if (value !== undefined && value !== "") query.set(key, String(value));
   });
-  return rawRequest<ConcernProductsPage>(
+  // The API envelope carries the products as `data` with paging as a sibling
+  // `meta` (rawRequest would keep only the array). Accept an already-composed
+  // page too, so either shape yields the same result.
+  const envelope = await rawEnvelope<ConcernProductsPage["data"] | ConcernProductsPage>(
     `/concerns/${encodeURIComponent(slug)}/products${query.size ? `?${query}` : ""}`,
     { auth: false, ...(signal ? { signal } : {}) },
   );
+  if (!Array.isArray(envelope.data)) return envelope.data;
+  const extra = envelope as typeof envelope & Partial<Pick<ConcernProductsPage, "facets">>;
+  return {
+    data: envelope.data,
+    meta: envelope.meta as ConcernProductsPage["meta"],
+    facets: extra.facets ?? { brands: [], categories: [] },
+  };
 }
 
 export function listDynamicBundles(signal?: AbortSignal) {
@@ -482,6 +492,8 @@ export type OrderSummary = {
     discountAmount: number;
     shippingDiscount: number;
   }>;
+  itemCount?: number;
+  itemPreview?: Array<{ productName: string; imageReference: string | null; quantity: number }>;
 };
 
 export type ReorderAvailability =
@@ -1799,6 +1811,154 @@ export const checkout = (
     headers: { "Idempotency-Key": idempotencyKey },
     body: { shippingAddressId, paymentMethod, giftVariantIds, ...(notes ? { notes } : {}) },
   });
+export type GuestContact = { firstName: string; lastName: string; phone: string; email: string };
+export type GuestCheckoutSession = {
+  sessionId: string;
+  expiresAt: string;
+  address: AddressResponse;
+};
+export type GuestCheckoutResult = CheckoutResult & { guestOrderToken: string };
+export type GuestOrder = OrderResponse & { shippingAddress?: Record<string, unknown> | null };
+export type GuestOrderLookup = {
+  orderNumber: string;
+  status: string;
+  paymentMethod: string;
+  paymentStatus: string;
+  placedAt: string;
+  total: number;
+  estimatedDeliveryDate: string | null;
+  shipmentStatus: string | null;
+  items: Array<{
+    variantId: string;
+    productName: string;
+    variantName: string | null;
+    imageReference: string | null;
+    quantity: number;
+    price: number;
+    subtotal: number;
+  }>;
+};
+export type AddAvailableItemsResult = {
+  cart: CommerceCartResponse;
+  added: Array<{ variantId: string; quantity: number }>;
+  skipped: Array<{ variantId: string; reason: "UNAVAILABLE" | "OUT_OF_STOCK" }>;
+};
+
+export const startGuestCheckout = (contact: GuestContact, address: CreateAddressInput) =>
+  rawRequest<GuestCheckoutSession>("/guest-checkout/start", {
+    method: "POST",
+    auth: false,
+    body: { contact, address },
+  });
+export const getGuestCheckoutPreview = (sessionId: string, paymentMethod: string) =>
+  rawRequest<CheckoutPreviewResponse>(`/guest-checkout/${encodeURIComponent(sessionId)}/preview`, {
+    method: "POST",
+    auth: false,
+    body: { paymentMethod },
+  });
+export const placeGuestOrder = (
+  sessionId: string,
+  paymentMethod: string,
+  notes?: string,
+  giftVariantIds: string[] = [],
+  idempotencyKey: string = randomUuid(),
+) =>
+  rawRequest<GuestCheckoutResult>(`/guest-checkout/${encodeURIComponent(sessionId)}/place`, {
+    method: "POST",
+    auth: false,
+    headers: { "Idempotency-Key": idempotencyKey },
+    body: { paymentMethod, giftVariantIds, ...(notes ? { notes } : {}) },
+  });
+export const listGuestPaymentInstructions = () =>
+  rawRequest<PaymentInstruction[]>("/guest-checkout/payment-instructions", { auth: false });
+export const getGuestOrder = (token: string) =>
+  rawRequest<GuestOrder>(`/guest-orders/${encodeURIComponent(token)}`, { auth: false });
+export const getGuestOrderTracking = (token: string) =>
+  rawRequest<OrderTracking>(`/guest-orders/${encodeURIComponent(token)}/tracking`, {
+    auth: false,
+  });
+export const refreshGuestOrderTracking = (token: string) =>
+  rawRequest<OrderTracking>(`/guest-orders/${encodeURIComponent(token)}/tracking/refresh`, {
+    method: "POST",
+    auth: false,
+  });
+export function uploadGuestPaymentProof(
+  token: string,
+  file: File,
+  senderRef: string,
+  txnReference: string,
+  amountClaimed: number,
+) {
+  const body = new FormData();
+  body.set("file", file);
+  body.set("senderRef", senderRef);
+  body.set("txnReference", txnReference);
+  body.set("amountClaimed", String(amountClaimed));
+  return rawRequest<OrderResponse>(
+    `/guest-orders/${encodeURIComponent(token)}/payment-proof/file`,
+    { method: "POST", auth: false, headers: { "Idempotency-Key": randomUuid() }, body },
+  );
+}
+export const lookupGuestOrder = (orderNumber: string, phone: string) =>
+  rawRequest<GuestOrderLookup>("/guest-orders/lookup", {
+    method: "POST",
+    auth: false,
+    body: { orderNumber, phone },
+  });
+/** Order again: adds what is buyable now, reports what is not. Works signed in or as a guest. */
+export const addAvailableCartItems = (items: Array<{ variantId: string; quantity: number }>) =>
+  rawRequest<AddAvailableItemsResult>("/cart/items/available", {
+    method: "POST",
+    body: { items: items.slice(0, 20) },
+  });
+
+const GUEST_WISHLIST_KEY = "bioreza.guest-wishlist";
+export type GuestWishItem = { productId: string; slug: string; savedAt: string };
+/** Wishlist kept on this device until the shopper signs in; then it moves to the account. */
+export function readGuestWishlist(): GuestWishItem[] {
+  try {
+    const parsed = JSON.parse(browserValue(GUEST_WISHLIST_KEY) ?? "[]") as unknown;
+    return Array.isArray(parsed) ? (parsed as GuestWishItem[]) : [];
+  } catch {
+    return [];
+  }
+}
+export function writeGuestWishlist(items: GuestWishItem[]) {
+  try {
+    setBrowserValue(GUEST_WISHLIST_KEY, items.length ? JSON.stringify(items.slice(0, 100)) : null);
+  } catch {
+    // Storage blocked or full: the heart still toggles for this visit.
+  }
+}
+
+const GUEST_ORDERS_KEY = "bioreza.guest-orders";
+export type RememberedGuestOrder = {
+  token: string;
+  orderNumber: string;
+  placedAt: string;
+  total: number;
+};
+/** Orders placed as a guest on this device, so they can be found again without an account. */
+export function rememberedGuestOrders(): RememberedGuestOrder[] {
+  try {
+    const parsed = JSON.parse(browserValue(GUEST_ORDERS_KEY) ?? "[]") as unknown;
+    return Array.isArray(parsed) ? (parsed as RememberedGuestOrder[]) : [];
+  } catch {
+    return [];
+  }
+}
+export function rememberGuestOrder(order: RememberedGuestOrder) {
+  const next = [
+    order,
+    ...rememberedGuestOrders().filter((item) => item.token !== order.token),
+  ].slice(0, 20);
+  try {
+    setBrowserValue(GUEST_ORDERS_KEY, JSON.stringify(next));
+  } catch {
+    // Storage can be full or blocked; the emailed link still works.
+  }
+}
+
 export const createPayment = (
   orderId: string,
   method: string,

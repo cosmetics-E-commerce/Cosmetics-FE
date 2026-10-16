@@ -116,6 +116,28 @@ export function getActiveBanners(context: BannerContext) {
   }>(`/banners/active?${query}`, { auth: false });
 }
 
+export type ActiveBanners = Awaited<ReturnType<typeof getActiveBanners>>;
+
+/**
+ * Banners for the server render, so the HTML already contains the announcement
+ * row (or nothing) and hydration has no reason to move the page. Uses the same
+ * anonymous context the browser starts from; the client refines it afterwards.
+ * Bounded so a slow banner service can never hold up the page.
+ */
+export async function getInitialBanners(page: string, locale: "en" | "ar", budgetMs = 400) {
+  const request = getActiveBanners({
+    locale,
+    page,
+    device: "desktop",
+    authenticated: false,
+    returning: false,
+    cartSubtotal: 0,
+    cartCount: 0,
+  }).catch(() => null);
+  const timeout = new Promise<null>((resolve) => setTimeout(() => resolve(null), budgetMs));
+  return Promise.race([request, timeout]);
+}
+
 export async function trackBannerEvent(
   id: string,
   body: {

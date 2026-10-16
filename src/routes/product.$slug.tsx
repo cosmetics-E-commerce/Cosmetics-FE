@@ -2,19 +2,21 @@ import { useEffect, useState } from "react";
 import { createFileRoute, Link, notFound, useNavigate, useRouter } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
+  BadgeCheck,
   Check,
+  ChevronRight,
   CircleHelp,
   Headphones,
-  Leaf,
   MessageCircleQuestion,
   Minus,
-  PackageCheck,
   Plus,
   RotateCcw,
   Share2,
   ShieldCheck,
+  Sparkles,
   Star,
   Truck,
+  Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PolishedImage } from "@/components/ui/polished-image";
@@ -82,26 +84,24 @@ const productCopy = {
       "Hover or select an ingredient to see its role, benefits, concerns, and suitability from our curated catalog.",
     ingredientCount: (count: number) => `${count} mapped ingredients`,
     use: "How to use",
-    reviews: "reviews",
-    viewReviews: "VIEW ALL REVIEWS",
-    available: "Available:",
-    inStock: "In stock",
-    tags: "Tags:",
-    sku: "SKU:",
-    brand: "Brand:",
-    category: "Category:",
-    quantity: "Quantity:",
-    buyNow: "Buy It Now",
+    reviewCount: (count: number) => (count === 1 ? "1 review" : `${count} reviews`),
+    noReviews: "No reviews yet",
+    inStock: "In stock, ready to ship",
+    tags: "Suitable for",
+    sku: "SKU",
+    brand: "Brand",
+    category: "Category",
+    quantity: "Quantity",
+    buyNow: "Buy it now",
     share: "Share",
     shared: "Link copied",
     ask: "Ask a question",
-    benefitsTitle: "The benefits of choosing us",
+    benefitsTitle: "Why shop with BioReza",
     organic: "100% original products",
     sustainable: "Fast & secure delivery",
     noChemicals: "Easy returns",
     glutenFree: "Secure payments",
     ordersShip: "Delivery timing is calculated for your address at checkout.",
-    shipsFree: "Free shipping may apply on eligible orders.",
     descriptionTab: "Description",
     deliveryPolicy: "Delivery policy",
     shippingReturn: "Shipping & Return",
@@ -112,7 +112,7 @@ const productCopy = {
     returnPolicyCopy: "Returns are available within 14 days when the item is unopened.",
     support: "Customer support",
     supportCopy: "Send your questions during customer-care hours and our team will help.",
-    related: "Product Related",
+    related: "You may also like",
     completeRoutine: "Complete your routine",
     completeRoutineCopy: "Build a compatible AM and PM routine around this product.",
     buildRoutine: "Build my routine",
@@ -148,15 +148,14 @@ const productCopy = {
     ingredientCopy: "مرري المؤشر أو اختاري أي مكوّن لمعرفة دوره وفوائده ومحاذيره ومدى ملاءمته.",
     ingredientCount: (count: number) => `${count} مكوّن موثق`,
     use: "طريقة الاستخدام",
-    reviews: "مراجعات",
-    viewReviews: "عرض كل المراجعات",
-    available: "الحالة:",
-    inStock: "متوفر",
-    tags: "الوسوم:",
-    sku: "SKU:",
-    brand: "العلامة التجارية:",
-    category: "القسم:",
-    quantity: "الكمية:",
+    reviewCount: (count: number) => `${count} مراجعة`,
+    noReviews: "لا توجد مراجعات بعد",
+    inStock: "متوفر وجاهز للشحن",
+    tags: "مناسب لـ",
+    sku: "SKU",
+    brand: "العلامة التجارية",
+    category: "القسم",
+    quantity: "الكمية",
     buyNow: "اشتري الآن",
     share: "مشاركة",
     shared: "تم نسخ الرابط",
@@ -167,7 +166,6 @@ const productCopy = {
     noChemicals: "استرجاع سهل",
     glutenFree: "دفع آمن",
     ordersShip: "تُحسب مدة التوصيل لعنوانك عند إتمام الطلب.",
-    shipsFree: "قد يتاح الشحن المجاني للطلبات المؤهلة.",
     descriptionTab: "الوصف",
     deliveryPolicy: "سياسة التوصيل",
     shippingReturn: "الشحن والاسترجاع",
@@ -178,7 +176,7 @@ const productCopy = {
     returnPolicyCopy: "الاسترجاع متاح خلال 14 يومًا إذا كان المنتج غير مفتوح.",
     support: "خدمة العملاء",
     supportCopy: "أرسلي أسئلتك خلال ساعات خدمة العملاء وسيساعدك فريقنا.",
-    related: "منتجات مشابهة",
+    related: "قد يعجبك أيضاً",
     completeRoutine: "أكملي روتينك",
     completeRoutineCopy: "كوّني روتيناً صباحياً ومسائياً متوافقاً حول هذا المنتج.",
     buildRoutine: "كوّني روتيني",
@@ -409,8 +407,7 @@ function ProductPage() {
     variant?.originalPrice && variant.originalPrice > variant.price
       ? Math.round((1 - variant.price / variant.originalPrice) * 100)
       : null;
-  const tags = product.concerns.filter(Boolean).join(", ");
-  const categoryLine = product.category;
+  const concerns = product.concerns.filter(Boolean);
   const sku = variant?.sku;
   const detailSections = (
     [
@@ -472,19 +469,28 @@ function ProductPage() {
     window.setTimeout(() => setShared(false), 1_500);
   };
 
+  const stockMessage = outOfStock
+    ? labels.out
+    : variantStock !== undefined && lowStock
+      ? labels.low(variantStock)
+      : labels.inStock;
+  const stockTone = outOfStock ? "is-out" : lowStock ? "is-low" : "is-in";
+  const stockMeter =
+    variantStock !== undefined && lowStock ? Math.max(10, Math.min(100, variantStock * 10)) : null;
+
   return (
-    <div className="sf-product-page product-template-white">
-      <div className="product-shell">
+    <div className="sf-product-page product-template-white pdp">
+      <div className="product-shell pdp-shell">
         <Reveal
           as="nav"
           variant="fade"
           distance={0}
-          className="storefront-breadcrumb product-reference-breadcrumb"
+          className="storefront-breadcrumb pdp-breadcrumb"
         >
           <Link to="/">{labels.home}</Link>
-          <span aria-hidden="true">•</span>
+          <ChevronRight className="pdp-breadcrumb__sep" aria-hidden="true" />
           <Link to="/shop">{labels.shop}</Link>
-          <span aria-hidden="true">•</span>
+          <ChevronRight className="pdp-breadcrumb__sep" aria-hidden="true" />
           {product.categorySlug ? (
             <Link to="/categories/$slug" params={{ slug: product.categorySlug }}>
               {product.category}
@@ -492,54 +498,93 @@ function ProductPage() {
           ) : (
             <span>{product.category}</span>
           )}
-          <span aria-hidden="true">•</span>
-          <span>{product.name}</span>
+          <ChevronRight className="pdp-breadcrumb__sep" aria-hidden="true" />
+          <span aria-current="page">{product.name}</span>
         </Reveal>
 
-        <section className="product-reference-layout">
-          <Reveal variant="scale" duration={480} distance={0} className="product-reference-gallery">
-            <ProductImageViewer
-              images={activeMedia}
-              index={imageIndex}
-              onIndexChange={setImageIndex}
-              locale={locale}
-            />
-            <div className="product-reference-thumbs">
-              {activeMedia.map((image, index) => (
-                <button
-                  key={image.id}
-                  type="button"
-                  disabled={!hydrated}
-                  onClick={() => setImageIndex(index)}
-                  aria-label={labels.image(index + 1)}
-                  aria-current={imageIndex === index}
-                  className="product-reference-thumb"
-                >
-                  <PolishedImage
-                    src={image.url}
-                    alt={image.altText}
-                    width={140}
-                    height={175}
-                    loading="lazy"
-                    sizes="140px"
-                    wrapperClassName="product-reference-thumb-shell"
-                    className="size-full object-contain"
-                  />
-                </button>
-              ))}
+        <section className="pdp-hero">
+          <Reveal
+            variant="scale"
+            duration={480}
+            distance={0}
+            className="product-reference-gallery pdp-gallery"
+          >
+            <div className="pdp-gallery__stage">
+              {discountPercent || product.promotionBadge ? (
+                <div className="pdp-gallery__badges">
+                  {discountPercent ? (
+                    <span className="pdp-badge pdp-badge--sale">-{discountPercent}%</span>
+                  ) : null}
+                  {product.promotionBadge ? (
+                    <span className="pdp-badge">{product.promotionBadge}</span>
+                  ) : null}
+                </div>
+              ) : null}
+              <ProductImageViewer
+                images={activeMedia}
+                index={imageIndex}
+                onIndexChange={setImageIndex}
+                locale={locale}
+              />
             </div>
+            {activeMedia.length > 1 ? (
+              <div className="pdp-thumbs">
+                {activeMedia.map((image, index) => (
+                  <button
+                    key={image.id}
+                    type="button"
+                    disabled={!hydrated}
+                    onClick={() => setImageIndex(index)}
+                    aria-label={labels.image(index + 1)}
+                    aria-current={imageIndex === index}
+                    className="pdp-thumb"
+                  >
+                    <PolishedImage
+                      src={image.url}
+                      alt={image.altText}
+                      width={140}
+                      height={175}
+                      loading="lazy"
+                      sizes="88px"
+                      wrapperClassName="pdp-thumb__shell"
+                      className="size-full object-contain"
+                    />
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </Reveal>
 
-          <Reveal
-            stagger
-            delay={120}
-            staggerMs={40}
-            distance={20}
-            className="product-reference-summary"
-          >
-            <h1 dir="auto">{product.name}</h1>
-            <div className="product-reference-rating">
-              <span className="product-reference-stars" aria-hidden="true">
+          <Reveal stagger delay={120} staggerMs={40} distance={20} className="pdp-summary">
+            <div className="pdp-eyebrow">
+              {product.brand ? (
+                <Link
+                  to="/brands/$slug"
+                  params={{ slug: product.brand.slug }}
+                  className="pdp-eyebrow__brand"
+                >
+                  {product.brand.name}
+                </Link>
+              ) : null}
+              {product.categorySlug ? (
+                <Link
+                  to="/categories/$slug"
+                  params={{ slug: product.categorySlug }}
+                  className="pdp-eyebrow__category"
+                >
+                  {product.category}
+                </Link>
+              ) : (
+                <span className="pdp-eyebrow__category">{product.category}</span>
+              )}
+            </div>
+
+            <h1 className="pdp-title" dir="auto">
+              {product.name}
+            </h1>
+
+            <a href="#product-reviews" className="pdp-rating">
+              <span className="pdp-stars" aria-hidden="true">
                 {[1, 2, 3, 4, 5].map((value) => (
                   <Star
                     key={value}
@@ -547,241 +592,247 @@ function ProductPage() {
                   />
                 ))}
               </span>
-              <span>({product.reviews})</span>
-              <a href="#product-reviews">{labels.viewReviews}</a>
-            </div>
-
-            <div key={variant?.price} className="product-reference-price count-change">
-              <strong>{formatPrice(variant?.price ?? product.price)}</strong>
-              {variant?.originalPrice && variant.originalPrice > variant.price && (
+              {product.reviews > 0 ? (
                 <>
-                  <span>{formatPrice(variant.originalPrice)}</span>
-                  {discountPercent ? <em>-{discountPercent}%</em> : null}
+                  <strong>{product.rating.toFixed(1)}</strong>
+                  <span>{labels.reviewCount(product.reviews)}</span>
                 </>
+              ) : (
+                <span>{labels.noReviews}</span>
               )}
+            </a>
+
+            <div key={variant?.price} className="pdp-price count-change">
+              <strong>{formatPrice(variant?.price ?? product.price)}</strong>
+              {variant?.originalPrice && variant.originalPrice > variant.price ? (
+                <>
+                  <s>{formatPrice(variant.originalPrice)}</s>
+                  {discountPercent ? (
+                    <span className="pdp-price__save">
+                      {labels.save} {discountPercent}%
+                    </span>
+                  ) : null}
+                </>
+              ) : null}
             </div>
 
             {product.shortDescription ? (
-              <p className="product-reference-short-description" dir="auto">
+              <p className="pdp-lede" dir="auto">
                 {product.shortDescription}
               </p>
             ) : null}
 
-            <dl className="product-reference-meta">
-              <div>
-                <dt>{labels.available}</dt>
-                <dd className={outOfStock ? "is-out" : "is-stock"}>
-                  {outOfStock ? labels.out : labels.inStock}
-                  {!outOfStock ? <Check className="size-4" aria-hidden="true" /> : null}
-                </dd>
-              </div>
-              {tags ? (
-                <div>
-                  <dt>{labels.tags}</dt>
-                  <dd dir="auto">{tags}</dd>
-                </div>
-              ) : null}
-              {sku ? (
-                <div>
-                  <dt>{labels.sku}</dt>
-                  <dd dir="ltr">{sku}</dd>
-                </div>
-              ) : null}
-              {product.brand ? (
-                <div>
-                  <dt>{labels.brand}</dt>
-                  <dd>
-                    <Link to="/brands/$slug" params={{ slug: product.brand.slug }}>
-                      {product.brand.name}
-                    </Link>
+            {concerns.length > 0 ? (
+              <dl className="pdp-chips">
+                <dt>{labels.tags}</dt>
+                {concerns.map((concern) => (
+                  <dd key={concern} dir="auto">
+                    {concern}
                   </dd>
-                </div>
-              ) : null}
-              <div>
-                <dt>{labels.category}</dt>
-                <dd>
-                  {product.categorySlug ? (
-                    <Link to="/categories/$slug" params={{ slug: product.categorySlug }}>
-                      {categoryLine}
-                    </Link>
-                  ) : (
-                    categoryLine
-                  )}
-                </dd>
-              </div>
-            </dl>
-
-            {variant?.promotionTitle && (
-              <p className="product-reference-promo">
-                <strong>{variant.promotionTitle}</strong>
-                <span>{labels.applied}</span>
-              </p>
-            )}
-            {lowStock && !outOfStock && (
-              <p className="product-reference-stock">{labels.low(variantStock)}</p>
-            )}
-
-            {(product.options?.length ?? 0) > 0 ? (
-              <div className="product-option-selectors">
-                {product.options!.map((option) => (
-                  <fieldset key={option.id} className="product-reference-variants">
-                    <legend>{option.label}</legend>
-                    <div>
-                      {option.values.map((value) => {
-                        const valueState = optionValueState({
-                          optionId: option.id,
-                          valueId: value.id,
-                          options: product.options!,
-                          variants: product.sizes,
-                          selection: variantSelection,
-                        });
-                        const available = valueState === "available";
-                        const selected = variantSelection[option.id] === value.id;
-                        const metadataHex =
-                          typeof value.metadata?.["hex"] === "string" &&
-                          /^#[0-9a-f]{6}$/i.test(value.metadata["hex"])
-                            ? value.metadata["hex"]
-                            : undefined;
-                        const swatch =
-                          metadataHex ??
-                          product.sizes.find((item) => item.optionValueIds?.includes(value.id))
-                            ?.shadeHex;
-                        return (
-                          <button
-                            key={value.id}
-                            type="button"
-                            disabled={!available}
-                            title={
-                              valueState === "sold-out"
-                                ? labels.soldOutValue
-                                : valueState === "unavailable"
-                                  ? labels.unavailableCombination
-                                  : undefined
-                            }
-                            onClick={() => {
-                              setVariantSelection((current) => ({
-                                ...current,
-                                [option.id]: value.id,
-                              }));
-                            }}
-                            aria-pressed={selected}
-                            aria-label={`${option.label}: ${value.label}${valueState === "sold-out" ? `, ${labels.soldOutValue}` : valueState === "unavailable" ? `, ${labels.unavailableCombination}` : ""}`}
-                            className={`product-variant${swatch ? " has-swatch" : ""}`}
-                          >
-                            {swatch ? (
-                              <span
-                                className="product-variant-swatch"
-                                style={{ backgroundColor: swatch }}
-                                aria-hidden="true"
-                              />
-                            ) : null}
-                            <span className="product-variant-label">
-                              {value.label}
-                              {valueState === "sold-out" ? (
-                                <small>{labels.soldOutValue}</small>
-                              ) : null}
-                            </span>
-                            {selected ? (
-                              <Check
-                                className="product-variant-check"
-                                size={14}
-                                aria-hidden="true"
-                              />
-                            ) : null}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </fieldset>
                 ))}
-              </div>
-            ) : product.sizes.length > 1 ? (
-              <fieldset className="product-reference-variants">
-                <legend>{labels.variant}</legend>
-                <div>
-                  {product.sizes.map((item, index) => (
-                    <button
-                      key={item.id ?? item.label}
-                      type="button"
-                      disabled={item.stock === 0}
-                      onClick={() => {
-                        setVariantIndex(index);
-                        setQuantity(1);
-                      }}
-                      aria-pressed={variantIndex === index}
-                      aria-label={`${item.label}${item.stock === 0 ? `, ${labels.out}` : ""}`}
-                      className="product-variant"
-                    >
-                      {item.shadeHex && (
-                        <span
-                          style={{ backgroundColor: item.shadeHex ?? undefined }}
-                          aria-hidden="true"
-                        />
-                      )}
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-              </fieldset>
+              </dl>
             ) : null}
 
-            <div className="product-reference-quantity-label">{labels.quantity}</div>
-            <div className="purchase-actions product-reference-actions">
-              <div className="product-reference-quantity">
-                <button
-                  type="button"
-                  disabled={outOfStock || quantity <= 1}
-                  onClick={() => setQuantity((value) => Math.max(1, value - 1))}
-                  aria-label={labels.decrease}
-                >
-                  <Minus className="size-4" />
-                </button>
-                <span key={quantity} className="count-change">
-                  {quantity}
-                </span>
-                <button
-                  type="button"
-                  disabled={outOfStock || quantity >= (variantStock ?? 99)}
-                  onClick={() => setQuantity((value) => Math.min(variantStock ?? 99, value + 1))}
-                  aria-label={labels.increase}
-                >
-                  <Plus className="size-4" />
-                </button>
+            <div className="pdp-buy">
+              <div className={`pdp-stock ${stockTone}`} role="status">
+                <span className="pdp-stock__dot" aria-hidden="true" />
+                <span>{stockMessage}</span>
               </div>
+              {stockMeter !== null ? (
+                <div className="pdp-stock__meter" aria-hidden="true">
+                  <span style={{ width: `${stockMeter}%` }} />
+                </div>
+              ) : null}
+
+              {variant?.promotionTitle ? (
+                <p className="pdp-promo">
+                  <Sparkles aria-hidden="true" />
+                  <span>
+                    <strong>{variant.promotionTitle}</strong>
+                    {labels.applied}
+                  </span>
+                </p>
+              ) : null}
+
+              {(product.options?.length ?? 0) > 0 ? (
+                <div className="pdp-options">
+                  {product.options!.map((option) => (
+                    <fieldset key={option.id} className="pdp-variants">
+                      <legend>{option.label}</legend>
+                      <div>
+                        {option.values.map((value) => {
+                          const valueState = optionValueState({
+                            optionId: option.id,
+                            valueId: value.id,
+                            options: product.options!,
+                            variants: product.sizes,
+                            selection: variantSelection,
+                          });
+                          const available = valueState === "available";
+                          const selected = variantSelection[option.id] === value.id;
+                          const metadataHex =
+                            typeof value.metadata?.["hex"] === "string" &&
+                            /^#[0-9a-f]{6}$/i.test(value.metadata["hex"])
+                              ? value.metadata["hex"]
+                              : undefined;
+                          const swatch =
+                            metadataHex ??
+                            product.sizes.find((item) => item.optionValueIds?.includes(value.id))
+                              ?.shadeHex;
+                          return (
+                            <button
+                              key={value.id}
+                              type="button"
+                              disabled={!available}
+                              title={
+                                valueState === "sold-out"
+                                  ? labels.soldOutValue
+                                  : valueState === "unavailable"
+                                    ? labels.unavailableCombination
+                                    : undefined
+                              }
+                              onClick={() => {
+                                setVariantSelection((current) => ({
+                                  ...current,
+                                  [option.id]: value.id,
+                                }));
+                              }}
+                              aria-pressed={selected}
+                              aria-label={`${option.label}: ${value.label}${valueState === "sold-out" ? `, ${labels.soldOutValue}` : valueState === "unavailable" ? `, ${labels.unavailableCombination}` : ""}`}
+                              className={`product-variant${swatch ? " has-swatch" : ""}`}
+                            >
+                              {swatch ? (
+                                <span
+                                  className="product-variant-swatch"
+                                  style={{ backgroundColor: swatch }}
+                                  aria-hidden="true"
+                                />
+                              ) : null}
+                              <span className="product-variant-label">
+                                {value.label}
+                                {valueState === "sold-out" ? (
+                                  <small>{labels.soldOutValue}</small>
+                                ) : null}
+                              </span>
+                              {selected ? (
+                                <Check
+                                  className="product-variant-check"
+                                  size={14}
+                                  aria-hidden="true"
+                                />
+                              ) : null}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </fieldset>
+                  ))}
+                </div>
+              ) : product.sizes.length > 1 ? (
+                <fieldset className="pdp-variants">
+                  <legend>{labels.variant}</legend>
+                  <div>
+                    {product.sizes.map((item, index) => (
+                      <button
+                        key={item.id ?? item.label}
+                        type="button"
+                        disabled={item.stock === 0}
+                        onClick={() => {
+                          setVariantIndex(index);
+                          setQuantity(1);
+                        }}
+                        aria-pressed={variantIndex === index}
+                        aria-label={`${item.label}${item.stock === 0 ? `, ${labels.out}` : ""}`}
+                        className="product-variant"
+                      >
+                        {item.shadeHex && (
+                          <span
+                            style={{ backgroundColor: item.shadeHex ?? undefined }}
+                            aria-hidden="true"
+                          />
+                        )}
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+              ) : null}
+
+              <div className="pdp-buy__row">
+                <div
+                  className="product-reference-quantity pdp-qty"
+                  role="group"
+                  aria-label={labels.quantity}
+                >
+                  <button
+                    type="button"
+                    disabled={outOfStock || quantity <= 1}
+                    onClick={() => setQuantity((value) => Math.max(1, value - 1))}
+                    aria-label={labels.decrease}
+                  >
+                    <Minus className="size-4" />
+                  </button>
+                  <span key={quantity} className="count-change">
+                    {quantity}
+                  </span>
+                  <button
+                    type="button"
+                    disabled={outOfStock || quantity >= (variantStock ?? 99)}
+                    onClick={() => setQuantity((value) => Math.min(variantStock ?? 99, value + 1))}
+                    aria-label={labels.increase}
+                  >
+                    <Plus className="size-4" />
+                  </button>
+                </div>
+                <Button
+                  variant="solid"
+                  size="pill"
+                  className="pdp-add"
+                  disabled={!variant?.id || outOfStock}
+                  loading={adding}
+                  onClick={() => void addToBag()}
+                >
+                  {outOfStock ? labels.out : added ? labels.added : labels.add}
+                </Button>
+                {product.id && (
+                  <WishlistPicker
+                    productId={product.id}
+                    slug={product.slug}
+                    wished={wished}
+                    addLabel={labels.wishAdd}
+                    removeLabel={labels.wishRemove}
+                  />
+                )}
+              </div>
+
               <Button
-                variant="solid"
+                variant="quiet"
                 size="pill"
-                className="product-add-to-cart"
-                disabled={!variant?.id || outOfStock}
-                loading={adding}
-                onClick={() => void addToBag()}
+                className="pdp-buy-now"
+                disabled={!variant?.id || outOfStock || buyNowLoading}
+                loading={buyNowLoading}
+                onClick={() => void buyNow()}
               >
-                {outOfStock ? labels.out : added ? labels.added : labels.add}
+                {labels.buyNow}
               </Button>
-              {product.id && (
-                <WishlistPicker
-                  productId={product.id}
-                  slug={product.slug}
-                  wished={wished}
-                  addLabel={labels.wishAdd}
-                  removeLabel={labels.wishRemove}
-                />
-              )}
+
+              <ul className="pdp-buy__notes">
+                <li>
+                  <Truck aria-hidden="true" />
+                  {labels.delivery}
+                </li>
+                <li>
+                  <Wallet aria-hidden="true" />
+                  {labels.payment}
+                </li>
+              </ul>
             </div>
 
-            <Button
-              variant="quiet"
-              size="pill"
-              className="product-reference-buy-now"
-              disabled={!variant?.id || outOfStock || buyNowLoading}
-              loading={buyNowLoading}
-              onClick={() => void buyNow()}
-            >
-              {labels.buyNow}
-            </Button>
-
             {routineEligibility.data?.eligible && variant?.id ? (
-              <aside className="product-routine-entry" aria-labelledby="product-routine-title">
+              <aside
+                className="product-routine-entry pdp-routine"
+                aria-labelledby="product-routine-title"
+              >
                 <div>
                   <p id="product-routine-title">{labels.completeRoutine}</p>
                   <span>{labels.completeRoutineCopy}</span>
@@ -812,9 +863,56 @@ function ProductPage() {
               </aside>
             ) : null}
 
-            <div className="product-reference-links">
+            <ul className="pdp-assurances" aria-label={labels.benefitsTitle}>
+              {[
+                { label: labels.organic, icon: BadgeCheck },
+                { label: labels.sustainable, icon: Truck },
+                { label: labels.noChemicals, icon: RotateCcw },
+                { label: labels.glutenFree, icon: ShieldCheck },
+              ].map(({ label, icon: Icon }) => (
+                <li key={label}>
+                  <span className="pdp-assurances__icon">
+                    <Icon aria-hidden="true" />
+                  </span>
+                  {label}
+                </li>
+              ))}
+            </ul>
+
+            <dl className="pdp-specs">
+              {product.brand ? (
+                <div>
+                  <dt>{labels.brand}</dt>
+                  <dd>
+                    <Link to="/brands/$slug" params={{ slug: product.brand.slug }}>
+                      {product.brand.name}
+                    </Link>
+                  </dd>
+                </div>
+              ) : null}
+              <div>
+                <dt>{labels.category}</dt>
+                <dd>
+                  {product.categorySlug ? (
+                    <Link to="/categories/$slug" params={{ slug: product.categorySlug }}>
+                      {product.category}
+                    </Link>
+                  ) : (
+                    product.category
+                  )}
+                </dd>
+              </div>
+              {sku ? (
+                <div>
+                  <dt>{labels.sku}</dt>
+                  <dd dir="ltr">{sku}</dd>
+                </div>
+              ) : null}
+            </dl>
+
+            <div className="pdp-links">
               <button type="button" onClick={() => void shareProduct()}>
-                <Share2 className="size-4" />
+                <Share2 aria-hidden="true" />
                 {shared ? labels.shared : labels.share}
               </button>
               <a
@@ -822,46 +920,20 @@ function ProductPage() {
                   locale === "ar" ? `سؤال عن ${product.name}` : `Question about ${product.name}`,
                 )}`}
               >
-                <MessageCircleQuestion className="size-4" />
+                <MessageCircleQuestion aria-hidden="true" />
                 {labels.ask}
               </a>
               <a href="#product-details">
-                <CircleHelp className="size-4" />
+                <CircleHelp aria-hidden="true" />
                 {labels.details}
               </a>
             </div>
-
-            <div className="product-reference-benefits-card">
-              <p>{labels.benefitsTitle}</p>
-              {[
-                { label: labels.organic, icon: ShieldCheck },
-                { label: labels.sustainable, icon: Leaf },
-                { label: labels.noChemicals, icon: PackageCheck },
-                { label: labels.glutenFree, icon: Check },
-              ].map(({ label, icon: Icon }) => (
-                <span key={label}>
-                  <Icon aria-hidden="true" />
-                  {label}
-                </span>
-              ))}
-            </div>
-
-            <ul className="product-reference-shipping-notes">
-              <li>
-                <PackageCheck className="size-5" />
-                {labels.ordersShip}
-              </li>
-              <li>
-                <Truck className="size-5" />
-                {labels.shipsFree}
-              </li>
-            </ul>
           </Reveal>
         </section>
 
         {product.ingredientDetails.length > 0 || product.ingredients ? (
           <section
-            className="product-ingredient-intelligence"
+            className="product-ingredient-intelligence pdp-section"
             aria-labelledby="ingredient-intelligence-title"
           >
             <header>
@@ -884,18 +956,21 @@ function ProductPage() {
           </section>
         ) : null}
 
-        <section id="product-details" className="product-reference-details">
+        <section id="product-details" className="pdp-section pdp-details">
+          <h2 className="pdp-section__title">{labels.details}</h2>
           <ProductInfoAccordion key={product.id} sections={detailSections} label={labels.details} />
         </section>
 
-        <section className="product-reference-service-strip" aria-label={labels.benefitsTitle}>
+        <section className="pdp-services" aria-label={labels.benefitsTitle}>
           {[
             { label: labels.freeShipping, copy: labels.freeShippingCopy, icon: Truck },
             { label: labels.returnPolicy, copy: labels.returnPolicyCopy, icon: RotateCcw },
             { label: labels.support, copy: labels.supportCopy, icon: Headphones },
           ].map(({ label, copy, icon: Icon }) => (
             <article key={label}>
-              <Icon aria-hidden="true" />
+              <span className="pdp-services__icon">
+                <Icon aria-hidden="true" />
+              </span>
               <div>
                 <h3>{label}</h3>
                 <p>{copy}</p>
@@ -933,6 +1008,7 @@ function ProductPage() {
       <RelatedProducts
         products={initial.related}
         title={labels.related}
+        eyebrow={product.category}
         unavailable={initial.relatedUnavailable}
         locale={locale}
         onRetry={() => void router.invalidate()}
@@ -944,12 +1020,14 @@ function ProductPage() {
 function RelatedProducts({
   products,
   title,
+  eyebrow,
   unavailable,
   locale,
   onRetry,
 }: {
   products: Product[];
   title: string;
+  eyebrow: string;
   unavailable: boolean;
   locale: "en" | "ar";
   onRetry: () => void;
@@ -977,8 +1055,11 @@ function RelatedProducts({
   if (!products.length) return null;
 
   return (
-    <section className="product-reference-related">
-      <h2>{title}</h2>
+    <section className="product-reference-related pdp-related">
+      <header className="pdp-related__header">
+        <p>{eyebrow}</p>
+        <h2>{title}</h2>
+      </header>
       <div>
         {products.map((item) => (
           <ProductCard key={item.slug} product={item} />

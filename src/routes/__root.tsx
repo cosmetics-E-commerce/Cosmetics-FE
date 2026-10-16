@@ -4,7 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
-  useLocation,
+  useRouterState,
   HeadContent,
   Scripts,
   retainSearchParams,
@@ -12,9 +12,10 @@ import {
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from "react";
 
 import appCss from "../app.css?url";
-import { StoreProvider, useStore } from "@/lib/store";
+import { StoreProvider, useSearchOpen, useStore } from "@/lib/store";
 import { Header } from "@/components/layout/Header";
 import { GlobalBannerSlot } from "@/components/banner/GlobalBannerSlot";
+import { getInitialBanners } from "@/lib/banner-api";
 import { Footer } from "@/components/layout/Footer";
 import { BackToTop } from "@/components/layout/BackToTop";
 import { Button } from "@/components/ui/button";
@@ -26,8 +27,9 @@ import { publishedNavigationQuery } from "@/lib/navigation";
 const LazyCartDrawer = lazy(() =>
   import("@/components/shop/CartDrawer").then((module) => ({ default: module.CartDrawer })),
 );
+const loadSearchOverlay = () => import("@/components/layout/SearchOverlay");
 const LazySearchOverlay = lazy(() =>
-  import("@/components/layout/SearchOverlay").then((module) => ({ default: module.SearchOverlay })),
+  loadSearchOverlay().then((module) => ({ default: module.SearchOverlay })),
 );
 const LazyToaster = lazy(() =>
   import("@/components/ui/sonner").then((module) => ({ default: module.Toaster })),
@@ -120,12 +122,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   beforeLoad: ({ search }) => ({
     locale: search.lang === "ar" ? ("ar" as const) : ("en" as const),
   }),
-  loader: async ({ context }) => {
-    try {
-      return await context.queryClient.ensureQueryData(publishedNavigationQuery());
-    } catch {
-      return null;
-    }
+  loader: async ({ context, location }) => {
+    const [navigation, banners] = await Promise.all([
+      context.queryClient.ensureQueryData(publishedNavigationQuery()).catch(() => null),
+      // Only the server render needs them: in the browser the banner slot keeps its
+      // own query, and a root loader fetch would delay every client navigation.
+      typeof window === "undefined"
+        ? getInitialBanners(`${location.pathname}${location.searchStr || ""}`, context.locale)
+        : Promise.resolve(null),
+    ]);
+    return { navigation, banners };
   },
   head: () => ({
     meta: [
@@ -202,7 +208,8 @@ function GlobalShortcuts() {
 }
 
 function DeferredInteractiveLayers() {
-  const { cartOpen, searchOpen } = useStore();
+  const { cartOpen } = useStore();
+  const searchOpen = useSearchOpen();
   const [cartMounted, setCartMounted] = useState(cartOpen);
   const [searchMounted, setSearchMounted] = useState(searchOpen);
   const [campaignsMounted, setCampaignsMounted] = useState(false);
@@ -214,7 +221,13 @@ function DeferredInteractiveLayers() {
     if (searchOpen) setSearchMounted(true);
   }, [searchOpen]);
   useEffect(() => {
-    const mount = () => setCampaignsMounted(true);
+    const mount = () => {
+      setCampaignsMounted(true);
+      // Load and mount the (closed) search panel while idle. Mounting it only on the
+      // first click would suspend there, and React holds a revealed Suspense
+      // boundary for ~300ms, which made the first open feel sluggish.
+      void loadSearchOverlay().then(() => setSearchMounted(true));
+    };
     let idleId: number | undefined;
     let timer: ReturnType<typeof globalThis.setTimeout> | undefined;
     const schedule = () => {
@@ -249,14 +262,33 @@ function DeferredInteractiveLayers() {
   );
 }
 
+/** A thin bar for navigations that take long enough to notice; quick ones show nothing. */
+function NavigationProgress() {
+  const loading = useRouterState({ select: (state) => state.status === "pending" });
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    if (!loading) {
+      setVisible(false);
+      return;
+    }
+    const timer = window.setTimeout(() => setVisible(true), 150);
+    return () => window.clearTimeout(timer);
+  }, [loading]);
+  return <div className="nav-progress" data-active={visible || undefined} aria-hidden="true" />;
+}
+
 function RootComponent() {
   const { queryClient, locale } = Route.useRouteContext();
-  const initialNavigation = Route.useLoaderData();
-  const { pathname } = useLocation();
-  const pageRef = useRef<HTMLDivElement>(null);
+  const { navigation: initialNavigation } = Route.useLoaderData();
+  // Layout follows the page on screen, not the one being loaded: `useLocation()` switches
+  // at navigation start, which gave the outgoing homepage the inner pages' top padding.
+  const pathname = useRouterState({
+    select: (state) => (state.resolvedLocation ?? state.location).pathname,
+  });
   const headerScrollSentinelRef = useRef<HTMLSpanElement>(null);
-  const isFirstRender = useRef(true);
   const isHome = pathname === "/";
+  // Checkout is a focused flow: the page renders its own minimal header and policy footer.
+  const isCheckout = pathname === "/checkout";
 
   useEffect(() => {
     // Expose an explicit, non-visual readiness boundary for browser automation
@@ -268,18 +300,6 @@ function RootComponent() {
       delete document.documentElement.dataset["hydrated"];
     };
   }, []);
-
-  useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    const el = pageRef.current;
-    if (!el) return;
-    el.classList.remove("page-enter");
-    void el.offsetWidth;
-    el.classList.add("page-enter");
-  }, [pathname]);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -294,25 +314,36 @@ function RootComponent() {
               className="header-scroll-sentinel"
               aria-hidden="true"
             />
-            <Header
-              scrollSentinelRef={headerScrollSentinelRef}
-              initialNavigation={initialNavigation}
-            />
+            {isCheckout ? null : (
+              <Header
+                scrollSentinelRef={headerScrollSentinelRef}
+                initialNavigation={initialNavigation}
+              />
+            )}
             {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
             <main
               id="main-content"
               tabIndex={-1}
               className="storefront-main flex-1 outline-none"
-              style={{ paddingTop: isHome ? 0 : "var(--store-header-offset, 103px)" }}
+              style={{
+                paddingTop: isHome || isCheckout ? 0 : "var(--store-header-offset, 103px)",
+              }}
             >
-              <div ref={pageRef} className="motion-page">
+              {/* No route fade: `pathname` changes when a navigation starts, so animating
+                  here faded the outgoing page while the next one was still loading. */}
+              <div className="motion-page">
                 <Outlet />
               </div>
             </main>
-            <Footer />
-            <GlobalBannerSlot position="BOTTOM" />
+            {isCheckout ? null : (
+              <>
+                <Footer />
+                <GlobalBannerSlot position="BOTTOM" />
+              </>
+            )}
           </div>
-          <BackToTop />
+          <NavigationProgress />
+          {isCheckout ? null : <BackToTop />}
           <DeferredInteractiveLayers />
           <GlobalShortcuts />
         </StoreProvider>

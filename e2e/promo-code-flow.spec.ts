@@ -231,15 +231,14 @@ test("FUCKINGTEST20 survives cart refresh and checkout, then is revalidated at o
   await page.getByRole("button", { name: "Apply" }).click();
   await page.getByRole("link", { name: "Proceed to checkout" }).click();
   await expect(page).toHaveURL(/\/checkout/);
-  await page.getByRole("button", { name: "Continue to Review" }).click();
 
-  await expect(page.getByRole("heading", { name: "Review", exact: true })).toBeVisible();
+  // A saved address is pre-selected, so the promo and Place order are on the first screen.
+  await openOrderSummary(page);
   const reviewPromo = page.locator(".sf-checkout-review-promo-control");
   await expect(reviewPromo).toContainText(promoCode);
   await expect(reviewPromo).toContainText("EGP 300");
   await expect(reviewPromo.getByRole("button", { name: "Remove" })).toBeVisible();
 
-  await page.getByRole("button", { name: "Continue to Payment" }).click();
   await page.locator(".sf-checkout-place-order:visible").first().click();
   await expect(page).toHaveURL(/\/order-confirmed/);
   expect(api.counts().checkoutRequests).toBe(1);
@@ -251,7 +250,7 @@ test("checkout review can apply and remove the same canonical cart promo state",
   test.setTimeout(120_000);
   await installApi(page);
   await page.goto("/checkout", { waitUntil: "networkidle" });
-  await page.getByRole("button", { name: "Continue to Review" }).click();
+  await openOrderSummary(page);
 
   const reviewPromo = page.locator(".sf-checkout-review-promo-control");
   await reviewPromo.getByLabel("Promo code").fill(promoCode);
@@ -262,7 +261,7 @@ test("checkout review can apply and remove the same canonical cart promo state",
   await page.goto("/cart", { waitUntil: "networkidle" });
   await expect(page.getByText(promoCode, { exact: false }).first()).toBeVisible();
   await page.goto("/checkout", { waitUntil: "networkidle" });
-  await page.getByRole("button", { name: "Continue to Review" }).click();
+  await openOrderSummary(page);
   await page
     .locator(".sf-checkout-review-promo-control")
     .getByRole("button", { name: "Remove" })
@@ -285,3 +284,10 @@ test("an expired admin-created code returns an actionable storefront error", asy
   await expect(page.getByRole("alert")).toContainText("expired");
   await expect(page.getByLabel("Promo code")).toHaveValue("EXPIREDTEST20");
 });
+
+/** On small screens the checkout order summary (and its promo field) starts collapsed. */
+async function openOrderSummary(page: Page) {
+  await page.getByRole("heading", { name: "Delivery", exact: true }).waitFor();
+  const toggle = page.getByRole("button", { name: /Show order summary/ });
+  if (await toggle.isVisible()) await toggle.click();
+}

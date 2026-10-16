@@ -1,3 +1,9 @@
 @import "./styles.css";
 @import "./storefront.css";
 @import "./mobile-storefront.css";
+@import "./styles/product-page.css";
+@import "./styles/category-children.css";
+@import "./styles/product-list-row.css";
+@import "./styles/checkout.css";
+@import "./styles/shop-page.css";
+@import "./styles/product-card.css";

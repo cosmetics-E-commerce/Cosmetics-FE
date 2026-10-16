@@ -2,23 +2,30 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getOrderDetails } from "@/lib/api";
+import { getOrderDetails, type OrderResponse } from "@/lib/api";
 
 export function OrderContents({
   orderId,
   orderNumber,
   locale,
+  order,
 }: {
   orderId: string;
   orderNumber: string;
   locale: "ar" | "en";
+  /** Already-loaded order (guest order page); skips the account request. */
+  order?: OrderResponse;
 }) {
   const ar = locale === "ar";
-  const details = useQuery({
+  const query = useQuery({
     queryKey: ["account", "orders", orderId, "details"],
     queryFn: () => getOrderDetails(orderId),
     staleTime: 60_000,
+    enabled: !order,
   });
+  const details = order
+    ? { data: order, isLoading: false, isError: false, refetch: query.refetch }
+    : query;
   const money = (amount: number) =>
     new Intl.NumberFormat(ar ? "ar-EG" : "en-EG", {
       style: "currency",

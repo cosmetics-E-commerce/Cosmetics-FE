@@ -198,7 +198,11 @@ export const ProductCard = memo(function ProductCard({
           )}
           {product.promotionBadge && !outOfStock && (
             <span className="sf-product-card__badge sf-product-card__badge--sale absolute start-3 top-3">
-              {product.promotionBadge}
+              {product.savingsPercent && product.savingsPercent > 0 ? (
+                <bdi dir="ltr">{`−${product.savingsPercent}%`}</bdi>
+              ) : (
+                product.promotionBadge
+              )}
             </span>
           )}
         </div>
@@ -207,7 +211,9 @@ export const ProductCard = memo(function ProductCard({
       <div
         className={`product-card__info sf-product-card__info flex min-w-0 flex-1 flex-col ${layout === "list" ? "py-2" : "pt-4"}`}
       >
-        <p className="sf-product-card__category">{product.category}</p>
+        <p className="sf-product-card__category" data-kind={product.brand ? "brand" : "category"}>
+          {product.brand?.name ?? product.category}
+        </p>
         <h3 className="sf-product-card__title" dir="auto">
           <ProductLink product={product} className="transition-colors hover:text-gold">
             {product.name}
@@ -231,7 +237,9 @@ export const ProductCard = memo(function ProductCard({
             className="product-card__price sf-product-card__price inline-flex min-h-11 items-center whitespace-nowrap focus-visible:outline-none"
           >
             <span className="flex flex-wrap items-baseline gap-2">
-              <span>{formatPrice(variant?.price ?? product.price)}</span>
+              <span className="sf-product-card__now">
+                {formatPrice(variant?.price ?? product.price)}
+              </span>
               {variant?.originalPrice && variant.originalPrice > variant.price && (
                 <span className="sf-product-card__original line-through">
                   {formatPrice(variant.originalPrice)}

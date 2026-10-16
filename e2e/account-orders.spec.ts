@@ -142,13 +142,16 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test("order history shows purchased items and amounts without expanding tracking", async ({
-  page,
-}) => {
+const toggleOrder = (page: import("@playwright/test").Page) =>
+  page.locator(".sf-simple-order__row").first().click();
+
+test("order history opens purchased items and amounts on demand", async ({ page }) => {
   await page.goto("/account?section=orders");
   await expect(page.getByRole("heading", { name: "Your orders", exact: true })).toBeVisible({
     timeout: 60_000,
   });
+  await expect(page.locator(".account-order-contents")).toHaveCount(0);
+  await toggleOrder(page);
   const contents = page.getByRole("region", { name: `Contents of order ${orderNumber}` });
   await expect(contents.getByText("Purchased Hydrating Cleanser")).toBeVisible();
   await expect(contents.getByText("Original Serum Name At Purchase")).toBeVisible();
@@ -163,7 +166,7 @@ test("order history shows purchased items and amounts without expanding tracking
     "Shipping discount",
   );
   await expect(contents.locator(".account-order-contents__grand-total")).toContainText("556.00");
-  await expect(page.locator(".account-tracking")).toHaveCount(0);
+  await expect(page.locator(".account-tracking")).toBeVisible();
 });
 
 test("tracking remains readable across phone, tablet and desktop widths and Arabic RTL", async ({
@@ -185,8 +188,8 @@ test("tracking remains readable across phone, tablet and desktop widths and Arab
     await expect(page.getByRole("heading", { name: "Your orders", exact: true })).toBeVisible({
       timeout: 60_000,
     });
+    await toggleOrder(page);
     await expect(page.getByText("Purchased Hydrating Cleanser")).toBeVisible();
-    await page.getByRole("button", { name: "Track order", exact: true }).click();
     const header = page.locator(".account-tracking__header");
     await expect(header.locator("strong")).toHaveText(refreshed ? "OUT FOR DELIVERY" : "CREATED");
     const geometry = await header.evaluate((element) => {
@@ -219,17 +222,17 @@ test("tracking remains readable across phone, tablet and desktop widths and Arab
       refreshed = true;
       await page.screenshot({ path: testInfo.outputPath("tracking-390px.png"), fullPage: true });
     }
-    await page.getByRole("button", { name: "Hide tracking", exact: true }).click();
+    await toggleOrder(page);
     await expect(page.locator(".account-tracking")).toHaveCount(0);
-    await expect(page.getByText("Purchased Hydrating Cleanser")).toBeVisible();
+    await expect(page.getByText(orderNumber)).toBeVisible();
   }
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/account?section=orders&lang=ar");
   await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await toggleOrder(page);
   const contents = page.getByRole("region", { name: `محتويات الطلب ${orderNumber}` });
   await expect(contents.getByText("الحجم: 200 مل")).toBeVisible();
   await expect(contents.getByText(/الكمية: 2/)).toBeVisible();
-  await page.getByRole("button", { name: "تتبع الطلب", exact: true }).click();
   await expect(page.locator(".account-tracking__header strong")).toHaveText("OUT FOR DELIVERY");
   expect(
     await page
@@ -257,10 +260,11 @@ test("a failed order-detail request can be retried without hiding the order or t
   await expect(page.getByRole("heading", { name: "Your orders", exact: true })).toBeVisible({
     timeout: 60_000,
   });
+  await toggleOrder(page);
   const contents = page.getByRole("region", { name: `Contents of order ${orderNumber}` });
   await expect(contents.getByRole("alert")).toHaveText("Order contents couldn't be loaded.");
-  await expect(page.getByRole("heading", { name: orderNumber })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Track order", exact: true })).toBeVisible();
+  await expect(page.getByText(orderNumber)).toBeVisible();
+  await expect(page.locator(".account-tracking")).toBeVisible();
   available = true;
   await contents.getByRole("button", { name: "Try again", exact: true }).click();
   await expect(contents.getByText("Purchased Hydrating Cleanser")).toBeVisible();
@@ -271,7 +275,7 @@ test("tracking refresh updates order history and subsequent polls can show deliv
 }) => {
   await page.goto("/account?section=orders");
   await expect(page.getByRole("heading", { name: "Your orders", exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Track order", exact: true }).click();
+  await toggleOrder(page);
   let delivered = false;
   const fulfill = (route: import("@playwright/test").Route, data: unknown) =>
     route.fulfill({ json: { success: true, data } });
@@ -287,11 +291,11 @@ test("tracking refresh updates order history and subsequent polls can show deliv
   );
   await page.getByRole("button", { name: "Refresh", exact: true }).click();
   await expect(page.locator(".account-tracking__header strong")).toHaveText("OUT FOR DELIVERY");
-  await expect(page.locator(".account-orders__status")).toContainText(/out for delivery/i);
+  await expect(page.locator(".sf-simple-order__status")).toContainText(/out for delivery/i);
 
   delivered = true;
   await expect(page.locator(".account-tracking__header strong")).toHaveText("DELIVERED", {
     timeout: 25_000,
   });
-  await expect(page.locator(".account-orders__status")).toContainText(/delivered/i);
+  await expect(page.locator(".sf-simple-order__status")).toContainText(/delivered/i);
 });
