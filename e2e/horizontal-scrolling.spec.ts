@@ -100,14 +100,13 @@ for (const locale of ["en", "ar"] as const) {
     await section.screenshot({ path: testInfo.outputPath(`customer-edit-${locale}.png`) });
 
     // A normal click still operates the card's wishlist button after a drag.
+    // Guests keep a local wishlist, so the click saves the product directly.
     const card = rail.locator("li").first();
-    const wish = card.getByRole("button", { name: rtl ? /إضافة.*المفضلة/ : /Add .* to wishlist/ });
+    const wish = card.locator(".sf-product-card__wish");
+    await expect(wish).toHaveAccessibleName(rtl ? /إضافة.*المفضلة/ : /Add .* to wishlist/);
     await wish.click();
-    await expect(
-      page.getByText(rtl ? "سجّلي الدخول لحفظ قائمة المفضلة" : "Sign in to save a wishlist", {
-        exact: true,
-      }),
-    ).toBeVisible();
+    await expect(wish).toHaveAttribute("aria-pressed", "true");
+    await expect(wish).toHaveAccessibleName(rtl ? /إزالة.*المفضلة/ : /Remove .* from wishlist/);
     await card.getByRole("button", { name: rtl ? /زيادة الكمية/ : /Increase quantity/ }).click();
     await expect(card.locator(".quick-add output")).toHaveText("2");
     const link = rail.locator(".product-card-media__link").first();
