@@ -3,3 +3,11 @@ overrides:
   "js-yaml@>=4.0.0 <4.3.2": "4.3.2"
   "seroval@<=1.6.2": "1.6.3"
   "source-map-js@>=1.0.0 <1.2.2": "1.2.2"
+# Reviewed audit exceptions; every other high/critical advisory fails CI.
+# GHSA-mrhx-c7xc-m3w5 (CVE-2023-54404): zod < 4.6.6 can exhaust memory validating
+# oversized collections. It is fixed only in zod 4, a major upgrade shared with
+# the backend contracts, and the storefront validates forms in the shopper's own
+# browser. Remove after the zod 4 upgrade; keep .trivyignore in sync.
+auditConfig:
+  ignoreGhsas:
+    - GHSA-mrhx-c7xc-m3w5
