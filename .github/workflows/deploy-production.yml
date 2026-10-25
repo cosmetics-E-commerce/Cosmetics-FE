@@ -166,6 +166,38 @@ jobs:
           # shellcheck disable=SC2029 # $SHA expands on the runner; the gateway validates it
           ssh production "deploy storefront $SHA"
 
+      # Cloudflare caches storefront HTML for a short time. A cached page from the
+      # previous release points at JavaScript files the new release no longer
+      # serves, so clear the storefront hosts once the new release is live. A
+      # purge problem only warns: the release itself has already succeeded.
+      - name: Purge the Cloudflare cache for the storefront
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ZONE_ID: ${{ secrets.CLOUDFLARE_ZONE_ID }}
+          PURGE_HOSTS: ${{ vars.STOREFRONT_CACHE_HOSTS || 'bioreza.com,www.bioreza.com' }}
+        run: |
+          if [[ -z "$CLOUDFLARE_API_TOKEN" || -z "$CLOUDFLARE_ZONE_ID" ]]; then
+            echo "::warning::CLOUDFLARE_API_TOKEN or CLOUDFLARE_ZONE_ID is not set; the Cloudflare cache was not purged."
+            exit 0
+          fi
+          purge() {
+            curl -sS --max-time 30 -X POST \
+              "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE_ID/purge_cache" \
+              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              -H "Content-Type: application/json" \
+              --data "$1" | jq -e '.success == true' >/dev/null
+          }
+          hosts="$(jq -cn --arg h "$PURGE_HOSTS" '{hosts: ($h | split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0)))}')"
+          # Purging by hostname leaves API responses and images cached; fall back
+          # to everything if the zone's plan does not allow host purges.
+          if purge "$hosts"; then
+            echo "Cloudflare cache purged for $PURGE_HOSTS" | tee -a "$GITHUB_STEP_SUMMARY"
+          elif purge '{"purge_everything":true}'; then
+            echo "Cloudflare cache purged (everything)" | tee -a "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::Cloudflare cache purge failed; purge manually under Caching > Configuration."
+          fi
+
       - name: Release manifest
         if: always()
         run: |
