@@ -82,7 +82,7 @@ function applyResponsePolicy(request: Request, response: Response) {
   const headers = new Headers(response.headers);
   const contentType = headers.get("content-type") ?? "";
   const privatePath =
-    /^\/(?:account|cart|checkout|forgot-password|login|order-confirmed|register|sign-in|verify-email|wishlist)(?:\/|$)/.test(
+    /^\/(?:account|cart|checkout|forgot-password|login|order|order-confirmed|preview|register|sign-in|track-order|verify-email|wishlist)(?:\/|$)/.test(
       url.pathname,
     );
   const noisyCatalog =
@@ -108,7 +108,8 @@ function applyResponsePolicy(request: Request, response: Response) {
 
   if (contentType.includes("text/html")) {
     headers.set("Content-Language", url.searchParams.get("lang") === "ar" ? "ar" : "en");
-    if (privatePath) {
+    if (privatePath || response.status >= 500) {
+      // Private pages, and server errors a shared cache must never replay.
       headers.set("Cache-Control", "private, no-store");
     } else if (response.status >= 400) {
       headers.set("Cache-Control", "public, max-age=0, s-maxage=60");

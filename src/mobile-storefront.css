@@ -15,7 +15,6 @@
   --mobile-card-padding-lg: 20px;
 }
 
-.sf-shop-sort--mobile,
 .site-footer__accordion-trigger {
   display: none;
 }
@@ -133,19 +132,6 @@
   .sf-category-children {
     width: min(100% - 1.5rem, 1240px);
     margin-bottom: 2rem;
-  }
-  .sf-category-children__grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .sf-category-child {
-    min-height: 92px;
-    grid-template-columns: 58px minmax(0, 1fr);
-    border-inline-end: 0;
-    border-bottom: 1px solid #eee5d9;
-  }
-  .sf-category-child__image,
-  .sf-category-child__monogram {
-    width: 58px;
   }
   :root {
     --mobile-page-gutter: 20px;
@@ -492,11 +478,6 @@
     margin-top: 0;
   }
 
-  .sf-shop-page--brand .sf-shop-meta {
-    margin-top: 0;
-    padding-block: 0;
-  }
-
   .sf-shop-page--brand .sf-shop-products {
     margin-top: 24px;
   }
@@ -595,26 +576,8 @@
     width: 100%;
   }
 
-  .sf-shop-hero {
-    min-height: 148px;
-    margin-top: 14px;
-    border-radius: 10px;
-    padding: 26px 16px;
-  }
-
-  .sf-shop-hero h1 {
-    max-width: 17ch;
-    font-size: clamp(1.85rem, 8.3vw, 2.2rem);
-    line-height: 1.12;
-  }
-
   .sf-shop-catalog {
     margin-top: 30px;
-  }
-
-  .sf-shop-filterbar {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
   }
 
   .sf-shop-tabs {
@@ -630,39 +593,12 @@
     font-size: 0.94rem;
   }
 
-  .sf-shop-filter-button,
-  .sf-shop-sort--mobile {
+  .sf-shop-filter-button {
     display: inline-flex;
     width: 100%;
     min-height: 44px;
   }
 
-  .sf-shop-sort--mobile {
-    padding-inline: 13px 32px;
-  }
-
-  .sf-shop-meta {
-    align-items: baseline;
-    flex-direction: row;
-    margin-top: 14px;
-    padding-block: 12px 4px;
-  }
-
-  .sf-shop-meta > .sf-shop-sort:not(.sf-shop-sort--mobile) {
-    display: none;
-  }
-
-  .sf-shop-meta h2 {
-    font-size: 0.74rem;
-  }
-
-  .sf-shop-page-count {
-    margin-inline-start: auto;
-    margin-inline-end: 0;
-    font-size: 0.72rem;
-  }
-
-  .sf-shop-products--compact,
   .sf-shop-products--grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 28px 12px;
@@ -749,7 +685,6 @@
   }
 
   .sf-shop-filter-panel__option,
-  .sf-shop-filter-panel__select,
   .sf-shop-filter-panel__clear,
   .sf-shop-filter-panel__apply {
     min-height: 44px;
@@ -775,109 +710,14 @@
     padding: var(--storefront-page-start-space) 0 calc(102px + env(safe-area-inset-bottom));
   }
 
-  .product-reference-breadcrumb {
-    gap: 8px;
-    margin-bottom: 20px;
-    overflow-x: auto;
-    font-size: 0.76rem;
-    white-space: nowrap;
-    scrollbar-width: none;
-  }
-
-  .product-reference-layout {
-    gap: 28px;
-  }
-
   .product-template-white .product-gallery-active,
   .product-reference-main-image {
     border-radius: 12px;
   }
 
-  .product-reference-thumbs {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding-bottom: 2px;
-    scrollbar-width: none;
-  }
-
-  .product-reference-thumb {
-    width: 68px;
-    flex: 0 0 68px;
-  }
-
-  .product-reference-summary h1 {
-    font-size: clamp(1.8rem, 8vw, 2.2rem);
-    line-height: 1.07;
-  }
-
-  .product-reference-rating {
-    gap: 8px;
-    margin-top: 13px;
-  }
-
-  .product-reference-price {
-    gap: 10px;
-    margin-top: 20px;
-  }
-
-  .product-reference-price strong {
-    font-size: clamp(1.55rem, 7vw, 1.9rem);
-  }
-
-  .product-reference-short-description {
-    margin-top: 14px;
-    font-size: 0.92rem;
-    line-height: 1.66;
-  }
-
-  .product-reference-meta {
-    margin-top: 22px;
-  }
-
-  .product-reference-meta div {
-    grid-template-columns: 88px minmax(0, 1fr);
-    gap: 12px;
-    padding-block: 9px;
-  }
-
-  .product-reference-variants,
-  .product-option-selectors {
-    margin-top: 24px;
-  }
-
-  .product-reference-quantity-label {
-    margin-top: 24px;
-  }
-
-  .product-reference-actions {
-    grid-template-columns: minmax(0, 1fr) 52px;
-    gap: 10px;
-  }
-
-  .product-template-white .product-add-to-cart {
-    grid-column: 1 / -1;
-    grid-row: 1;
-  }
-
   .product-reference-quantity,
   .product-reference-wish {
     min-height: 52px;
-  }
-
-  .product-template-white .product-reference-buy-now {
-    min-height: 48px;
-    margin-top: 10px;
-  }
-
-  .product-reference-links {
-    gap: 8px 18px;
-    margin-top: 20px;
-  }
-
-  .product-reference-benefits-card {
-    margin-top: 22px;
-    padding-block: 20px;
   }
 
   .product-ingredient-intelligence {
@@ -897,11 +737,6 @@
     line-height: 1.04;
   }
 
-  .product-reference-details,
-  .product-reference-service-strip {
-    margin-top: var(--mobile-section-gap-md);
-  }
-
   .product-info-accordion__trigger {
     min-height: 56px;
     padding-block: 14px;
@@ -910,16 +745,6 @@
 
   .product-info-accordion__copy {
     padding-bottom: 22px;
-  }
-
-  .product-reference-service-strip {
-    gap: 0;
-    padding-block: 12px;
-  }
-
-  .product-reference-service-strip article {
-    min-height: 82px;
-    padding-block: 14px;
   }
 
   .review-studio__header,
@@ -1119,41 +944,13 @@
     padding: 28px 0 36px;
   }
 
-  .sf-checkout-hero .display {
-    font-size: clamp(1.9rem, 8vw, 2.2rem);
-  }
-
-  .sf-checkout-intro {
-    font-size: 0.9rem;
-  }
-
-  .sf-checkout-steps {
-    margin-top: 20px;
-    padding: 12px 6px;
-    border-radius: 12px;
-  }
-
-  .sf-checkout-step__label--desktop {
-    display: none;
-  }
-
-  .sf-checkout-step__label--mobile {
-    display: inline;
-  }
-
-  .sf-checkout-shell {
-    margin-top: 18px;
-  }
-
   .sf-checkout-card,
-  .sf-checkout-summary,
   .sf-checkout-pending {
     border-radius: 12px;
     box-shadow: none;
   }
 
-  .sf-checkout-card,
-  .sf-checkout-summary {
+  .sf-checkout-card {
     padding: var(--mobile-card-padding-md);
   }
 
@@ -1161,21 +958,9 @@
     font-size: 1.35rem;
   }
 
-  .sf-checkout-form-stack,
-  .sf-checkout-address-list,
-  .sf-checkout-payment-grid {
+  .sf-checkout-form-stack {
     gap: 9px;
     margin-top: 14px;
-  }
-
-  .sf-checkout-choice,
-  .sf-checkout-payment-option {
-    border-radius: 12px;
-    padding: 13px;
-  }
-
-  .sf-checkout-step-actions {
-    margin-top: 18px;
   }
 
   .sf-cart-page {
@@ -1551,13 +1336,6 @@
     font-size: clamp(3rem, 6.8vw, 3.5rem);
     line-height: 1.2;
   }
-
-  .sf-offers-hero h1 {
-    max-width: 12ch;
-    font-size: clamp(3.1rem, 7vw, 3.55rem);
-    line-height: 0.98;
-    text-wrap: balance;
-  }
 }
 
 @media (max-width: 359px) {
@@ -1576,23 +1354,6 @@
   .sf-hero__title,
   [dir="ltr"] .sf-hero__title {
     font-size: 2.2rem;
-  }
-
-  .sf-offers-benefits,
-  .sf-offers-trust {
-    grid-template-columns: 1fr;
-  }
-
-  .sf-offers-benefit:nth-child(n),
-  .sf-offers-trust div:nth-child(n) {
-    min-height: 88px;
-    border-inline-end: 0;
-    border-top: 1px solid var(--border);
-  }
-
-  .sf-offers-benefit:first-child,
-  .sf-offers-trust div:first-child {
-    border-top: 0;
   }
 }
 

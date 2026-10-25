@@ -314,11 +314,12 @@
 .landing-hero-builder__controls > div button[aria-selected="true"] {
   background: currentColor;
 }
-.landing-hero-builder[data-animation="FADE"] .landing-hero__media,
-.landing-hero-builder[data-animation="CROSSFADE"] .landing-hero__media {
+/* Slide changes only: the first slide's media is the largest paint on load. */
+.landing-hero-builder[data-advanced][data-animation="FADE"] .landing-hero__media,
+.landing-hero-builder[data-advanced][data-animation="CROSSFADE"] .landing-hero__media {
   animation: landing-hero-fade 420ms ease both;
 }
-.landing-hero-builder[data-animation="SLIDE"] .landing-hero__media {
+.landing-hero-builder[data-advanced][data-animation="SLIDE"] .landing-hero__media {
   animation: landing-hero-slide 420ms ease both;
 }
 @keyframes landing-hero-fade {

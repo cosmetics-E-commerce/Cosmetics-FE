@@ -325,7 +325,7 @@ function Shop() {
                   {view === "list" ? (
                     <ProductListRow product={product} />
                   ) : (
-                    <ProductCard product={product} compact />
+                    <ProductCard product={product} compact priority={index < 4} />
                   )}
                 </Reveal>
               ))}

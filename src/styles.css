@@ -676,12 +676,6 @@ html[data-motion-ready="true"]
   }
 }
 
-.bag-feedback {
-  display: inline-flex;
-  transform-origin: 50% 20%;
-  animation: bag-feedback 440ms var(--ease-premium) both;
-}
-
 @utility count-change {
   animation: count-change var(--motion-ui) var(--ease-premium) both;
 }
@@ -737,17 +731,6 @@ html[data-motion-ready="true"]
 
 .header-action:active {
   transform: scale(0.92);
-}
-
-.catalog-toolbar {
-  position: relative;
-  z-index: 10;
-  margin-inline: -0.75rem;
-  padding: 0.75rem;
-  background: color-mix(in srgb, var(--color-warm-white) 94%, transparent);
-  transition:
-    border-color var(--motion-ui) var(--ease-premium),
-    box-shadow var(--motion-ui) var(--ease-premium);
 }
 
 .product-card {
@@ -855,54 +838,6 @@ html[data-motion-ready="true"]
   animation: page-enter 280ms var(--ease-reveal) both;
 }
 
-.motion-carousel {
-  cursor: grab;
-  scroll-behavior: auto;
-  scroll-padding-inline: 1.25rem;
-  overscroll-behavior-inline: contain;
-}
-
-.motion-carousel:active {
-  cursor: grabbing;
-}
-
-.motion-carousel > * {
-  scroll-snap-stop: normal;
-  transition:
-    opacity var(--motion-ui) var(--ease-premium),
-    transform var(--motion-normal) var(--ease-reveal);
-}
-
-.purchase-actions {
-  padding-block: 0.25rem;
-}
-
-.account-overview-card {
-  box-shadow: 0 0 0 transparent;
-  transition:
-    transform var(--motion-ui) var(--ease-premium),
-    border-color var(--motion-ui) var(--ease-premium),
-    box-shadow var(--motion-ui) var(--ease-premium);
-}
-
-.account-overview-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--color-gold);
-  box-shadow: var(--shadow-lift);
-}
-
-.checkout-section {
-  animation: page-enter 280ms var(--ease-premium) both;
-}
-
-.checkout-section:nth-of-type(2) {
-  animation-delay: 55ms;
-}
-
-.checkout-section:nth-of-type(3) {
-  animation-delay: 105ms;
-}
-
 .image-reveal-shell[data-failed="true"] .image-reveal-media {
   visibility: hidden;
 }
@@ -955,29 +890,6 @@ html[data-motion-ready="true"]
   }
 }
 
-.sf-brand-landing-logo-fallback {
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  letter-spacing: 0.12em;
-  line-height: 1.25;
-  text-transform: uppercase;
-}
-
-.choice-card {
-  transition:
-    border-color var(--motion-micro) var(--ease-premium),
-    background-color var(--motion-micro) var(--ease-premium),
-    transform var(--motion-micro) var(--ease-premium);
-}
-
-.choice-card:hover {
-  border-color: var(--color-gold-soft);
-}
-
-.choice-card:active {
-  transform: scale(0.995);
-}
-
 .state-panel {
   background:
     linear-gradient(var(--color-warm-white), var(--color-warm-white)) padding-box,
@@ -1021,9 +933,6 @@ html[data-motion-ready="true"]
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .img-zoom:hover img {
-    transform: scale(1.035);
-  }
 
   .product-card:hover {
     transform: translateY(-2px);
@@ -1039,9 +948,6 @@ html[data-motion-ready="true"]
 }
 
 @media (min-width: 1024px) {
-  .product-purchase-panel {
-    inset-block-start: calc(var(--store-header-offset, 106px) + 1.5rem);
-  }
 
   .account-nav {
     position: sticky;
@@ -1081,10 +987,6 @@ html[data-motion-ready="true"]
     .motion-image-reveal[data-motion-state="hidden"]
     .motion-image-reveal__inner {
     transform: scale(1.035);
-  }
-
-  .motion-carousel {
-    cursor: auto;
   }
 }
 

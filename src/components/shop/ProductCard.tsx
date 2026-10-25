@@ -51,10 +51,13 @@ export const ProductCard = memo(function ProductCard({
   product,
   compact = false,
   layout = "grid",
+  priority = false,
 }: {
   product: Product;
   compact?: boolean;
   layout?: "grid" | "list";
+  /** First-row cards: fetch the photo immediately; it is usually the page's largest paint. */
+  priority?: boolean;
 }) {
   const { locale, wishlist, toggleWish } = useProductCardStore();
   const labels = cardCopy[locale];
@@ -142,7 +145,8 @@ export const ProductCard = memo(function ProductCard({
               alt={product.imageAlt || product.name}
               width={800}
               height={1000}
-              loading="lazy"
+              loading={priority ? "eager" : "lazy"}
+              fetchPriority={priority ? "high" : "auto"}
               decoding="async"
               sizes={
                 layout === "list"

@@ -44,6 +44,7 @@ import { PolishedImage } from "@/components/ui/polished-image";
 import { Button } from "@/components/ui/button";
 import { ProductScrollControls } from "@/components/ui/horizontal-scroll";
 import { useHorizontalScroll } from "@/hooks/use-horizontal-scroll";
+import { useDeferredSlides } from "@/hooks/use-deferred-slides";
 import { Magnetic, ParallaxMedia, TextReveal } from "@/components/motion/Primitives";
 import { useMotionPreferences } from "@/components/motion/motion-context";
 import {
@@ -425,6 +426,7 @@ function HeroSlides({
   const { reducedMotion } = useMotionPreferences();
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const { hasAdvanced } = useDeferredSlides(activeIndex, slides.length);
   useEffect(() => {
     if (activeIndex >= slides.length) setActiveIndex(0);
   }, [activeIndex, slides.length]);
@@ -456,6 +458,7 @@ function HeroSlides({
   return (
     <div
       className="landing-hero landing-hero-builder"
+      data-advanced={hasAdvanced || undefined}
       data-layout="FULL"
       data-media-behavior={desktopLayout.mediaBehavior}
       data-media-side={desktopLayout.sideImagePosition}
@@ -612,7 +615,7 @@ function BioRezaSignatureHero({
   const { reducedMotion } = useMotionPreferences();
   const [activeIndex, setActiveIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const [deferredMediaReady, setDeferredMediaReady] = useState(false);
+  const { shouldMountSlide, hasAdvanced } = useDeferredSlides(activeIndex, slides.length);
   const active = slides[activeIndex] ?? slides[0];
   useEffect(() => {
     if (activeIndex >= slides.length) setActiveIndex(0);
@@ -625,10 +628,6 @@ function BioRezaSignatureHero({
     );
     return () => window.clearInterval(timer);
   }, [carousel.autoplay, carousel.durationSeconds, paused, reducedMotion, slides.length]);
-  useEffect(() => {
-    const timer = window.setTimeout(() => setDeferredMediaReady(true), 1_500);
-    return () => window.clearTimeout(timer);
-  }, []);
   if (!active) return null;
   const go = (index: number) => setActiveIndex((index + slides.length) % slides.length);
   const ar = locale === "ar";
@@ -636,6 +635,7 @@ function BioRezaSignatureHero({
     <section
       id="home-hero"
       className="sf-hero landing-signature-hero"
+      data-advanced={hasAdvanced || undefined}
       aria-label={ar ? "واجهة متجر بيوريزا" : "BIOREZA storefront introduction"}
       onPointerEnter={() => carousel.pauseOnHover && setPaused(true)}
       onPointerLeave={() => setPaused(false)}
@@ -668,7 +668,7 @@ function BioRezaSignatureHero({
               className="size-full"
               strength={activeIndex === index && !reducedMotion ? 18 : 0}
             >
-              {index === 0 || activeIndex === index || deferredMediaReady ? (
+              {shouldMountSlide(index) ? (
                 <SignatureSlideMedia
                   slide={slide}
                   snapshot={snapshot}
@@ -878,7 +878,7 @@ function signatureMedia(value: LandingPageHeroSlide["signatureMedia"]): Snapshot
         width: 2880,
         height: 1425,
         altText: null,
-        contentType: "image/jpeg",
+        contentType: "image/webp",
       }
     : undefined;
 }
