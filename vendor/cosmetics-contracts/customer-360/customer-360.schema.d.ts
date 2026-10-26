@@ -1622,6 +1622,19 @@ export declare const customer360OverviewSchema: z.ZodObject<{
         placedAt: string;
         discountTotal: number;
     }[];
+    promotions: {
+        usageCount: number;
+        totalDiscount: number;
+        recent: {
+            id: string;
+            orderNumber: string;
+            name: string;
+            orderId: string;
+            couponCode: string | null;
+            discount: number;
+            usedAt: string;
+        }[];
+    };
     notes: {
         id: string;
         createdAt: string;
@@ -1741,19 +1754,6 @@ export declare const customer360OverviewSchema: z.ZodObject<{
             label: string;
             reasons: string[];
             strength: number;
-        }[];
-    };
-    promotions: {
-        usageCount: number;
-        totalDiscount: number;
-        recent: {
-            id: string;
-            orderNumber: string;
-            name: string;
-            orderId: string;
-            couponCode: string | null;
-            discount: number;
-            usedAt: string;
         }[];
     };
     routine: {
@@ -1865,6 +1865,19 @@ export declare const customer360OverviewSchema: z.ZodObject<{
         placedAt: string;
         discountTotal: number;
     }[];
+    promotions: {
+        usageCount: number;
+        totalDiscount: number;
+        recent: {
+            id: string;
+            orderNumber: string;
+            name: string;
+            orderId: string;
+            couponCode: string | null;
+            discount: number;
+            usedAt: string;
+        }[];
+    };
     notes: {
         id: string;
         createdAt: string;
@@ -1984,19 +1997,6 @@ export declare const customer360OverviewSchema: z.ZodObject<{
             label: string;
             reasons: string[];
             strength: number;
-        }[];
-    };
-    promotions: {
-        usageCount: number;
-        totalDiscount: number;
-        recent: {
-            id: string;
-            orderNumber: string;
-            name: string;
-            orderId: string;
-            couponCode: string | null;
-            discount: number;
-            usedAt: string;
         }[];
     };
     routine: {
