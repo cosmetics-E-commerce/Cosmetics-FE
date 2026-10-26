@@ -47,6 +47,7 @@ jobs:
           severity: HIGH,CRITICAL
           exit-code: "1"
           ignore-unfixed: false
+          trivyignores: .trivyignore
       - run: pnpm lint && pnpm typecheck && pnpm test
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium

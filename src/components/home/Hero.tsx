@@ -5,6 +5,7 @@ import { useEffect, useState, type CSSProperties } from "react";
 import { Button } from "@/components/ui/button";
 import { Magnetic, ParallaxMedia, TextReveal } from "@/components/motion/Primitives";
 import { useMotionPreferences } from "@/components/motion/motion-context";
+import { useDeferredSlides } from "@/hooks/use-deferred-slides";
 import { images } from "@/lib/products";
 import { useStore } from "@/lib/store";
 
@@ -56,7 +57,7 @@ export function Hero() {
   const ar = locale === "ar";
   const [activeSlide, setActiveSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const [deferredMediaReady, setDeferredMediaReady] = useState(false);
+  const { shouldMountSlide, hasAdvanced } = useDeferredSlides(activeSlide, heroSlides.length);
   const active = heroSlides[activeSlide] ?? heroSlides[0];
   const goToSlide = (index: number) =>
     setActiveSlide((index + heroSlides.length) % heroSlides.length);
@@ -72,32 +73,11 @@ export function Hero() {
     return () => window.clearInterval(timer);
   }, [isPaused, reducedMotion]);
 
-  useEffect(() => {
-    let idleId: number | undefined;
-    let timeoutId: ReturnType<typeof globalThis.setTimeout> | undefined;
-    const loadDeferredMedia = () => {
-      if ("requestIdleCallback" in window) {
-        idleId = window.requestIdleCallback(() => setDeferredMediaReady(true), { timeout: 2_000 });
-      } else {
-        setDeferredMediaReady(true);
-      }
-    };
-    const schedule = () => {
-      timeoutId = globalThis.setTimeout(loadDeferredMedia, 1_500);
-    };
-    if (document.readyState === "complete") schedule();
-    else window.addEventListener("load", schedule, { once: true });
-    return () => {
-      window.removeEventListener("load", schedule);
-      if (idleId !== undefined && "cancelIdleCallback" in window) window.cancelIdleCallback(idleId);
-      if (timeoutId !== undefined) globalThis.clearTimeout(timeoutId);
-    };
-  }, []);
-
   return (
     <section
       id="home-hero"
       className="sf-hero"
+      data-advanced={hasAdvanced || undefined}
       aria-label={ar ? "واجهة متجر بيوريزا" : "BIOREZA storefront introduction"}
       onPointerEnter={() => setIsPaused(true)}
       onPointerLeave={() => setIsPaused(false)}
@@ -117,7 +97,7 @@ export function Hero() {
             }
           >
             <ParallaxMedia className="size-full" strength={activeSlide === index ? 18 : 0}>
-              {index === 0 || activeSlide === index || deferredMediaReady ? (
+              {shouldMountSlide(index) ? (
                 <img
                   src={slide.image}
                   alt=""

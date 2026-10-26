@@ -1,0 +1,4 @@
+# Reviewed exceptions for the CI dependency scan. Keep in sync with
+# auditConfig.ignoreGhsas in pnpm-workspace.yaml.
+# zod < 4.6.6 memory exhaustion (GHSA-mrhx-c7xc-m3w5); fixed only in zod 4.
+CVE-2023-54404

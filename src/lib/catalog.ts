@@ -258,9 +258,13 @@ export function useProduct(slug: string, locale: Locale = "en", initialData?: Pr
   });
 }
 
-export function useCategories(initialData?: Awaited<ReturnType<typeof listCategories>>) {
+export function useCategories(
+  initialData?: Awaited<ReturnType<typeof listCategories>>,
+  { enabled = true }: { enabled?: boolean } = {},
+) {
   return useQuery({
     ...categoriesQuery(),
+    enabled,
     ...(initialData ? { initialData: filterEntitiesWithProducts(initialData) } : {}),
   });
 }
@@ -286,13 +290,18 @@ export function usePublicStoreSettings() {
     staleTime: 60_000,
     retry: 1,
     refetchInterval: 60_000,
-    refetchOnWindowFocus: "always",
+    // Returning to the tab refreshes only settings older than staleTime.
+    refetchOnWindowFocus: true,
   });
 }
 
-export function useAllBrands(initialData?: Awaited<ReturnType<typeof listAllBrands>>) {
+export function useAllBrands(
+  initialData?: Awaited<ReturnType<typeof listAllBrands>>,
+  { enabled = true }: { enabled?: boolean } = {},
+) {
   return useQuery({
     ...allBrandsQuery(),
+    enabled,
     ...(initialData !== undefined ? { initialData } : {}),
   });
 }
@@ -502,7 +511,19 @@ function renderableImage(value: string | null | undefined): string | null {
   return value?.trim() || null;
 }
 
+type PromotionPriceResult = Awaited<ReturnType<typeof getPromotionPrices>>[number];
+
 async function promotionalPrices(products: PublicProductResponse[]) {
+  // Current APIs embed each product's promotional prices, which saves a second,
+  // sequential request per listing. Older responses fall back to asking for them.
+  const embedded = products.map(
+    (product) => (product as { promotionPrices?: PromotionPriceResult[] }).promotionPrices,
+  );
+  if (embedded.every((prices) => Array.isArray(prices))) {
+    return new Map(
+      embedded.flatMap((prices) => prices!).map((result) => [result.variantId, result]),
+    );
+  }
   const lines = products.flatMap((product) =>
     product.variants.map((variant) => ({
       variantId: variant.id,
@@ -517,16 +538,12 @@ async function promotionalPrices(products: PublicProductResponse[]) {
       quantity: 1,
     })),
   );
-  if (!lines.length)
-    return new Map<string, Awaited<ReturnType<typeof getPromotionPrices>>[number]>();
+  if (!lines.length) return new Map<string, PromotionPriceResult>();
   const results = await getPromotionPrices(lines);
   return new Map(results.map((result) => [result.variantId, result]));
 }
 
-function applyPrices(
-  product: Product,
-  prices: Map<string, Awaited<ReturnType<typeof getPromotionPrices>>[number]>,
-): Product {
+function applyPrices(product: Product, prices: Map<string, PromotionPriceResult>): Product {
   const sizes = product.sizes.map((size) => {
     const offer = size.id ? prices.get(size.id) : undefined;
     return offer

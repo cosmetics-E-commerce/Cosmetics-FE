@@ -8,7 +8,7 @@ import type {
 } from "@cosmetics/contracts";
 import { ChevronRight, Grid2X2, Image as ImageIcon, Search } from "lucide-react";
 
-import legacyPromoImage from "@/assets/product-serum.jpg";
+import legacyPromoImage from "@/assets/product-serum.webp";
 import { filterBrands, groupBrandItems } from "@/components/layout/brand-directory-data";
 import { BrandLogo } from "@/components/brand/BrandLogo";
 import { localizedNavigationText, navigationVisibilityAllows } from "@/lib/navigation";

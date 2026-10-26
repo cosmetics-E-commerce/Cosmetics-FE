@@ -385,22 +385,6 @@
   color: #8c7f72;
   font-size: 11px;
 }
-.sf-routine-product__image {
-  display: grid;
-  place-items: center;
-  aspect-ratio: 1;
-  background: #eee6da;
-  overflow: hidden;
-}
-.sf-routine-product__image img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transition: transform 650ms cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-.sf-routine-product__image:hover img {
-  transform: scale(1.025);
-}
 .sf-routine-product__copy > p {
   margin: 0;
   color: #93682f;

@@ -622,10 +622,18 @@ type RequestOptions = Omit<RequestInit, "body"> & {
 };
 
 const configuredApiBase = (import.meta.env["VITE_API_BASE_URL"] as string | undefined)?.trim();
-const API_BASE = resolveApiBase(
+// The SSR server runs beside the API. API_INTERNAL_URL (a runtime variable, e.g.
+// http://127.0.0.1:3000/api/v1) lets server renders call it directly instead of
+// leaving the machine and coming back through the CDN for every loader fetch.
+const internalApiBase =
+  typeof window === "undefined" && typeof process !== "undefined"
+    ? process.env["API_INTERNAL_URL"]?.trim()
+    : undefined;
+const PUBLIC_API_BASE = resolveApiBase(
   configuredApiBase,
   typeof window === "undefined" ? undefined : window.location,
 );
+const API_BASE = internalApiBase ? internalApiBase.replace(/\/+$/, "") : PUBLIC_API_BASE;
 const CSRF_KEY = "bioreza.csrf";
 const CART_KEY = "bioreza.guest-cart";
 const REFRESH_LOCK_KEY = "bioreza.auth-refresh-lock";
@@ -738,7 +746,14 @@ async function rawEnvelope<T>(path: string, options: RequestOptions = {}): Promi
     response = await fetch(`${API_BASE}${path}`, requestInit);
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") throw error;
-    throw normalizeStoreApiError(null, 0, browserLocale(), "NETWORK_UNAVAILABLE");
+    // A misconfigured or restarting internal address must not take server renders
+    // down: retry once through the public API.
+    const fallback =
+      API_BASE !== PUBLIC_API_BASE
+        ? await fetch(`${PUBLIC_API_BASE}${path}`, requestInit).catch(() => null)
+        : null;
+    if (!fallback) throw normalizeStoreApiError(null, 0, browserLocale(), "NETWORK_UNAVAILABLE");
+    response = fallback;
   }
 
   if (

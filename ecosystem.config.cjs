@@ -40,6 +40,11 @@ module.exports = {
         // Loopback only: Nginx is the public entry point.
         HOST: "127.0.0.1",
         PORT: process.env.STOREFRONT_PORT || "5173",
+        // Server renders call the co-located API directly instead of through the
+        // CDN. Falls back to the public API URL if this address is unreachable.
+        API_INTERNAL_URL:
+          process.env.API_INTERNAL_URL ||
+          `http://127.0.0.1:${process.env.API_PORT || "3000"}/api/v1`,
       },
     },
   ],
