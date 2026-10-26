@@ -158,8 +158,8 @@ export declare const checkoutPreviewResponseSchema: z.ZodObject<{
     estimatedDeliveryDate: string;
     couponCode: string | null;
     shippingDiscount: number;
-    totalSavings: number;
     discount: number;
+    totalSavings: number;
     appliedPromotions: {
         message: string;
         type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
@@ -181,8 +181,8 @@ export declare const checkoutPreviewResponseSchema: z.ZodObject<{
     estimatedDeliveryDate: string;
     couponCode: string | null;
     shippingDiscount: number;
-    totalSavings: number;
     discount: number;
+    totalSavings: number;
     appliedPromotions: {
         message: string;
         type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
@@ -1423,8 +1423,8 @@ export declare const orderResponseSchema: z.ZodObject<{
     }[];
     customerId: string;
     shippingDiscount: number;
-    totalSavings: number;
     discount: number;
+    totalSavings: number;
     appliedPromotions: {
         name: string;
         couponCode: string | null;
@@ -1597,8 +1597,8 @@ export declare const orderResponseSchema: z.ZodObject<{
     }[];
     customerId: string;
     shippingDiscount: number;
-    totalSavings: number;
     discount: number;
+    totalSavings: number;
     appliedPromotions: {
         name: string;
         couponCode: string | null;
@@ -2316,8 +2316,8 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
         estimatedDeliveryDate: string | null;
         customerId: string;
         shippingDiscount: number;
-        totalSavings: number;
         discount: number;
+        totalSavings: number;
         appliedPromotions: {
             name: string;
             couponCode: string | null;
@@ -2467,8 +2467,8 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
         estimatedDeliveryDate: string | null;
         customerId: string;
         shippingDiscount: number;
-        totalSavings: number;
         discount: number;
+        totalSavings: number;
         appliedPromotions: {
             name: string;
             couponCode: string | null;
@@ -2642,8 +2642,8 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
         estimatedDeliveryDate: string | null;
         customerId: string;
         shippingDiscount: number;
-        totalSavings: number;
         discount: number;
+        totalSavings: number;
         appliedPromotions: {
             name: string;
             couponCode: string | null;
@@ -2803,8 +2803,8 @@ export declare const paginatedOrdersSchema: z.ZodObject<{
         estimatedDeliveryDate: string | null;
         customerId: string;
         shippingDiscount: number;
-        totalSavings: number;
         discount: number;
+        totalSavings: number;
         appliedPromotions: {
             name: string;
             couponCode: string | null;
@@ -3614,8 +3614,8 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         }[];
         customerId: string;
         shippingDiscount: number;
-        totalSavings: number;
         discount: number;
+        totalSavings: number;
         appliedPromotions: {
             name: string;
             couponCode: string | null;
@@ -3788,8 +3788,8 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         }[];
         customerId: string;
         shippingDiscount: number;
-        totalSavings: number;
         discount: number;
+        totalSavings: number;
         appliedPromotions: {
             name: string;
             couponCode: string | null;
@@ -4053,8 +4053,8 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         }[];
         customerId: string;
         shippingDiscount: number;
-        totalSavings: number;
         discount: number;
+        totalSavings: number;
         appliedPromotions: {
             name: string;
             couponCode: string | null;
@@ -4260,8 +4260,8 @@ export declare const createOrderResponseSchema: z.ZodObject<{
         }[];
         customerId: string;
         shippingDiscount: number;
-        totalSavings: number;
         discount: number;
+        totalSavings: number;
         appliedPromotions: {
             name: string;
             couponCode: string | null;

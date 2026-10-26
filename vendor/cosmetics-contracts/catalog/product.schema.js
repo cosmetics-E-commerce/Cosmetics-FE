@@ -5,6 +5,7 @@ const zod_1 = require("zod");
 const image_reference_schema_1 = require("../media/image-reference.schema");
 const primitives_1 = require("../common/primitives");
 const pagination_1 = require("../common/pagination");
+const promotion_schema_1 = require("../promotions/promotion.schema");
 const ingredient_schema_1 = require("../ingredients/ingredient.schema");
 exports.skinTypeEnum = zod_1.z.enum([
     "OILY",
@@ -571,6 +572,13 @@ exports.publicProductSchema = zod_1.z.object({
     variants: zod_1.z.array(exports.publicProductVariantSchema),
     images: zod_1.z.array(exports.publicProductImageSchema),
     ingredientDetails: zod_1.z.array(ingredient_schema_1.ingredientSummarySchema),
+    /**
+     * Guest promotional prices for `variants`, in the same order — exactly what
+     * POST /promotions/prices returns for those variants. Present on public
+     * catalog responses; absent when promotion pricing could not be computed, in
+     * which case clients fall back to POST /promotions/prices.
+     */
+    promotionPrices: zod_1.z.array(promotion_schema_1.productPromotionPriceSchema).optional(),
 });
 exports.adminProductVariantSchema = productVariantResponseSchema.extend({
     barcode: zod_1.z.string().nullable(),
