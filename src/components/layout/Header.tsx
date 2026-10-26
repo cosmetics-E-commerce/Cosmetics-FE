@@ -10,6 +10,7 @@ import {
 } from "react";
 import { Link, useLocation, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { usePageIdle } from "@/hooks/use-page-idle";
 import { toast } from "sonner";
 import {
   ChevronDown,
@@ -31,7 +32,7 @@ import {
 } from "lucide-react";
 import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
 import { Logo } from "@/components/brand/Logo";
-import promoProductImage from "@/assets/product-serum.jpg";
+import promoProductImage from "@/assets/product-serum.webp";
 import {
   Accordion,
   AccordionContent,
@@ -168,8 +169,6 @@ export function Header({
   } = useStore();
   const searchOpen = useSearchOpen();
   const { pathname, search } = useLocation();
-  const categories = useCategories();
-  const brands = useAllBrands();
   const publishedNavigation = useQuery({
     ...publishedNavigationQuery(),
     ...(initialNavigation ? { initialData: initialNavigation } : {}),
@@ -184,6 +183,12 @@ export function Header({
   const [menu, setMenu] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
   const [megaMenu, setMegaMenu] = useState<MegaMenuValue | "">("");
+  // Menu data loads once the page is idle, or at once if a menu opens first, so
+  // it never competes with the page's own requests during first load.
+  const pageIdle = usePageIdle();
+  const menuDataEnabled = pageIdle || menu || megaMenu !== "";
+  const categories = useCategories(undefined, { enabled: menuDataEnabled });
+  const brands = useAllBrands(undefined, { enabled: menuDataEnabled });
   const scrolledRef = useRef(false);
   const copy = headerCopy[locale];
 

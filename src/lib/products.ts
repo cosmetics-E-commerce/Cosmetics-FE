@@ -1,17 +1,17 @@
-import serum from "@/assets/product-serum.jpg";
-import cream from "@/assets/product-cream.jpg";
-import collection from "@/assets/collection.jpg";
-import catSkincare from "@/assets/cat-skincare.jpg";
-import catHaircare from "@/assets/cat-haircare.jpg";
-import catFragrance from "@/assets/cat-fragrance.jpg";
-import storyLarge from "@/assets/story-large.jpg";
-import storyDetail from "@/assets/story-detail.jpg";
-import hero from "@/assets/hero.jpg";
-import heroSlide1 from "@/assets/hero-slide-1.jpg";
-import heroSlide2 from "@/assets/hero-slide-2.jpg";
-import heroSlide3 from "@/assets/hero-slide-3.jpg";
-import beautyDifferenceBefore from "@/assets/beauty-difference-before.jpg";
-import beautyDifferenceAfter from "@/assets/beauty-difference-after.jpg";
+import serum from "@/assets/product-serum.webp";
+import cream from "@/assets/product-cream.webp";
+import collection from "@/assets/collection.webp";
+import catSkincare from "@/assets/cat-skincare.webp";
+import catHaircare from "@/assets/cat-haircare.webp";
+import catFragrance from "@/assets/cat-fragrance.webp";
+import storyLarge from "@/assets/story-large.webp";
+import storyDetail from "@/assets/story-detail.webp";
+import hero from "@/assets/hero.webp";
+import heroSlide1 from "@/assets/hero-slide-1.webp";
+import heroSlide2 from "@/assets/hero-slide-2.webp";
+import heroSlide3 from "@/assets/hero-slide-3.webp";
+import beautyDifferenceBefore from "@/assets/beauty-difference-before.webp";
+import beautyDifferenceAfter from "@/assets/beauty-difference-after.webp";
 
 export const images = {
   serum,

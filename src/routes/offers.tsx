@@ -11,7 +11,7 @@ import { listOffers, type StorefrontOffer } from "@/lib/api";
 import { dateValue, useOfferCatalog } from "@/lib/offers";
 import { formatPrice, type Product } from "@/lib/products";
 import { createSeoHead } from "@/lib/seo";
-import offersPhoto from "@/assets/cat-skincare.jpg";
+import offersPhoto from "@/assets/cat-skincare.webp";
 import { useStore } from "@/lib/store";
 import "@/components/offers/offers-page.css";
 

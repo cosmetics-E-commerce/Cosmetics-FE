@@ -29,9 +29,18 @@ export function GlobalBannerSlot({ position }: { position: StoreBanner["position
     }),
     [count, couponCode, device, locale, page, subtotal, user],
   );
+  // The server resolved banners for the anonymous desktop context; reuse that answer
+  // instead of asking again at hydration. Any other context fetches its own.
+  const matchesServerContext =
+    device === "desktop" &&
+    !context.authenticated &&
+    context.cartCount === 0 &&
+    context.cartSubtotal === 0 &&
+    !context.couponCode;
   const query = useQuery({
     queryKey: ["active-banners", context],
     queryFn: () => getActiveBanners(context),
+    initialData: matchesServerContext ? (initialBanners ?? undefined) : undefined,
     enabled: typeof window !== "undefined",
     staleTime: 30_000,
     refetchInterval: 60_000,

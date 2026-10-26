@@ -170,11 +170,11 @@ export function SeoCatalogLanding({
           <div
             className={`sf-shop-products ${search.view === "list" ? "sf-shop-products--list" : "sf-shop-products--grid"}`}
           >
-            {products.map((product) =>
+            {products.map((product, index) =>
               search.view === "list" ? (
                 <ProductListRow key={product.id} product={product} />
               ) : (
-                <ProductCard key={product.id} product={product} compact />
+                <ProductCard key={product.id} product={product} compact priority={index < 4} />
               ),
             )}
           </div>

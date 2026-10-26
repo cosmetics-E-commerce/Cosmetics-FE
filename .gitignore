@@ -53,3 +53,6 @@ playwright-report/
 backups/
 *.sql.gz
 *.dump
+
+# Release tarballs from scripts/release/package-*.sh
+/release/
