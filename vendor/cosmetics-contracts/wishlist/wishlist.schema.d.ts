@@ -406,6 +406,75 @@ export declare const wishlistItemSchema: z.ZodObject<{
             concentration: string | null;
             concentrationUnit: string | null;
         }>, "many">;
+        promotionPrices: z.ZodOptional<z.ZodArray<z.ZodObject<{
+            variantId: z.ZodString;
+            originalPrice: z.ZodNumber;
+            price: z.ZodNumber;
+            discount: z.ZodNumber;
+            promotions: z.ZodArray<z.ZodObject<{
+                id: z.ZodString;
+                name: z.ZodString;
+                title: z.ZodString;
+                type: z.ZodEnum<["PRODUCT_DISCOUNT", "CART_DISCOUNT", "BUY_X_GET_Y", "BUNDLE", "QUANTITY_TIER", "SPEND_TIER", "FREE_SHIPPING", "FREE_GIFT", "FLASH_SALE"]>;
+                couponCode: z.ZodNullable<z.ZodString>;
+                discountAmount: z.ZodNumber;
+                shippingDiscount: z.ZodNumber;
+                discountedUnits: z.ZodNumber;
+                message: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                message: string;
+                type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                id: string;
+                name: string;
+                discountedUnits: number;
+                couponCode: string | null;
+                title: string;
+                discountAmount: number;
+                shippingDiscount: number;
+            }, {
+                message: string;
+                type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                id: string;
+                name: string;
+                discountedUnits: number;
+                couponCode: string | null;
+                title: string;
+                discountAmount: number;
+                shippingDiscount: number;
+            }>, "many">;
+        }, "strip", z.ZodTypeAny, {
+            price: number;
+            variantId: string;
+            originalPrice: number;
+            discount: number;
+            promotions: {
+                message: string;
+                type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                id: string;
+                name: string;
+                discountedUnits: number;
+                couponCode: string | null;
+                title: string;
+                discountAmount: number;
+                shippingDiscount: number;
+            }[];
+        }, {
+            price: number;
+            variantId: string;
+            originalPrice: number;
+            discount: number;
+            promotions: {
+                message: string;
+                type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                id: string;
+                name: string;
+                discountedUnits: number;
+                couponCode: string | null;
+                title: string;
+                discountAmount: number;
+                shippingDiscount: number;
+            }[];
+        }>, "many">>;
     }, "strip", z.ZodTypeAny, {
         options: {
             values: {
@@ -528,6 +597,23 @@ export declare const wishlistItemSchema: z.ZodObject<{
         }[];
         howToUseEn?: string | null | undefined;
         howToUseAr?: string | null | undefined;
+        promotionPrices?: {
+            price: number;
+            variantId: string;
+            originalPrice: number;
+            discount: number;
+            promotions: {
+                message: string;
+                type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                id: string;
+                name: string;
+                discountedUnits: number;
+                couponCode: string | null;
+                title: string;
+                discountAmount: number;
+                shippingDiscount: number;
+            }[];
+        }[] | undefined;
     }, {
         options: {
             values: {
@@ -650,6 +736,23 @@ export declare const wishlistItemSchema: z.ZodObject<{
         }[];
         howToUseEn?: string | null | undefined;
         howToUseAr?: string | null | undefined;
+        promotionPrices?: {
+            price: number;
+            variantId: string;
+            originalPrice: number;
+            discount: number;
+            promotions: {
+                message: string;
+                type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                id: string;
+                name: string;
+                discountedUnits: number;
+                couponCode: string | null;
+                title: string;
+                discountAmount: number;
+                shippingDiscount: number;
+            }[];
+        }[] | undefined;
     }>;
     addedAt: z.ZodString;
 }, "strip", z.ZodTypeAny, {
@@ -778,6 +881,23 @@ export declare const wishlistItemSchema: z.ZodObject<{
         }[];
         howToUseEn?: string | null | undefined;
         howToUseAr?: string | null | undefined;
+        promotionPrices?: {
+            price: number;
+            variantId: string;
+            originalPrice: number;
+            discount: number;
+            promotions: {
+                message: string;
+                type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                id: string;
+                name: string;
+                discountedUnits: number;
+                couponCode: string | null;
+                title: string;
+                discountAmount: number;
+                shippingDiscount: number;
+            }[];
+        }[] | undefined;
     };
     addedAt: string;
 }, {
@@ -906,6 +1026,23 @@ export declare const wishlistItemSchema: z.ZodObject<{
         }[];
         howToUseEn?: string | null | undefined;
         howToUseAr?: string | null | undefined;
+        promotionPrices?: {
+            price: number;
+            variantId: string;
+            originalPrice: number;
+            discount: number;
+            promotions: {
+                message: string;
+                type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                id: string;
+                name: string;
+                discountedUnits: number;
+                couponCode: string | null;
+                title: string;
+                discountAmount: number;
+                shippingDiscount: number;
+            }[];
+        }[] | undefined;
     };
     addedAt: string;
 }>;
@@ -1287,6 +1424,75 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
                 concentration: string | null;
                 concentrationUnit: string | null;
             }>, "many">;
+            promotionPrices: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                variantId: z.ZodString;
+                originalPrice: z.ZodNumber;
+                price: z.ZodNumber;
+                discount: z.ZodNumber;
+                promotions: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    name: z.ZodString;
+                    title: z.ZodString;
+                    type: z.ZodEnum<["PRODUCT_DISCOUNT", "CART_DISCOUNT", "BUY_X_GET_Y", "BUNDLE", "QUANTITY_TIER", "SPEND_TIER", "FREE_SHIPPING", "FREE_GIFT", "FLASH_SALE"]>;
+                    couponCode: z.ZodNullable<z.ZodString>;
+                    discountAmount: z.ZodNumber;
+                    shippingDiscount: z.ZodNumber;
+                    discountedUnits: z.ZodNumber;
+                    message: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }, {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }>, "many">;
+            }, "strip", z.ZodTypeAny, {
+                price: number;
+                variantId: string;
+                originalPrice: number;
+                discount: number;
+                promotions: {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }[];
+            }, {
+                price: number;
+                variantId: string;
+                originalPrice: number;
+                discount: number;
+                promotions: {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }[];
+            }>, "many">>;
         }, "strip", z.ZodTypeAny, {
             options: {
                 values: {
@@ -1409,6 +1615,23 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             }[];
             howToUseEn?: string | null | undefined;
             howToUseAr?: string | null | undefined;
+            promotionPrices?: {
+                price: number;
+                variantId: string;
+                originalPrice: number;
+                discount: number;
+                promotions: {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }[];
+            }[] | undefined;
         }, {
             options: {
                 values: {
@@ -1531,6 +1754,23 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             }[];
             howToUseEn?: string | null | undefined;
             howToUseAr?: string | null | undefined;
+            promotionPrices?: {
+                price: number;
+                variantId: string;
+                originalPrice: number;
+                discount: number;
+                promotions: {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }[];
+            }[] | undefined;
         }>;
         addedAt: z.ZodString;
     }, "strip", z.ZodTypeAny, {
@@ -1659,6 +1899,23 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             }[];
             howToUseEn?: string | null | undefined;
             howToUseAr?: string | null | undefined;
+            promotionPrices?: {
+                price: number;
+                variantId: string;
+                originalPrice: number;
+                discount: number;
+                promotions: {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }[];
+            }[] | undefined;
         };
         addedAt: string;
     }, {
@@ -1787,6 +2044,23 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             }[];
             howToUseEn?: string | null | undefined;
             howToUseAr?: string | null | undefined;
+            promotionPrices?: {
+                price: number;
+                variantId: string;
+                originalPrice: number;
+                discount: number;
+                promotions: {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }[];
+            }[] | undefined;
         };
         addedAt: string;
     }>, "many">;
@@ -1925,6 +2199,23 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             }[];
             howToUseEn?: string | null | undefined;
             howToUseAr?: string | null | undefined;
+            promotionPrices?: {
+                price: number;
+                variantId: string;
+                originalPrice: number;
+                discount: number;
+                promotions: {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }[];
+            }[] | undefined;
         };
         addedAt: string;
     }[];
@@ -2063,6 +2354,23 @@ export declare const wishlistCollectionSchema: z.ZodObject<{
             }[];
             howToUseEn?: string | null | undefined;
             howToUseAr?: string | null | undefined;
+            promotionPrices?: {
+                price: number;
+                variantId: string;
+                originalPrice: number;
+                discount: number;
+                promotions: {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }[];
+            }[] | undefined;
         };
         addedAt: string;
     }[];
@@ -2449,6 +2757,75 @@ export declare const wishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }>, "many">;
+                promotionPrices: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                    variantId: z.ZodString;
+                    originalPrice: z.ZodNumber;
+                    price: z.ZodNumber;
+                    discount: z.ZodNumber;
+                    promotions: z.ZodArray<z.ZodObject<{
+                        id: z.ZodString;
+                        name: z.ZodString;
+                        title: z.ZodString;
+                        type: z.ZodEnum<["PRODUCT_DISCOUNT", "CART_DISCOUNT", "BUY_X_GET_Y", "BUNDLE", "QUANTITY_TIER", "SPEND_TIER", "FREE_SHIPPING", "FREE_GIFT", "FLASH_SALE"]>;
+                        couponCode: z.ZodNullable<z.ZodString>;
+                        discountAmount: z.ZodNumber;
+                        shippingDiscount: z.ZodNumber;
+                        discountedUnits: z.ZodNumber;
+                        message: z.ZodString;
+                    }, "strip", z.ZodTypeAny, {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }, {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }>, "many">;
+                }, "strip", z.ZodTypeAny, {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }, {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }>, "many">>;
             }, "strip", z.ZodTypeAny, {
                 options: {
                     values: {
@@ -2571,6 +2948,23 @@ export declare const wishlistSchema: z.ZodObject<{
                 }[];
                 howToUseEn?: string | null | undefined;
                 howToUseAr?: string | null | undefined;
+                promotionPrices?: {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }[] | undefined;
             }, {
                 options: {
                     values: {
@@ -2693,6 +3087,23 @@ export declare const wishlistSchema: z.ZodObject<{
                 }[];
                 howToUseEn?: string | null | undefined;
                 howToUseAr?: string | null | undefined;
+                promotionPrices?: {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }[] | undefined;
             }>;
             addedAt: z.ZodString;
         }, "strip", z.ZodTypeAny, {
@@ -2821,6 +3232,23 @@ export declare const wishlistSchema: z.ZodObject<{
                 }[];
                 howToUseEn?: string | null | undefined;
                 howToUseAr?: string | null | undefined;
+                promotionPrices?: {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }[] | undefined;
             };
             addedAt: string;
         }, {
@@ -2949,6 +3377,23 @@ export declare const wishlistSchema: z.ZodObject<{
                 }[];
                 howToUseEn?: string | null | undefined;
                 howToUseAr?: string | null | undefined;
+                promotionPrices?: {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }[] | undefined;
             };
             addedAt: string;
         }>, "many">;
@@ -3087,6 +3532,23 @@ export declare const wishlistSchema: z.ZodObject<{
                 }[];
                 howToUseEn?: string | null | undefined;
                 howToUseAr?: string | null | undefined;
+                promotionPrices?: {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }[] | undefined;
             };
             addedAt: string;
         }[];
@@ -3225,6 +3687,23 @@ export declare const wishlistSchema: z.ZodObject<{
                 }[];
                 howToUseEn?: string | null | undefined;
                 howToUseAr?: string | null | undefined;
+                promotionPrices?: {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }[] | undefined;
             };
             addedAt: string;
         }[];
@@ -3603,6 +4082,75 @@ export declare const wishlistSchema: z.ZodObject<{
                 concentration: string | null;
                 concentrationUnit: string | null;
             }>, "many">;
+            promotionPrices: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                variantId: z.ZodString;
+                originalPrice: z.ZodNumber;
+                price: z.ZodNumber;
+                discount: z.ZodNumber;
+                promotions: z.ZodArray<z.ZodObject<{
+                    id: z.ZodString;
+                    name: z.ZodString;
+                    title: z.ZodString;
+                    type: z.ZodEnum<["PRODUCT_DISCOUNT", "CART_DISCOUNT", "BUY_X_GET_Y", "BUNDLE", "QUANTITY_TIER", "SPEND_TIER", "FREE_SHIPPING", "FREE_GIFT", "FLASH_SALE"]>;
+                    couponCode: z.ZodNullable<z.ZodString>;
+                    discountAmount: z.ZodNumber;
+                    shippingDiscount: z.ZodNumber;
+                    discountedUnits: z.ZodNumber;
+                    message: z.ZodString;
+                }, "strip", z.ZodTypeAny, {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }, {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }>, "many">;
+            }, "strip", z.ZodTypeAny, {
+                price: number;
+                variantId: string;
+                originalPrice: number;
+                discount: number;
+                promotions: {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }[];
+            }, {
+                price: number;
+                variantId: string;
+                originalPrice: number;
+                discount: number;
+                promotions: {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }[];
+            }>, "many">>;
         }, "strip", z.ZodTypeAny, {
             options: {
                 values: {
@@ -3725,6 +4273,23 @@ export declare const wishlistSchema: z.ZodObject<{
             }[];
             howToUseEn?: string | null | undefined;
             howToUseAr?: string | null | undefined;
+            promotionPrices?: {
+                price: number;
+                variantId: string;
+                originalPrice: number;
+                discount: number;
+                promotions: {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }[];
+            }[] | undefined;
         }, {
             options: {
                 values: {
@@ -3847,6 +4412,23 @@ export declare const wishlistSchema: z.ZodObject<{
             }[];
             howToUseEn?: string | null | undefined;
             howToUseAr?: string | null | undefined;
+            promotionPrices?: {
+                price: number;
+                variantId: string;
+                originalPrice: number;
+                discount: number;
+                promotions: {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }[];
+            }[] | undefined;
         }>;
         addedAt: z.ZodString;
     }, "strip", z.ZodTypeAny, {
@@ -3975,6 +4557,23 @@ export declare const wishlistSchema: z.ZodObject<{
             }[];
             howToUseEn?: string | null | undefined;
             howToUseAr?: string | null | undefined;
+            promotionPrices?: {
+                price: number;
+                variantId: string;
+                originalPrice: number;
+                discount: number;
+                promotions: {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }[];
+            }[] | undefined;
         };
         addedAt: string;
     }, {
@@ -4103,6 +4702,23 @@ export declare const wishlistSchema: z.ZodObject<{
             }[];
             howToUseEn?: string | null | undefined;
             howToUseAr?: string | null | undefined;
+            promotionPrices?: {
+                price: number;
+                variantId: string;
+                originalPrice: number;
+                discount: number;
+                promotions: {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }[];
+            }[] | undefined;
         };
         addedAt: string;
     }>, "many">;
@@ -4236,6 +4852,23 @@ export declare const wishlistSchema: z.ZodObject<{
             }[];
             howToUseEn?: string | null | undefined;
             howToUseAr?: string | null | undefined;
+            promotionPrices?: {
+                price: number;
+                variantId: string;
+                originalPrice: number;
+                discount: number;
+                promotions: {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }[];
+            }[] | undefined;
         };
         addedAt: string;
     }[];
@@ -4372,6 +5005,23 @@ export declare const wishlistSchema: z.ZodObject<{
                 }[];
                 howToUseEn?: string | null | undefined;
                 howToUseAr?: string | null | undefined;
+                promotionPrices?: {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }[] | undefined;
             };
             addedAt: string;
         }[];
@@ -4507,6 +5157,23 @@ export declare const wishlistSchema: z.ZodObject<{
             }[];
             howToUseEn?: string | null | undefined;
             howToUseAr?: string | null | undefined;
+            promotionPrices?: {
+                price: number;
+                variantId: string;
+                originalPrice: number;
+                discount: number;
+                promotions: {
+                    message: string;
+                    type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                    id: string;
+                    name: string;
+                    discountedUnits: number;
+                    couponCode: string | null;
+                    title: string;
+                    discountAmount: number;
+                    shippingDiscount: number;
+                }[];
+            }[] | undefined;
         };
         addedAt: string;
     }[];
@@ -4643,6 +5310,23 @@ export declare const wishlistSchema: z.ZodObject<{
                 }[];
                 howToUseEn?: string | null | undefined;
                 howToUseAr?: string | null | undefined;
+                promotionPrices?: {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }[] | undefined;
             };
             addedAt: string;
         }[];
@@ -5035,6 +5719,75 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                     concentration: string | null;
                     concentrationUnit: string | null;
                 }>, "many">;
+                promotionPrices: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                    variantId: z.ZodString;
+                    originalPrice: z.ZodNumber;
+                    price: z.ZodNumber;
+                    discount: z.ZodNumber;
+                    promotions: z.ZodArray<z.ZodObject<{
+                        id: z.ZodString;
+                        name: z.ZodString;
+                        title: z.ZodString;
+                        type: z.ZodEnum<["PRODUCT_DISCOUNT", "CART_DISCOUNT", "BUY_X_GET_Y", "BUNDLE", "QUANTITY_TIER", "SPEND_TIER", "FREE_SHIPPING", "FREE_GIFT", "FLASH_SALE"]>;
+                        couponCode: z.ZodNullable<z.ZodString>;
+                        discountAmount: z.ZodNumber;
+                        shippingDiscount: z.ZodNumber;
+                        discountedUnits: z.ZodNumber;
+                        message: z.ZodString;
+                    }, "strip", z.ZodTypeAny, {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }, {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }>, "many">;
+                }, "strip", z.ZodTypeAny, {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }, {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }>, "many">>;
             }, "strip", z.ZodTypeAny, {
                 options: {
                     values: {
@@ -5157,6 +5910,23 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 }[];
                 howToUseEn?: string | null | undefined;
                 howToUseAr?: string | null | undefined;
+                promotionPrices?: {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }[] | undefined;
             }, {
                 options: {
                     values: {
@@ -5279,6 +6049,23 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 }[];
                 howToUseEn?: string | null | undefined;
                 howToUseAr?: string | null | undefined;
+                promotionPrices?: {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }[] | undefined;
             }>;
             addedAt: z.ZodString;
         }, "strip", z.ZodTypeAny, {
@@ -5407,6 +6194,23 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 }[];
                 howToUseEn?: string | null | undefined;
                 howToUseAr?: string | null | undefined;
+                promotionPrices?: {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }[] | undefined;
             };
             addedAt: string;
         }, {
@@ -5535,6 +6339,23 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 }[];
                 howToUseEn?: string | null | undefined;
                 howToUseAr?: string | null | undefined;
+                promotionPrices?: {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }[] | undefined;
             };
             addedAt: string;
         }>, "many">;
@@ -5676,6 +6497,23 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 }[];
                 howToUseEn?: string | null | undefined;
                 howToUseAr?: string | null | undefined;
+                promotionPrices?: {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }[] | undefined;
             };
             addedAt: string;
         }[];
@@ -5814,6 +6652,23 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 }[];
                 howToUseEn?: string | null | undefined;
                 howToUseAr?: string | null | undefined;
+                promotionPrices?: {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }[] | undefined;
             };
             addedAt: string;
         }[];
@@ -5957,6 +6812,23 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 }[];
                 howToUseEn?: string | null | undefined;
                 howToUseAr?: string | null | undefined;
+                promotionPrices?: {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }[] | undefined;
             };
             addedAt: string;
         }[];
@@ -6100,6 +6972,23 @@ export declare const sharedWishlistSchema: z.ZodObject<{
                 }[];
                 howToUseEn?: string | null | undefined;
                 howToUseAr?: string | null | undefined;
+                promotionPrices?: {
+                    price: number;
+                    variantId: string;
+                    originalPrice: number;
+                    discount: number;
+                    promotions: {
+                        message: string;
+                        type: "FREE_SHIPPING" | "PRODUCT_DISCOUNT" | "CART_DISCOUNT" | "BUY_X_GET_Y" | "BUNDLE" | "QUANTITY_TIER" | "SPEND_TIER" | "FREE_GIFT" | "FLASH_SALE";
+                        id: string;
+                        name: string;
+                        discountedUnits: number;
+                        couponCode: string | null;
+                        title: string;
+                        discountAmount: number;
+                        shippingDiscount: number;
+                    }[];
+                }[] | undefined;
             };
             addedAt: string;
         }[];

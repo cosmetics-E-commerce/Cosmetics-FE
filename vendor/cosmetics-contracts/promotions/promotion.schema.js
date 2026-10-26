@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.promotionOverviewSchema = exports.promotionRedemptionListSchema = exports.promotionRedemptionSchema = exports.promotionRedemptionQuerySchema = exports.promotionAnalyticsSchema = exports.permanentDeletePromotionResponseSchema = exports.permanentDeletePromotionSchema = exports.promotionListResponseSchema = exports.promotionResponseSchema = exports.promotionEvaluationSchema = exports.appliedPromotionSchema = exports.couponInputSchema = exports.promotionPreviewSchema = exports.promotionLineSchema = exports.promotionQuerySchema = exports.updatePromotionSchema = exports.createPromotionSchema = exports.couponConfigurationSchema = exports.promotionDisplaySchema = exports.promotionLimitsSchema = exports.promotionTargetsSchema = exports.promotionActionSchema = exports.promotionConditionSchema = exports.promotionSelectorSchema = exports.promotionStackingEnum = exports.promotionResolvedStatusEnum = exports.promotionStateEnum = exports.promotionTriggerEnum = exports.promotionTypeEnum = void 0;
+exports.promotionOverviewSchema = exports.promotionRedemptionListSchema = exports.promotionRedemptionSchema = exports.promotionRedemptionQuerySchema = exports.promotionAnalyticsSchema = exports.permanentDeletePromotionResponseSchema = exports.permanentDeletePromotionSchema = exports.promotionListResponseSchema = exports.promotionResponseSchema = exports.promotionEvaluationSchema = exports.productPromotionPriceSchema = exports.appliedPromotionSchema = exports.couponInputSchema = exports.promotionPreviewSchema = exports.promotionLineSchema = exports.promotionQuerySchema = exports.updatePromotionSchema = exports.createPromotionSchema = exports.couponConfigurationSchema = exports.promotionDisplaySchema = exports.promotionLimitsSchema = exports.promotionTargetsSchema = exports.promotionActionSchema = exports.promotionConditionSchema = exports.promotionSelectorSchema = exports.promotionStackingEnum = exports.promotionResolvedStatusEnum = exports.promotionStateEnum = exports.promotionTriggerEnum = exports.promotionTypeEnum = void 0;
 const zod_1 = require("zod");
 const pagination_1 = require("../common/pagination");
 const primitives_1 = require("../common/primitives");
@@ -350,6 +350,18 @@ exports.appliedPromotionSchema = zod_1.z.object({
     shippingDiscount: primitives_1.piastresSchema,
     discountedUnits: zod_1.z.number().int().nonnegative(),
     message: zod_1.z.string(),
+});
+/**
+ * One variant's public promotional price, as returned by POST /promotions/prices
+ * and embedded as `promotionPrices` on public catalog products. Guest context:
+ * automatic PRODUCT_DISCOUNT / FLASH_SALE / QUANTITY_TIER promotions at quantity 1.
+ */
+exports.productPromotionPriceSchema = zod_1.z.object({
+    variantId: primitives_1.uuidSchema,
+    originalPrice: primitives_1.piastresSchema,
+    price: primitives_1.piastresSchema,
+    discount: primitives_1.piastresSchema,
+    promotions: zod_1.z.array(exports.appliedPromotionSchema),
 });
 exports.promotionEvaluationSchema = zod_1.z.object({
     originalSubtotal: primitives_1.piastresSchema,
